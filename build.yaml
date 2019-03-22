@@ -1,0 +1,12 @@
+repositories:
+  remote:
+   - http://repo1.maven.org/maven2
+
+artifacts:
+  javax_annotation: org.realityforge.javax.annotation:javax.annotation:jar:1.0.0
+
+  getopt4j: org.realityforge.getopt4j:getopt4j:jar:1.2
+
+  javax_json: org.glassfish:javax.json:jar:1.1
+
+  snakeyaml: org.yaml:snakeyaml:jar:1.24
