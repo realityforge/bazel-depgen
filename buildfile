@@ -50,11 +50,19 @@ define 'bazel-depgen' do
   package(:jar)
   package(:sources)
   package(:javadoc)
-  package(:jar, :classifier => 'all').tap do |jar|
+  all_package = package(:jar, :classifier => 'all').tap do |jar|
     compile.dependencies.each do |d|
       jar.merge(d)
     end
   end
+
+  test.using :integration
+  test.using :testng
+  test.with :gir
+
+  test.options[:properties] = { 'depgen.jar' => all_package.to_s }
+
+  ipr.add_default_testng_configuration(:jvm_args => "-ea -Ddepgen.jar=#{all_package.to_s}")
 
   iml.excluded_directories << project._('tmp')
 

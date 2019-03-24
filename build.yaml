@@ -13,3 +13,5 @@ artifacts:
   javax_json: org.glassfish:javax.json:jar:1.1
 
   snakeyaml: org.yaml:snakeyaml:jar:1.24
+
+  gir: org.realityforge.gir:gir-core:jar:0.07
