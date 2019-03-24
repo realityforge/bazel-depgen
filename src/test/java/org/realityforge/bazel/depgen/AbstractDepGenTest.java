@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.annotation.Nonnull;
+import static org.testng.Assert.*;
 
 abstract class AbstractDepGenTest
 {
@@ -51,5 +52,11 @@ abstract class AbstractDepGenTest
     throws IOException
   {
     FileUtil2.write( "dependencies.yml", content );
+  }
+
+  final void assertOutputContains( @Nonnull final String output, @Nonnull final String text )
+  {
+    assertTrue( output.contains( text ),
+                "Expected output\n---\n" + output + "\n---\nto contain text\n---\n" + text + "\n---\n" );
   }
 }
