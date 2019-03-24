@@ -1,4 +1,4 @@
-package org.realityforge.bazel.depgen.config;
+package org.realityforge.bazel.depgen;
 
 import java.util.Map;
 import javax.annotation.Nullable;
