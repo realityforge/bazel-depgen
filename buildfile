@@ -16,11 +16,15 @@ MAVEN_RESOLVER = %w(
   org.apache.maven:maven-model:jar:3.5.0
   org.codehaus.plexus:plexus-utils:jar:3.0.24
   org.codehaus.plexus:plexus-interpolation:jar:1.25
+  org.sonatype.plexus:plexus-sec-dispatcher:jar:1.4
+  org.sonatype.plexus:plexus-cipher:jar:1.4
   org.apache.maven:maven-repository-metadata:jar:3.5.0
   org.codehaus.plexus:plexus-component-annotations:jar:1.7.1
   org.apache.maven:maven-model-builder:jar:3.5.0
   org.apache.maven:maven-builder-support:jar:3.5.0
   org.apache.maven:maven-artifact:jar:3.5.0
+  org.apache.maven:maven-settings-builder:jar:3.5.0
+  org.apache.maven:maven-settings:jar:3.5.0
   com.google.guava:guava:jar:20.0
   org.slf4j:slf4j-api:jar:1.7.25
   org.slf4j:slf4j-jdk14:jar:1.7.25
