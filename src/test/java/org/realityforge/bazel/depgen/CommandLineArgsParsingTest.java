@@ -154,4 +154,52 @@ public class CommandLineArgsParsingTest
                             "Error: Specified bazel extension file exists but is a directory. Specified value: 3rdparty/other_workspace.bzl" );
     } );
   }
+
+  @Test
+  public void help()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace( "" );
+      writeDependencies( "" );
+
+      final String output = runCommand( 2, "--help" );
+      assertOutputContains( output, "-h, --help\n" );
+      assertOutputContains( output, "-q, --quiet\n" );
+      assertOutputContains( output, "-v, --verbose\n" );
+      assertOutputContains( output, "-d, --dependencies-file <argument>\n" );
+      assertOutputContains( output, "-e, --extension-file <argument>\n" );
+      assertOutputContains( output, "-r, --cache-dir <argument>\n" );
+    } );
+  }
+
+  @Test
+  public void outputInVerbose()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace( "" );
+      writeDependencies( "" );
+
+      final String output = runCommand( "--verbose" );
+      assertOutputContains( output, "Bazel DepGen Starting...\n" );
+      assertOutputContains( output, "\n  Workspace directory: " );
+      assertOutputContains( output, "\n  Dependencies file: " );
+      assertOutputContains( output, "\n  Bazel Extension file: " );
+      assertOutputContains( output, "\n  Local Cache directory: " );
+    } );
+  }
+
+  @Test
+  public void noOutputInNormalCase()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace( "" );
+      writeDependencies( "" );
+
+      final String output = runCommand();
+      assertEquals( output, "" );
+    } );
+  }
 }
