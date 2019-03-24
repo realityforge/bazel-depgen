@@ -42,7 +42,7 @@ public final class FileUtil2
     final File dir = File.createTempFile( "bazel-depgen", "dir" );
     assertTrue( dir.delete() );
     assertTrue( dir.mkdir() );
-    return dir.toPath();
+    return dir.toPath().toAbsolutePath().normalize();
   }
 
   public static void write( @Nonnull final String pathElement, @Nonnull final String content )
