@@ -1,5 +1,7 @@
 package org.realityforge.bazel.depgen;
 
+import gir.Gir;
+import gir.Task;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,6 +9,12 @@ import javax.annotation.Nonnull;
 
 abstract class AbstractDepGenTest
 {
+  final void inIsolatedDirectory( @Nonnull final Task java )
+    throws Exception
+  {
+    Gir.go( () -> FileUtil2.inTempDir( java ) );
+  }
+
   @Nonnull
   final Path getApplicationJar()
   {
