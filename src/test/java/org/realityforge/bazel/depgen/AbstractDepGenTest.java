@@ -2,13 +2,33 @@ package org.realityforge.bazel.depgen;
 
 import gir.Gir;
 import gir.Task;
+import gir.io.Exec;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import javax.annotation.Nonnull;
 
 abstract class AbstractDepGenTest
 {
+  @Nonnull
+  final String runCommand( @Nonnull final String... additionalArgs )
+  {
+    return runCommand( 0, additionalArgs );
+  }
+
+  @Nonnull
+  final String runCommand( final int expectedExitCode, @Nonnull final String... additionalArgs )
+  {
+    final ArrayList<String> args = new ArrayList<>();
+    args.add( "java" );
+    args.add( "-jar" );
+    args.add( getApplicationJar().toString() );
+    Collections.addAll( args, additionalArgs );
+    return Exec.capture( b -> Exec.cmd( b, args.toArray( new String[ 0 ] ) ), expectedExitCode );
+  }
+
   final void inIsolatedDirectory( @Nonnull final Task java )
     throws Exception
   {
