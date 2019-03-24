@@ -1,18 +1,20 @@
 package org.realityforge.bazel.depgen.config;
 
+import java.util.Map;
 import javax.annotation.Nullable;
 
 public class DepGenConfig
 {
-  private MavenServer[] repositories;
+  @Nullable
+  private Map<String, String> repositories;
 
   @Nullable
-  public MavenServer[] getRepositories()
+  public Map<String, String> getRepositories()
   {
     return repositories;
   }
 
-  public void setRepositories( @Nullable final MavenServer[] repositories )
+  public void setRepositories( @Nullable final Map<String, String> repositories )
   {
     this.repositories = repositories;
   }
