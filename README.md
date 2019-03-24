@@ -31,3 +31,11 @@ a [Contributing](CONTRIBUTING.md) document is under development.
 # License
 
 The project is licensed under [Apache License, Version 2.0](LICENSE).
+
+# Credit
+
+* This project is heavily inspired by [johnynek/bazel-deps](https://github.com/johnynek/bazel-deps.git)
+  which was forked from [pgr0ss/bazel-deps](https://github.com/pgr0ss/bazel-deps) which was inspired by
+  the [aether examples](https://github.com/eclipse/aether-demo/blob/322fa556494335faaf3ad3b7dbe8f89aaaf6222d/aether-demo-snippets/src/main/java/org/eclipse/aether/examples/GetDependencyTree.java)
+  for walking maven dependencies. While no code was directly copied from these earlier projects, this
+  project is a spiritual successor of these earlier projects. Credit goes to those projects for trail blazing.
