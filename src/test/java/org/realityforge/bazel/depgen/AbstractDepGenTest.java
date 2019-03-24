@@ -3,6 +3,7 @@ package org.realityforge.bazel.depgen;
 import gir.Gir;
 import gir.Task;
 import gir.io.Exec;
+import gir.io.FileUtil;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,6 +25,7 @@ abstract class AbstractDepGenTest
   {
     final ArrayList<String> args = new ArrayList<>();
     args.add( "java" );
+    args.add( "-Duser.home=" + FileUtil.getCurrentDirectory() );
     args.add( "-jar" );
     args.add( getApplicationJar().toString() );
     Collections.addAll( args, additionalArgs );
