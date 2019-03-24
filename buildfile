@@ -55,4 +55,6 @@ define 'bazel-depgen' do
       jar.merge(d)
     end
   end
+
+  ipr.add_component_from_artifact(:idea_codestyle)
 end
