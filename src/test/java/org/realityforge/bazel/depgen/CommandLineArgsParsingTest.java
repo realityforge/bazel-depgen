@@ -168,6 +168,7 @@ public class CommandLineArgsParsingTest
       assertOutputContains( output, "-q, --quiet\n" );
       assertOutputContains( output, "-v, --verbose\n" );
       assertOutputContains( output, "-d, --dependencies-file <argument>\n" );
+      assertOutputContains( output, "-s, --settings-file <argument>\n" );
       assertOutputContains( output, "-e, --extension-file <argument>\n" );
       assertOutputContains( output, "-r, --cache-dir <argument>\n" );
     } );
@@ -185,6 +186,7 @@ public class CommandLineArgsParsingTest
       assertOutputContains( output, "Bazel DepGen Starting...\n" );
       assertOutputContains( output, "\n  Workspace directory: " );
       assertOutputContains( output, "\n  Dependencies file: " );
+      assertOutputContains( output, "\n  Settings file: " );
       assertOutputContains( output, "\n  Bazel Extension file: " );
       assertOutputContains( output, "\n  Local Cache directory: " );
     } );
@@ -200,6 +202,116 @@ public class CommandLineArgsParsingTest
 
       final String output = runCommand();
       assertEquals( output, "" );
+    } );
+  }
+
+  @Test
+  public void missingDefaultSettingsIsFine()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace( "" );
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
+
+      runCommand();
+    } );
+  }
+
+  @Test
+  public void invalidDefaultSettings()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace( "" );
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
+      assertTrue( FileUtil.getCurrentDirectory().resolve( ".m2" ).toFile().mkdir() );
+      FileUtil2.write( ".m2/settings.xml", "JHSGDJHDS()*&(&Y*&" );
+
+      final String output = runCommand( 4 );
+      assertOutputContains( output, "Error: Problem loading settings from " );
+    } );
+  }
+
+  @Test
+  public void defaultSettingsIsDirectory()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace( "" );
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
+      assertTrue( FileUtil.getCurrentDirectory().resolve( ".m2/settings.xml" ).toFile().mkdirs() );
+
+      final String output = runCommand( 4 );
+      assertOutputContains( output, "Error: Problem loading settings from " );
+    } );
+  }
+
+  @Test
+  public void missingSpecifiedSettings()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace( "" );
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
+
+      final String output = runCommand( 2, "--settings-file", "some_settings.xml" );
+      assertOutputContains( output,
+                            "Error: Specified settings file does not exist. Specified value: some_settings.xml\n" );
+    } );
+  }
+
+  @Test
+  public void validDefaultSettings()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace( "" );
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
+
+      assertTrue( FileUtil.getCurrentDirectory().resolve( ".m2" ).toFile().mkdir() );
+      FileUtil2.write( ".m2/settings.xml",
+                       "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+                       "  <servers>\n" +
+                       "    <server>\n" +
+                       "      <id>my-repo</id>\n" +
+                       "      <username>root</username>\n" +
+                       "      <password>secret</password>\n" +
+                       "    </server>\n" +
+                       "  </servers>\n" +
+                       "</settings>\n" );
+
+      final String output = runCommand();
+      assertOutputContains( output, "" );
+    } );
+  }
+
+  @Test
+  public void validSpecifiedSettings()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace( "" );
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
+
+      FileUtil2.write( "some_settings.xml",
+                       "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+                       "  <servers>\n" +
+                       "    <server>\n" +
+                       "      <id>my-repo</id>\n" +
+                       "      <username>root</username>\n" +
+                       "      <password>secret</password>\n" +
+                       "    </server>\n" +
+                       "  </servers>\n" +
+                       "</settings>\n" );
+
+      final String output = runCommand( "--settings-file", "some_settings.xml" );
+      assertOutputContains( output, "" );
     } );
   }
 }
