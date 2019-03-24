@@ -27,7 +27,7 @@ MAVEN_RESOLVER = %w(
   org.slf4j:jcl-over-slf4j:jar:1.7.25
 )
 
-desc 'bazel-depgen: Generate Bazel Dependencies scripts'
+desc 'bazel-depgen: Generate Bazel dependency scripts by traversing Maven repositories'
 define 'bazel-depgen' do
   project.group = 'org.realityforge.bazel.depgen'
   compile.options.source = '1.8'
