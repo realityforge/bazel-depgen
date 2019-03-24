@@ -56,5 +56,7 @@ define 'bazel-depgen' do
     end
   end
 
+  iml.excluded_directories << project._('tmp')
+
   ipr.add_component_from_artifact(:idea_codestyle)
 end
