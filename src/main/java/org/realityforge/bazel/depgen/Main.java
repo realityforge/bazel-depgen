@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen;
 
 import java.io.File;
-import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -38,8 +37,6 @@ import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 import org.realityforge.getopt4j.CLUtil;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
 
 /**
  * The entry point in which to run the tool.
@@ -212,8 +209,7 @@ public class Main
   {
     try
     {
-      final Yaml yaml = new Yaml( new Constructor( DepGenConfig.class ) );
-      return yaml.load( new FileReader( c_dependenciesFile.toFile() ) );
+      return DepGenConfig.parse( c_dependenciesFile );
     }
     catch ( final Throwable t )
     {
