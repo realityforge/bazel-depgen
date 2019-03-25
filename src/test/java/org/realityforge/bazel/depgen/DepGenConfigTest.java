@@ -36,7 +36,6 @@ public class DepGenConfigTest
       assertEquals( repositories.get( "example" ), "https://example.com/repo" );
       assertEquals( repositories.get( "central" ), "http://repo1.maven.org/maven2" );
     } );
-
   }
 
   @Nullable
