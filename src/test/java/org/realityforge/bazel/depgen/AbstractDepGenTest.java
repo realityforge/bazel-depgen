@@ -35,7 +35,7 @@ abstract class AbstractDepGenTest
   final void inIsolatedDirectory( @Nonnull final Task java )
     throws Exception
   {
-    Gir.go( () -> FileUtil2.inTempDir( java ) );
+    Gir.go( () -> FileUtil.inTempDir( java ) );
   }
 
   @Nonnull
@@ -47,13 +47,13 @@ abstract class AbstractDepGenTest
   final void writeWorkspace( @Nonnull final String content )
     throws IOException
   {
-    FileUtil2.write( "WORKSPACE", content );
+    FileUtil.write( "WORKSPACE", content );
   }
 
   final void writeDependencies( @Nonnull final String content )
     throws IOException
   {
-    FileUtil2.write( "dependencies.yml", content );
+    FileUtil.write( "dependencies.yml", content );
   }
 
   final void assertOutputContains( @Nonnull final String output, @Nonnull final String text )
