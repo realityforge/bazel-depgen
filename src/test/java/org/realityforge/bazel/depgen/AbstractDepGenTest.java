@@ -44,10 +44,10 @@ abstract class AbstractDepGenTest
     return Paths.get( System.getProperty( "depgen.jar" ) ).toAbsolutePath().normalize();
   }
 
-  final void writeWorkspace( @Nonnull final String content )
+  final void writeWorkspace()
     throws IOException
   {
-    FileUtil.write( "WORKSPACE", content );
+    FileUtil.write( "WORKSPACE", "" );
   }
 
   final void writeDependencies( @Nonnull final String content )

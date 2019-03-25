@@ -26,7 +26,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
 
       final String output = runCommand( 2 );
       assertOutputContains( output, "Error: Default dependencies file does not exist: " );
@@ -38,7 +38,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       writeDependencies( "" );
       FileUtil.write( ".repository", "NotADir" );
 
@@ -52,7 +52,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       writeDependencies( "" );
       assertTrue( FileUtil.getCurrentDirectory().resolve( "3rdparty/workspace.bzl" ).toFile().mkdirs() );
 
@@ -66,7 +66,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       writeDependencies( "" );
 
       final String output = runCommand( 2, "Bleep" );
@@ -118,7 +118,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
 
       final String output = runCommand( 2, "--dependencies-file", "deps.txt" );
       assertOutputContains( output, "Error: Specified dependencies file does not exist. Specified value: deps.txt" );
@@ -130,7 +130,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       writeDependencies( "" );
       FileUtil.write( "StoreMeHere", "NotADir" );
 
@@ -145,7 +145,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       writeDependencies( "" );
       assertTrue( FileUtil.getCurrentDirectory().resolve( "3rdparty/other_workspace.bzl" ).toFile().mkdirs() );
 
@@ -160,7 +160,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       writeDependencies( "" );
 
       final String output = runCommand( 2, "--help" );
@@ -179,7 +179,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       writeDependencies( "" );
 
       final String output = runCommand( "--verbose" );
@@ -197,7 +197,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       writeDependencies( "" );
 
       final String output = runCommand();
@@ -210,7 +210,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
       writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
 
@@ -223,7 +223,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
       writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
       assertTrue( FileUtil.getCurrentDirectory().resolve( ".m2" ).toFile().mkdir() );
@@ -239,7 +239,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
       writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
       assertTrue( FileUtil.getCurrentDirectory().resolve( ".m2/settings.xml" ).toFile().mkdirs() );
@@ -254,7 +254,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
       writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
 
@@ -269,7 +269,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
       writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
 
@@ -294,7 +294,7 @@ public class CommandLineArgsParsingTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeWorkspace( "" );
+      writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
       writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
 
