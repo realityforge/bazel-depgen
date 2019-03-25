@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen;
 
 import java.io.FileReader;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,5 +32,16 @@ public class DepGenConfig
   public void setRepositories( @Nullable final Map<String, String> repositories )
   {
     this.repositories = repositories;
+  }
+
+  @Nullable
+  public List<ArtifactConfig> getArtifacts()
+  {
+    return artifacts;
+  }
+
+  public void setArtifacts( @Nullable final List<ArtifactConfig> artifacts )
+  {
+    this.artifacts = artifacts;
   }
 }
