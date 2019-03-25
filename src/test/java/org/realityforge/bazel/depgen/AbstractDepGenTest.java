@@ -39,7 +39,7 @@ abstract class AbstractDepGenTest
   }
 
   @Nonnull
-  final Path getApplicationJar()
+  private Path getApplicationJar()
   {
     return Paths.get( System.getProperty( "depgen.jar" ) ).toAbsolutePath().normalize();
   }
