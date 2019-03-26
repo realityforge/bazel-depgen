@@ -1,4 +1,4 @@
-package org.realityforge.bazel.depgen;
+package org.realityforge.bazel.depgen.config;
 
 import java.util.List;
 

@@ -1,9 +1,10 @@
-package org.realityforge.bazel.depgen;
+package org.realityforge.bazel.depgen.config;
 
 import gir.io.FileUtil;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+import org.realityforge.bazel.depgen.AbstractDepGenTest;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 

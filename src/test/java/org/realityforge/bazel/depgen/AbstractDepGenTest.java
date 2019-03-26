@@ -12,7 +12,7 @@ import java.util.Collections;
 import javax.annotation.Nonnull;
 import static org.testng.Assert.*;
 
-abstract class AbstractDepGenTest
+public abstract class AbstractDepGenTest
 {
   @Nonnull
   final String runCommand( @Nonnull final String... additionalArgs )
@@ -32,7 +32,7 @@ abstract class AbstractDepGenTest
     return Exec.capture( b -> Exec.cmd( b, args.toArray( new String[ 0 ] ) ), expectedExitCode );
   }
 
-  final void inIsolatedDirectory( @Nonnull final Task java )
+  protected final void inIsolatedDirectory( @Nonnull final Task java )
     throws Exception
   {
     Gir.go( () -> FileUtil.inTempDir( java ) );
@@ -50,7 +50,7 @@ abstract class AbstractDepGenTest
     FileUtil.write( "WORKSPACE", "" );
   }
 
-  final void writeDependencies( @Nonnull final String content )
+  protected final void writeDependencies( @Nonnull final String content )
     throws IOException
   {
     FileUtil.write( "dependencies.yml", content );
