@@ -2,8 +2,11 @@ package org.realityforge.bazel.depgen.config;
 
 import java.io.FileReader;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.yaml.snakeyaml.Yaml;
@@ -14,16 +17,18 @@ public class DepGenConfig
 {
   @Nonnull
   private OptionsConfig options = new OptionsConfig();
-  @Nullable
-  private Map<String, String> repositories;
-  private List<ArtifactConfig> artifacts;
+  @Nonnull
+  private Map<String, String> repositories = new HashMap<>();
+  @Nonnull
+  private List<ArtifactConfig> artifacts = new ArrayList<>();
 
-  @Nullable
+  @Nonnull
   public static DepGenConfig parse( @Nonnull final Path path )
     throws Exception
   {
     final Yaml yaml = new Yaml( new Constructor( DepGenConfig.class ) );
-    return yaml.load( new FileReader( path.toFile() ) );
+    final DepGenConfig config = yaml.load( new FileReader( path.toFile() ) );
+    return null == config ? new DepGenConfig() : config;
   }
 
   @Nonnull
@@ -37,25 +42,25 @@ public class DepGenConfig
     this.options = Objects.requireNonNull( options );
   }
 
-  @Nullable
+  @Nonnull
   public Map<String, String> getRepositories()
   {
     return repositories;
   }
 
-  public void setRepositories( @Nullable final Map<String, String> repositories )
+  public void setRepositories( @Nonnull final Map<String, String> repositories )
   {
-    this.repositories = repositories;
+    this.repositories = Objects.requireNonNull( repositories );
   }
 
-  @Nullable
+  @Nonnull
   public List<ArtifactConfig> getArtifacts()
   {
     return artifacts;
   }
 
-  public void setArtifacts( @Nullable final List<ArtifactConfig> artifacts )
+  public void setArtifacts( @Nonnull final List<ArtifactConfig> artifacts )
   {
-    this.artifacts = artifacts;
+    this.artifacts = Objects.requireNonNull( artifacts );
   }
 }

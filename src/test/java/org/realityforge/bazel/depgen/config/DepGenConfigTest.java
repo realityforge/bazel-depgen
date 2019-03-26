@@ -3,7 +3,7 @@ package org.realityforge.bazel.depgen.config;
 import gir.io.FileUtil;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractDepGenTest;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -17,7 +17,7 @@ public class DepGenConfigTest
   {
     inIsolatedDirectory( () -> {
       writeDependencies( "" );
-      assertNull( parseDependencies() );
+      assertNotNull( parseDependencies() );
     } );
   }
 
@@ -32,7 +32,6 @@ public class DepGenConfigTest
       assertNotNull( config );
       final Map<String, String> repositories = config.getRepositories();
       assertNotNull( repositories );
-      assertNull( config.getArtifacts() );
 
       assertEquals( repositories.size(), 2 );
       assertEquals( repositories.get( "example" ), "https://example.com/repo" );
@@ -54,7 +53,6 @@ public class DepGenConfigTest
         "    type: jar\n" );
       final DepGenConfig config = parseDependencies();
       assertNotNull( config );
-      assertNull( config.getRepositories() );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
 
@@ -83,7 +81,6 @@ public class DepGenConfigTest
         "    id: gir-core\n" );
       final DepGenConfig config = parseDependencies();
       assertNotNull( config );
-      assertNull( config.getRepositories() );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
 
@@ -111,7 +108,6 @@ public class DepGenConfigTest
         "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" );
       final DepGenConfig config = parseDependencies();
       assertNotNull( config );
-      assertNull( config.getRepositories() );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
 
@@ -140,7 +136,6 @@ public class DepGenConfigTest
         "    excludes: ['org.realityforge.javax.annotation:javax.annotation', 'org.realityforge.braincheck']\n" );
       final DepGenConfig config = parseDependencies();
       assertNotNull( config );
-      assertNull( config.getRepositories() );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
 
@@ -200,7 +195,7 @@ public class DepGenConfigTest
     } );
   }
 
-  @Nullable
+  @Nonnull
   private DepGenConfig parseDependencies()
     throws Exception
   {
