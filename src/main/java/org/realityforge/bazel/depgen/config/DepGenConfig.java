@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
+@SuppressWarnings( "unused" )
 public class DepGenConfig
 {
   @Nullable
