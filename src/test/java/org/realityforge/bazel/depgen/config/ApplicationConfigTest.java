@@ -8,7 +8,7 @@ import org.realityforge.bazel.depgen.AbstractDepGenTest;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
-public class DepGenConfigTest
+public class ApplicationConfigTest
   extends AbstractDepGenTest
 {
   @Test
@@ -28,7 +28,7 @@ public class DepGenConfigTest
     inIsolatedDirectory( () -> {
       writeDependencies(
         "repositories:\n  central: http://repo1.maven.org/maven2\n  example: https://example.com/repo\n" );
-      final DepGenConfig config = parseDependencies();
+      final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
       final Map<String, String> repositories = config.getRepositories();
       assertNotNull( repositories );
@@ -51,7 +51,7 @@ public class DepGenConfigTest
         "    version: 0.08\n" +
         "    classifier: sources\n" +
         "    type: jar\n" );
-      final DepGenConfig config = parseDependencies();
+      final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
@@ -79,7 +79,7 @@ public class DepGenConfigTest
         "artifacts:\n" +
         "  - group: org.realityforge.gir\n" +
         "    id: gir-core\n" );
-      final DepGenConfig config = parseDependencies();
+      final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
@@ -106,7 +106,7 @@ public class DepGenConfigTest
       writeDependencies(
         "artifacts:\n" +
         "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" );
-      final DepGenConfig config = parseDependencies();
+      final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
@@ -134,7 +134,7 @@ public class DepGenConfigTest
         "artifacts:\n" +
         "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
         "    excludes: ['org.realityforge.javax.annotation:javax.annotation', 'org.realityforge.braincheck']\n" );
-      final DepGenConfig config = parseDependencies();
+      final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
@@ -167,7 +167,7 @@ public class DepGenConfigTest
         "options:\n" +
         "  workspaceDirectory: workspaceDir\n" +
         "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
-      final DepGenConfig config = parseDependencies();
+      final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
 
       final OptionsConfig options = config.getOptions();
@@ -184,7 +184,7 @@ public class DepGenConfigTest
   {
     inIsolatedDirectory( () -> {
       writeDependencies( "" );
-      final DepGenConfig config = parseDependencies();
+      final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
 
       final OptionsConfig options = config.getOptions();
@@ -196,9 +196,9 @@ public class DepGenConfigTest
   }
 
   @Nonnull
-  private DepGenConfig parseDependencies()
+  private ApplicationConfig parseDependencies()
     throws Exception
   {
-    return DepGenConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+    return ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
   }
 }

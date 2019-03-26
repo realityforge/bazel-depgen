@@ -8,12 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 @SuppressWarnings( "unused" )
-public class DepGenConfig
+public class ApplicationConfig
 {
   @Nonnull
   private OptionsConfig options = new OptionsConfig();
@@ -23,12 +22,12 @@ public class DepGenConfig
   private List<ArtifactConfig> artifacts = new ArrayList<>();
 
   @Nonnull
-  public static DepGenConfig parse( @Nonnull final Path path )
+  public static ApplicationConfig parse( @Nonnull final Path path )
     throws Exception
   {
-    final Yaml yaml = new Yaml( new Constructor( DepGenConfig.class ) );
-    final DepGenConfig config = yaml.load( new FileReader( path.toFile() ) );
-    return null == config ? new DepGenConfig() : config;
+    final Yaml yaml = new Yaml( new Constructor( ApplicationConfig.class ) );
+    final ApplicationConfig config = yaml.load( new FileReader( path.toFile() ) );
+    return null == config ? new ApplicationConfig() : config;
   }
 
   @Nonnull

@@ -33,7 +33,7 @@ import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
-import org.realityforge.bazel.depgen.config.DepGenConfig;
+import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
@@ -105,7 +105,7 @@ public class Main
 
     try
     {
-      final DepGenConfig config = loadDependenciesYaml();
+      final ApplicationConfig config = loadDependenciesYaml();
 
       final RepositorySystem system = newRepositorySystem();
       final RepositorySystemSession session = newRepositorySystemSession( system );
@@ -146,7 +146,7 @@ public class Main
   }
 
   @Nonnull
-  private static List<RemoteRepository> getRemoteRepositories( @Nullable final DepGenConfig config )
+  private static List<RemoteRepository> getRemoteRepositories( @Nullable final ApplicationConfig config )
   {
     final List<RemoteRepository> repositories = new ArrayList<>();
     final Map<String, String> servers = null != config ? config.getRepositories() : null;
@@ -199,11 +199,11 @@ public class Main
   }
 
   @Nonnull
-  private static DepGenConfig loadDependenciesYaml()
+  private static ApplicationConfig loadDependenciesYaml()
   {
     try
     {
-      return DepGenConfig.parse( c_dependenciesFile );
+      return ApplicationConfig.parse( c_dependenciesFile );
     }
     catch ( final Throwable t )
     {
