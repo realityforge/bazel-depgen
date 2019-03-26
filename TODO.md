@@ -10,6 +10,8 @@ complete as there is too much un-said.
   - verify excludes to ensure that they contain at most 1-2 spec components (i.e. group + optional id) and
     create inner model object to represent exclude
 
+* Add tests to `ResolverUtil`
+
 * Incorporate features from [bazel_maven_repository](https://github.com/square/bazel_maven_repository) such as:
   - Store jars in the "content addressable" cache, which is machine-wide, and survives even `bazel clean --expunge`
   - `maven_jvm_artifact` which defines `deps` attribute (i.e. Any dependencies needed at compile-time for consumers
