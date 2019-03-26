@@ -183,6 +183,23 @@ public class DepGenConfigTest
     } );
   }
 
+  @Test
+  public void parseDefaultOptions()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "" );
+      final DepGenConfig config = parseDependencies();
+      assertNotNull( config );
+
+      final OptionsConfig options = config.getOptions();
+      assertNotNull( options );
+
+      assertEquals( options.getWorkspaceDirectory(), OptionsConfig.DEFAULT_WORKSPACE_DIR );
+      assertEquals( options.getExtensionFile(), OptionsConfig.DEFAULT_EXTENSION_FILE );
+    } );
+  }
+
   @Nullable
   private DepGenConfig parseDependencies()
     throws Exception
