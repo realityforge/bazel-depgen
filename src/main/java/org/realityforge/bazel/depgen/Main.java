@@ -14,11 +14,7 @@ import javax.annotation.Nullable;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
-import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingException;
-import org.apache.maven.settings.building.SettingsBuildingRequest;
-import org.apache.maven.settings.building.SettingsBuildingResult;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -185,11 +181,7 @@ public class Main
   {
     try
     {
-      final SettingsBuildingRequest request =
-        new DefaultSettingsBuildingRequest().setUserSettingsFile( c_settingsFile.toFile() );
-      final SettingsBuildingResult result = new DefaultSettingsBuilderFactory().newInstance().build( request );
-      result.getProblems().forEach( problem -> c_logger.warning( problem.toString() ) );
-      return result.getEffectiveSettings();
+      return SettingsUtil.loadSettings( c_settingsFile, c_logger );
     }
     catch ( final SettingsBuildingException e )
     {
