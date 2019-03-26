@@ -3,23 +3,17 @@ package org.realityforge.bazel.depgen;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
@@ -97,7 +91,7 @@ public class Main
       final RepositorySystem system = ResolverUtil.newRepositorySystem( c_logger );
       final RepositorySystemSession session = ResolverUtil.newRepositorySystemSession( system, c_cacheDir, c_logger );
 
-      final List<RemoteRepository> repositories = getRemoteRepositories( config );
+      final List<RemoteRepository> repositories = ResolverUtil.getRemoteRepositories( config, loadSettings() );
 
       //TODO: Insert code here.
       /*
@@ -130,41 +124,6 @@ public class Main
     }
 
     System.exit( SUCCESS_EXIT_CODE );
-  }
-
-  @Nonnull
-  private static List<RemoteRepository> getRemoteRepositories( @Nullable final ApplicationConfig config )
-  {
-    final List<RemoteRepository> repositories = new ArrayList<>();
-    final Map<String, String> servers = null != config ? config.getRepositories() : null;
-    if ( null == servers )
-    {
-      final RemoteRepository mavenCentral =
-        new RemoteRepository.Builder( "central", "default", "https://repo.maven.apache.org/maven2/" ).build();
-      repositories.add( mavenCentral );
-    }
-    else
-    {
-      final Settings settings = loadSettings();
-
-      for ( final Map.Entry<String, String> server : servers.entrySet() )
-      {
-        final RemoteRepository.Builder builder =
-          new RemoteRepository.Builder( server.getKey(), "default", server.getValue() );
-        final Server serverSetting = settings.getServer( server.getKey() );
-        if ( null != serverSetting )
-        {
-          final Authentication authentication =
-            new AuthenticationBuilder()
-              .addUsername( serverSetting.getUsername() )
-              .addPassword( serverSetting.getPassword() )
-              .build();
-          builder.setAuthentication( authentication );
-        }
-        repositories.add( builder.build() );
-      }
-    }
-    return repositories;
   }
 
   @Nonnull

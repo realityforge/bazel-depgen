@@ -30,6 +30,11 @@ public class ApplicationConfig
     return null == config ? new ApplicationConfig() : config;
   }
 
+  public ApplicationConfig()
+  {
+    repositories.put( "central", "https://repo.maven.apache.org/maven2/" );
+  }
+
   @Nonnull
   public OptionsConfig getOptions()
   {
