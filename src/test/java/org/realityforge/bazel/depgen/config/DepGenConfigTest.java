@@ -163,6 +163,26 @@ public class DepGenConfigTest
     } );
   }
 
+  @Test
+  public void parseOptions()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies(
+        "options:\n" +
+        "  workspaceDirectory: workspaceDir\n" +
+        "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
+      final DepGenConfig config = parseDependencies();
+      assertNotNull( config );
+
+      final OptionsConfig options = config.getOptions();
+      assertNotNull( options );
+
+      assertEquals( options.getWorkspaceDirectory(), "workspaceDir" );
+      assertEquals( options.getExtensionFile(), "workspaceDir/vendor/workspace.bzl" );
+    } );
+  }
+
   @Nullable
   private DepGenConfig parseDependencies()
     throws Exception

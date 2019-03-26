@@ -12,6 +12,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @SuppressWarnings( "unused" )
 public class DepGenConfig
 {
+  @Nonnull
+  private OptionsConfig options = new OptionsConfig();
   @Nullable
   private Map<String, String> repositories;
   private List<ArtifactConfig> artifacts;
@@ -22,6 +24,17 @@ public class DepGenConfig
   {
     final Yaml yaml = new Yaml( new Constructor( DepGenConfig.class ) );
     return yaml.load( new FileReader( path.toFile() ) );
+  }
+
+  @Nonnull
+  public OptionsConfig getOptions()
+  {
+    return options;
+  }
+
+  public void setOptions( @Nonnull final OptionsConfig options )
+  {
+    this.options = Objects.requireNonNull( options );
   }
 
   @Nullable
