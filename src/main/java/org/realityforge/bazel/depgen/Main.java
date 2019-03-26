@@ -44,17 +44,13 @@ import org.realityforge.getopt4j.CLUtil;
  */
 public class Main
 {
-  private static final String DEFAULT_WORKSPACE_DIR = ".";
   private static final String DEFAULT_DEPENDENCIES_FILE = "dependencies.yml";
-  private static final String DEFAULT_EXTENSION_FILE = "3rdparty/workspace.bzl";
   private static final String DEFAULT_CACHE_DIR = ".repository";
   private static final int HELP_OPT = 'h';
   private static final int QUIET_OPT = 'q';
   private static final int VERBOSE_OPT = 'v';
-  private static final int WORKSPACE_DIR_OPT = 'w';
   private static final int DEPENDENCIES_FILE_OPT = 'd';
   private static final int SETTINGS_FILE_OPT = 's';
-  private static final int EXTENSION_FILE_OPT = 'e';
   private static final int CACHE_DIR_OPT = 'r';
   private static final CLOptionDescriptor[] OPTIONS = new CLOptionDescriptor[]{
     new CLOptionDescriptor( "help",
@@ -71,13 +67,6 @@ public class Main
                             VERBOSE_OPT,
                             "Verbose output of differences.",
                             new int[]{ QUIET_OPT } ),
-
-    new CLOptionDescriptor( "workspace-dir",
-                            CLOptionDescriptor.ARGUMENT_REQUIRED,
-                            WORKSPACE_DIR_OPT,
-                            "The path to directory containing the WORKSPACE file. Defaults to '" +
-                            DEFAULT_WORKSPACE_DIR + "'." ),
-
     new CLOptionDescriptor( "dependencies-file",
                             CLOptionDescriptor.ARGUMENT_REQUIRED,
                             DEPENDENCIES_FILE_OPT,
@@ -88,13 +77,6 @@ public class Main
                             SETTINGS_FILE_OPT,
                             "The path to the settings.xml used by Maven extract repository credentials. " +
                             "Defaults to '~/.m2/settings.xml'." ),
-
-    new CLOptionDescriptor( "extension-file",
-                            CLOptionDescriptor.ARGUMENT_REQUIRED,
-                            EXTENSION_FILE_OPT,
-                            "The path to the Bazel extension file that will be generated. Defaults to '" +
-                            DEFAULT_EXTENSION_FILE + "' in the workspace directory." ),
-
     new CLOptionDescriptor( "cache-dir",
                             CLOptionDescriptor.ARGUMENT_REQUIRED,
                             CACHE_DIR_OPT,
@@ -107,10 +89,8 @@ public class Main
   private static final int ERROR_PARSING_DEPENDENCIES_CODE = 3;
   private static final int ERROR_LOADING_SETTINGS_CODE = 4;
   private static final Logger c_logger = Logger.getGlobal();
-  private static Path c_workspaceDir;
   private static Path c_dependenciesFile;
   private static Path c_settingsFile;
-  private static Path c_extensionFile;
   private static Path c_cacheDir;
 
   public static void main( final String[] args )
@@ -133,6 +113,19 @@ public class Main
       final List<RemoteRepository> repositories = getRemoteRepositories( config );
 
       //TODO: Insert code here.
+      /*
+      Artifact artifact = new DefaultArtifact( "org.eclipse.aether:aether-util:1.0.0.v20140518" );
+
+      ArtifactRequest artifactRequest = new ArtifactRequest();
+      artifactRequest.setArtifact( artifact );
+      artifactRequest.setRepositories( repositories );
+
+      ArtifactResult artifactResult = system.resolveArtifact( session, artifactRequest );
+
+      artifact = artifactResult.getArtifact();
+
+      System.out.println( artifact + " resolved to  " + artifact.getFile() );
+      */
     }
     catch ( final TerminalStateException tse )
     {
@@ -253,34 +246,6 @@ public class Main
           return false;
         }
 
-        case WORKSPACE_DIR_OPT:
-        {
-          final String argument = option.getArgument();
-          final File dir = new File( argument );
-          if ( !dir.exists() )
-          {
-            c_logger.log( Level.SEVERE,
-                          "Error: Specified workspace directory does not exist. Specified value: " + argument );
-            return false;
-          }
-          if ( !dir.isDirectory() )
-          {
-            c_logger.log( Level.SEVERE,
-                          "Error: Specified workspace directory is not a directory. Specified value: " + argument );
-            return false;
-          }
-          final File workspaceFile = new File( dir, "WORKSPACE" );
-          if ( !workspaceFile.exists() || !workspaceFile.isFile() )
-          {
-            c_logger.log( Level.SEVERE,
-                          "Error: Specified workspace directory does not contain a WORKSPACE file. Specified value: " +
-                          argument );
-            return false;
-          }
-          c_workspaceDir = dir.toPath().toAbsolutePath().normalize();
-          break;
-        }
-
         case DEPENDENCIES_FILE_OPT:
         {
           final String argument = option.getArgument();
@@ -305,21 +270,6 @@ public class Main
             return false;
           }
           c_settingsFile = file.toPath().toAbsolutePath().normalize();
-          break;
-        }
-
-        case EXTENSION_FILE_OPT:
-        {
-          final String argument = option.getArgument();
-          final File file = new File( argument );
-          if ( file.exists() && file.isDirectory() )
-          {
-            c_logger.log( Level.SEVERE,
-                          "Error: Specified bazel extension file exists but is a directory. Specified value: " +
-                          argument );
-            return false;
-          }
-          c_extensionFile = file.toPath().toAbsolutePath().normalize();
           break;
         }
 
@@ -356,21 +306,9 @@ public class Main
       }
     }
 
-    if ( null == c_workspaceDir )
-    {
-      final Path dir = Paths.get( DEFAULT_WORKSPACE_DIR ).toAbsolutePath().normalize();
-      final File workspaceFile = dir.resolve( "WORKSPACE" ).toFile();
-      if ( !workspaceFile.exists() || !workspaceFile.isFile() )
-      {
-        c_logger.log( Level.SEVERE,
-                      "Error: Default workspace directory does not contain a WORKSPACE file. Directory: " + dir );
-        return false;
-      }
-      c_workspaceDir = dir;
-    }
     if ( null == c_dependenciesFile )
     {
-      final File file = c_workspaceDir.resolve( DEFAULT_DEPENDENCIES_FILE ).toFile();
+      final File file = Paths.get( DEFAULT_DEPENDENCIES_FILE ).toFile();
       if ( !file.exists() )
       {
         c_logger.log( Level.SEVERE, "Error: Default dependencies file does not exist: " + file );
@@ -383,20 +321,9 @@ public class Main
       c_settingsFile =
         Paths.get( System.getProperty( "user.home" ), ".m2", "settings.xml" ).toAbsolutePath().normalize();
     }
-    if ( null == c_extensionFile )
-    {
-      final File file = c_workspaceDir.resolve( DEFAULT_EXTENSION_FILE ).toFile();
-      if ( file.exists() && file.isDirectory() )
-      {
-        c_logger.log( Level.SEVERE,
-                      "Error: Default bazel extension file exists but is a directory: " + file );
-        return false;
-      }
-      c_extensionFile = file.toPath();
-    }
     if ( null == c_cacheDir )
     {
-      final File dir = c_workspaceDir.resolve( DEFAULT_CACHE_DIR ).toFile();
+      final File dir = Paths.get( DEFAULT_CACHE_DIR ).toFile();
       if ( dir.exists() && !dir.isDirectory() )
       {
         c_logger.log( Level.SEVERE, "Error: Default cache directory exists but is not a directory: " + dir );
@@ -408,10 +335,8 @@ public class Main
     if ( c_logger.isLoggable( Level.FINE ) )
     {
       c_logger.log( Level.FINE, "Bazel DepGen Starting..." );
-      c_logger.log( Level.FINE, "  Workspace directory: " + c_workspaceDir );
       c_logger.log( Level.FINE, "  Dependencies file: " + c_dependenciesFile );
       c_logger.log( Level.FINE, "  Settings file: " + c_settingsFile );
-      c_logger.log( Level.FINE, "  Bazel Extension file: " + c_extensionFile );
       c_logger.log( Level.FINE, "  Local Cache directory: " + c_cacheDir );
     }
 

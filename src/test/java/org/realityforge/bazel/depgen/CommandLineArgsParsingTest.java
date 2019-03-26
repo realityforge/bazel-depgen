@@ -1,26 +1,12 @@
 package org.realityforge.bazel.depgen;
 
 import gir.io.FileUtil;
-import java.nio.file.Path;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 public class CommandLineArgsParsingTest
   extends AbstractDepGenTest
 {
-  @Test
-  public void defaultWorkspaceMissing()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "" );
-
-      final String output = runCommand( 2 );
-      assertOutputContains( output,
-                            "Error: Default workspace directory does not contain a WORKSPACE file. Directory: " );
-    } );
-  }
-
   @Test
   public void defaultDependenciesMissing()
     throws Exception
@@ -48,20 +34,6 @@ public class CommandLineArgsParsingTest
   }
 
   @Test
-  public void defaultExtensionFileExistsAsDirectory()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      writeWorkspace();
-      writeDependencies( "" );
-      assertTrue( FileUtil.getCurrentDirectory().resolve( "3rdparty/workspace.bzl" ).toFile().mkdirs() );
-
-      final String output = runCommand( 2 );
-      assertOutputContains( output, "Error: Default bazel extension file exists but is a directory: " );
-    } );
-  }
-
-  @Test
   public void unexpectedArgument()
     throws Exception
   {
@@ -71,45 +43,6 @@ public class CommandLineArgsParsingTest
 
       final String output = runCommand( 2, "Bleep" );
       assertOutputContains( output, "Error: Unexpected argument: Bleep" );
-    } );
-  }
-
-  @Test
-  public void specifiedWorkspaceDoesNotExist()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final String output = runCommand( 2, "--workspace-dir", "subdir" );
-      assertOutputContains( output,
-                            "Error: Specified workspace directory does not exist. Specified value: subdir" );
-    } );
-  }
-
-  @Test
-  public void specifiedWorkspaceIsAFile()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      FileUtil.write( "subdir", "" );
-
-      final String output = runCommand( 2, "--workspace-dir", "subdir" );
-      assertOutputContains( output,
-                            "Error: Specified workspace directory is not a directory. Specified value: subdir" );
-    } );
-  }
-
-  @Test
-  public void specifiedWorkspaceMissingWORKSPACE()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path subdir = FileUtil.getCurrentDirectory().resolve( "subdir" );
-      assertTrue( subdir.toFile().mkdir() );
-      FileUtil.write( "subdir/dependencies.yml", "" );
-
-      final String output = runCommand( 2, "--workspace-dir", "subdir" );
-      assertOutputContains( output,
-                            "Error: Specified workspace directory does not contain a WORKSPACE file. Specified value: subdir" );
     } );
   }
 
@@ -141,21 +74,6 @@ public class CommandLineArgsParsingTest
   }
 
   @Test
-  public void specifiedExtensionFileExistsAsDirectory()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      writeWorkspace();
-      writeDependencies( "" );
-      assertTrue( FileUtil.getCurrentDirectory().resolve( "3rdparty/other_workspace.bzl" ).toFile().mkdirs() );
-
-      final String output = runCommand( 2, "--extension-file", "3rdparty/other_workspace.bzl" );
-      assertOutputContains( output,
-                            "Error: Specified bazel extension file exists but is a directory. Specified value: 3rdparty/other_workspace.bzl" );
-    } );
-  }
-
-  @Test
   public void help()
     throws Exception
   {
@@ -169,7 +87,6 @@ public class CommandLineArgsParsingTest
       assertOutputContains( output, "-v, --verbose\n" );
       assertOutputContains( output, "-d, --dependencies-file <argument>\n" );
       assertOutputContains( output, "-s, --settings-file <argument>\n" );
-      assertOutputContains( output, "-e, --extension-file <argument>\n" );
       assertOutputContains( output, "-r, --cache-dir <argument>\n" );
     } );
   }
@@ -184,10 +101,8 @@ public class CommandLineArgsParsingTest
 
       final String output = runCommand( "--verbose" );
       assertOutputContains( output, "Bazel DepGen Starting...\n" );
-      assertOutputContains( output, "\n  Workspace directory: " );
       assertOutputContains( output, "\n  Dependencies file: " );
       assertOutputContains( output, "\n  Settings file: " );
-      assertOutputContains( output, "\n  Bazel Extension file: " );
       assertOutputContains( output, "\n  Local Cache directory: " );
     } );
   }
