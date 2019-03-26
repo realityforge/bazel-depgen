@@ -20,8 +20,5 @@ complete as there is too much un-said.
 * Consider functionality like [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps) to determine
   if specific deps are needed.
 
-* Add config section to dependencies that determines the output format of tool. This includes things like
-  name of function to add symbols, prefixes for names, whether to support `omit_*` config. This will
-  unfortunately result in the following config moving into the config file
-  -  WORKSPACE_DIR_OPT
-  - EXTENSION_FILE_OPT
+* Enhance options in `dependencies.yml` so that it determines the output format of the tool. This includes things like
+  name of function to add symbols, prefixes for names, whether to support `omit_*` config.
