@@ -205,7 +205,7 @@ public class Main
     }
   }
 
-  @Nullable
+  @Nonnull
   private static DepGenConfig loadDependenciesYaml()
   {
     try
