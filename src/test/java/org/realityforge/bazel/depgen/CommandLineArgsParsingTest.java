@@ -274,15 +274,16 @@ public class CommandLineArgsParsingTest
       writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
 
       assertTrue( FileUtil.getCurrentDirectory().resolve( ".m2" ).toFile().mkdir() );
-      FileUtil.write( ".m2/settings.xml", "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
-                                          "  <servers>\n" +
-                                          "    <server>\n" +
-                                          "      <id>my-repo</id>\n" +
-                                          "      <username>root</username>\n" +
-                                          "      <password>secret</password>\n" +
-                                          "    </server>\n" +
-                                          "  </servers>\n" +
-                                          "</settings>\n" );
+      FileUtil.write( ".m2/settings.xml",
+                      "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+                      "  <servers>\n" +
+                      "    <server>\n" +
+                      "      <id>my-repo</id>\n" +
+                      "      <username>root</username>\n" +
+                      "      <password>secret</password>\n" +
+                      "    </server>\n" +
+                      "  </servers>\n" +
+                      "</settings>\n" );
 
       final String output = runCommand();
       assertOutputContains( output, "" );
@@ -298,15 +299,16 @@ public class CommandLineArgsParsingTest
       // Need to declare repositories otherwise we never even try to load settings
       writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
 
-      FileUtil.write( "some_settings.xml", "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
-                                           "  <servers>\n" +
-                                           "    <server>\n" +
-                                           "      <id>my-repo</id>\n" +
-                                           "      <username>root</username>\n" +
-                                           "      <password>secret</password>\n" +
-                                           "    </server>\n" +
-                                           "  </servers>\n" +
-                                           "</settings>\n" );
+      FileUtil.write( "some_settings.xml",
+                      "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+                      "  <servers>\n" +
+                      "    <server>\n" +
+                      "      <id>my-repo</id>\n" +
+                      "      <username>root</username>\n" +
+                      "      <password>secret</password>\n" +
+                      "    </server>\n" +
+                      "  </servers>\n" +
+                      "</settings>\n" );
 
       final String output = runCommand( "--settings-file", "some_settings.xml" );
       assertOutputContains( output, "" );
