@@ -4,12 +4,12 @@ import gir.io.FileUtil;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import org.realityforge.bazel.depgen.AbstractDepGenTest;
+import org.realityforge.bazel.depgen.AbstractTest;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 public class ApplicationConfigTest
-  extends AbstractDepGenTest
+  extends AbstractTest
 {
   @Test
   public void parseEmpty()

@@ -12,7 +12,7 @@ import java.util.Collections;
 import javax.annotation.Nonnull;
 import static org.testng.Assert.*;
 
-public abstract class AbstractDepGenTest
+public abstract class AbstractTest
 {
   @Nonnull
   final String runCommand( @Nonnull final String... additionalArgs )
