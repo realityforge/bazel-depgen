@@ -23,7 +23,7 @@ import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
-import org.realityforge.bazel.depgen.config.ApplicationConfig;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
 
 final class ResolverUtil
 {
@@ -82,11 +82,11 @@ final class ResolverUtil
   }
 
   @Nonnull
-  static List<RemoteRepository> getRemoteRepositories( @Nonnull final ApplicationConfig config,
+  static List<RemoteRepository> getRemoteRepositories( @Nonnull final ApplicationModel model,
                                                        @Nonnull final Settings settings )
   {
     final List<RemoteRepository> repositories = new ArrayList<>();
-    final Map<String, String> servers = config.getRepositories();
+    final Map<String, String> servers = model.getRepositories();
 
     for ( final Map.Entry<String, String> server : servers.entrySet() )
     {
