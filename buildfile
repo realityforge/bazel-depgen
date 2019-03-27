@@ -62,7 +62,7 @@ define 'bazel-depgen' do
 
   test.using :integration
   test.using :testng
-  test.with :gir
+  test.with :gir, :guiceyloops
 
   test.options[:properties] = { 'depgen.jar' => all_package.to_s }
 
