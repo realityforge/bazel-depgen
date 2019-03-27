@@ -26,6 +26,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.toCoord(), "com.example:myapp" );
   }
 
   @Test
@@ -43,6 +44,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.toCoord(), "com.example:myapp:jar:1.0" );
   }
 
   @Test
@@ -60,6 +62,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jszip" );
     assertNull( model.getClassifier() );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.toCoord(), "com.example:myapp:jszip:1.0" );
   }
 
   @Test
@@ -77,6 +80,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jszip" );
     assertEquals( model.getClassifier(), "sources" );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.toCoord(), "com.example:myapp:jszip:sources:1.0" );
   }
 
   @Test
@@ -129,6 +133,7 @@ public class ArtifactModelTest
     final ExcludeModel exclude2 = excludes.get( 1 );
     assertEquals( exclude2.getGroup(), "com.biz.ui" );
     assertEquals( exclude2.getId(), "core-ui" );
+    assertEquals( model.toCoord(), "com.example:myapp" );
   }
 
   @Test
@@ -147,6 +152,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.toCoord(), "com.example:myapp" );
   }
 
   @Test
@@ -160,12 +166,15 @@ public class ArtifactModelTest
     assertEquals( models.size(), 3 );
     assertEquals( models.get( 0 ).getGroup(), "com.example" );
     assertEquals( models.get( 0 ).getId(), "core" );
+    assertEquals( models.get( 0 ).toCoord(), "com.example:core" );
 
     assertEquals( models.get( 1 ).getGroup(), "com.example" );
     assertEquals( models.get( 1 ).getId(), "util" );
+    assertEquals( models.get( 1 ).toCoord(), "com.example:util" );
 
     assertEquals( models.get( 2 ).getGroup(), "com.example" );
     assertEquals( models.get( 2 ).getId(), "ui" );
+    assertEquals( models.get( 2 ).toCoord(), "com.example:ui" );
   }
 
   @Test
@@ -185,6 +194,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.toCoord(), "com.example:myapp:jar:1.0" );
   }
 
   @Test
@@ -205,6 +215,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertEquals( model.getClassifier(), "sources" );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.toCoord(), "com.example:myapp:jar:sources:1.0" );
   }
 
   @Test
@@ -235,6 +246,7 @@ public class ArtifactModelTest
     final ExcludeModel exclude2 = excludes.get( 1 );
     assertEquals( exclude2.getGroup(), "com.biz.ui" );
     assertEquals( exclude2.getId(), "core-ui" );
+    assertEquals( model.toCoord(), "com.example:myapp:jszip:sources:1.0" );
   }
 
   @Test

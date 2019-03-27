@@ -187,4 +187,29 @@ public final class ArtifactModel
   {
     return _excludes;
   }
+
+  @Nonnull
+  public String toCoord()
+  {
+    final StringBuilder sb = new StringBuilder();
+    sb.append( getGroup() );
+    sb.append( ':' );
+    sb.append( getId() );
+    final String version = getVersion();
+    if ( null != version )
+    {
+      sb.append( ':' );
+      sb.append( getType() );
+      final String classifier = getClassifier();
+      if ( null != classifier )
+      {
+        sb.append( ':' );
+        sb.append( classifier );
+      }
+      sb.append( ':' );
+      sb.append( version );
+    }
+
+    return sb.toString();
+  }
 }
