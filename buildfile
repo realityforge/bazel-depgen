@@ -55,6 +55,7 @@ define 'bazel-depgen' do
   package(:sources)
   package(:javadoc)
   all_package = package(:jar, :classifier => 'all').tap do |jar|
+    jar.with :manifest => {'Main-Class'=>'org.realityforge.bazel.depgen.Main'}
     compile.dependencies.each do |d|
       jar.merge(d)
     end
