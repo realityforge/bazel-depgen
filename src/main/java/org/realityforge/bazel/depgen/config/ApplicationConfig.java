@@ -14,6 +14,9 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @SuppressWarnings( "unused" )
 public class ApplicationConfig
 {
+  public static final String MAVEN_CENTRAL_ID = "central";
+  public static final String MAVEN_CENTRAL_URL = "https://repo.maven.apache.org/maven2/";
+
   @Nonnull
   private OptionsConfig options = new OptionsConfig();
   @Nonnull
@@ -32,7 +35,7 @@ public class ApplicationConfig
 
   public ApplicationConfig()
   {
-    repositories.put( "central", "https://repo.maven.apache.org/maven2/" );
+    repositories.put( MAVEN_CENTRAL_ID, MAVEN_CENTRAL_URL );
   }
 
   @Nonnull
