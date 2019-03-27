@@ -21,6 +21,7 @@ public class ArtifactModelTest
     assertEquals( model.getSource(), source );
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
+    assertFalse( model.isVersioned() );
     assertNull( model.getVersion() );
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
@@ -37,6 +38,7 @@ public class ArtifactModelTest
     assertEquals( model.getSource(), source );
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
+    assertTrue( model.isVersioned() );
     assertEquals( model.getVersion(), "1.0" );
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
@@ -53,6 +55,7 @@ public class ArtifactModelTest
     assertEquals( model.getSource(), source );
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
+    assertTrue( model.isVersioned() );
     assertEquals( model.getVersion(), "1.0" );
     assertEquals( model.getType(), "jszip" );
     assertNull( model.getClassifier() );
@@ -69,6 +72,7 @@ public class ArtifactModelTest
     assertEquals( model.getSource(), source );
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
+    assertTrue( model.isVersioned() );
     assertEquals( model.getVersion(), "1.0" );
     assertEquals( model.getType(), "jszip" );
     assertEquals( model.getClassifier(), "sources" );
@@ -112,6 +116,7 @@ public class ArtifactModelTest
     assertEquals( model.getSource(), source );
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
+    assertFalse( model.isVersioned() );
     assertNull( model.getVersion() );
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
@@ -137,6 +142,7 @@ public class ArtifactModelTest
     assertEquals( model.getSource(), source );
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
+    assertFalse( model.isVersioned() );
     assertNull( model.getVersion() );
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
@@ -174,6 +180,7 @@ public class ArtifactModelTest
     assertEquals( model.getSource(), source );
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
+    assertTrue( model.isVersioned() );
     assertEquals( model.getVersion(), "1.0" );
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
@@ -193,6 +200,7 @@ public class ArtifactModelTest
     assertEquals( model.getSource(), source );
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
+    assertTrue( model.isVersioned() );
     assertEquals( model.getVersion(), "1.0" );
     assertEquals( model.getType(), "jar" );
     assertEquals( model.getClassifier(), "sources" );
@@ -214,6 +222,7 @@ public class ArtifactModelTest
     assertEquals( model.getSource(), source );
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
+    assertTrue( model.isVersioned() );
     assertEquals( model.getVersion(), "1.0" );
     assertEquals( model.getType(), "jszip" );
     assertEquals( model.getClassifier(), "sources" );

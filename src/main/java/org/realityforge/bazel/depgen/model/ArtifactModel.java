@@ -177,6 +177,11 @@ public final class ArtifactModel
     return _version;
   }
 
+  public boolean isVersioned()
+  {
+    return null != _version;
+  }
+
   @Nonnull
   public List<ExcludeModel> getExcludes()
   {
