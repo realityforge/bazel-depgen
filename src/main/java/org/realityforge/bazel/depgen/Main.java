@@ -13,7 +13,6 @@ import org.apache.maven.settings.building.SettingsBuildingException;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
@@ -75,7 +74,6 @@ public class Main
   private static Path c_cacheDir;
 
   public static void main( final String[] args )
-    throws ArtifactResolutionException
   {
     setupLogger();
     if ( !processOptions( args ) )
