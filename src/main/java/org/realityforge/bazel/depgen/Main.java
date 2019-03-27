@@ -14,10 +14,16 @@ import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
+import org.realityforge.bazel.depgen.model.InvalidModelException;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 import org.realityforge.getopt4j.CLUtil;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
 
 /**
  * The entry point in which to run the tool.
@@ -68,6 +74,7 @@ public class Main
   private static final int ERROR_PARSING_ARGS_EXIT_CODE = 2;
   private static final int ERROR_PARSING_DEPENDENCIES_CODE = 3;
   private static final int ERROR_LOADING_SETTINGS_CODE = 4;
+  private static final int ERROR_CONSTRUCTING_MODEL_CODE = 5;
   private static final Logger c_logger = Logger.getGlobal();
   private static Path c_dependenciesFile;
   private static Path c_settingsFile;
@@ -85,6 +92,7 @@ public class Main
     try
     {
       final ApplicationConfig config = loadDependenciesYaml();
+      final ApplicationModel model = ApplicationModel.parse( config );
 
       final RepositorySystem system = ResolverUtil.newRepositorySystem( c_logger );
       final RepositorySystemSession session = ResolverUtil.newRepositorySystemSession( system, c_cacheDir, c_logger );
@@ -105,6 +113,22 @@ public class Main
 
       System.out.println( artifact + " resolved to  " + artifact.getFile() );
       */
+    }
+    catch ( final InvalidModelException ime )
+    {
+      final String message = ime.getMessage();
+      if ( null != message )
+      {
+        c_logger.log( Level.WARNING, message, ime.getCause() );
+      }
+      final Representer representer = new OmitNullRepresenter();
+
+      c_logger.log( Level.WARNING,
+                    "--- Invalid Config ---\n" +
+                    new Yaml( representer ).dumpAs( ime.getModel(), Tag.MAP, DumperOptions.FlowStyle.BLOCK ) +
+                    "--- End Config ---" );
+
+      System.exit( ERROR_CONSTRUCTING_MODEL_CODE );
     }
     catch ( final TerminalStateException tse )
     {
