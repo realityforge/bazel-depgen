@@ -4,8 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Add tests to `ResolverUtil`
-
 * Incorporate features from [bazel_maven_repository](https://github.com/square/bazel_maven_repository) such as:
   - Store jars in the "content addressable" cache, which is machine-wide, and survives even `bazel clean --expunge`
   - `maven_jvm_artifact` which defines `deps` attribute (i.e. Any dependencies needed at compile-time for consumers
