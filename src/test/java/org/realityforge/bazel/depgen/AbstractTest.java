@@ -4,11 +4,15 @@ import gir.Gir;
 import gir.Task;
 import gir.io.Exec;
 import gir.io.FileUtil;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 import javax.annotation.Nonnull;
 import static org.testng.Assert.*;
 
@@ -60,5 +64,40 @@ public abstract class AbstractTest
   {
     assertTrue( output.contains( text ),
                 "Expected output\n---\n" + output + "\n---\nto contain text\n---\n" + text + "\n---\n" );
+  }
+
+  @Nonnull
+  final Path createTempPomFile( @Nonnull final String group,
+                                @Nonnull final String id,
+                                @Nonnull final String version,
+                                @Nonnull final String type )
+    throws IOException
+  {
+    final String pomContents =
+      "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
+      "  <modelVersion>4.0.0</modelVersion>\n" +
+      "  <groupId>" + group + "</groupId>\n" +
+      "  <artifactId>" + id + "</artifactId>\n" +
+      "  <version>" + version + "</version>\n" +
+      "  <packaging>" + type + "</packaging>\n" +
+      "</project>\n";
+
+    final Path pomFile = Files.createTempFile( "data", ".pom" );
+    Files.write( pomFile, pomContents.getBytes() );
+    return pomFile;
+  }
+
+  @Nonnull
+  final Path createTempJarFile()
+    throws IOException
+  {
+    final Path jarFile = Files.createTempFile( "data", ".jar" );
+    final JarOutputStream outputStream = new JarOutputStream( new FileOutputStream( jarFile.toFile() ) );
+    final JarEntry entry = new JarEntry( "data.txt" );
+    outputStream.putNextEntry( entry );
+    outputStream.write( "Hi".getBytes() );
+    outputStream.closeEntry();
+    outputStream.close();
+    return jarFile;
   }
 }
