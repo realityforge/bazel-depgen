@@ -4,12 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Add validate phase against `ArtifactConfig` that will:
-  - verify coord to ensure that is in correct format
-  - verify coords is not present with other spec components and set other spec components when parsing coord.
-  - verify excludes to ensure that they contain at most 1-2 spec components (i.e. group + optional id) and
-    create inner model object to represent exclude
-
 * Add tests to `ResolverUtil`
 
 * Incorporate features from [bazel_maven_repository](https://github.com/square/bazel_maven_repository) such as:
