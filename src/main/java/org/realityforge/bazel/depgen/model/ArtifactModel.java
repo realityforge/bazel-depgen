@@ -61,6 +61,16 @@ public final class ArtifactModel
         throw new InvalidModelException( "The dependency must specify either the 'id' property or the " +
                                          "'ids' property.", source );
       }
+      else if ( null == version && null != type )
+      {
+        throw new InvalidModelException( "The dependency must specify either the 'version' property if the " +
+                                         "'type' property is specified.", source );
+      }
+      else if ( null == version && null != classifier )
+      {
+        throw new InvalidModelException( "The dependency must specify either the 'version' property if the " +
+                                         "'classifier' property is specified.", source );
+      }
     }
     else
     {

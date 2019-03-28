@@ -262,6 +262,34 @@ public class ArtifactModelTest
   }
 
   @Test
+  public void parseArtifactMissingVersionWhenTypeSpecified()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setGroup( "com.example" );
+    source.setId( "myapp" );
+    source.setType( "jszip" );
+
+    final InvalidModelException exception = expectThrows( InvalidModelException.class, () -> parseModel( source ) );
+    assertEquals( exception.getMessage(),
+                  "The dependency must specify either the 'version' property if the 'type' property is specified." );
+    assertEquals( exception.getModel(), source );
+  }
+
+  @Test
+  public void parseArtifactMissingVersionWhenClassifierSpecified()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setGroup( "com.example" );
+    source.setId( "myapp" );
+    source.setClassifier( "sources" );
+
+    final InvalidModelException exception = expectThrows( InvalidModelException.class, () -> parseModel( source ) );
+    assertEquals( exception.getMessage(),
+                  "The dependency must specify either the 'version' property if the 'classifier' property is specified." );
+    assertEquals( exception.getModel(), source );
+  }
+
+  @Test
   public void parseArtifactWithIdAndIds()
   {
     final ArtifactConfig source = new ArtifactConfig();
