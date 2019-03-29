@@ -195,6 +195,53 @@ public class ApplicationConfigTest
     } );
   }
 
+  @Test
+  public void parseReplacementsDefinedUsingGroupAndId()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies(
+        "replacements:\n" +
+        "  - group: com.example\n" +
+        "    id: myapp\n" +
+        "    target: \"@com_example//:myapp\"\n" );
+      final ApplicationConfig config = parseDependencies();
+      assertNotNull( config );
+
+      final List<ReplacementConfig> replacements = config.getReplacements();
+
+      assertEquals( replacements.size(), 1 );
+      final ReplacementConfig replacement = replacements.get( 0 );
+      assertEquals( replacement.getTarget(), "@com_example//:myapp" );
+      assertEquals( replacement.getGroup(), "com.example" );
+      assertEquals( replacement.getId(), "myapp" );
+      assertNull( replacement.getCoord() );
+    } );
+  }
+
+  @Test
+  public void parseReplacementsDefinedUsingCoord()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies(
+        "replacements:\n" +
+        "  - coord: com.example:myapp\n" +
+        "    target: \"@com_example//:myapp\"\n" );
+      final ApplicationConfig config = parseDependencies();
+      assertNotNull( config );
+
+      final List<ReplacementConfig> replacements = config.getReplacements();
+
+      assertEquals( replacements.size(), 1 );
+      final ReplacementConfig replacement = replacements.get( 0 );
+      assertEquals( replacement.getTarget(), "@com_example//:myapp" );
+      assertEquals( replacement.getCoord(), "com.example:myapp" );
+      assertNull( replacement.getGroup() );
+      assertNull( replacement.getId() );
+    } );
+  }
+
   @Nonnull
   private ApplicationConfig parseDependencies()
     throws Exception

@@ -16,13 +16,14 @@ public class ApplicationConfig
 {
   public static final String MAVEN_CENTRAL_ID = "central";
   public static final String MAVEN_CENTRAL_URL = "https://repo.maven.apache.org/maven2/";
-
   @Nonnull
   private OptionsConfig options = new OptionsConfig();
   @Nonnull
   private Map<String, String> repositories = new HashMap<>();
   @Nonnull
   private List<ArtifactConfig> artifacts = new ArrayList<>();
+  @Nonnull
+  private List<ReplacementConfig> replacements = new ArrayList<>();
 
   @Nonnull
   public static ApplicationConfig parse( @Nonnull final Path path )
@@ -69,5 +70,16 @@ public class ApplicationConfig
   public void setArtifacts( @Nonnull final List<ArtifactConfig> artifacts )
   {
     this.artifacts = Objects.requireNonNull( artifacts );
+  }
+
+  @Nonnull
+  public List<ReplacementConfig> getReplacements()
+  {
+    return replacements;
+  }
+
+  public void setReplacements( @Nonnull final List<ReplacementConfig> replacements )
+  {
+    this.replacements = replacements;
   }
 }
