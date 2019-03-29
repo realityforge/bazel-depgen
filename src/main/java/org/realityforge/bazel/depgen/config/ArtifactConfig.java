@@ -106,6 +106,6 @@ public class ArtifactConfig
            ", classifier='" + classifier + '\'' +
            ", version='" + version + '\'' +
            ", excludes=" + excludes +
-           ']';
+           "']";
   }
 }
