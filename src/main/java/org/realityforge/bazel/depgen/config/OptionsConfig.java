@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen.config;
 
 import javax.annotation.Nonnull;
 
-@SuppressWarnings( "unused" )
 public class OptionsConfig
 {
   public static final String DEFAULT_WORKSPACE_DIR = ".";
