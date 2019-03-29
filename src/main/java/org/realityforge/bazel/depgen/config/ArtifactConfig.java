@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen.config;
 
 import java.util.List;
 
-@SuppressWarnings( "unused" )
 public class ArtifactConfig
 {
   private String coord;
