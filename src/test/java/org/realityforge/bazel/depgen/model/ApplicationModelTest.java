@@ -14,7 +14,7 @@ public class ApplicationModelTest
   extends AbstractTest
 {
   @Test
-  public void parseWithDefaults()
+  public void parse()
   {
     final ApplicationConfig source = new ApplicationConfig();
     final ArtifactConfig artifactConfig = new ArtifactConfig();
