@@ -91,8 +91,7 @@ public class Main
 
     try
     {
-      final ApplicationConfig config = loadDependenciesYaml();
-      final ApplicationModel model = ApplicationModel.parse( config );
+      final ApplicationModel model = ApplicationModel.parse( loadDependenciesYaml() );
 
       final RepositorySystem system = ResolverUtil.newRepositorySystem( c_logger );
       final RepositorySystemSession session = ResolverUtil.newRepositorySystemSession( system, c_cacheDir, c_logger );
