@@ -166,6 +166,7 @@ public class ApplicationConfigTest
       writeDependencies(
         "options:\n" +
         "  workspaceDirectory: workspaceDir\n" +
+        "  failOnInvalidPom: false\n" +
         "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
@@ -175,6 +176,7 @@ public class ApplicationConfigTest
 
       assertEquals( options.getWorkspaceDirectory(), "workspaceDir" );
       assertEquals( options.getExtensionFile(), "workspaceDir/vendor/workspace.bzl" );
+      assertFalse( options.isFailOnInvalidPom() );
     } );
   }
 
@@ -192,6 +194,7 @@ public class ApplicationConfigTest
 
       assertEquals( options.getWorkspaceDirectory(), OptionsConfig.DEFAULT_WORKSPACE_DIR );
       assertEquals( options.getExtensionFile(), OptionsConfig.DEFAULT_EXTENSION_FILE );
+      assertTrue( options.isFailOnInvalidPom() );
     } );
   }
 

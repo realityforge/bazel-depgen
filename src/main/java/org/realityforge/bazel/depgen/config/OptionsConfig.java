@@ -10,6 +10,7 @@ public class OptionsConfig
   private String workspaceDirectory = DEFAULT_WORKSPACE_DIR;
   @Nonnull
   private String extensionFile = DEFAULT_EXTENSION_FILE;
+  private boolean failOnInvalidPom = true;
 
   @Nonnull
   public String getWorkspaceDirectory()
@@ -31,5 +32,15 @@ public class OptionsConfig
   public void setExtensionFile( @Nonnull final String extensionFile )
   {
     this.extensionFile = extensionFile;
+  }
+
+  public boolean isFailOnInvalidPom()
+  {
+    return failOnInvalidPom;
+  }
+
+  public void setFailOnInvalidPom( final boolean failOnInvalidPom )
+  {
+    this.failOnInvalidPom = failOnInvalidPom;
   }
 }

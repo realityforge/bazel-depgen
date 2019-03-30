@@ -37,4 +37,9 @@ public final class OptionsModel
   {
     return _source.getExtensionFile();
   }
+
+  public boolean failOnInvalidPom()
+  {
+    return _source.isFailOnInvalidPom();
+  }
 }
