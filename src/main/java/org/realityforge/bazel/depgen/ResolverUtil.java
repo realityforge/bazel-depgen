@@ -14,6 +14,7 @@ import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
+import org.eclipse.aether.graph.Exclusion;
 import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.LocalRepository;
@@ -24,6 +25,8 @@ import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
+import org.realityforge.bazel.depgen.model.ArtifactModel;
+import org.realityforge.bazel.depgen.model.ExcludeModel;
 
 final class ResolverUtil
 {
@@ -105,5 +108,16 @@ final class ResolverUtil
       repositories.add( builder.build() );
     }
     return repositories;
+  }
+
+  @Nonnull
+  static ArrayList<Exclusion> deriveExclusions( @Nonnull final ArtifactModel artifactModel )
+  {
+    final ArrayList<Exclusion> exclusions = new ArrayList<>();
+    for ( final ExcludeModel exclude : artifactModel.getExcludes() )
+    {
+      exclusions.add( new Exclusion( exclude.getGroup(), exclude.getId(), null, null ) );
+    }
+    return exclusions;
   }
 }
