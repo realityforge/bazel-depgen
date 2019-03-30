@@ -30,5 +30,6 @@ public class ApplicationModelTest
     assertEquals( artifactModel.getGroup(), "com.example" );
     assertEquals( artifactModel.getId(), "myapp" );
     assertEquals( artifactModel.getVersion(), "1.0" );
+    assertTrue( model.getReplacements().isEmpty() );
   }
 }
