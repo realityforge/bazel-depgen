@@ -96,7 +96,8 @@ public class Main
       final RepositorySystem system = ResolverUtil.newRepositorySystem( c_logger );
       final RepositorySystemSession session = ResolverUtil.newRepositorySystemSession( system, c_cacheDir, c_logger );
 
-      final List<RemoteRepository> repositories = ResolverUtil.getRemoteRepositories( model, loadSettings() );
+      final List<RemoteRepository> repositories =
+        ResolverUtil.getRemoteRepositories( model.getRepositories(), loadSettings() );
 
       //TODO: Insert code here.
       /*

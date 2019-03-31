@@ -85,11 +85,10 @@ final class ResolverUtil
   }
 
   @Nonnull
-  static List<RemoteRepository> getRemoteRepositories( @Nonnull final ApplicationModel model,
+  static List<RemoteRepository> getRemoteRepositories( @Nonnull final Map<String, String> servers,
                                                        @Nonnull final Settings settings )
   {
     final List<RemoteRepository> repositories = new ArrayList<>();
-    final Map<String, String> servers = model.getRepositories();
 
     for ( final Map.Entry<String, String> server : servers.entrySet() )
     {

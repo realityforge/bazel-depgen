@@ -18,9 +18,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
-import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
-import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ExcludeModel;
 import org.testng.annotations.Test;
@@ -53,10 +51,7 @@ public class ResolverUtilTest
         SettingsUtil.loadSettings( FileUtil.getCurrentDirectory().resolve( "settings.xml" ),
                                    Logger.getAnonymousLogger() );
 
-      final ApplicationConfig source = new ApplicationConfig();
-      source.setRepositories( repositories );
-      final ApplicationModel model = ApplicationModel.parse( source );
-      final List<RemoteRepository> remoteRepositories = ResolverUtil.getRemoteRepositories( model, settings );
+      final List<RemoteRepository> remoteRepositories = ResolverUtil.getRemoteRepositories( repositories, settings );
 
       assertEquals( remoteRepositories.size(), 2 );
       final RemoteRepository central = remoteRepositories.get( 0 );
