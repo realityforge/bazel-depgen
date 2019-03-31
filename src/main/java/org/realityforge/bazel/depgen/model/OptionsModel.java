@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen.model;
 
+import java.nio.file.Path;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
@@ -8,16 +9,34 @@ public final class OptionsModel
 {
   @Nonnull
   private final OptionsConfig _source;
-
   @Nonnull
-  static OptionsModel parse( @Nonnull final OptionsConfig source )
+  private final Path _workspaceDirectory;
+  @Nonnull
+  private final Path _extensionFile;
+
+  /**
+   * Create the OptionsModel from config.
+   * All paths are relative to baseDirectory.
+   *
+   * @param baseDirectory the directory that paths are relative to.
+   * @param source        the original configuration source.
+   */
+  @Nonnull
+  static OptionsModel parse( @Nonnull final Path baseDirectory, @Nonnull final OptionsConfig source )
   {
-    return new OptionsModel( source );
+    final Path workspaceDirectory =
+      baseDirectory.resolve( source.getWorkspaceDirectory() ).toAbsolutePath().normalize();
+    final Path extensionFile = baseDirectory.resolve( source.getExtensionFile() ).toAbsolutePath().normalize();
+    return new OptionsModel( source, workspaceDirectory, extensionFile );
   }
 
-  private OptionsModel( @Nonnull final OptionsConfig source )
+  private OptionsModel( @Nonnull final OptionsConfig source,
+                        @Nonnull final Path workspaceDirectory,
+                        @Nonnull final Path extensionFile )
   {
     _source = Objects.requireNonNull( source );
+    _workspaceDirectory = Objects.requireNonNull( workspaceDirectory );
+    _extensionFile = Objects.requireNonNull( extensionFile );
   }
 
   @Nonnull
@@ -27,15 +46,15 @@ public final class OptionsModel
   }
 
   @Nonnull
-  public String getWorkspaceDirectory()
+  public Path getWorkspaceDirectory()
   {
-    return _source.getWorkspaceDirectory();
+    return _workspaceDirectory;
   }
 
   @Nonnull
-  public String getExtensionFile()
+  public Path getExtensionFile()
   {
-    return _source.getExtensionFile();
+    return _extensionFile;
   }
 
   public boolean failOnInvalidPom()

@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen.model;
 
+import gir.io.FileUtil;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.testng.annotations.Test;
@@ -13,10 +14,11 @@ public class OptionsModelTest
   {
     final OptionsConfig source = new OptionsConfig();
 
-    final OptionsModel model = OptionsModel.parse( source );
+    final OptionsModel model = OptionsModel.parse( FileUtil.getCurrentDirectory(), source );
     assertEquals( model.getSource(), source );
-    assertEquals( model.getWorkspaceDirectory(), OptionsConfig.DEFAULT_WORKSPACE_DIR );
-    assertEquals( model.getExtensionFile(), OptionsConfig.DEFAULT_EXTENSION_FILE );
+    assertEquals( model.getWorkspaceDirectory(), FileUtil.getCurrentDirectory() );
+    assertEquals( model.getExtensionFile(),
+                  FileUtil.getCurrentDirectory().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );
     assertTrue( model.failOnMissingPom() );
     assertTrue( model.failOnInvalidPom() );
   }
@@ -30,10 +32,12 @@ public class OptionsModelTest
     source.setFailOnMissingPom( false );
     source.setFailOnInvalidPom( false );
 
-    final OptionsModel model = OptionsModel.parse( source );
+    final OptionsModel model = OptionsModel.parse( FileUtil.getCurrentDirectory(), source );
     assertEquals( model.getSource(), source );
-    assertEquals( model.getWorkspaceDirectory(), ".." );
-    assertEquals( model.getExtensionFile(), "workspace.bzl" );
+    assertEquals( model.getWorkspaceDirectory(),
+                  FileUtil.getCurrentDirectory().resolve( ".." ).normalize() );
+    assertEquals( model.getExtensionFile(),
+                  FileUtil.getCurrentDirectory().resolve( "workspace.bzl" ) );
     assertFalse( model.failOnMissingPom() );
     assertFalse( model.failOnInvalidPom() );
   }

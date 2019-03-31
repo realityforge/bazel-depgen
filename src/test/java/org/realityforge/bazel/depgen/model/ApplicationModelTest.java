@@ -30,8 +30,9 @@ public class ApplicationModelTest
       assertEquals( model.getConfigLocation(), configFile );
       assertEquals( model.getRepositories().get( ApplicationConfig.MAVEN_CENTRAL_ID ),
                     ApplicationConfig.MAVEN_CENTRAL_URL );
-      assertEquals( model.getOptions().getWorkspaceDirectory(), OptionsConfig.DEFAULT_WORKSPACE_DIR );
-      assertEquals( model.getOptions().getExtensionFile(), OptionsConfig.DEFAULT_EXTENSION_FILE );
+      assertEquals( model.getOptions().getWorkspaceDirectory(), FileUtil.getCurrentDirectory() );
+      assertEquals( model.getOptions().getExtensionFile(),
+                    FileUtil.getCurrentDirectory().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );
       assertEquals( model.getArtifacts().size(), 1 );
       final ArtifactModel artifactModel = model.getArtifacts().get( 0 );
       assertEquals( artifactModel.getGroup(), "com.example" );
