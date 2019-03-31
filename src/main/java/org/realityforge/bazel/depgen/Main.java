@@ -10,12 +10,13 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingException;
-import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.collection.CollectResult;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyCycle;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.InvalidModelException;
+import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
@@ -75,6 +76,7 @@ public class Main
   private static final int ERROR_PARSING_DEPENDENCIES_CODE = 3;
   private static final int ERROR_LOADING_SETTINGS_CODE = 4;
   private static final int ERROR_CONSTRUCTING_MODEL_CODE = 5;
+  private static final int ERROR_INVALID_POM_CODE = 6;
   private static final Logger c_logger = Logger.getGlobal();
   private static Path c_dependenciesFile;
   private static Path c_settingsFile;
@@ -101,23 +103,33 @@ public class Main
                                      options.failOnMissingPom(),
                                      options.failOnInvalidPom() );
 
-      final List<RemoteRepository> repositories =
-        ResolverUtil.getRemoteRepositories( model.getRepositories(), loadSettings() );
+      final List<Dependency> dependencies = resolver.deriveRootDependencies( model, ( artifactModel, exceptions ) -> {
+        // If we get here then the listener has already emitted a warning message so just need to exit
+        // We can only get here if either failOnMissingPom or failOnInvalidPom is true and an error occurred
+        System.exit( ERROR_INVALID_POM_CODE );
+      } );
 
-      //TODO: Insert code here.
-      /*
-      Artifact artifact = new DefaultArtifact( "org.eclipse.aether:aether-util:1.0.0.v20140518" );
+      final CollectResult collectResult = resolver.collectDependencies( dependencies );
 
-      ArtifactRequest artifactRequest = new ArtifactRequest();
-      artifactRequest.setArtifact( artifact );
-      artifactRequest.setRepositories( repositories );
+      final List<DependencyCycle> cycles = collectResult.getCycles();
+      if ( !cycles.isEmpty() )
+      {
+        c_logger.warning( cycles.size() + " dependency cycle detected collecting dependencies:" );
+        for ( final DependencyCycle cycle : cycles )
+        {
+          c_logger.warning( cycle.toString() );
+        }
 
-      ArtifactResult artifactResult = system.resolveArtifact( session, artifactRequest );
-
-      artifact = artifactResult.getArtifact();
-
-      System.out.println( artifact + " resolved to  " + artifact.getFile() );
-      */
+      }
+      final List<Exception> exceptions = collectResult.getExceptions();
+      if ( !exceptions.isEmpty() )
+      {
+        c_logger.warning( exceptions.size() + " errors collecting dependencies:" );
+        for ( final Exception exception : exceptions )
+        {
+          c_logger.log( Level.WARNING, null, exception );
+        }
+      }
     }
     catch ( final InvalidModelException ime )
     {
