@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-@SuppressWarnings( "unused" )
+@SuppressWarnings( { "unused", "WeakerAccess" } )
 public class ApplicationConfig
 {
   public static final String MAVEN_CENTRAL_ID = "central";
