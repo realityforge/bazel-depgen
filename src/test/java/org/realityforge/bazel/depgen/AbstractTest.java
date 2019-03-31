@@ -73,38 +73,68 @@ public abstract class AbstractTest
                 "Expected output\n---\n" + output + "\n---\nto contain text\n---\n" + text + "\n---\n" );
   }
 
+  @SuppressWarnings( "StringConcatenationInLoop" )
   @Nonnull
   private Path createTempPomFile( @Nonnull final String group,
                                   @Nonnull final String id,
                                   @Nonnull final String version,
-                                  @Nonnull final String type )
+                                  @Nonnull final String type,
+                                  @Nonnull final String... dependencies )
     throws IOException
   {
     final Path pomFile = Files.createTempFile( "data", ".pom" );
-    createPomFile( pomFile, group, id, version, type );
-    return pomFile;
-  }
-
-  private void createPomFile( @Nonnull final Path pomFile,
-                              @Nonnull final String group,
-                              @Nonnull final String id,
-                              @Nonnull final String version,
-                              @Nonnull final String type )
-    throws IOException
-  {
-    final String pomContents =
+    String pomContents =
       "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
       "  <modelVersion>4.0.0</modelVersion>\n" +
       "  <groupId>" + group + "</groupId>\n" +
       "  <artifactId>" + id + "</artifactId>\n" +
       "  <version>" + version + "</version>\n" +
-      "  <packaging>" + type + "</packaging>\n" +
-      "</project>\n";
+      "  <packaging>" + type + "</packaging>\n";
 
+    if ( 0 != dependencies.length )
+    {
+      pomContents += "  <dependencies>\n";
+      for ( final String dependency : dependencies )
+      {
+        final String[] components = dependency.split( ":" );
+        assert components.length >= 3 && components.length <= 6;
+        final String dependencyGroup = components[ 0 ];
+        final String dependencyId = components[ 1 ];
+        final String dependencyType = components.length > 3 ? components[ 2 ] : null;
+        final String dependencyClassifier = components.length > 4 ? components[ 3 ] : null;
+        final String dependencyVersion =
+          components.length == 3 ? components[ 2 ] : components.length == 4 ? components[ 3 ] : components[ 4 ];
+        final String dependencyScope = components.length == 6 ? components[ 5 ] : null;
+
+        pomContents += "    <dependency>\n";
+        pomContents += "      <groupId>" + dependencyGroup + "</groupId>\n";
+        pomContents += "      <artifactId>" + dependencyId + "</artifactId>\n";
+        pomContents += "      <version>" + dependencyVersion + "</version>\n";
+        if ( null != dependencyType )
+        {
+          pomContents += "      <type>" + dependencyType + "</type>\n";
+        }
+        if ( null != dependencyClassifier && !"".equals( dependencyClassifier ) )
+        {
+          pomContents += "      <classifier>" + dependencyClassifier + "</classifier>\n";
+        }
+        if ( null != dependencyScope )
+        {
+          pomContents += "      <scope>" + dependencyScope + "</scope>\n";
+        }
+        pomContents += "    </dependency>\n";
+      }
+      pomContents += "  </dependencies>\n";
+    }
+
+    pomContents += "</project>\n";
     Files.write( pomFile, pomContents.getBytes() );
+    return pomFile;
   }
 
-  final void deployTempArtifactToLocalRepository( @Nonnull final Path localRepository, @Nonnull final String coords )
+  final void deployTempArtifactToLocalRepository( @Nonnull final Path localRepository,
+                                                  @Nonnull final String coords,
+                                                  @Nonnull final String... dependencies )
     throws IOException, DeploymentException
   {
     final Resolver resolver =
@@ -116,7 +146,8 @@ public abstract class AbstractTest
         .setFile( createTempPomFile( jarArtifact.getGroupId(),
                                      jarArtifact.getArtifactId(),
                                      jarArtifact.getVersion(),
-                                     jarArtifact.getExtension() ).toFile() );
+                                     jarArtifact.getExtension(),
+                                     dependencies ).toFile() );
 
     final DeployRequest request =
       new DeployRequest().addArtifact( jarArtifact )
