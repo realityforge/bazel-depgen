@@ -93,8 +93,13 @@ public class Main
     {
       final ApplicationModel model = ApplicationModel.parse( loadDependenciesYaml() );
 
-      final RepositorySystem system = ResolverUtil.newRepositorySystem( c_logger );
-      final RepositorySystemSession session = ResolverUtil.newRepositorySystemSession( system, c_cacheDir, c_logger );
+      final OptionsModel options = model.getOptions();
+      final Resolver resolver =
+        ResolverUtil.createResolver( c_logger,
+                                     c_cacheDir,
+                                     ResolverUtil.getRemoteRepositories( model.getRepositories(), loadSettings() ),
+                                     options.failOnMissingPom(),
+                                     options.failOnInvalidPom() );
 
       final List<RemoteRepository> repositories =
         ResolverUtil.getRemoteRepositories( model.getRepositories(), loadSettings() );

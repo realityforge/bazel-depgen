@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 import org.apache.maven.settings.Settings;
-import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.deployment.DeployRequest;
@@ -67,7 +65,7 @@ public class ResolverUtilTest
   }
 
   @Test
-  public void repositorySystemAndSessionAreValid()
+  public void createResolver()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -80,9 +78,8 @@ public class ResolverUtilTest
 
       // Install into local repository
       {
-        final RepositorySystem system = ResolverUtil.newRepositorySystem( logger );
-        final RepositorySystemSession session =
-          ResolverUtil.newRepositorySystemSession( system, localRepository, logger );
+        final Resolver resolver =
+          ResolverUtil.createResolver( logger, localRepository, Collections.emptyList(), true, true );
 
         final Artifact jarArtifact =
           new DefaultArtifact( "com.example:myapp:1.0.0" ).setFile( createTempJarFile().toFile() );
@@ -90,10 +87,9 @@ public class ResolverUtilTest
           new SubArtifact( jarArtifact, "", "pom" )
             .setFile( createTempPomFile( "com.example", "myapp", "1.0.0", "jar" ).toFile() );
 
-        system.deploy( session,
-                       new DeployRequest().addArtifact( jarArtifact )
-                         .addArtifact( pomArtifact )
-                         .setRepository( remoteRepository ) );
+        final DeployRequest request =
+          new DeployRequest().addArtifact( jarArtifact ).addArtifact( pomArtifact ).setRepository( remoteRepository );
+        resolver.getSystem().deploy( resolver.getSession(), request );
 
         assertTrue( localRepository.resolve( "com/example/myapp/1.0.0/myapp-1.0.0.pom" ).toFile().exists() );
         assertTrue( localRepository.resolve( "com/example/myapp/1.0.0/myapp-1.0.0.pom.sha1" ).toFile().exists() );
@@ -105,14 +101,14 @@ public class ResolverUtilTest
       {
         final Path cacheDir = FileUtil.getCurrentDirectory().resolve( "cacheDir" );
 
-        final RepositorySystem system = ResolverUtil.newRepositorySystem( logger );
-        final RepositorySystemSession session = ResolverUtil.newRepositorySystemSession( system, cacheDir, logger );
+        final Resolver resolver =
+          ResolverUtil.createResolver( logger, cacheDir, Collections.emptyList(), true, true );
 
-        final ArtifactResult artifactResult =
-          system.resolveArtifact( session,
-                                  new ArtifactRequest( new DefaultArtifact( "com.example:myapp:1.0.0" ),
-                                                       Collections.singletonList( remoteRepository ),
-                                                       null ) );
+        final ArtifactRequest request =
+          new ArtifactRequest( new DefaultArtifact( "com.example:myapp:1.0.0" ),
+                               Collections.singletonList( remoteRepository ),
+                               null );
+        final ArtifactResult artifactResult = resolver.getSystem().resolveArtifact( resolver.getSession(), request );
 
         assertTrue( artifactResult.getExceptions().isEmpty() );
         assertTrue( artifactResult.isResolved() );

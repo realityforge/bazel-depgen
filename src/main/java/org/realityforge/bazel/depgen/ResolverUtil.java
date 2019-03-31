@@ -24,7 +24,7 @@ import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
-import org.realityforge.bazel.depgen.model.ApplicationModel;
+import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ExcludeModel;
 
@@ -35,7 +35,20 @@ final class ResolverUtil
   }
 
   @Nonnull
-  static RepositorySystem newRepositorySystem( @Nonnull final Logger logger )
+  static Resolver createResolver( @Nonnull final Logger logger,
+                                  @Nonnull final Path cacheDir,
+                                  @Nonnull final List<RemoteRepository> repositories,
+                                  final boolean failOnMissingPom,
+                                  final boolean failOnInvalidPom )
+  {
+    final RepositorySystem system = newRepositorySystem( logger );
+    final RepositorySystemSession session =
+      newRepositorySystemSession( system, cacheDir, logger, failOnMissingPom, failOnInvalidPom );
+    return new Resolver( system, session, repositories );
+  }
+
+  @Nonnull
+  private static RepositorySystem newRepositorySystem( @Nonnull final Logger logger )
   {
     // Use the pre-populated DefaultServiceLocator rather than explicitly registering components
     final DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
@@ -65,9 +78,11 @@ final class ResolverUtil
   }
 
   @Nonnull
-  static RepositorySystemSession newRepositorySystemSession( @Nonnull final RepositorySystem system,
-                                                             @Nonnull final Path cacheDir,
-                                                             @Nonnull final Logger logger )
+  private static RepositorySystemSession newRepositorySystemSession( @Nonnull final RepositorySystem system,
+                                                                     @Nonnull final Path cacheDir,
+                                                                     @Nonnull final Logger logger,
+                                                                     final boolean failOnMissingPom,
+                                                                     final boolean failOnInvalidPom )
   {
     final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
 
@@ -80,6 +95,7 @@ final class ResolverUtil
 
     session.setTransferListener( new SimpleTransferListener( logger ) );
     session.setRepositoryListener( new SimpleRepositoryListener( logger ) );
+    session.setArtifactDescriptorPolicy( new SimpleArtifactDescriptorPolicy( !failOnMissingPom, !failOnInvalidPom ) );
 
     return session;
   }
