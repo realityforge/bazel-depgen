@@ -3,12 +3,19 @@ package org.realityforge.bazel.depgen;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.LogRecord;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.collection.CollectResult;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -273,6 +280,120 @@ public class ResolverTest
 
       assertNotNull( artifact.getFile() );
       assertEquals( artifact.toString(), "com.example:myapp:jar:1.0" );
+    } );
+  }
+
+  @Test
+  public void deriveRootDependencies()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil2.createLocalTempDir();
+
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.5" );
+
+      final TestHandler handler = new TestHandler();
+
+      final Resolver resolver =
+        ResolverUtil.createResolver( createLogger( handler ), dir, Collections.emptyList(), true, true );
+
+      final ArtifactConfig artifact1 = new ArtifactConfig();
+      artifact1.setCoord( "com.example:myapp:1.0" );
+      final ArtifactConfig artifact2 = new ArtifactConfig();
+      artifact2.setCoord( "com.example:mylib:2.5" );
+      // This next dep is unversioned so it is skipped
+      final ArtifactConfig artifact3 = new ArtifactConfig();
+      artifact3.setCoord( "com.example:mydep" );
+      final ApplicationConfig applicationConfig = new ApplicationConfig();
+      applicationConfig.setArtifacts( Arrays.asList( artifact1, artifact2, artifact3 ) );
+      final ApplicationModel model = ApplicationModel.parse( applicationConfig );
+
+      final AtomicBoolean hasFailed = new AtomicBoolean( false );
+
+      final List<Dependency> dependencies =
+        resolver.deriveRootDependencies( model, ( artifactModel, exceptions ) -> hasFailed.set( true ) );
+
+      assertFalse( hasFailed.get() );
+      assertTrue( handler.getRecords().isEmpty() );
+
+      assertEquals( dependencies.size(), 2 );
+      final Dependency dependency1 = dependencies.get( 0 );
+      assertEquals( dependency1.toString(), "com.example:myapp:jar:1.0 (compile)" );
+
+      final Dependency dependency2 = dependencies.get( 1 );
+      assertEquals( dependency2.toString(), "com.example:mylib:jar:2.5 (compile)" );
+    } );
+  }
+
+  @Test
+  public void collectDependencies()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil2.createLocalTempDir();
+
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:myapp:1.0",
+                                           "com.example:mylib:1.0",
+                                           "com.example:rtA:jar::33.0:runtime" );
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:mylib:1.0",
+                                           "com.example:rtB:jar::2.0:runtime",
+                                           "org.test4j:core:jar::44.0:test" );
+      deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:rtB:2.0",
+                                           // Provided ignored by traversal
+                                           "com.example:container:jar::4.0:provided",
+                                           // System collected but should be ignored at later stage
+                                           "com.example:kernel:jar::4.0:system" );
+
+      final TestHandler handler = new TestHandler();
+
+      final Resolver resolver =
+        ResolverUtil.createResolver( createLogger( handler ), dir, Collections.emptyList(), true, true );
+
+      final ArtifactConfig artifactConfig = new ArtifactConfig();
+      artifactConfig.setCoord( "com.example:myapp:1.0" );
+      final ApplicationConfig applicationConfig = new ApplicationConfig();
+      applicationConfig.setArtifacts( Collections.singletonList( artifactConfig ) );
+      final ApplicationModel model = ApplicationModel.parse( applicationConfig );
+
+      final AtomicBoolean hasFailed = new AtomicBoolean( false );
+
+      final List<Dependency> dependencies =
+        resolver.deriveRootDependencies( model, ( artifactModel, exceptions ) -> hasFailed.set( true ) );
+
+      assertFalse( hasFailed.get() );
+      assertTrue( handler.getRecords().isEmpty() );
+
+      final CollectResult collectResult = resolver.collectDependencies( dependencies );
+
+      assertTrue( collectResult.getCycles().isEmpty() );
+      assertTrue( collectResult.getExceptions().isEmpty() );
+      final DependencyNode node1 = collectResult.getRoot();
+      assertNotNull( node1 );
+      assertNull( node1.getArtifact() );
+      assertNull( node1.getDependency() );
+      final List<DependencyNode> children1 = node1.getChildren();
+      assertEquals( children1.size(), 1 );
+      final DependencyNode node2 = children1.get( 0 );
+      assertEquals( node2.getArtifact().toString(), "com.example:myapp:jar:1.0" );
+      final List<DependencyNode> children2 = node2.getChildren();
+      assertEquals( children2.size(), 2 );
+      final DependencyNode node3 = children2.get( 0 );
+      assertEquals( node3.getDependency().toString(), "com.example:mylib:jar:1.0 (compile)" );
+      final DependencyNode node4 = children2.get( 1 );
+      assertEquals( node4.getDependency().toString(), "com.example:rtA:jar:33.0 (runtime)" );
+      assertEquals( node4.getChildren().size(), 0 );
+      final List<DependencyNode> children3 = node3.getChildren();
+      assertEquals( children3.size(), 1 );
+      final DependencyNode node5 = children3.get( 0 );
+      assertEquals( node5.getDependency().toString(), "com.example:rtB:jar:2.0 (runtime)" );
+      final List<DependencyNode> children4 = node5.getChildren();
+      assertEquals( children4.size(), 1 );
+      final DependencyNode node6 = children4.get( 0 );
+      assertEquals( node6.getDependency().toString(), "com.example:kernel:jar:4.0 (system)" );
     } );
   }
 }

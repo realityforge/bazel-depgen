@@ -1,14 +1,21 @@
 package org.realityforge.bazel.depgen;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.collection.CollectResult;
+import org.eclipse.aether.collection.DependencyCollectionException;
+import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactDescriptorException;
 import org.eclipse.aether.resolution.ArtifactDescriptorRequest;
@@ -16,6 +23,7 @@ import org.eclipse.aether.resolution.ArtifactDescriptorResult;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 
 final class Resolver
@@ -50,6 +58,34 @@ final class Resolver
   RepositorySystemSession getSession()
   {
     return _session;
+  }
+
+  @Nonnull
+  CollectResult collectDependencies( @Nonnull final List<Dependency> dependencies )
+    throws DependencyCollectionException
+  {
+    final CollectRequest collectRequest = new CollectRequest();
+    collectRequest.setDependencies( dependencies );
+    collectRequest.setRepositories( _repositories );
+    return _system.collectDependencies( _session, collectRequest );
+  }
+
+  @Nonnull
+  List<Dependency> deriveRootDependencies( @Nonnull final ApplicationModel model,
+                                           @Nonnull final OnInvalidPomFn onInvalidPomFn )
+  {
+    final List<ArtifactModel> artifactModels =
+      model.getArtifacts().stream().filter( ArtifactModel::isVersioned ).collect( Collectors.toList() );
+    final List<Dependency> dependencies = new ArrayList<>();
+    for ( final ArtifactModel artifactModel : artifactModels )
+    {
+      dependencies.add( new Dependency( toArtifact( artifactModel,
+                                                    e -> onInvalidPomFn.onInvalidPom( artifactModel, e ) ),
+                                        Artifact.SCOPE_COMPILE,
+                                        Boolean.FALSE,
+                                        ResolverUtil.deriveExclusions( artifactModel ) ) );
+    }
+    return dependencies;
   }
 
   /**
