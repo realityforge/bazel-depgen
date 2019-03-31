@@ -10,7 +10,7 @@ public final class OptionsModel
   private final OptionsConfig _source;
 
   @Nonnull
-  public static OptionsModel parse( @Nonnull final OptionsConfig source )
+  static OptionsModel parse( @Nonnull final OptionsConfig source )
   {
     return new OptionsModel( source );
   }
