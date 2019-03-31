@@ -115,7 +115,7 @@ public class Main
       final List<DependencyCycle> cycles = collectResult.getCycles();
       if ( !cycles.isEmpty() )
       {
-        c_logger.warning( cycles.size() + " dependency cycle detected collecting dependencies:" );
+        c_logger.warning( cycles.size() + " dependency cycles detected when collecting dependencies:" );
         for ( final DependencyCycle cycle : cycles )
         {
           c_logger.warning( cycle.toString() );
