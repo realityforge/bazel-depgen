@@ -42,4 +42,9 @@ public final class OptionsModel
   {
     return _source.isFailOnInvalidPom();
   }
+
+  public boolean failOnMissingPom()
+  {
+    return _source.isFailOnMissingPom();
+  }
 }

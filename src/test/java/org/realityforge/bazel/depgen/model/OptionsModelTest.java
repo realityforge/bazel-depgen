@@ -17,6 +17,7 @@ public class OptionsModelTest
     assertEquals( model.getSource(), source );
     assertEquals( model.getWorkspaceDirectory(), OptionsConfig.DEFAULT_WORKSPACE_DIR );
     assertEquals( model.getExtensionFile(), OptionsConfig.DEFAULT_EXTENSION_FILE );
+    assertTrue( model.failOnMissingPom() );
     assertTrue( model.failOnInvalidPom() );
   }
 
@@ -26,12 +27,14 @@ public class OptionsModelTest
     final OptionsConfig source = new OptionsConfig();
     source.setWorkspaceDirectory( ".." );
     source.setExtensionFile( "workspace.bzl" );
+    source.setFailOnMissingPom( false );
     source.setFailOnInvalidPom( false );
 
     final OptionsModel model = OptionsModel.parse( source );
     assertEquals( model.getSource(), source );
     assertEquals( model.getWorkspaceDirectory(), ".." );
     assertEquals( model.getExtensionFile(), "workspace.bzl" );
+    assertFalse( model.failOnMissingPom() );
     assertFalse( model.failOnInvalidPom() );
   }
 }

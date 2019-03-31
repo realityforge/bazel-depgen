@@ -11,6 +11,7 @@ public class OptionsConfig
   @Nonnull
   private String extensionFile = DEFAULT_EXTENSION_FILE;
   private boolean failOnInvalidPom = true;
+  private boolean failOnMissingPom = true;
 
   @Nonnull
   public String getWorkspaceDirectory()
@@ -42,5 +43,15 @@ public class OptionsConfig
   public void setFailOnInvalidPom( final boolean failOnInvalidPom )
   {
     this.failOnInvalidPom = failOnInvalidPom;
+  }
+
+  public boolean isFailOnMissingPom()
+  {
+    return failOnMissingPom;
+  }
+
+  public void setFailOnMissingPom( final boolean failOnMissingPom )
+  {
+    this.failOnMissingPom = failOnMissingPom;
   }
 }
