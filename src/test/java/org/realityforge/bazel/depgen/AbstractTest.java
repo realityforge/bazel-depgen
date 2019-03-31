@@ -150,7 +150,8 @@ public abstract class AbstractTest
                                      dependencies ).toFile() );
 
     final DeployRequest request =
-      new DeployRequest().addArtifact( jarArtifact )
+      new DeployRequest()
+        .addArtifact( jarArtifact )
         .addArtifact( pomArtifact )
         .setRepository( new RemoteRepository.Builder( "local",
                                                       "default",
