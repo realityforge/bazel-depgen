@@ -77,6 +77,7 @@ public class Main
   private static final int ERROR_LOADING_SETTINGS_CODE = 4;
   private static final int ERROR_CONSTRUCTING_MODEL_CODE = 5;
   private static final int ERROR_INVALID_POM_CODE = 6;
+  private static final int ERROR_CYCLES_PRESENT_CODE = 7;
   private static final Logger c_logger = Logger.getGlobal();
   private static Path c_dependenciesFile;
   private static Path c_settingsFile;
@@ -119,7 +120,7 @@ public class Main
         {
           c_logger.warning( cycle.toString() );
         }
-
+        System.exit( ERROR_CYCLES_PRESENT_CODE );
       }
       final List<Exception> exceptions = collectResult.getExceptions();
       if ( !exceptions.isEmpty() )
