@@ -49,7 +49,7 @@ public class ResolverUtilTest
 
       final Settings settings =
         SettingsUtil.loadSettings( FileUtil.getCurrentDirectory().resolve( "settings.xml" ),
-                                   Logger.getAnonymousLogger() );
+                                   createLogger() );
 
       final List<RemoteRepository> remoteRepositories = ResolverUtil.getRemoteRepositories( repositories, settings );
 
@@ -72,7 +72,7 @@ public class ResolverUtilTest
   {
     inIsolatedDirectory( () -> {
 
-      final Logger logger = Logger.getAnonymousLogger();
+      final Logger logger = createLogger();
       final Path localRepository = FileUtil.getCurrentDirectory().resolve( "repository" );
       assertTrue( localRepository.toFile().mkdirs() );
       final RemoteRepository remoteRepository =

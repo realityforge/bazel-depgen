@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
+import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import static org.testng.Assert.*;
 
@@ -99,5 +100,21 @@ public abstract class AbstractTest
     outputStream.closeEntry();
     outputStream.close();
     return jarFile;
+  }
+
+  @Nonnull
+  final Logger createLogger()
+  {
+    // Don't capture the logs so we get some idea when issues occur
+    return Logger.getAnonymousLogger();
+  }
+
+  @Nonnull
+  final Logger createLogger( @Nonnull final TestHandler handler )
+  {
+    final Logger logger = Logger.getAnonymousLogger();
+    logger.setUseParentHandlers( false );
+    logger.addHandler( handler );
+    return logger;
   }
 }

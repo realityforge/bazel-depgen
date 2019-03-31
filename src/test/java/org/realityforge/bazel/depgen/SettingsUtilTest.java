@@ -30,11 +30,9 @@ public class SettingsUtilTest
                       "  </servers>\n" +
                       "</settings>\n" );
       final Path path = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
-      final Logger logger = Logger.getAnonymousLogger();
       final TestHandler handler = new TestHandler();
-      logger.addHandler( handler );
 
-      final Settings settings = SettingsUtil.loadSettings( path, logger );
+      final Settings settings = SettingsUtil.loadSettings( path, createLogger( handler ) );
       assertNotNull( settings );
 
       assertEquals( handler.getRecords().size(), 0 );
@@ -67,9 +65,8 @@ public class SettingsUtilTest
                       "  </servers>\n" +
                       "</settings>\n" );
       final Path path = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
-      final Logger logger = Logger.getAnonymousLogger();
       final TestHandler handler = new TestHandler();
-      logger.addHandler( handler );
+      final Logger logger = createLogger( handler );
       final Settings settings = SettingsUtil.loadSettings( path, logger );
       assertNotNull( settings );
       final ArrayList<LogRecord> records = handler.getRecords();
@@ -91,9 +88,8 @@ public class SettingsUtilTest
     inIsolatedDirectory( () -> {
       FileUtil.write( "settings.xml", "X\n" );
       final Path path = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
-      final Logger logger = Logger.getAnonymousLogger();
       final TestHandler handler = new TestHandler();
-      logger.addHandler( handler );
+      final Logger logger = createLogger( handler );
       assertThrows( SettingsBuildingException.class, () -> SettingsUtil.loadSettings( path, logger ) );
       assertEquals( handler.getRecords().size(), 0 );
     } );
