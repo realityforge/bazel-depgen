@@ -121,6 +121,10 @@ public abstract class AbstractTest
         if ( null != dependencyScope )
         {
           pomContents += "      <scope>" + dependencyScope + "</scope>\n";
+          if( org.apache.maven.artifact.Artifact.SCOPE_SYSTEM.equals( dependencyScope ) )
+          {
+            pomContents += "      <systemPath>" + createTempJarFile() + "</systemPath>\n";
+          }
         }
         pomContents += "    </dependency>\n";
       }
