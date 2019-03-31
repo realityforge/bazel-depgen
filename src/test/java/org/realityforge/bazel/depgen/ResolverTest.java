@@ -218,10 +218,14 @@ public class ResolverTest
 
       final TestHandler handler = new TestHandler();
 
-      final ArrayList<RemoteRepository> repositories = new ArrayList<>();
-      repositories.add( new RemoteRepository.Builder( "local", "default", remoteDir.toUri().toString() ).build() );
+      final RemoteRepository remoteRepository =
+        new RemoteRepository.Builder( "local", "default", remoteDir.toUri().toString() ).build();
       final Resolver resolver =
-        ResolverUtil.createResolver( createLogger( handler ), dir, repositories, true, true );
+        ResolverUtil.createResolver( createLogger( handler ),
+                                     dir,
+                                     Collections.singletonList( remoteRepository ),
+                                     true,
+                                     true );
 
       final ArtifactModel model =
         new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", null, null, "1.0", Collections.emptyList() );
