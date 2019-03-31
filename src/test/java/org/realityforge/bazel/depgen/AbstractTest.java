@@ -110,8 +110,7 @@ public abstract class AbstractTest
     final Resolver resolver =
       ResolverUtil.createResolver( createLogger(), localRepository, Collections.emptyList(), true, true );
 
-    final DefaultArtifact artifact = new DefaultArtifact( coords );
-    final Artifact jarArtifact = artifact.setFile( createTempJarFile().toFile() );
+    final Artifact jarArtifact = new DefaultArtifact( coords ).setFile( createTempJarFile().toFile() );
     final Artifact pomArtifact =
       new SubArtifact( jarArtifact, "", "pom" )
         .setFile( createTempPomFile( jarArtifact.getGroupId(),
