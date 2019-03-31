@@ -17,7 +17,9 @@ public class ApplicationConfigTest
   {
     inIsolatedDirectory( () -> {
       writeDependencies( "" );
-      assertNotNull( parseDependencies() );
+      final ApplicationConfig config = parseDependencies();
+      assertNotNull( config );
+      assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
     } );
   }
 
@@ -30,6 +32,7 @@ public class ApplicationConfigTest
         "repositories:\n  central: http://repo1.maven.org/maven2\n  example: https://example.com/repo\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
+      assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
       final Map<String, String> repositories = config.getRepositories();
       assertNotNull( repositories );
 
@@ -52,6 +55,7 @@ public class ApplicationConfigTest
         "    classifier: sources\n" +
         "    type: jar\n" );
       final ApplicationConfig config = parseDependencies();
+      assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );

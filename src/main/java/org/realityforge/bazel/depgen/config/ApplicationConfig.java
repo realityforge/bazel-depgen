@@ -16,6 +16,7 @@ public class ApplicationConfig
 {
   public static final String MAVEN_CENTRAL_ID = "central";
   public static final String MAVEN_CENTRAL_URL = "https://repo.maven.apache.org/maven2/";
+  private Path _configLocation;
   @Nonnull
   private OptionsConfig options = new OptionsConfig();
   @Nonnull
@@ -31,12 +32,25 @@ public class ApplicationConfig
   {
     final Yaml yaml = new Yaml( new Constructor( ApplicationConfig.class ) );
     final ApplicationConfig config = yaml.load( new FileReader( path.toFile() ) );
-    return null == config ? new ApplicationConfig() : config;
+    final ApplicationConfig applicationConfig = null == config ? new ApplicationConfig() : config;
+    applicationConfig.setConfigLocation( path );
+    return applicationConfig;
   }
 
   public ApplicationConfig()
   {
     repositories.put( MAVEN_CENTRAL_ID, MAVEN_CENTRAL_URL );
+  }
+
+  private void setConfigLocation( @Nonnull final Path configLocation )
+  {
+    _configLocation = configLocation;
+  }
+
+  @Nonnull
+  public Path getConfigLocation()
+  {
+    return _configLocation;
   }
 
   @Nonnull
