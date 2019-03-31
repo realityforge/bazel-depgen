@@ -1,6 +1,5 @@
 package org.realityforge.bazel.depgen;
 
-import gir.io.FileUtil;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class ResolverTest
     inIsolatedDirectory( () -> {
       final TestHandler handler = new TestHandler();
 
-      final Path dir = FileUtil.createTempDir();
+      final Path dir = FileUtil2.createLocalTempDir();
 
       final Resolver resolver =
         ResolverUtil.createResolver( createLogger( handler ),
@@ -58,7 +57,7 @@ public class ResolverTest
     inIsolatedDirectory( () -> {
       final TestHandler handler = new TestHandler();
 
-      final Path dir = FileUtil.createTempDir();
+      final Path dir = FileUtil2.createLocalTempDir();
       final Path artifactDir = dir.resolve( "com/example/myapp/1.0" );
       assertTrue( artifactDir.toFile().mkdirs() );
       Files.write( artifactDir.resolve( "myapp-1.0.jar" ), new byte[ 0 ] );
@@ -95,7 +94,7 @@ public class ResolverTest
     inIsolatedDirectory( () -> {
       final TestHandler handler = new TestHandler();
 
-      final Path dir = FileUtil.createTempDir();
+      final Path dir = FileUtil2.createLocalTempDir();
       final Path artifactDir = dir.resolve( "com/example/myapp/1.0" );
       assertTrue( artifactDir.toFile().mkdirs() );
       final Path artifactFile = artifactDir.resolve( "myapp-1.0.jar" );
@@ -131,7 +130,7 @@ public class ResolverTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createTempDir();
+      final Path dir = FileUtil2.createLocalTempDir();
       final Path artifactDir = dir.resolve( "com/example/myapp/1.0" );
       assertTrue( artifactDir.toFile().mkdirs() );
       Files.write( artifactDir.resolve( "myapp-1.0.jar" ), new byte[ 0 ] );
@@ -166,7 +165,7 @@ public class ResolverTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createTempDir();
+      final Path dir = FileUtil2.createLocalTempDir();
       final Path artifactDir = dir.resolve( "com/example/myapp/1.0" );
       assertTrue( artifactDir.toFile().mkdirs() );
       final Path artifactFile = artifactDir.resolve( "myapp-1.0.jar" );
@@ -207,8 +206,8 @@ public class ResolverTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createTempDir();
-      final Path remoteDir = FileUtil.createTempDir();
+      final Path dir = FileUtil2.createLocalTempDir();
+      final Path remoteDir = FileUtil2.createLocalTempDir();
 
       deployTempArtifactToLocalRepository( remoteDir, "com.example:myapp:1.0" );
       assertTrue( remoteDir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
@@ -247,7 +246,7 @@ public class ResolverTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createTempDir();
+      final Path dir = FileUtil2.createLocalTempDir();
 
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
       assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
