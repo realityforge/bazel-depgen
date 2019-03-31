@@ -28,7 +28,7 @@ public class ResolverTest
       final Resolver resolver =
         ResolverUtil.createResolver( createLogger( handler ),
                                      dir,
-                                     new ArrayList<>(),
+                                     Collections.emptyList(),
                                      true,
                                      true );
 
@@ -65,7 +65,7 @@ public class ResolverTest
       final Resolver resolver =
         ResolverUtil.createResolver( createLogger( handler ),
                                      dir,
-                                     new ArrayList<>(),
+                                     Collections.emptyList(),
                                      true,
                                      true );
 
@@ -103,7 +103,7 @@ public class ResolverTest
       final Resolver resolver =
         ResolverUtil.createResolver( createLogger( handler ),
                                      dir,
-                                     new ArrayList<>(),
+                                     Collections.emptyList(),
                                      false,
                                      true );
 
@@ -139,7 +139,7 @@ public class ResolverTest
       final TestHandler handler = new TestHandler();
 
       final Resolver resolver =
-        ResolverUtil.createResolver( createLogger( handler ), dir, new ArrayList<>(), true, true );
+        ResolverUtil.createResolver( createLogger( handler ), dir, Collections.emptyList(), true, true );
 
       final ArtifactModel model =
         new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", null, null, "1.0", Collections.emptyList() );
@@ -175,7 +175,7 @@ public class ResolverTest
       final TestHandler handler = new TestHandler();
 
       final Resolver resolver =
-        ResolverUtil.createResolver( createLogger( handler ), dir, new ArrayList<>(), true, false );
+        ResolverUtil.createResolver( createLogger( handler ), dir, Collections.emptyList(), true, false );
 
       final ArtifactModel model =
         new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", null, null, "1.0", Collections.emptyList() );
@@ -255,7 +255,7 @@ public class ResolverTest
       final TestHandler handler = new TestHandler();
 
       final Resolver resolver =
-        ResolverUtil.createResolver( createLogger( handler ), dir, new ArrayList<>(), true, true );
+        ResolverUtil.createResolver( createLogger( handler ), dir, Collections.emptyList(), true, true );
 
       final ArtifactModel model =
         new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", null, null, "1.0", Collections.emptyList() );
