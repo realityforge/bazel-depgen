@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen.model;
 
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,12 @@ public final class ApplicationModel
   public ApplicationConfig getSource()
   {
     return _source;
+  }
+
+  @Nonnull
+  public Path getConfigLocation()
+  {
+    return getSource().getConfigLocation();
   }
 
   @Nonnull

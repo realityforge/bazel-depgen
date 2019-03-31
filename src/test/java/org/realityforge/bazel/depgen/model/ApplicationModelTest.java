@@ -1,6 +1,7 @@
 package org.realityforge.bazel.depgen.model;
 
 import gir.io.FileUtil;
+import java.nio.file.Path;
 import java.util.List;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
@@ -21,11 +22,12 @@ public class ApplicationModelTest
                          "replacements:\n" +
                          "  - coord: com.example:alib\n" +
                          "    target: \"@com_example//:alib\"\n" );
-      final ApplicationConfig source =
-        ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+      final Path configFile = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      final ApplicationConfig source = ApplicationConfig.parse( configFile );
 
       final ApplicationModel model = ApplicationModel.parse( source );
       assertEquals( model.getSource(), source );
+      assertEquals( model.getConfigLocation(), configFile );
       assertEquals( model.getRepositories().get( ApplicationConfig.MAVEN_CENTRAL_ID ),
                     ApplicationConfig.MAVEN_CENTRAL_URL );
       assertEquals( model.getOptions().getWorkspaceDirectory(), OptionsConfig.DEFAULT_WORKSPACE_DIR );
