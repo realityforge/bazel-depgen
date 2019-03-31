@@ -78,6 +78,7 @@ public class Main
   private static final int ERROR_CONSTRUCTING_MODEL_CODE = 5;
   private static final int ERROR_INVALID_POM_CODE = 6;
   private static final int ERROR_CYCLES_PRESENT_CODE = 7;
+  private static final int ERROR_COLLECTING_DEPENDENCIES_CODE = 8;
   private static final Logger c_logger = Logger.getGlobal();
   private static Path c_dependenciesFile;
   private static Path c_settingsFile;
@@ -130,6 +131,7 @@ public class Main
         {
           c_logger.log( Level.WARNING, null, exception );
         }
+        System.exit( ERROR_COLLECTING_DEPENDENCIES_CODE );
       }
     }
     catch ( final InvalidModelException ime )
