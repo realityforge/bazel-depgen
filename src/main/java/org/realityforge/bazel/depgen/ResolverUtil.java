@@ -44,7 +44,7 @@ final class ResolverUtil
     final RepositorySystem system = newRepositorySystem( logger );
     final RepositorySystemSession session =
       newRepositorySystemSession( system, cacheDir, logger, failOnMissingPom, failOnInvalidPom );
-    return new Resolver( system, session, repositories );
+    return new Resolver( logger, system, session, repositories );
   }
 
   @Nonnull
