@@ -1,9 +1,9 @@
 package org.realityforge.bazel.depgen;
 
+import gir.io.FileUtil;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -298,15 +298,14 @@ public class ResolverTest
       final Resolver resolver =
         ResolverUtil.createResolver( createLogger( handler ), dir, Collections.emptyList(), true, true );
 
-      final ArtifactConfig artifact1 = new ArtifactConfig();
-      artifact1.setCoord( "com.example:myapp:1.0" );
-      final ArtifactConfig artifact2 = new ArtifactConfig();
-      artifact2.setCoord( "com.example:mylib:2.5" );
-      // This next dep is unversioned so it is skipped
-      final ArtifactConfig artifact3 = new ArtifactConfig();
-      artifact3.setCoord( "com.example:mydep" );
-      final ApplicationConfig applicationConfig = new ApplicationConfig();
-      applicationConfig.setArtifacts( Arrays.asList( artifact1, artifact2, artifact3 ) );
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "  - coord: com.example:mylib:2.5\n" +
+                         // This next dep is unversioned so it is skipped
+                         "  - coord: com.example:mydep\n" );
+      final ApplicationConfig applicationConfig =
+        ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+
       final ApplicationModel model = ApplicationModel.parse( applicationConfig );
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
@@ -353,10 +352,10 @@ public class ResolverTest
       final Resolver resolver =
         ResolverUtil.createResolver( createLogger( handler ), dir, Collections.emptyList(), true, true );
 
-      final ArtifactConfig artifactConfig = new ArtifactConfig();
-      artifactConfig.setCoord( "com.example:myapp:1.0" );
-      final ApplicationConfig applicationConfig = new ApplicationConfig();
-      applicationConfig.setArtifacts( Collections.singletonList( artifactConfig ) );
+      writeDependencies( "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      final ApplicationConfig applicationConfig =
+        ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+
       final ApplicationModel model = ApplicationModel.parse( applicationConfig );
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
