@@ -1,16 +1,19 @@
 package org.realityforge.bazel.depgen;
 
 import gir.io.FileUtil;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import org.apache.maven.settings.Settings;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.deployment.DeployRequest;
+import org.eclipse.aether.deployment.DeploymentException;
 import org.eclipse.aether.graph.Exclusion;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
@@ -73,23 +76,10 @@ public class ResolverUtilTest
       final Logger logger = createLogger();
       final Path localRepository = FileUtil.getCurrentDirectory().resolve( "repository" );
       assertTrue( localRepository.toFile().mkdirs() );
-      final RemoteRepository remoteRepository =
-        new RemoteRepository.Builder( "local", "default", localRepository.toUri().toString() ).build();
 
-      // Install into local repository
+      // Install jar into local repository
       {
-        final Resolver resolver =
-          ResolverUtil.createResolver( logger, localRepository, Collections.emptyList(), true, true );
-
-        final Artifact jarArtifact =
-          new DefaultArtifact( "com.example:myapp:1.0.0" ).setFile( createTempJarFile().toFile() );
-        final Artifact pomArtifact =
-          new SubArtifact( jarArtifact, "", "pom" )
-            .setFile( createTempPomFile( "com.example", "myapp", "1.0.0", "jar" ).toFile() );
-
-        final DeployRequest request =
-          new DeployRequest().addArtifact( jarArtifact ).addArtifact( pomArtifact ).setRepository( remoteRepository );
-        resolver.getSystem().deploy( resolver.getSession(), request );
+        deployTempArtifactToLocalRepository( localRepository, "com.example:myapp:1.0.0" );
 
         assertTrue( localRepository.resolve( "com/example/myapp/1.0.0/myapp-1.0.0.pom" ).toFile().exists() );
         assertTrue( localRepository.resolve( "com/example/myapp/1.0.0/myapp-1.0.0.pom.sha1" ).toFile().exists() );
@@ -104,6 +94,8 @@ public class ResolverUtilTest
         final Resolver resolver =
           ResolverUtil.createResolver( logger, cacheDir, Collections.emptyList(), true, true );
 
+        final RemoteRepository remoteRepository =
+          new RemoteRepository.Builder( "local", "default", localRepository.toUri().toString() ).build();
         final ArtifactRequest request =
           new ArtifactRequest( new DefaultArtifact( "com.example:myapp:1.0.0" ),
                                Collections.singletonList( remoteRepository ),

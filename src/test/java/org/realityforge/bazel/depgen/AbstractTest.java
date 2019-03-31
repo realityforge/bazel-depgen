@@ -15,6 +15,12 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.deployment.DeployRequest;
+import org.eclipse.aether.deployment.DeploymentException;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.util.artifact.SubArtifact;
 import static org.testng.Assert.*;
 
 public abstract class AbstractTest
@@ -74,6 +80,18 @@ public abstract class AbstractTest
                                 @Nonnull final String type )
     throws IOException
   {
+    final Path pomFile = Files.createTempFile( "data", ".pom" );
+    createPomFile( pomFile, group, id, version, type );
+    return pomFile;
+  }
+
+  final void createPomFile( @Nonnull final Path pomFile,
+                            @Nonnull final String group,
+                            @Nonnull final String id,
+                            @Nonnull final String version,
+                            @Nonnull final String type )
+    throws IOException
+  {
     final String pomContents =
       "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
       "  <modelVersion>4.0.0</modelVersion>\n" +
@@ -83,9 +101,31 @@ public abstract class AbstractTest
       "  <packaging>" + type + "</packaging>\n" +
       "</project>\n";
 
-    final Path pomFile = Files.createTempFile( "data", ".pom" );
     Files.write( pomFile, pomContents.getBytes() );
-    return pomFile;
+  }
+
+  final void deployTempArtifactToLocalRepository( @Nonnull final Path localRepository, @Nonnull final String coords )
+    throws IOException, DeploymentException
+  {
+    final Resolver resolver =
+      ResolverUtil.createResolver( createLogger(), localRepository, Collections.emptyList(), true, true );
+
+    final DefaultArtifact artifact = new DefaultArtifact( coords );
+    final Artifact jarArtifact = artifact.setFile( createTempJarFile().toFile() );
+    final Artifact pomArtifact =
+      new SubArtifact( jarArtifact, "", "pom" )
+        .setFile( createTempPomFile( jarArtifact.getGroupId(),
+                                     jarArtifact.getArtifactId(),
+                                     jarArtifact.getVersion(),
+                                     jarArtifact.getExtension() ).toFile() );
+
+    final DeployRequest request =
+      new DeployRequest().addArtifact( jarArtifact )
+        .addArtifact( pomArtifact )
+        .setRepository( new RemoteRepository.Builder( "local",
+                                                      "default",
+                                                      localRepository.toUri().toString() ).build() );
+    resolver.getSystem().deploy( resolver.getSession(), request );
   }
 
   @Nonnull
