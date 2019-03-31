@@ -74,10 +74,10 @@ public abstract class AbstractTest
   }
 
   @Nonnull
-  final Path createTempPomFile( @Nonnull final String group,
-                                @Nonnull final String id,
-                                @Nonnull final String version,
-                                @Nonnull final String type )
+  private Path createTempPomFile( @Nonnull final String group,
+                                  @Nonnull final String id,
+                                  @Nonnull final String version,
+                                  @Nonnull final String type )
     throws IOException
   {
     final Path pomFile = Files.createTempFile( "data", ".pom" );
@@ -85,11 +85,11 @@ public abstract class AbstractTest
     return pomFile;
   }
 
-  final void createPomFile( @Nonnull final Path pomFile,
-                            @Nonnull final String group,
-                            @Nonnull final String id,
-                            @Nonnull final String version,
-                            @Nonnull final String type )
+  private void createPomFile( @Nonnull final Path pomFile,
+                              @Nonnull final String group,
+                              @Nonnull final String id,
+                              @Nonnull final String version,
+                              @Nonnull final String type )
     throws IOException
   {
     final String pomContents =
@@ -129,7 +129,7 @@ public abstract class AbstractTest
   }
 
   @Nonnull
-  final Path createTempJarFile()
+  private Path createTempJarFile()
     throws IOException
   {
     final Path jarFile = Files.createTempFile( "data", ".jar" );
