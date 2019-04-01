@@ -3,7 +3,7 @@ package org.realityforge.bazel.depgen.gen;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import javax.annotation.Nonnull;
 
@@ -40,7 +40,7 @@ final class StarlarkFileOutput
   private void emit( @Nonnull final String string )
     throws IOException
   {
-    _outputStream.write( string.getBytes( Charset.forName( "US-ASCII" ) ) );
+    _outputStream.write( string.getBytes( StandardCharsets.US_ASCII ) );
   }
 
   void incIndent()
