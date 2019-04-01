@@ -1,3 +1,11 @@
+# Deprecated
+
+> This project has been deprecated. The Bazel team looks to be developing their own variant
+> via [rules_jvm_external](https://blog.bazel.build/2019/03/31/rules-jvm-external-maven.html)
+> that will hopefully be the preferred variant.
+
+---
+
 # bazel-depgen: Generate Bazel dependencies
 
 [![Build Status](https://secure.travis-ci.org/realityforge/bazel-depgen.svg?branch=master)](http://travis-ci.org/realityforge/bazel-depgen)
