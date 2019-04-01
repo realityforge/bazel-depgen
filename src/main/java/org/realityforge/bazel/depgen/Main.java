@@ -14,6 +14,7 @@ import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyCycle;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
+import org.realityforge.bazel.depgen.gen.BazelGenerator;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.InvalidModelException;
 import org.realityforge.bazel.depgen.model.OptionsModel;
@@ -133,6 +134,11 @@ public class Main
         }
         System.exit( ERROR_COLLECTING_DEPENDENCIES_CODE );
       }
+
+      // depending on command can print or output dependency data
+      collectResult.getRoot().accept( new ConsoleDependencyGraphDumper( c_logger ) );
+
+      new BazelGenerator( model ).generate();
     }
     catch ( final InvalidModelException ime )
     {
