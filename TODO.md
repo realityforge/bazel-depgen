@@ -19,3 +19,11 @@ complete as there is too much un-said.
 
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
   all the tests pass.
+
+* Model output on existing tools such as above and https://github.com/bazelbuild/rules_jvm_external#generated-targets
+
+* Add language types for `kotlin`, `scala`, `java`, `j2cl`. Add some tags to go along with it.
+
+* Support non-jar dependencies and expose them as files/filegroups
+
+* Add support for global excludes
