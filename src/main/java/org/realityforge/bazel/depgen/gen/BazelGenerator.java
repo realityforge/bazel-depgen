@@ -83,7 +83,8 @@ def bar():
   {
     final Path configLocation = _model.getConfigLocation();
     final Path extensionFile = _model.getOptions().getExtensionFile();
-    final Path relativePathToWorkspace = extensionFile.getParent().relativize( configLocation );
+    final Path relativePathToWorkspace =
+      extensionFile.getParent().toAbsolutePath().normalize().relativize( configLocation.toAbsolutePath().normalize() );
     output.write( "# DO NOT EDIT: File is auto-generated from " + relativePathToWorkspace );
   }
 

@@ -23,7 +23,7 @@ public final class ApplicationModel
   @Nonnull
   public static ApplicationModel parse( @Nonnull final ApplicationConfig source )
   {
-    final Path baseDirectory = source.getConfigLocation().getParent();
+    final Path baseDirectory = source.getConfigLocation().toAbsolutePath().normalize().getParent();
     final OptionsModel optionsModel = OptionsModel.parse( baseDirectory, source.getOptions() );
     final List<ArtifactModel> artifactModels =
       source.getArtifacts().stream().flatMap( c -> ArtifactModel.parse( c ).stream() ).collect( Collectors.toList() );
