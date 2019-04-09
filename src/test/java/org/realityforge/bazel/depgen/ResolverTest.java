@@ -209,7 +209,7 @@ public class ResolverTest
   }
 
   @Test
-  public void deriveArtifact_inRemoteRpository()
+  public void deriveArtifact_inRemoteRepository()
     throws Exception
   {
     inIsolatedDirectory( () -> {
