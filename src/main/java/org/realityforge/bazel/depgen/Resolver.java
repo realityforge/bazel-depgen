@@ -61,6 +61,12 @@ final class Resolver
   }
 
   @Nonnull
+  List<RemoteRepository> getRepositories()
+  {
+    return _repositories;
+  }
+
+  @Nonnull
   CollectResult collectDependencies( @Nonnull final List<Dependency> dependencies )
     throws DependencyCollectionException
   {
