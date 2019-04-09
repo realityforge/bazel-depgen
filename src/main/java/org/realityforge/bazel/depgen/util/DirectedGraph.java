@@ -53,14 +53,14 @@ public final class DirectedGraph<N, E>
     return _roNodes.values();
   }
 
-  public boolean addEdge( @Nonnull final N source, @Nonnull final N destination )
+  public boolean addEdge( @Nonnull final E element, @Nonnull final N source, @Nonnull final N destination )
   {
     final Node<N, E> sourceNode = _nodes.get( source );
     assert null != sourceNode;
     final Node<N, E> destinationNode = _nodes.get( destination );
     assert null != destinationNode;
 
-    final Edge<N, E> edge = new Edge<>( sourceNode, destinationNode );
+    final Edge<N, E> edge = new Edge<>( element, sourceNode, destinationNode );
     return sourceNode.addOutgoingEdge( edge ) && destinationNode.addIncomingEdge( edge );
   }
 
