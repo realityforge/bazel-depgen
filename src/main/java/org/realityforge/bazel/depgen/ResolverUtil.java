@@ -23,6 +23,8 @@ import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
+import org.eclipse.aether.util.graph.manager.DependencyManagerUtils;
+import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
@@ -92,6 +94,9 @@ final class ResolverUtil
 
     // Avoid using repositories set up in artifact's pom.xml
     session.setIgnoreArtifactDescriptorRepositories( true );
+
+    session.setConfigProperty( ConflictResolver.CONFIG_PROP_VERBOSE, true );
+    session.setConfigProperty( DependencyManagerUtils.CONFIG_PROP_VERBOSE, true );
 
     session.setTransferListener( new SimpleTransferListener( logger ) );
     session.setRepositoryListener( new SimpleRepositoryListener( logger ) );
