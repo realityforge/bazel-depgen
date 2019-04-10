@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.LogRecord;
 import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.DependencyResult;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
@@ -366,11 +366,11 @@ public class ResolverTest
       assertFalse( hasFailed.get() );
       assertTrue( handler.getRecords().isEmpty() );
 
-      final CollectResult collectResult = resolver.collectDependencies( dependencies );
+      final DependencyResult result = resolver.resolveDependencies( dependencies );
 
-      assertTrue( collectResult.getCycles().isEmpty() );
-      assertTrue( collectResult.getExceptions().isEmpty() );
-      final DependencyNode node1 = collectResult.getRoot();
+      assertTrue( result.getCycles().isEmpty() );
+      assertTrue( result.getCollectExceptions().isEmpty() );
+      final DependencyNode node1 = result.getRoot();
       assertNotNull( node1 );
       assertNull( node1.getArtifact() );
       assertNull( node1.getDependency() );

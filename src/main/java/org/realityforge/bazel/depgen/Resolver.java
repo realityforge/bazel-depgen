@@ -13,8 +13,6 @@ import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
-import org.eclipse.aether.collection.CollectResult;
-import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyFilter;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -69,16 +67,6 @@ final class Resolver
   List<RemoteRepository> getRepositories()
   {
     return _repositories;
-  }
-
-  @Nonnull
-  CollectResult collectDependencies( @Nonnull final List<Dependency> dependencies )
-    throws DependencyCollectionException
-  {
-    final CollectRequest collectRequest = new CollectRequest();
-    collectRequest.setDependencies( dependencies );
-    collectRequest.setRepositories( _repositories );
-    return _system.collectDependencies( _session, collectRequest );
   }
 
   @Nonnull
