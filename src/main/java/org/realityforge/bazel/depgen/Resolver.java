@@ -16,6 +16,7 @@ import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyFilter;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactDescriptorException;
 import org.eclipse.aether.resolution.ArtifactDescriptorRequest;
@@ -23,6 +24,10 @@ import org.eclipse.aether.resolution.ArtifactDescriptorResult;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.resolution.DependencyRequest;
+import org.eclipse.aether.resolution.DependencyResolutionException;
+import org.eclipse.aether.resolution.DependencyResult;
+import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 
@@ -74,6 +79,18 @@ final class Resolver
     collectRequest.setDependencies( dependencies );
     collectRequest.setRepositories( _repositories );
     return _system.collectDependencies( _session, collectRequest );
+  }
+
+  @Nonnull
+  DependencyResult resolveDependencies( @Nonnull final List<Dependency> dependencies )
+    throws DependencyResolutionException
+  {
+    final CollectRequest collectRequest = new CollectRequest();
+    collectRequest.setDependencies( dependencies );
+    collectRequest.setRepositories( _repositories );
+    final DependencyFilter filter =
+      ( node, parents ) -> !node.getData().containsKey( ConflictResolver.NODE_DATA_WINNER );
+    return _system.resolveDependencies( _session, new DependencyRequest( collectRequest, filter ) );
   }
 
   @Nonnull
