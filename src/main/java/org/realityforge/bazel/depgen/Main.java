@@ -137,7 +137,6 @@ public class Main
 
       final DependencyNode node = result.getRoot();
 
-      new BazelGenerator( model ).generate();
       if ( c_logger.isLoggable( Level.FINE ) )
       {
         c_logger.info( "Dependency Graph:" );

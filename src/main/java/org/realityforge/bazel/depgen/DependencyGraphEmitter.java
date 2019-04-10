@@ -16,7 +16,7 @@ import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 /**
  * A dependency visitor that emits the graph in a format based on Mavens output.
  */
-final class DependencyGraphEmitter
+public final class DependencyGraphEmitter
   implements DependencyVisitor
 {
   @FunctionalInterface

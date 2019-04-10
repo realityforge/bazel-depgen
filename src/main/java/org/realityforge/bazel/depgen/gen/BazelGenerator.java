@@ -7,16 +7,22 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import org.eclipse.aether.graph.DependencyNode;
+import org.realityforge.bazel.depgen.DependencyGraphEmitter;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 
 public final class BazelGenerator
 {
   @Nonnull
   private final ApplicationModel _model;
+  @Nonnull
+  private final DependencyNode _root;
 
-  public BazelGenerator( @Nonnull final ApplicationModel model )
+  public BazelGenerator( @Nonnull final ApplicationModel model,
+                         @Nonnull final DependencyNode root )
   {
     _model = Objects.requireNonNull( model );
+    _root = Objects.requireNonNull( root );
   }
 
   public void generate()
@@ -30,6 +36,19 @@ public final class BazelGenerator
     {
       emitDoNotEdit( output );
 
+      output.newLine();
+
+      output.write( "# Dependency Graph Generated from the input data" );
+      _root.accept( new DependencyGraphEmitter( line -> {
+        try
+        {
+          output.write( "# " + line );
+        }
+        catch ( final IOException ioe )
+        {
+          throw new IllegalStateException( "Failed to write to file", ioe );
+        }
+      } ) );
       output.newLine();
 
       emitArtifactRule( output );
