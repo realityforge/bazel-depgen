@@ -326,7 +326,7 @@ public class ResolverTest
   }
 
   @Test
-  public void collectDependencies()
+  public void resolveDependencies()
     throws Exception
   {
     inIsolatedDirectory( () -> {
