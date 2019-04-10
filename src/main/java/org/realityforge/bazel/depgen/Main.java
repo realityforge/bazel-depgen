@@ -135,7 +135,6 @@ public class Main
         System.exit( ERROR_COLLECTING_DEPENDENCIES_CODE );
       }
 
-      // depending on command can print or output dependency data
 
       new BazelGenerator( model ).generate();
     }
