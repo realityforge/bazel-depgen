@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingException;
-import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyCycle;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.resolution.DependencyResult;
@@ -107,13 +106,11 @@ public class Main
                                      options.failOnMissingPom(),
                                      options.failOnInvalidPom() );
 
-      final List<Dependency> dependencies = resolver.deriveRootDependencies( model, ( artifactModel, exceptions ) -> {
+      final DependencyResult result = resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> {
         // If we get here then the listener has already emitted a warning message so just need to exit
         // We can only get here if either failOnMissingPom or failOnInvalidPom is true and an error occurred
         System.exit( ERROR_INVALID_POM_CODE );
       } );
-
-      final DependencyResult result = resolver.resolveDependencies( dependencies );
 
       final List<DependencyCycle> cycles = result.getCycles();
       if ( !cycles.isEmpty() )

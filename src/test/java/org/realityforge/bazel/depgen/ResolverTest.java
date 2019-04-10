@@ -395,4 +395,47 @@ public class ResolverTest
       assertEquals( node6.getDependency().toString(), "com.example:kernel:jar:4.0 (system)" );
     } );
   }
+
+  @Test
+  public void resolveDependencies_passingModel()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil2.createLocalTempDir();
+
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:myapp:1.0",
+                                           "com.example:mylib:1.0",
+                                           "com.example:rtA:jar::33.0:runtime" );
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:mylib:1.0",
+                                           "com.example:rtB:jar::2.0:runtime",
+                                           "org.test4j:core:jar::44.0:test" );
+      deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:rtB:2.0",
+                                           // Provided ignored by traversal
+                                           "com.example:container:jar::4.0:provided",
+                                           // System collected but should be ignored at later stage
+                                           "com.example:kernel:jar::4.0:system" );
+
+      final Resolver resolver =
+        ResolverUtil.createResolver( createLogger(), dir, Collections.emptyList(), true, true );
+
+      writeDependencies( "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      final ApplicationConfig applicationConfig =
+        ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+
+      final ApplicationModel model = ApplicationModel.parse( applicationConfig );
+
+      final AtomicBoolean hasFailed = new AtomicBoolean( false );
+
+      final DependencyResult result = resolver.resolveDependencies( model, ( m, e ) -> hasFailed.set( true ) );
+
+      assertFalse( hasFailed.get() );
+
+      assertTrue( result.getCycles().isEmpty() );
+      assertTrue( result.getCollectExceptions().isEmpty() );
+      assertNotNull( result.getRoot() );
+    } );
+  }
 }

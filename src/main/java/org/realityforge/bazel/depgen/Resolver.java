@@ -70,6 +70,14 @@ final class Resolver
   }
 
   @Nonnull
+  DependencyResult resolveDependencies( @Nonnull final ApplicationModel model,
+                                        @Nonnull final OnInvalidPomFn onInvalidPomFn )
+    throws DependencyResolutionException
+  {
+    return resolveDependencies( deriveRootDependencies( model, onInvalidPomFn ) );
+  }
+
+  @Nonnull
   DependencyResult resolveDependencies( @Nonnull final List<Dependency> dependencies )
     throws DependencyResolutionException
   {
