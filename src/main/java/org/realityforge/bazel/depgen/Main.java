@@ -10,9 +10,10 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingException;
-import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyCycle;
+import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.resolution.DependencyResult;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.gen.BazelGenerator;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
@@ -112,9 +113,9 @@ public class Main
         System.exit( ERROR_INVALID_POM_CODE );
       } );
 
-      final CollectResult collectResult = resolver.collectDependencies( dependencies );
+      final DependencyResult result = resolver.resolveDependencies( dependencies );
 
-      final List<DependencyCycle> cycles = collectResult.getCycles();
+      final List<DependencyCycle> cycles = result.getCycles();
       if ( !cycles.isEmpty() )
       {
         c_logger.warning( cycles.size() + " dependency cycles detected when collecting dependencies:" );
@@ -124,7 +125,7 @@ public class Main
         }
         System.exit( ERROR_CYCLES_PRESENT_CODE );
       }
-      final List<Exception> exceptions = collectResult.getExceptions();
+      final List<Exception> exceptions = result.getCollectExceptions();
       if ( !exceptions.isEmpty() )
       {
         c_logger.warning( exceptions.size() + " errors collecting dependencies:" );
