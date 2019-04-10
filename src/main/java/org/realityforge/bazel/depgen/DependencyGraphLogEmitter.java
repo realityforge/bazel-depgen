@@ -23,15 +23,15 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 
 /**
- * A dependency visitor that dumps the graph to the console.
+ * A dependency visitor that dumps the graph to a logger.
  */
-final class ConsoleDependencyGraphDumper
+final class DependencyGraphLogEmitter
   extends DependencyGraphEmitter
 {
   @Nonnull
   private final Logger _logger;
 
-  ConsoleDependencyGraphDumper( @Nonnull final Logger logger )
+  DependencyGraphLogEmitter( @Nonnull final Logger logger )
   {
     _logger = Objects.requireNonNull( logger );
   }

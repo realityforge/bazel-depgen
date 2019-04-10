@@ -136,7 +136,6 @@ public class Main
       }
 
       // depending on command can print or output dependency data
-      collectResult.getRoot().accept( new ConsoleDependencyGraphDumper( c_logger ) );
 
       new BazelGenerator( model ).generate();
     }
