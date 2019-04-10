@@ -38,7 +38,11 @@ public final class DependencyGraphEmitter
   @Override
   public boolean visitEnter( @Nonnull final DependencyNode node )
   {
-    _emitter.emitLine( formatIndentation() + formatNode( node ) );
+    final String line = formatIndentation() + formatNode( node );
+    if ( !line.isEmpty() )
+    {
+      _emitter.emitLine( line );
+    }
     _childInfos.add( new ChildInfo( node.getChildren().size() ) );
     return true;
   }
