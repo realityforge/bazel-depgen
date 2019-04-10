@@ -138,11 +138,13 @@ public class Main
       final DependencyNode node = result.getRoot();
 
       new BazelGenerator( model ).generate();
-      if ( c_logger.isLoggable( Level.INFO ) )
+      if ( c_logger.isLoggable( Level.FINE ) )
       {
         c_logger.info( "Dependency Graph:" );
-        node.accept( new DependencyGraphEmitter( c_logger::info ) );
+        node.accept( new DependencyGraphEmitter( c_logger::fine ) );
       }
+
+      new BazelGenerator( model, node ).generate();
     }
     catch ( final InvalidModelException ime )
     {
