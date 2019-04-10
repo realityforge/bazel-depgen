@@ -141,7 +141,7 @@ public class Main
       if ( c_logger.isLoggable( Level.INFO ) )
       {
         c_logger.info( "Dependency Graph:" );
-        node.accept( new DependencyGraphLogEmitter( c_logger ) );
+        node.accept( new DependencyGraphEmitter( c_logger::info ) );
       }
     }
     catch ( final InvalidModelException ime )

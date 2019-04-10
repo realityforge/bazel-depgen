@@ -3,6 +3,8 @@ package org.realityforge.bazel.depgen;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.Dependency;
@@ -15,20 +17,26 @@ import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 /**
  * A dependency visitor that emits the graph in a format based on Mavens output.
  */
-abstract class DependencyGraphEmitter
+final class DependencyGraphEmitter
   implements DependencyVisitor
 {
+  @Nonnull
+  private final Consumer<String> _emitter;
+  @Nonnull
   private final List<ChildInfo> _childInfos = new ArrayList<>();
+
+  public DependencyGraphEmitter( @Nonnull final Consumer<String> emitter )
+  {
+    _emitter = Objects.requireNonNull( emitter );
+  }
 
   @Override
   public boolean visitEnter( DependencyNode node )
   {
-    emitMessage( formatIndentation() + formatNode( node ) );
+    _emitter.accept( formatIndentation() + formatNode( node ) );
     _childInfos.add( new ChildInfo( node.getChildren().size() ) );
     return true;
   }
-
-  abstract void emitMessage( @Nonnull String message );
 
   @Nonnull
   private String formatIndentation()
