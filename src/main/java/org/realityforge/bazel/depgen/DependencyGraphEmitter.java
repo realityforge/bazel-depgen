@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.Dependency;
@@ -20,12 +19,18 @@ import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 final class DependencyGraphEmitter
   implements DependencyVisitor
 {
+  @FunctionalInterface
+  public interface LineEmitterFn
+  {
+    void emitLine( @Nonnull String line );
+  }
+
   @Nonnull
-  private final Consumer<String> _emitter;
+  private final LineEmitterFn _emitter;
   @Nonnull
   private final List<ChildInfo> _childInfos = new ArrayList<>();
 
-  public DependencyGraphEmitter( @Nonnull final Consumer<String> emitter )
+  public DependencyGraphEmitter( @Nonnull final LineEmitterFn emitter )
   {
     _emitter = Objects.requireNonNull( emitter );
   }
@@ -33,7 +38,7 @@ final class DependencyGraphEmitter
   @Override
   public boolean visitEnter( DependencyNode node )
   {
-    _emitter.accept( formatIndentation() + formatNode( node ) );
+    _emitter.emitLine( formatIndentation() + formatNode( node ) );
     _childInfos.add( new ChildInfo( node.getChildren().size() ) );
     return true;
   }
