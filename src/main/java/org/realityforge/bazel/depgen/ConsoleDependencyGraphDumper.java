@@ -72,7 +72,10 @@ final class ConsoleDependencyGraphDumper
     final StringBuilder buffer = new StringBuilder( 128 );
     final Artifact a = node.getArtifact();
     final Dependency d = node.getDependency();
-    buffer.append( a );
+    if ( null != a )
+    {
+      buffer.append( a );
+    }
     if ( null != d && d.getScope().length() > 0 )
     {
       buffer.append( " [" ).append( d.getScope() );
@@ -84,7 +87,7 @@ final class ConsoleDependencyGraphDumper
     }
     {
       final String premanaged = DependencyManagerUtils.getPremanagedVersion( node );
-      if ( null != premanaged && !premanaged.equals( a.getBaseVersion() ) )
+      if ( null != premanaged && null != a && !premanaged.equals( a.getBaseVersion() ) )
       {
         buffer.append( " (version managed from " ).append( premanaged ).append( ")" );
       }
@@ -101,6 +104,7 @@ final class ConsoleDependencyGraphDumper
     {
       final Artifact w = winner.getArtifact();
       buffer.append( " (conflicts with " );
+      assert null != a;
       if ( ArtifactIdUtils.toVersionlessId( a ).equals( ArtifactIdUtils.toVersionlessId( w ) ) )
       {
         buffer.append( w.getVersion() );
