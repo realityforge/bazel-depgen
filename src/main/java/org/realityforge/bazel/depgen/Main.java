@@ -135,8 +135,14 @@ public class Main
         System.exit( ERROR_COLLECTING_DEPENDENCIES_CODE );
       }
 
+      final DependencyNode node = result.getRoot();
 
       new BazelGenerator( model ).generate();
+      if ( c_logger.isLoggable( Level.INFO ) )
+      {
+        c_logger.info( "Dependency Graph:" );
+        node.accept( new DependencyGraphLogEmitter( c_logger ) );
+      }
     }
     catch ( final InvalidModelException ime )
     {
