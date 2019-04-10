@@ -36,7 +36,7 @@ public final class DependencyGraphEmitter
   }
 
   @Override
-  public boolean visitEnter( DependencyNode node )
+  public boolean visitEnter( @Nonnull final DependencyNode node )
   {
     _emitter.emitLine( formatIndentation() + formatNode( node ) );
     _childInfos.add( new ChildInfo( node.getChildren().size() ) );
