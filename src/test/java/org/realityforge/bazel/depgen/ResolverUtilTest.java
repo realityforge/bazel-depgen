@@ -1,24 +1,18 @@
 package org.realityforge.bazel.depgen;
 
 import gir.io.FileUtil;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import org.apache.maven.settings.Settings;
-import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.deployment.DeployRequest;
-import org.eclipse.aether.deployment.DeploymentException;
 import org.eclipse.aether.graph.Exclusion;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResult;
-import org.eclipse.aether.util.artifact.SubArtifact;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ExcludeModel;
