@@ -170,7 +170,7 @@ public class Main
     }
     catch ( final Throwable t )
     {
-      c_logger.log( Level.WARNING, t.toString(), t.getCause() );
+      c_logger.log( Level.WARNING, t.toString(), t );
       System.exit( ERROR_EXIT_CODE );
     }
 
