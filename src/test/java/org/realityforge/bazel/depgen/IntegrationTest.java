@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen;
 
+import java.nio.file.Path;
 import org.testng.annotations.Test;
 
 public class IntegrationTest
@@ -10,14 +11,18 @@ public class IntegrationTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
+      final Path dir = FileUtil2.createLocalTempDir();
+
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
       writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
       writeDependencies( "repositories:\n" +
-                         "  central: http://repo1.maven.org/maven2\n" +
+                         "  local: " + dir.toUri() + "\n" +
                          "artifacts:\n" +
-                         "  - group: org.realityforge.gir\n" +
-                         "    version: 0.08\n" +
-                         "    ids: ['gir-core']\n" +
+                         "  - group: com.example\n" +
+                         "    version: 1.0\n" +
+                         "    ids: ['myapp']\n" +
                          "    classifier:\n" +
                          "    type: jar\n" +
                          "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n" );
