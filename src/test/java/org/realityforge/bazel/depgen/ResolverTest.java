@@ -303,10 +303,7 @@ public class ResolverTest
                          "  - coord: com.example:mylib:2.5\n" +
                          // This next dep is unversioned so it is skipped
                          "  - coord: com.example:mydep\n" );
-      final ApplicationConfig applicationConfig =
-        ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
-
-      final ApplicationModel model = ApplicationModel.parse( applicationConfig );
+      final ApplicationModel model = loadApplicationModel();
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
 
@@ -353,10 +350,7 @@ public class ResolverTest
         ResolverUtil.createResolver( createLogger( handler ), dir, Collections.emptyList(), true, true );
 
       writeDependencies( "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-      final ApplicationConfig applicationConfig =
-        ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
-
-      final ApplicationModel model = ApplicationModel.parse( applicationConfig );
+      final ApplicationModel model = loadApplicationModel();
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
 
@@ -422,10 +416,7 @@ public class ResolverTest
         ResolverUtil.createResolver( createLogger(), dir, Collections.emptyList(), true, true );
 
       writeDependencies( "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-      final ApplicationConfig applicationConfig =
-        ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
-
-      final ApplicationModel model = ApplicationModel.parse( applicationConfig );
+      final ApplicationModel model = loadApplicationModel();
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
 

@@ -78,10 +78,7 @@ public class DependencyGraphEmitterTest
   private String collectOutput( @Nonnull final Resolver resolver )
     throws Exception
   {
-    final ApplicationConfig applicationConfig =
-      ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
-
-    final ApplicationModel model = ApplicationModel.parse( applicationConfig );
+    final ApplicationModel model = loadApplicationModel();
 
     final AtomicBoolean hasFailed = new AtomicBoolean( false );
 

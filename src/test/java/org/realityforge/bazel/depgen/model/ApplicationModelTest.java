@@ -55,10 +55,8 @@ public class ApplicationModelTest
     inIsolatedDirectory( () -> {
       writeDependencies( "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      final Path configFile = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
-      final ApplicationConfig source = ApplicationConfig.parse( configFile );
 
-      final ApplicationModel model = ApplicationModel.parse( source );
+      final ApplicationModel model = loadApplicationModel();
       assertEquals( model.getArtifacts().size(), 1 );
       final ArtifactModel artifactModel = model.getArtifacts().get( 0 );
       assertEquals( artifactModel.toCoord(), "com.example:myapp:jar:1.0" );

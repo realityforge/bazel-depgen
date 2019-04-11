@@ -21,10 +21,22 @@ import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.deployment.DeploymentException;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.util.artifact.SubArtifact;
+import org.realityforge.bazel.depgen.config.ApplicationConfig;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
 import static org.testng.Assert.*;
 
 public abstract class AbstractTest
 {
+  @Nonnull
+  protected final ApplicationModel loadApplicationModel()
+    throws Exception
+  {
+    final ApplicationConfig applicationConfig =
+      ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+
+    return ApplicationModel.parse( applicationConfig );
+  }
+
   @Nonnull
   final String runCommand( @Nonnull final String... additionalArgs )
   {
