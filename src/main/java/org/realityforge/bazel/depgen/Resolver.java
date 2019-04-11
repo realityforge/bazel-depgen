@@ -84,6 +84,7 @@ final class Resolver
     final CollectRequest collectRequest = new CollectRequest();
     collectRequest.setDependencies( dependencies );
     collectRequest.setRepositories( _repositories );
+    // This filter may also need to skip artifacts with replacements.
     final DependencyFilter filter =
       ( node, parents ) -> !node.getData().containsKey( ConflictResolver.NODE_DATA_WINNER );
     return _system.resolveDependencies( _session, new DependencyRequest( collectRequest, filter ) );
