@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 
 public final class ApplicationModel
@@ -71,6 +72,16 @@ public final class ApplicationModel
   public List<ArtifactModel> getArtifacts()
   {
     return _artifacts;
+  }
+
+  @Nullable
+  public ArtifactModel findArtifact( @Nonnull final String groupId, @Nonnull final String artifactId )
+  {
+    return getArtifacts()
+      .stream()
+      .filter( m -> m.getGroup().equals( groupId ) && m.getId().equals( artifactId ) )
+      .findAny()
+      .orElse( null );
   }
 
   @Nonnull

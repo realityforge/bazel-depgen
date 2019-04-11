@@ -47,4 +47,24 @@ public class ApplicationModelTest
       assertEquals( replacementModel.getTarget(), "@com_example//:alib" );
     } );
   }
+
+  @Test
+  public void findArtifact()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      final Path configFile = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      final ApplicationConfig source = ApplicationConfig.parse( configFile );
+
+      final ApplicationModel model = ApplicationModel.parse( source );
+      assertEquals( model.getArtifacts().size(), 1 );
+      final ArtifactModel artifactModel = model.getArtifacts().get( 0 );
+      assertEquals( artifactModel.toCoord(), "com.example:myapp:jar:1.0" );
+
+      assertEquals( artifactModel, model.findArtifact( "com.example", "myapp" ) );
+      assertNull( model.findArtifact( "com.example", "noexist" ) );
+    } );
+  }
 }
