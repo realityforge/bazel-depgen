@@ -1,12 +1,10 @@
 package org.realityforge.bazel.depgen;
 
-import gir.io.FileUtil;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.resolution.DependencyResult;
-import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
