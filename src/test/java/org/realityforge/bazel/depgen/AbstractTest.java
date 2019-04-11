@@ -19,7 +19,10 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.deployment.DeploymentException;
+import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.DependencyResolutionException;
+import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
@@ -27,6 +30,34 @@ import static org.testng.Assert.*;
 
 public abstract class AbstractTest
 {
+  @Nonnull
+  protected final Resolver createResolver( @Nonnull final Path localRepositoryDirectory )
+  {
+    return ResolverUtil.createResolver( createLogger(), localRepositoryDirectory, Collections.emptyList(), true, true );
+  }
+
+
+  @Nonnull
+  protected final DependencyNode resolveDependencies( @Nonnull final Resolver resolver )
+    throws Exception
+  {
+    return resolveDependencies( resolver, loadApplicationModel() );
+  }
+
+  @Nonnull
+  protected final DependencyNode resolveDependencies( @Nonnull final Resolver resolver,
+                                                      @Nonnull final ApplicationModel model )
+    throws DependencyResolutionException
+  {
+    final DependencyResult result = resolver.resolveDependencies( model, ( m, e ) -> fail() );
+
+    assertTrue( result.getCycles().isEmpty() );
+    assertTrue( result.getCollectExceptions().isEmpty() );
+    final DependencyNode root = result.getRoot();
+    assertNotNull( root );
+    return root;
+  }
+
   @Nonnull
   protected final ApplicationModel loadApplicationModel()
     throws Exception
@@ -153,8 +184,7 @@ public abstract class AbstractTest
                                                   @Nonnull final String... dependencies )
     throws IOException, DeploymentException
   {
-    final Resolver resolver =
-      ResolverUtil.createResolver( createLogger(), localRepository, Collections.emptyList(), true, true );
+    final Resolver resolver = createResolver( localRepository );
 
     final Artifact jarArtifact = new DefaultArtifact( coords ).setFile( createTempJarFile().toFile() );
     final Artifact pomArtifact =

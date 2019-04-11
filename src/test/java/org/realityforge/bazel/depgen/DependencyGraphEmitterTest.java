@@ -2,10 +2,8 @@ package org.realityforge.bazel.depgen;
 
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
-import org.eclipse.aether.resolution.DependencyResult;
-import org.realityforge.bazel.depgen.model.ApplicationModel;
+import org.eclipse.aether.graph.DependencyNode;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -29,11 +27,8 @@ public class DependencyGraphEmitterTest
       deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:rtB:2.0" );
 
-      final Resolver resolver =
-        ResolverUtil.createResolver( createLogger(), dir, Collections.emptyList(), true, true );
-
       writeDependencies( "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-      final String output = collectOutput( resolver );
+      final String output = collectOutput( createResolver( dir ) );
       assertEquals( output,
                     "\\- com.example:myapp:jar:1.0 [compile]\n" +
                     "   +- com.example:mylib:jar:1.0 [compile]\n" +
@@ -59,11 +54,8 @@ public class DependencyGraphEmitterTest
       deployTempArtifactToLocalRepository( dir, "com.example:rtA:32.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
 
-      final Resolver resolver =
-        ResolverUtil.createResolver( createLogger(), dir, Collections.emptyList(), true, true );
-
       writeDependencies( "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-      final String output = collectOutput( resolver );
+      final String output = collectOutput( createResolver( dir ) );
       assertEquals( output,
                     "\\- com.example:myapp:jar:1.0 [compile]\n" +
                     "   +- com.example:mylib:jar:1.0 [compile]\n" +
@@ -76,20 +68,10 @@ public class DependencyGraphEmitterTest
   private String collectOutput( @Nonnull final Resolver resolver )
     throws Exception
   {
-    final ApplicationModel model = loadApplicationModel();
-
-    final AtomicBoolean hasFailed = new AtomicBoolean( false );
-
-    final DependencyResult result = resolver.resolveDependencies( model, ( m, e ) -> hasFailed.set( true ) );
-
-    assertFalse( hasFailed.get() );
-
-    assertTrue( result.getCycles().isEmpty() );
-    assertTrue( result.getCollectExceptions().isEmpty() );
-    assertNotNull( result.getRoot() );
+    final DependencyNode root = resolveDependencies( resolver );
 
     final StringBuilder sb = new StringBuilder();
-    result.getRoot().accept( new DependencyGraphEmitter( line -> {
+    root.accept( new DependencyGraphEmitter( line -> {
       sb.append( line );
       sb.append( "\n" );
     } ) );
