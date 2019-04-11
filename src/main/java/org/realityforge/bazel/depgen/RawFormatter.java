@@ -16,7 +16,9 @@ final class RawFormatter
     if ( null != throwable )
     {
       final StringWriter sw = new StringWriter();
-      throwable.printStackTrace( new PrintWriter( sw ) );
+      final PrintWriter writer = new PrintWriter( sw );
+      throwable.printStackTrace( writer );
+      writer.close();
       return output + sw;
     }
     else
