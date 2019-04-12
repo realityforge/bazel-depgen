@@ -4,14 +4,14 @@ import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 
-public final class RecordUtil
+final class RecordUtil
 {
   private RecordUtil()
   {
   }
 
   @Nonnull
-  public static String toArtifactKey( @Nonnull final DependencyNode node )
+  static String toArtifactKey( @Nonnull final DependencyNode node )
   {
     final Artifact artifact = node.getArtifact();
     assert null != artifact;
