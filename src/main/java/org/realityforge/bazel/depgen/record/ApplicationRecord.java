@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -70,11 +71,16 @@ public final class ApplicationRecord
   @Nullable
   ArtifactRecord findArtifact( @Nonnull final String groupId, @Nonnull final String artifactId )
   {
+    return findArtifact( m -> m.shouldMatch( groupId, artifactId ) );
+  }
+
+  @Nullable
+  ArtifactRecord findArtifact( @Nonnull final Predicate<ArtifactRecord> predicate )
+  {
     return _artifacts
       .values()
       .stream()
-      .filter( m -> m.getNode().getDependency().getArtifact().getGroupId().equals( groupId ) &&
-                    m.getNode().getDependency().getArtifact().getArtifactId().equals( artifactId ) )
+      .filter( predicate )
       .findAny()
       .orElse( null );
   }

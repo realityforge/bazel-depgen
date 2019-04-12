@@ -79,4 +79,11 @@ public final class ArtifactRecord
                                               c.getDependency().getArtifact().getArtifactId() ) )
         .collect( Collectors.toList() );
   }
+
+  boolean shouldMatch( @Nonnull final String groupId, @Nonnull final String artifactId )
+  {
+    final DependencyNode node = getNode();
+    final org.eclipse.aether.artifact.Artifact artifact = node.getDependency().getArtifact();
+    return groupId.equals( artifact.getGroupId() ) && artifactId.equals( artifact.getArtifactId() );
+  }
 }
