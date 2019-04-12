@@ -26,16 +26,32 @@ import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
+import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import static org.testng.Assert.*;
 
 public abstract class AbstractTest
 {
   @Nonnull
+  protected final ApplicationRecord loadApplicationRecord( @Nonnull final Path localRepositoryDirectory )
+    throws Exception
+  {
+    return loadApplicationRecord( createResolver( localRepositoryDirectory ) );
+  }
+
+  @Nonnull
+  protected final ApplicationRecord loadApplicationRecord( @Nonnull final Resolver resolver )
+    throws Exception
+  {
+    final ApplicationModel model = loadApplicationModel();
+    final DependencyNode root = resolveDependencies( resolver, model );
+    return ApplicationRecord.build( model, root );
+  }
+
+  @Nonnull
   protected final Resolver createResolver( @Nonnull final Path localRepositoryDirectory )
   {
     return ResolverUtil.createResolver( createLogger(), localRepositoryDirectory, Collections.emptyList(), true, true );
   }
-
 
   @Nonnull
   protected final DependencyNode resolveDependencies( @Nonnull final Resolver resolver )
