@@ -27,3 +27,9 @@ complete as there is too much un-said.
 * Support non-jar dependencies and expose them as files/filegroups
 
 * Add support for global excludes
+
+* Add ability to add extra runtime or extra compile deps to an artifact
+
+* Add ability to specify that for an artifact, optional dependencies are included
+
+* Add ability to add in labels that will be used as an alias of a dependency
