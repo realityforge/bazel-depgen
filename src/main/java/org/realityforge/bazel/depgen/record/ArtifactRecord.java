@@ -39,6 +39,13 @@ public final class ArtifactRecord
     return _node;
   }
 
+  /**
+   * Return the model that represents the configuration supplied by the user.
+   * This method may return null if the artifact was not declared by the user but
+   * is a dependency of another artifact.
+   *
+   * @return the model if any.
+   */
   @Nullable
   public ArtifactModel getSource()
   {
