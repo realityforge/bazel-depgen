@@ -32,4 +32,6 @@ complete as there is too much un-said.
 
 * Add ability to specify that for an artifact, optional dependencies are included
 
-* Add ability to add in labels that will be used as an alias of a dependency
+* Add ability to add in labels that will be used as an alias of a dependency. This is similar to replacements
+  except that it is done at the time that the `setup_workspace()` based on parameters passed and while replacements
+  always occur.
