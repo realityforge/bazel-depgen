@@ -30,7 +30,7 @@ public final class ArtifactRecord
   @Nonnull
   public String getKey()
   {
-    return RecordUtil.toArtifactKey( _node );
+    return null != _source ? RecordUtil.toArtifactKey( _source ) : RecordUtil.toArtifactKey( _node );
   }
 
   @Nonnull
