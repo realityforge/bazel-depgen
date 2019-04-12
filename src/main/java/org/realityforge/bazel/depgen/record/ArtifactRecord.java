@@ -18,9 +18,9 @@ public final class ArtifactRecord
   @Nullable
   private final ArtifactModel _source;
 
-  public ArtifactRecord( @Nonnull final ApplicationRecord application,
-                         @Nonnull final DependencyNode node,
-                         @Nullable final ArtifactModel source )
+  ArtifactRecord( @Nonnull final ApplicationRecord application,
+                  @Nonnull final DependencyNode node,
+                  @Nullable final ArtifactModel source )
   {
     _application = Objects.requireNonNull( application );
     _node = Objects.requireNonNull( node );
