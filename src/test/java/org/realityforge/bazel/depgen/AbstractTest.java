@@ -179,9 +179,9 @@ public abstract class AbstractTest
     return pomFile;
   }
 
-  final void deployTempArtifactToLocalRepository( @Nonnull final Path localRepository,
-                                                  @Nonnull final String coords,
-                                                  @Nonnull final String... dependencies )
+  protected final void deployTempArtifactToLocalRepository( @Nonnull final Path localRepository,
+                                                            @Nonnull final String coords,
+                                                            @Nonnull final String... dependencies )
     throws IOException, DeploymentException
   {
     final Resolver resolver = createResolver( localRepository );

@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import javax.annotation.Nonnull;
 
 //TODO: This should move to Gir
-final class FileUtil2
+public final class FileUtil2
 {
   private FileUtil2()
   {
@@ -20,7 +20,7 @@ final class FileUtil2
    * @return the new temp directory.
    */
   @Nonnull
-  static Path createLocalTempDir()
+  public static Path createLocalTempDir()
     throws IOException
   {
     final File dir = File.createTempFile( "gir", "dir", FileUtil.getCurrentDirectory().toFile() );
