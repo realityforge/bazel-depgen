@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.apache.maven.artifact.Artifact;
+import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -74,6 +75,8 @@ final class Resolver
                                         @Nonnull final OnInvalidPomFn onInvalidPomFn )
     throws DependencyResolutionException
   {
+    final DefaultRepositorySystemSession session = (DefaultRepositorySystemSession) _session;
+    session.setDependencySelector( new ReplacementDependencySelector( model ) );
     return resolveDependencies( deriveRootDependencies( model, onInvalidPomFn ) );
   }
 

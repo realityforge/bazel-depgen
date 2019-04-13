@@ -382,9 +382,7 @@ public class ResolverTest
       final DependencyNode node5 = children3.get( 0 );
       assertEquals( node5.getDependency().toString(), "com.example:rtB:jar:2.0 (runtime)" );
       final List<DependencyNode> children4 = node5.getChildren();
-      assertEquals( children4.size(), 1 );
-      final DependencyNode node6 = children4.get( 0 );
-      assertEquals( node6.getDependency().toString(), "com.example:kernel:jar:4.0 (system)" );
+      assertEquals( children4.size(), 0 );
     } );
   }
 
