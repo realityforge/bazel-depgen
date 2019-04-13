@@ -77,9 +77,15 @@ public final class ApplicationModel
   @Nullable
   public ArtifactModel findArtifact( @Nonnull final String groupId, @Nonnull final String artifactId )
   {
+    return findArtifact( m -> m.getGroup().equals( groupId ) && m.getId().equals( artifactId ) );
+  }
+
+  @Nullable
+  ArtifactModel findArtifact( @Nonnull final Predicate<ArtifactModel> predicate )
+  {
     return getArtifacts()
       .stream()
-      .filter( m -> m.getGroup().equals( groupId ) && m.getId().equals( artifactId ) )
+      .filter( predicate )
       .findAny()
       .orElse( null );
   }
