@@ -6,29 +6,26 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
-import org.realityforge.bazel.depgen.model.ApplicationModel;
+import org.realityforge.bazel.depgen.record.ApplicationRecord;
+import org.realityforge.bazel.depgen.record.ArtifactRecord;
 
 public final class BazelGenerator
 {
   @Nonnull
-  private final ApplicationModel _model;
-  @Nonnull
-  private final DependencyNode _root;
+  private final ApplicationRecord _record;
 
-  public BazelGenerator( @Nonnull final ApplicationModel model,
-                         @Nonnull final DependencyNode root )
+  public BazelGenerator( @Nonnull final ApplicationRecord record )
   {
-    _model = Objects.requireNonNull( model );
-    _root = Objects.requireNonNull( root );
+    _record = Objects.requireNonNull( record );
   }
 
   public void generate()
     throws Exception
   {
-    final Path extensionFile = _model.getOptions().getExtensionFile();
+    final Path extensionFile = _record.getSource().getOptions().getExtensionFile();
 
     mkdirs( extensionFile.getParent() );
 
@@ -39,7 +36,7 @@ public final class BazelGenerator
       output.newLine();
 
       output.write( "# Dependency Graph Generated from the input data" );
-      _root.accept( new DependencyGraphEmitter( line -> {
+      _record.getNode().accept( new DependencyGraphEmitter( line -> {
         try
         {
           output.write( "# " + line );
@@ -100,8 +97,8 @@ def bar():
   private void emitDoNotEdit( @Nonnull final StarlarkFileOutput output )
     throws IOException
   {
-    final Path configLocation = _model.getConfigLocation();
-    final Path extensionFile = _model.getOptions().getExtensionFile();
+    final Path configLocation = _record.getSource().getConfigLocation();
+    final Path extensionFile = _record.getSource().getOptions().getExtensionFile();
     final Path relativePathToWorkspace =
       extensionFile.getParent().toAbsolutePath().normalize().relativize( configLocation.toAbsolutePath().normalize() );
     output.write( "# DO NOT EDIT: File is auto-generated from " + relativePathToWorkspace );

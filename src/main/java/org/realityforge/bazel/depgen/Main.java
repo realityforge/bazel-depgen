@@ -18,6 +18,7 @@ import org.realityforge.bazel.depgen.gen.BazelGenerator;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.InvalidModelException;
 import org.realityforge.bazel.depgen.model.OptionsModel;
+import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
@@ -140,8 +141,9 @@ public class Main
         c_logger.info( "Dependency Graph:" );
         node.accept( new DependencyGraphEmitter( c_logger::fine ) );
       }
+      final ApplicationRecord record = ApplicationRecord.build( model, node );
 
-      new BazelGenerator( model, node ).generate();
+      new BazelGenerator( record ).generate();
     }
     catch ( final InvalidModelException ime )
     {
