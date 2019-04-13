@@ -352,13 +352,11 @@ public class ResolverTest
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
 
-      final List<Dependency> dependencies =
-        resolver.deriveRootDependencies( model, ( artifactModel, exceptions ) -> hasFailed.set( true ) );
+      final DependencyResult result =
+        resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> hasFailed.set( true ) );
 
       assertFalse( hasFailed.get() );
       assertTrue( handler.getRecords().isEmpty() );
-
-      final DependencyResult result = resolver.resolveDependencies( dependencies );
 
       assertTrue( result.getCycles().isEmpty() );
       assertTrue( result.getCollectExceptions().isEmpty() );

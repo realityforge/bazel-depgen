@@ -81,7 +81,7 @@ final class Resolver
   }
 
   @Nonnull
-  DependencyResult resolveDependencies( @Nonnull final List<Dependency> dependencies )
+  private DependencyResult resolveDependencies( @Nonnull final List<Dependency> dependencies )
     throws DependencyResolutionException
   {
     final CollectRequest collectRequest = new CollectRequest();
