@@ -32,7 +32,7 @@ public class ApplicationRecordTest
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
-      assertNotNull( artifactRecord.getSource() );
+      assertNotNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
       assertEquals( artifactRecord.getDeps().size(), 0 );
       assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
@@ -78,7 +78,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
         assertNotNull( artifactRecord );
-        assertNotNull( artifactRecord.getSource() );
+        assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getDeps().size(), 1 );
         assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
@@ -89,7 +89,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "mylib" );
         assertNotNull( artifactRecord );
-        assertNull( artifactRecord.getSource() );
+        assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 1 );
@@ -99,7 +99,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "rtA" );
         assertNotNull( artifactRecord );
-        assertNull( artifactRecord.getSource() );
+        assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:rtA" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
@@ -108,7 +108,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "rtB" );
         assertNotNull( artifactRecord );
-        assertNull( artifactRecord.getSource() );
+        assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:rtB" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
@@ -142,7 +142,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
         assertNotNull( artifactRecord );
-        assertNotNull( artifactRecord.getSource() );
+        assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getDeps().size(), 1 );
         assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
@@ -152,7 +152,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "mylib" );
         assertNotNull( artifactRecord );
-        assertNull( artifactRecord.getSource() );
+        assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
@@ -186,7 +186,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
         assertNotNull( artifactRecord );
-        assertNotNull( artifactRecord.getSource() );
+        assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 1 );
@@ -196,7 +196,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "rtA" );
         assertNotNull( artifactRecord );
-        assertNull( artifactRecord.getSource() );
+        assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:rtA" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
@@ -231,7 +231,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
         assertNotNull( artifactRecord );
-        assertNotNull( artifactRecord.getSource() );
+        assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getDeps().size(), 1 );
         assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
@@ -241,7 +241,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "mylib" );
         assertNotNull( artifactRecord );
-        assertNotNull( artifactRecord.getSource() );
+        assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
@@ -280,7 +280,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
         assertNotNull( artifactRecord );
-        assertNotNull( artifactRecord.getSource() );
+        assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getDeps().size(), 1 );
         assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
@@ -291,7 +291,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "mylib" );
         assertNotNull( artifactRecord );
-        assertNull( artifactRecord.getSource() );
+        assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 1 );
@@ -301,7 +301,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "rtA" );
         assertNotNull( artifactRecord );
-        assertNull( artifactRecord.getSource() );
+        assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:rtA" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );

@@ -16,15 +16,15 @@ public final class ArtifactRecord
   @Nonnull
   private final DependencyNode _node;
   @Nullable
-  private final ArtifactModel _source;
+  private final ArtifactModel _artifactModel;
 
   ArtifactRecord( @Nonnull final ApplicationRecord application,
                   @Nonnull final DependencyNode node,
-                  @Nullable final ArtifactModel source )
+                  @Nullable final ArtifactModel artifactModel,
   {
     _application = Objects.requireNonNull( application );
     _node = Objects.requireNonNull( node );
-    _source = source;
+    _artifactModel = artifactModel;
   }
 
   @Nonnull
@@ -47,9 +47,9 @@ public final class ArtifactRecord
    * @return the model if any.
    */
   @Nullable
-  public ArtifactModel getSource()
+  public ArtifactModel getArtifactModel()
   {
-    return _source;
+    return _artifactModel;
   }
 
   @Nonnull
