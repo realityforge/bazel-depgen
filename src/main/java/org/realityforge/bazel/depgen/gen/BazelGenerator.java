@@ -56,6 +56,21 @@ public final class BazelGenerator
       output.write( "load(\"@bazel_skylib//:lib/versions.bzl\", \"versions\")" );
       output.newLine();
 
+      for ( final ArtifactRecord artifact : _record.getArtifacts() )
+      {
+        output.write( "# " + artifact.getKey() );
+        output.write( "#   runtimeDeps: " +
+                      artifact.getRuntimeDeps()
+                        .stream()
+                        .map( ArtifactRecord::getKey )
+                        .collect( Collectors.joining( " " ) ) );
+        output.write( "#   deps: " +
+                      artifact.getDeps()
+                        .stream()
+                        .map( ArtifactRecord::getKey )
+                        .collect( Collectors.joining( " " ) ) );
+      }
+
       //TODO: Add omit snippets like
 /*
 def closure_repositories(
@@ -86,7 +101,7 @@ def bar():
     }
   }
 
-  private void mkdirs( final Path path )
+  private void mkdirs( @Nonnull final Path path )
   {
     if ( !path.toFile().exists() && !path.toFile().mkdirs() )
     {
