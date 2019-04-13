@@ -37,6 +37,7 @@ final class DependencyCollector
     else if ( hasReplacement( node.getDependency() ) )
     {
       // Manually supplied dependency
+      _record.replacement( node );
       return false;
     }
     else if ( !( "".equals( node.getDependency().getScope() ) ||

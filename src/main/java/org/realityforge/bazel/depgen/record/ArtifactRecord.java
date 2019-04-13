@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
+import org.realityforge.bazel.depgen.model.ReplacementModel;
 
 public final class ArtifactRecord
 {
@@ -17,20 +18,25 @@ public final class ArtifactRecord
   private final DependencyNode _node;
   @Nullable
   private final ArtifactModel _artifactModel;
+  @Nullable
+  private final ReplacementModel _replacementModel;
 
   ArtifactRecord( @Nonnull final ApplicationRecord application,
                   @Nonnull final DependencyNode node,
                   @Nullable final ArtifactModel artifactModel,
+                  @Nullable final ReplacementModel replacementModel )
   {
+    assert null == artifactModel || null == replacementModel;
     _application = Objects.requireNonNull( application );
     _node = Objects.requireNonNull( node );
     _artifactModel = artifactModel;
+    _replacementModel = replacementModel;
   }
 
   @Nonnull
   public String getKey()
   {
-    return null != _source ? RecordUtil.toArtifactKey( _source ) : RecordUtil.toArtifactKey( _node );
+    return null != _artifactModel ? RecordUtil.toArtifactKey( _artifactModel ) : RecordUtil.toArtifactKey( _node );
   }
 
   @Nonnull
@@ -42,7 +48,8 @@ public final class ArtifactRecord
   /**
    * Return the model that represents the configuration supplied by the user.
    * This method may return null if the artifact was not declared by the user but
-   * is a dependency of another artifact.
+   * is a dependency of another artifact or if {@link #getReplacementModel()} returns
+   * a non-null value.
    *
    * @return the model if any.
    */
@@ -50,6 +57,18 @@ public final class ArtifactRecord
   public ArtifactModel getArtifactModel()
   {
     return _artifactModel;
+  }
+
+  /**
+   * Return the replacement for artifact as supplied by the user.
+   * This method may return null if the artifact was not as a replacement.
+   *
+   * @return the replacement if any.
+   */
+  @Nullable
+  public ReplacementModel getReplacementModel()
+  {
+    return _replacementModel;
   }
 
   @Nonnull
