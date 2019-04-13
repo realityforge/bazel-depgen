@@ -65,4 +65,27 @@ public class ApplicationModelTest
       assertNull( model.findArtifact( "com.example", "noexist" ) );
     } );
   }
+
+  @Test
+  public void findReplacement()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "replacements:\n" +
+                         "  - coord: com.example:mylib\n" +
+                         "    target: \"@com_example//:mylib\"\n" );
+
+      final ApplicationModel model = loadApplicationModel();
+      assertEquals( model.getReplacements().size(), 1 );
+      final ReplacementModel replacementModel = model.getReplacements().get( 0 );
+      assertEquals( replacementModel.getGroup(), "com.example" );
+      assertEquals( replacementModel.getId(), "mylib" );
+      assertEquals( replacementModel.getTarget(), "@com_example//:mylib" );
+
+      assertEquals( replacementModel, model.findReplacement( "com.example", "mylib" ) );
+      assertNull( model.findArtifact( "com.example", "noexist" ) );
+    } );
+  }
 }

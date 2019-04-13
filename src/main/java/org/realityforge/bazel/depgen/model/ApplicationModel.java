@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -94,5 +95,22 @@ public final class ApplicationModel
   public List<ReplacementModel> getReplacements()
   {
     return _replacements;
+  }
+
+
+  @Nullable
+  public ReplacementModel findReplacement( @Nonnull final String groupId, @Nonnull final String artifactId )
+  {
+    return findReplacement( m -> m.getGroup().equals( groupId ) && m.getId().equals( artifactId ) );
+  }
+
+  @Nullable
+  ReplacementModel findReplacement( @Nonnull final Predicate<ReplacementModel> predicate )
+  {
+    return getReplacements()
+      .stream()
+      .filter( predicate )
+      .findAny()
+      .orElse( null );
   }
 }
