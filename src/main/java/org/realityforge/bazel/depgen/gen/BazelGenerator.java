@@ -92,7 +92,15 @@ def bar():
 */
       output.write( "def generate_workspace_rules():" );
       output.incIndent();
-      output.write( "\"\"\"Load all dependencies needed by the project.\"\"\"" );
+      output.write( "\"\"\"" );
+      output.incIndent();
+      output.write( "Repository rules macro to load dependencies specified by '" +
+                    getRelativePathToDependenciesYaml() +
+                    "'." );
+      output.newLine();
+      output.write( "Must be run from a WORKSPACE file." );
+      output.decIndent();
+      output.write( "\"\"\"" );
       output.newLine();
       output.write( "# Verify the version of Bazel is compatible" );
       output.write( "versions.check(\"0.23.0\")" );
