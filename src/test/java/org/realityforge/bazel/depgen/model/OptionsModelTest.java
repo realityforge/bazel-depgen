@@ -29,7 +29,7 @@ public class OptionsModelTest
   {
     final OptionsConfig source = new OptionsConfig();
     source.setWorkspaceDirectory( ".." );
-    source.setExtensionFile( "workspace.bzl" );
+    source.setExtensionFile( "dependencies.bzl" );
     source.setFailOnMissingPom( false );
     source.setFailOnInvalidPom( false );
     source.setEmitDependencyGraph( false );
@@ -39,7 +39,7 @@ public class OptionsModelTest
     assertEquals( model.getWorkspaceDirectory(),
                   FileUtil.getCurrentDirectory().resolve( ".." ).normalize() );
     assertEquals( model.getExtensionFile(),
-                  FileUtil.getCurrentDirectory().resolve( "workspace.bzl" ) );
+                  FileUtil.getCurrentDirectory().resolve( "dependencies.bzl" ) );
     assertFalse( model.failOnMissingPom() );
     assertFalse( model.failOnInvalidPom() );
     assertFalse( model.emitDependencyGraph() );

@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 public class OptionsConfig
 {
   public static final String DEFAULT_WORKSPACE_DIR = ".";
-  public static final String DEFAULT_EXTENSION_FILE = "3rdparty/workspace.bzl";
+  public static final String DEFAULT_EXTENSION_FILE = "3rdparty/dependencies.bzl";
   @Nonnull
   private String workspaceDirectory = DEFAULT_WORKSPACE_DIR;
   @Nonnull
