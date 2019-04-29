@@ -66,4 +66,9 @@ public final class OptionsModel
   {
     return _source.isFailOnMissingPom();
   }
+
+  public boolean emitDependencyGraph()
+  {
+    return _source.isEmitDependencyGraph();
+  }
 }

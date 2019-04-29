@@ -21,6 +21,7 @@ public class OptionsModelTest
                   FileUtil.getCurrentDirectory().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );
     assertTrue( model.failOnMissingPom() );
     assertTrue( model.failOnInvalidPom() );
+    assertTrue( model.emitDependencyGraph() );
   }
 
   @Test
@@ -31,6 +32,7 @@ public class OptionsModelTest
     source.setExtensionFile( "workspace.bzl" );
     source.setFailOnMissingPom( false );
     source.setFailOnInvalidPom( false );
+    source.setEmitDependencyGraph( false );
 
     final OptionsModel model = OptionsModel.parse( FileUtil.getCurrentDirectory(), source );
     assertEquals( model.getSource(), source );
@@ -40,5 +42,6 @@ public class OptionsModelTest
                   FileUtil.getCurrentDirectory().resolve( "workspace.bzl" ) );
     assertFalse( model.failOnMissingPom() );
     assertFalse( model.failOnInvalidPom() );
+    assertFalse( model.emitDependencyGraph() );
   }
 }

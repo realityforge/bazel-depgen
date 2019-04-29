@@ -12,6 +12,7 @@ public class OptionsConfig
   private String extensionFile = DEFAULT_EXTENSION_FILE;
   private boolean failOnInvalidPom = true;
   private boolean failOnMissingPom = true;
+  private boolean emitDependencyGraph = true;
 
   @Nonnull
   public String getWorkspaceDirectory()
@@ -53,5 +54,15 @@ public class OptionsConfig
   public void setFailOnMissingPom( final boolean failOnMissingPom )
   {
     this.failOnMissingPom = failOnMissingPom;
+  }
+
+  public boolean isEmitDependencyGraph()
+  {
+    return emitDependencyGraph;
+  }
+
+  public void setEmitDependencyGraph( final boolean emitDependencyGraph )
+  {
+    this.emitDependencyGraph = emitDependencyGraph;
   }
 }

@@ -172,6 +172,7 @@ public class ApplicationConfigTest
         "  workspaceDirectory: workspaceDir\n" +
         "  failOnMissingPom: false\n" +
         "  failOnInvalidPom: false\n" +
+        "  emitDependencyGraph: false\n" +
         "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
@@ -183,6 +184,7 @@ public class ApplicationConfigTest
       assertEquals( options.getExtensionFile(), "workspaceDir/vendor/workspace.bzl" );
       assertFalse( options.isFailOnMissingPom() );
       assertFalse( options.isFailOnInvalidPom() );
+      assertFalse( options.isEmitDependencyGraph() );
     } );
   }
 
@@ -202,6 +204,7 @@ public class ApplicationConfigTest
       assertEquals( options.getExtensionFile(), OptionsConfig.DEFAULT_EXTENSION_FILE );
       assertTrue( options.isFailOnMissingPom() );
       assertTrue( options.isFailOnInvalidPom() );
+      assertTrue( options.isEmitDependencyGraph() );
     } );
   }
 

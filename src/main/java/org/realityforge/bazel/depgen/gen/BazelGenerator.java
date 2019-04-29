@@ -35,18 +35,21 @@ public final class BazelGenerator
 
       output.newLine();
 
-      output.write( "# Dependency Graph Generated from the input data" );
-      _record.getNode().accept( new DependencyGraphEmitter( line -> {
-        try
-        {
-          output.write( "# " + line );
-        }
-        catch ( final IOException ioe )
-        {
-          throw new IllegalStateException( "Failed to write to file", ioe );
-        }
-      } ) );
-      output.newLine();
+      if ( _record.getSource().getOptions().emitDependencyGraph() )
+      {
+        output.write( "# Dependency Graph Generated from the input data" );
+        _record.getNode().accept( new DependencyGraphEmitter( line -> {
+          try
+          {
+            output.write( "# " + line );
+          }
+          catch ( final IOException ioe )
+          {
+            throw new IllegalStateException( "Failed to write to file", ioe );
+          }
+        } ) );
+        output.newLine();
+      }
 
       emitArtifactRule( output );
 
