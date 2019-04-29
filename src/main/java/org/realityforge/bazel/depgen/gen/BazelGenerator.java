@@ -115,11 +115,18 @@ def bar():
   private void emitDoNotEdit( @Nonnull final StarlarkFileOutput output )
     throws IOException
   {
+    output.write( "# DO NOT EDIT: File is auto-generated from " + getRelativePathToDependenciesYaml() );
+  }
+
+  @Nonnull
+  private Path getRelativePathToDependenciesYaml()
+  {
     final Path configLocation = _record.getSource().getConfigLocation();
     final Path extensionFile = _record.getSource().getOptions().getExtensionFile();
-    final Path relativePathToWorkspace =
-      extensionFile.getParent().toAbsolutePath().normalize().relativize( configLocation.toAbsolutePath().normalize() );
-    output.write( "# DO NOT EDIT: File is auto-generated from " + relativePathToWorkspace );
+    return extensionFile.getParent()
+      .toAbsolutePath()
+      .normalize()
+      .relativize( configLocation.toAbsolutePath().normalize() );
   }
 
   private void emitArtifactRule( @Nonnull final StarlarkFileOutput output )
