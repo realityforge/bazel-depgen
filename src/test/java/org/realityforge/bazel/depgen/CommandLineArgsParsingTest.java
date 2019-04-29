@@ -1,6 +1,7 @@
 package org.realityforge.bazel.depgen;
 
 import gir.io.FileUtil;
+import java.nio.file.Path;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -117,6 +118,28 @@ public class CommandLineArgsParsingTest
 
       final String output = runCommand();
       assertEquals( output, "" );
+    } );
+  }
+
+  @Test
+  public void dependencyGraphEmittedWhenRequested()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil2.createLocalTempDir();
+
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      writeWorkspace();
+      writeDependencies( "repositories:\n" +
+                         "  local: " + dir.toUri().toString() + "\n" +
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+
+      final String output = runCommand( "--emit-dependency-graph" );
+      assertEquals( output,
+                    "Dependency Graph:\n" +
+                    "\\- com.example:myapp:jar:1.0 [compile]\n" );
     } );
   }
 

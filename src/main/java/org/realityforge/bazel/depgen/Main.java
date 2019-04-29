@@ -41,6 +41,7 @@ public class Main
   private static final int DEPENDENCIES_FILE_OPT = 'd';
   private static final int SETTINGS_FILE_OPT = 's';
   private static final int CACHE_DIR_OPT = 'r';
+  private static final int EMIT_DEPENDENCY_GRAPH_OPT = 1;
   private static final CLOptionDescriptor[] OPTIONS = new CLOptionDescriptor[]{
     new CLOptionDescriptor( "help",
                             CLOptionDescriptor.ARGUMENT_DISALLOWED,
@@ -70,8 +71,13 @@ public class Main
                             CLOptionDescriptor.ARGUMENT_REQUIRED,
                             CACHE_DIR_OPT,
                             "The path to the directory in which to cache downloads from remote " +
-                            "repositories. Defaults to '" + DEFAULT_CACHE_DIR + "' in the workspace directory." )
-  };
+                            "repositories. Defaults to '" + DEFAULT_CACHE_DIR + "' in the workspace directory." ),
+    new CLOptionDescriptor( "emit-dependency-graph",
+                            CLOptionDescriptor.ARGUMENT_DISALLOWED,
+                            EMIT_DEPENDENCY_GRAPH_OPT,
+                            "Emit the computed dependency graph after it is calculated." ),
+
+    };
   private static final int SUCCESS_EXIT_CODE = 0;
   private static final int ERROR_EXIT_CODE = 1;
   private static final int ERROR_PARSING_ARGS_EXIT_CODE = 2;
@@ -85,6 +91,7 @@ public class Main
   private static Path c_dependenciesFile;
   private static Path c_settingsFile;
   private static Path c_cacheDir;
+  private static boolean c_emitDependencyGraph;
 
   public static void main( final String[] args )
   {
@@ -136,10 +143,11 @@ public class Main
 
       final DependencyNode node = result.getRoot();
 
-      if ( c_logger.isLoggable( Level.FINE ) )
+      final Level dependencyGraphLevel = c_emitDependencyGraph ? Level.WARNING : Level.FINE;
+      if ( c_logger.isLoggable( dependencyGraphLevel ) )
       {
-        c_logger.info( "Dependency Graph:" );
-        node.accept( new DependencyGraphEmitter( c_logger::fine ) );
+        c_logger.log( dependencyGraphLevel, "Dependency Graph:" );
+        node.accept( new DependencyGraphEmitter( line -> c_logger.log( dependencyGraphLevel, line ) ) );
       }
       final ApplicationRecord record = ApplicationRecord.build( model, node );
 
@@ -280,6 +288,12 @@ public class Main
             return false;
           }
           c_cacheDir = dir.toPath();
+          break;
+        }
+
+        case EMIT_DEPENDENCY_GRAPH_OPT:
+        {
+          c_emitDependencyGraph = true;
           break;
         }
 
