@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.jar.JarEntry;
@@ -228,6 +229,9 @@ public abstract class AbstractTest
     final Path jarFile = Files.createTempFile( "data", ".jar" );
     final JarOutputStream outputStream = new JarOutputStream( new FileOutputStream( jarFile.toFile() ) );
     final JarEntry entry = new JarEntry( "data.txt" );
+    entry.setCreationTime( FileTime.fromMillis( 0 ) );
+    entry.setTime( 0 );
+    entry.setComment( null );
     outputStream.putNextEntry( entry );
     outputStream.write( "Hi".getBytes() );
     outputStream.closeEntry();
