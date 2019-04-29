@@ -90,7 +90,7 @@ def foo():
 def bar():
   native.maven_jar(name = "bar", ...)
 */
-      output.write( "def setup_workspace():" );
+      output.write( "def generate_workspace_rules():" );
       output.incIndent();
       output.write( "\"\"\"Load all dependencies needed by the project.\"\"\"" );
       output.newLine();
