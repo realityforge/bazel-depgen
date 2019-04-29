@@ -89,7 +89,7 @@ public final class ApplicationRecord
   }
 
   @Nullable
-  ArtifactRecord findArtifact( @Nonnull final Predicate<ArtifactRecord> predicate )
+  private ArtifactRecord findArtifact( @Nonnull final Predicate<ArtifactRecord> predicate )
   {
     return _artifacts
       .values()
