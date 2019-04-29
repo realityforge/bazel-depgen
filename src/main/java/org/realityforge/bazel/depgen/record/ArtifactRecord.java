@@ -20,15 +20,19 @@ public final class ArtifactRecord
   private final ArtifactModel _artifactModel;
   @Nullable
   private final ReplacementModel _replacementModel;
+  @Nullable
+  private final String _sha256;
 
   ArtifactRecord( @Nonnull final ApplicationRecord application,
                   @Nonnull final DependencyNode node,
+                  @Nullable final String sha256,
                   @Nullable final ArtifactModel artifactModel,
                   @Nullable final ReplacementModel replacementModel )
   {
     assert null == artifactModel || null == replacementModel;
     _application = Objects.requireNonNull( application );
     _node = Objects.requireNonNull( node );
+    _sha256 = null != replacementModel ? null : Objects.requireNonNull( sha256 );
     _artifactModel = artifactModel;
     _replacementModel = replacementModel;
   }
@@ -43,6 +47,18 @@ public final class ArtifactRecord
   public DependencyNode getNode()
   {
     return _node;
+  }
+
+  /**
+   * Return the sha256 of the specified artifact.
+   * This MUST be non-null when {@link #getArtifactModel()} is non-null.
+   *
+   * @return the sha256 of artifact or null if {@link #getArtifactModel()} returns null.
+   */
+  @Nullable
+  public String getSha256()
+  {
+    return _sha256;
   }
 
   /**

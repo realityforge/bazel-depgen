@@ -65,18 +65,18 @@ public final class ApplicationRecord
     final String artifactId = node.getArtifact().getArtifactId();
     final ReplacementModel model = _source.findReplacement( groupId, artifactId );
     assert null != model;
-    final ArtifactRecord record = new ArtifactRecord( this, node, null, model );
+    final ArtifactRecord record = new ArtifactRecord( this, node, null, null, model );
     final String key = record.getKey();
     assert !_artifacts.containsKey( key );
     _artifacts.put( key, record );
   }
 
-  void artifact( @Nonnull final DependencyNode node )
+  void artifact( @Nonnull final DependencyNode node, @Nonnull final String sha256 )
   {
     final String groupId = node.getArtifact().getGroupId();
     final String artifactId = node.getArtifact().getArtifactId();
     final ArtifactModel model = _source.findArtifact( groupId, artifactId );
-    final ArtifactRecord record = new ArtifactRecord( this, node, model, null );
+    final ArtifactRecord record = new ArtifactRecord( this, node, sha256, model, null );
     final String key = record.getKey();
     assert !_artifacts.containsKey( key );
     _artifacts.put( key, record );
