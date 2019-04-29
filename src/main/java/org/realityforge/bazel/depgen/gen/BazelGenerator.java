@@ -35,21 +35,7 @@ public final class BazelGenerator
 
       output.newLine();
 
-      if ( _record.getSource().getOptions().emitDependencyGraph() )
-      {
-        output.write( "# Dependency Graph Generated from the input data" );
-        _record.getNode().accept( new DependencyGraphEmitter( line -> {
-          try
-          {
-            output.write( "# " + line );
-          }
-          catch ( final IOException ioe )
-          {
-            throw new IllegalStateException( "Failed to write to file", ioe );
-          }
-        } ) );
-        output.newLine();
-      }
+      emitDependencyGraphIfRequired( output );
 
       emitArtifactRule( output );
 
@@ -109,6 +95,26 @@ def bar():
       //TODO: Add assertion in output to verify dependencies.yml file has hash that matches value that was last generated from
 
       output.decIndent();
+    }
+  }
+
+  private void emitDependencyGraphIfRequired( final StarlarkFileOutput output )
+    throws IOException
+  {
+    if ( _record.getSource().getOptions().emitDependencyGraph() )
+    {
+      output.write( "# Dependency Graph Generated from the input data" );
+      _record.getNode().accept( new DependencyGraphEmitter( line -> {
+        try
+        {
+          output.write( "# " + line );
+        }
+        catch ( final IOException ioe )
+        {
+          throw new IllegalStateException( "Failed to write to file", ioe );
+        }
+      } ) );
+      output.newLine();
     }
   }
 
