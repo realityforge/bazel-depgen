@@ -50,8 +50,15 @@ public abstract class AbstractTest
 
   @Nonnull
   protected final Resolver createResolver( @Nonnull final Path localRepositoryDirectory )
+    throws IOException
   {
-    return ResolverUtil.createResolver( createLogger(), localRepositoryDirectory, Collections.emptyList(), true, true );
+    final RemoteRepository remoteRepository =
+      new RemoteRepository.Builder( "local", "default", localRepositoryDirectory.toUri().toString() ).build();
+    return ResolverUtil.createResolver( createLogger(),
+                                        FileUtil2.createLocalTempDir(),
+                                        Collections.singletonList( remoteRepository ),
+                                        true,
+                                        true );
   }
 
   @Nonnull
