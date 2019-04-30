@@ -1,8 +1,6 @@
 package org.realityforge.bazel.depgen.record;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.apache.maven.artifact.Artifact;
@@ -10,7 +8,6 @@ import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.DependencyVisitor;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
-import org.realityforge.bazel.depgen.util.HashUtil;
 
 final class DependencyCollector
   implements DependencyVisitor
@@ -56,21 +53,8 @@ final class DependencyCollector
     {
       final File file = artifact.getFile();
       assert null != file;
-      _record.artifact( node, sha256( file ) );
+      _record.artifact( node, RecordUtil.sha256( file ) );
       return true;
-    }
-  }
-
-  @Nonnull
-  private String sha256( @Nonnull final File file )
-  {
-    try
-    {
-      return HashUtil.sha256( Files.readAllBytes( file.toPath() ) );
-    }
-    catch ( final IOException ioe )
-    {
-      throw new IllegalStateException( "Error generating sha256 hash for file " + file, ioe );
     }
   }
 
