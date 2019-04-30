@@ -1,9 +1,13 @@
 package org.realityforge.bazel.depgen.record;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
+import org.realityforge.bazel.depgen.util.HashUtil;
 
 final class RecordUtil
 {
@@ -40,5 +44,18 @@ final class RecordUtil
            ( artifact.getClassifier().isEmpty() ? "" : "-" + artifact.getClassifier() ) +
            "." +
            artifact.getExtension();
+  }
+
+  @Nonnull
+  static String sha256( @Nonnull final File file )
+  {
+    try
+    {
+      return HashUtil.sha256( Files.readAllBytes( file.toPath() ) );
+    }
+    catch ( final IOException ioe )
+    {
+      throw new IllegalStateException( "Error generating sha256 hash for file " + file, ioe );
+    }
   }
 }
