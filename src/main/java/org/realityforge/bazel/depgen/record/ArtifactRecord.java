@@ -1,5 +1,7 @@
 package org.realityforge.bazel.depgen.record;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -22,19 +24,34 @@ public final class ArtifactRecord
   private final ReplacementModel _replacementModel;
   @Nullable
   private final String _sha256;
+  @Nullable
+  private final List<String> _urls;
 
   ArtifactRecord( @Nonnull final ApplicationRecord application,
                   @Nonnull final DependencyNode node,
                   @Nullable final String sha256,
+                  @Nullable final List<String> urls,
                   @Nullable final ArtifactModel artifactModel,
                   @Nullable final ReplacementModel replacementModel )
   {
     assert null == artifactModel || null == replacementModel;
     _application = Objects.requireNonNull( application );
     _node = Objects.requireNonNull( node );
-    _sha256 = null != replacementModel ? null : Objects.requireNonNull( sha256 );
-    _artifactModel = artifactModel;
-    _replacementModel = replacementModel;
+    if ( null == replacementModel )
+    {
+      _sha256 = Objects.requireNonNull( sha256 );
+      _urls = Collections.unmodifiableList( new ArrayList<>( Objects.requireNonNull( urls ) ) );
+      _replacementModel = null;
+      assert !_urls.isEmpty();
+      _artifactModel = artifactModel;
+    }
+    else
+    {
+      _sha256 = null;
+      _urls = null;
+      _replacementModel = replacementModel;
+      _artifactModel = null;
+    }
   }
 
   @Nonnull
@@ -59,6 +76,18 @@ public final class ArtifactRecord
   public String getSha256()
   {
     return _sha256;
+  }
+
+  /**
+   * Return the urls that the artifact can be downloaded from.
+   * This MUST be non-null and non-empty when {@link #getArtifactModel()} is non-null.
+   *
+   * @return the urls.
+   */
+  @Nullable
+  public List<String> getUrls()
+  {
+    return _urls;
   }
 
   /**

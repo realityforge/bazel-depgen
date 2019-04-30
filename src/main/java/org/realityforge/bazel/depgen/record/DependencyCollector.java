@@ -1,6 +1,7 @@
 package org.realityforge.bazel.depgen.record;
 
 import java.io.File;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.apache.maven.artifact.Artifact;
@@ -53,7 +54,8 @@ final class DependencyCollector
     {
       final File file = artifact.getFile();
       assert null != file;
-      _record.artifact( node, RecordUtil.sha256( file ) );
+      final List<String> urls = RecordUtil.deriveUrls( artifact, node.getRepositories() );
+      _record.artifact( node, RecordUtil.sha256( file ), urls );
       return true;
     }
   }

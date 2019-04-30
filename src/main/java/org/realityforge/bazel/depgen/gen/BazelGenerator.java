@@ -49,6 +49,7 @@ public final class BazelGenerator
       {
         output.write( "# " + artifact.getKey() );
         output.write( "#   sha256 " + artifact.getSha256() );
+        output.write( "#   urls " + artifact.getUrls() );
         output.write( "#   runtimeDeps: " +
                       artifact.getRuntimeDeps()
                         .stream()

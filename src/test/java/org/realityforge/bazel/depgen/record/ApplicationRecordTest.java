@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen.record;
 
 import gir.io.FileUtil;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.realityforge.bazel.depgen.AbstractTest;
@@ -35,6 +36,8 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+      assertEquals( artifactRecord.getUrls(),
+                    Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
       assertEquals( artifactRecord.getDeps().size(), 0 );
       assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
     } );
@@ -82,6 +85,8 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+        assertEquals( artifactRecord.getUrls(),
+                      Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
         assertEquals( artifactRecord.getDeps().size(), 1 );
         assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 1 );
