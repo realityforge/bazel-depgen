@@ -24,4 +24,21 @@ final class RecordUtil
     assert null != artifact;
     return artifact.getGroupId() + ":" + artifact.getArtifactId();
   }
+
+  @Nonnull
+  static String artifactToPath( @Nonnull final Artifact artifact )
+  {
+    return artifact.getGroupId().replaceAll( "\\.", "/" ) +
+           "/" +
+           artifact.getArtifactId() +
+           "/" +
+           artifact.getVersion() +
+           "/" +
+           artifact.getArtifactId() +
+           "-" +
+           artifact.getVersion() +
+           ( artifact.getClassifier().isEmpty() ? "" : "-" + artifact.getClassifier() ) +
+           "." +
+           artifact.getExtension();
+  }
 }
