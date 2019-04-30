@@ -132,7 +132,7 @@ public class CommandLineArgsParsingTest
 
       writeWorkspace();
       writeDependencies( "repositories:\n" +
-                         "  local: " + dir.toUri().toString() + "\n" +
+                         "  local: " + dir.toUri() + "\n" +
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
 
