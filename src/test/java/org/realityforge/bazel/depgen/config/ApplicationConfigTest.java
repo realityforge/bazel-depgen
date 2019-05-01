@@ -47,13 +47,12 @@ public class ApplicationConfigTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeDependencies(
-        "artifacts:\n" +
-        "  - group: org.realityforge.gir\n" +
-        "    id: gir-core\n" +
-        "    version: 0.08\n" +
-        "    classifier: sources\n" +
-        "    type: jar\n" );
+      writeDependencies( "artifacts:\n" +
+                         "  - group: org.realityforge.gir\n" +
+                         "    id: gir-core\n" +
+                         "    version: 0.08\n" +
+                         "    classifier: sources\n" +
+                         "    type: jar\n" );
       final ApplicationConfig config = parseDependencies();
       assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
       assertNotNull( config );
@@ -79,10 +78,9 @@ public class ApplicationConfigTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeDependencies(
-        "artifacts:\n" +
-        "  - group: org.realityforge.gir\n" +
-        "    id: gir-core\n" );
+      writeDependencies( "artifacts:\n" +
+                         "  - group: org.realityforge.gir\n" +
+                         "    id: gir-core\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
@@ -107,9 +105,8 @@ public class ApplicationConfigTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeDependencies(
-        "artifacts:\n" +
-        "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" );
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
@@ -134,10 +131,9 @@ public class ApplicationConfigTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeDependencies(
-        "artifacts:\n" +
-        "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
-        "    excludes: ['org.realityforge.javax.annotation:javax.annotation', 'org.realityforge.braincheck']\n" );
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
+                         "    excludes: ['org.realityforge.javax.annotation:javax.annotation', 'org.realityforge.braincheck']\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
@@ -167,13 +163,12 @@ public class ApplicationConfigTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeDependencies(
-        "options:\n" +
-        "  workspaceDirectory: workspaceDir\n" +
-        "  failOnMissingPom: false\n" +
-        "  failOnInvalidPom: false\n" +
-        "  emitDependencyGraph: false\n" +
-        "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
+      writeDependencies( "options:\n" +
+                         "  workspaceDirectory: workspaceDir\n" +
+                         "  failOnMissingPom: false\n" +
+                         "  failOnInvalidPom: false\n" +
+                         "  emitDependencyGraph: false\n" +
+                         "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
 
@@ -213,11 +208,10 @@ public class ApplicationConfigTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeDependencies(
-        "replacements:\n" +
-        "  - group: com.example\n" +
-        "    id: myapp\n" +
-        "    target: \"@com_example//:myapp\"\n" );
+      writeDependencies( "replacements:\n" +
+                         "  - group: com.example\n" +
+                         "    id: myapp\n" +
+                         "    target: \"@com_example//:myapp\"\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
 
@@ -237,10 +231,9 @@ public class ApplicationConfigTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeDependencies(
-        "replacements:\n" +
-        "  - coord: com.example:myapp\n" +
-        "    target: \"@com_example//:myapp\"\n" );
+      writeDependencies( "replacements:\n" +
+                         "  - coord: com.example:myapp\n" +
+                         "    target: \"@com_example//:myapp\"\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
 
