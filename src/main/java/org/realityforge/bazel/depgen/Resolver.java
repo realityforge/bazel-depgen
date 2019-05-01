@@ -16,6 +16,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyFilter;
+import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactDescriptorException;
 import org.eclipse.aether.resolution.ArtifactDescriptorRequest;
@@ -68,6 +69,15 @@ final class Resolver
   List<RemoteRepository> getRepositories()
   {
     return _repositories;
+  }
+
+  @Nonnull
+  List<AuthenticationContext> getAuthenticationContexts()
+  {
+    return _repositories.stream()
+      .map( r -> AuthenticationContext.forRepository( _session, r ) )
+      .filter( Objects::nonNull )
+      .collect( Collectors.toList() );
   }
 
   @Nonnull
