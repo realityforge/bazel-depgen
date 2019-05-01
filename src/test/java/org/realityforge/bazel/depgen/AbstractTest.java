@@ -212,7 +212,7 @@ public abstract class AbstractTest
   protected final void deployTempArtifactToLocalRepository( @Nonnull final Path localRepository,
                                                             @Nonnull final String coords,
                                                             @Nonnull final String... dependencies )
-    throws IOException, DeploymentException
+    throws Exception
   {
     final Resolver resolver = createResolver( localRepository );
 
