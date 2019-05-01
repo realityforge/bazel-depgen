@@ -62,13 +62,6 @@ public abstract class AbstractTest
   }
 
   @Nonnull
-  protected final DependencyNode resolveDependencies( @Nonnull final Resolver resolver )
-    throws Exception
-  {
-    return resolveDependencies( resolver, loadApplicationModel() );
-  }
-
-  @Nonnull
   protected final DependencyNode resolveDependencies( @Nonnull final Resolver resolver,
                                                       @Nonnull final ApplicationModel model )
     throws DependencyResolutionException

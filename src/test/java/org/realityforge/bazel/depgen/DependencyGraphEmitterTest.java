@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen;
 
 import java.nio.file.Path;
-import java.util.Collections;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.graph.DependencyNode;
 import org.testng.annotations.Test;
@@ -68,7 +67,7 @@ public class DependencyGraphEmitterTest
   private String collectOutput( @Nonnull final Resolver resolver )
     throws Exception
   {
-    final DependencyNode root = resolveDependencies( resolver );
+    final DependencyNode root = resolveDependencies( resolver, loadApplicationModel() );
 
     final StringBuilder sb = new StringBuilder();
     root.accept( new DependencyGraphEmitter( line -> {
