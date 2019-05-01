@@ -19,7 +19,6 @@ import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.deployment.DeployRequest;
-import org.eclipse.aether.deployment.DeploymentException;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.DependencyResolutionException;
@@ -33,19 +32,24 @@ import static org.testng.Assert.*;
 public abstract class AbstractTest
 {
   @Nonnull
-  protected final ApplicationRecord loadApplicationRecord( @Nonnull final Path localRepositoryDirectory )
-    throws Exception
-  {
-    return loadApplicationRecord( createResolver( localRepositoryDirectory ) );
-  }
-
-  @Nonnull
-  protected final ApplicationRecord loadApplicationRecord( @Nonnull final Resolver resolver )
+  protected final ApplicationRecord loadApplicationRecord()
     throws Exception
   {
     final ApplicationModel model = loadApplicationModel();
+    final Resolver resolver = createResolver( model );
     final DependencyNode root = resolveDependencies( resolver, model );
-    return ApplicationRecord.build( model, root );
+    return ApplicationRecord.build( model, root, resolver.getAuthenticationContexts() );
+  }
+
+  @Nonnull
+  private Resolver createResolver( @Nonnull final ApplicationModel model )
+    throws Exception
+  {
+    final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
+    return ResolverUtil.createResolver( createLogger(),
+                                        FileUtil2.createLocalTempDir(),
+                                        model,
+                                        SettingsUtil.loadSettings( settingsFile, createLogger() ) );
   }
 
   @Nonnull
