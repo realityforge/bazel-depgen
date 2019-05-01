@@ -17,7 +17,6 @@ import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.gen.BazelGenerator;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.InvalidModelException;
-import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
@@ -106,13 +105,7 @@ public class Main
     {
       final ApplicationModel model = ApplicationModel.parse( loadDependenciesYaml() );
 
-      final OptionsModel options = model.getOptions();
-      final Resolver resolver =
-        ResolverUtil.createResolver( c_logger,
-                                     c_cacheDir,
-                                     ResolverUtil.getRemoteRepositories( model.getRepositories(), loadSettings() ),
-                                     options.failOnMissingPom(),
-                                     options.failOnInvalidPom() );
+      final Resolver resolver = ResolverUtil.createResolver( c_logger, c_cacheDir, model, loadSettings() );
 
       final DependencyResult result = resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> {
         // If we get here then the listener has already emitted a warning message so just need to exit

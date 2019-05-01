@@ -27,13 +27,29 @@ import org.eclipse.aether.util.graph.manager.DependencyManagerUtils;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ExcludeModel;
+import org.realityforge.bazel.depgen.model.OptionsModel;
 
 final class ResolverUtil
 {
   private ResolverUtil()
   {
+  }
+
+  @Nonnull
+  static Resolver createResolver( @Nonnull final Logger logger,
+                                  @Nonnull final Path cacheDir,
+                                  @Nonnull final ApplicationModel model,
+                                  @Nonnull final Settings settings )
+  {
+    final OptionsModel options = model.getOptions();
+    return createResolver( logger,
+                           cacheDir,
+                           ResolverUtil.getRemoteRepositories( model.getRepositories(), settings ),
+                           options.failOnMissingPom(),
+                           options.failOnInvalidPom() );
   }
 
   @Nonnull
