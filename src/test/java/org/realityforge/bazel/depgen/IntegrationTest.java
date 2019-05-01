@@ -16,9 +16,7 @@ public class IntegrationTest
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       writeWorkspace();
-      // Need to declare repositories otherwise we never even try to load settings
-      writeDependencies( "repositories:\n" +
-                         "  local: " + dir.toUri() + "\n" +
+      writeDependencies( dir,
                          "artifacts:\n" +
                          "  - group: com.example\n" +
                          "    version: 1.0\n" +

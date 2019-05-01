@@ -131,8 +131,7 @@ public class CommandLineArgsParsingTest
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       writeWorkspace();
-      writeDependencies( "repositories:\n" +
-                         "  local: " + dir.toUri() + "\n" +
+      writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
 

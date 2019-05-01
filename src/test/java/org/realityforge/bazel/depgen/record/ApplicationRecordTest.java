@@ -20,11 +20,12 @@ public class ApplicationRecordTest
     inIsolatedDirectory( () -> {
       final Path dir = FileUtil2.createLocalTempDir();
 
-      writeDependencies( "artifacts:\n" +
+      writeDependencies( dir,
+                         "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-      final ApplicationRecord record = loadApplicationRecord( dir );
+      final ApplicationRecord record = loadApplicationRecord();
 
       assertNotNull( record.getNode() );
 
@@ -50,7 +51,8 @@ public class ApplicationRecordTest
     inIsolatedDirectory( () -> {
       final Path dir = FileUtil2.createLocalTempDir();
 
-      writeDependencies( "artifacts:\n" +
+      writeDependencies( dir,
+                         "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
       deployTempArtifactToLocalRepository( dir,
                                            "com.example:myapp:1.0",
@@ -67,7 +69,7 @@ public class ApplicationRecordTest
                                            // System collected but ignored at later stage
                                            "com.example:kernel:jar::4.0:system" );
 
-      final ApplicationRecord record = loadApplicationRecord( dir );
+      final ApplicationRecord record = loadApplicationRecord();
 
       assertEquals( record.getSource().getConfigLocation(),
                     FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
@@ -130,14 +132,15 @@ public class ApplicationRecordTest
     inIsolatedDirectory( () -> {
       final Path dir = FileUtil2.createLocalTempDir();
 
-      writeDependencies( "artifacts:\n" +
+      writeDependencies( dir,
+                         "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
       deployTempArtifactToLocalRepository( dir,
                                            "com.example:myapp:1.0",
                                            "com.example:mylib:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
-      final ApplicationRecord record = loadApplicationRecord( dir );
+      final ApplicationRecord record = loadApplicationRecord();
 
       assertEquals( record.getSource().getConfigLocation(),
                     FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
@@ -174,14 +177,15 @@ public class ApplicationRecordTest
     inIsolatedDirectory( () -> {
       final Path dir = FileUtil2.createLocalTempDir();
 
-      writeDependencies( "artifacts:\n" +
+      writeDependencies( dir,
+                         "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
       deployTempArtifactToLocalRepository( dir,
                                            "com.example:myapp:1.0",
                                            "com.example:rtA:jar::33.0:runtime" );
       deployTempArtifactToLocalRepository( dir, "com.example:rtA:jar:33.0" );
 
-      final ApplicationRecord record = loadApplicationRecord( dir );
+      final ApplicationRecord record = loadApplicationRecord();
 
       assertEquals( record.getSource().getConfigLocation(),
                     FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
@@ -218,7 +222,8 @@ public class ApplicationRecordTest
     inIsolatedDirectory( () -> {
       final Path dir = FileUtil2.createLocalTempDir();
 
-      writeDependencies( "artifacts:\n" +
+      writeDependencies( dir,
+                         "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
                          "  - coord: com.example:mylib\n" );
       deployTempArtifactToLocalRepository( dir,
@@ -226,7 +231,7 @@ public class ApplicationRecordTest
                                            "com.example:mylib:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
-      final ApplicationRecord record = loadApplicationRecord( dir );
+      final ApplicationRecord record = loadApplicationRecord();
 
       assertEquals( record.getSource().getConfigLocation(),
                     FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
@@ -263,7 +268,8 @@ public class ApplicationRecordTest
     inIsolatedDirectory( () -> {
       final Path dir = FileUtil2.createLocalTempDir();
 
-      writeDependencies( "artifacts:\n" +
+      writeDependencies( dir,
+                         "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
       deployTempArtifactToLocalRepository( dir,
                                            "com.example:myapp:1.0",
@@ -275,7 +281,7 @@ public class ApplicationRecordTest
       deployTempArtifactToLocalRepository( dir, "com.example:rtA:32.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
 
-      final ApplicationRecord record = loadApplicationRecord( dir );
+      final ApplicationRecord record = loadApplicationRecord();
 
       assertEquals( record.getSource().getConfigLocation(),
                     FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
@@ -324,7 +330,8 @@ public class ApplicationRecordTest
     inIsolatedDirectory( () -> {
       final Path dir = FileUtil2.createLocalTempDir();
 
-      writeDependencies( "artifacts:\n" +
+      writeDependencies( dir,
+                         "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
                          "replacements:\n" +
                          "  - coord: com.example:mylib\n" +
@@ -334,7 +341,7 @@ public class ApplicationRecordTest
                                            "com.example:mylib:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
-      final ApplicationRecord record = loadApplicationRecord( dir );
+      final ApplicationRecord record = loadApplicationRecord();
 
       assertEquals( record.getSource().getConfigLocation(),
                     FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );

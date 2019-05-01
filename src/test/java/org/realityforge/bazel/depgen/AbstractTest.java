@@ -128,6 +128,12 @@ public abstract class AbstractTest
     FileUtil.write( "WORKSPACE", "" );
   }
 
+  protected final void writeDependencies( @Nonnull final Path dir, @Nonnull final String content )
+    throws IOException
+  {
+    writeDependencies( "repositories:\n  local: " + dir.toUri() + "\n" + content );
+  }
+
   protected final void writeDependencies( @Nonnull final String content )
     throws IOException
   {
