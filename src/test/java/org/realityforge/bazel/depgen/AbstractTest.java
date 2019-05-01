@@ -50,7 +50,7 @@ public abstract class AbstractTest
 
   @Nonnull
   protected final Resolver createResolver( @Nonnull final Path localRepositoryDirectory )
-    throws IOException
+    throws Exception
   {
     final RemoteRepository remoteRepository =
       new RemoteRepository.Builder( "local", "default", localRepositoryDirectory.toUri().toString() ).build();
