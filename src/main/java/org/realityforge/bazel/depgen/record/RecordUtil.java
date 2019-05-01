@@ -75,7 +75,7 @@ final class RecordUtil
       try
       {
         final String repoUrl = remoteRepository.getUrl();
-        final URI uri = new URI( repoUrl + (repoUrl.endsWith( "/" ) ? "" : "/") + artifactToPath( artifact ) );
+        final URI uri = new URI( repoUrl + ( repoUrl.endsWith( "/" ) ? "" : "/" ) + artifactToPath( artifact ) );
         final URL url = uri.toURL();
         final String protocol = url.getProtocol();
         if ( "http".equals( protocol ) || "https".equals( protocol ) )
