@@ -49,4 +49,4 @@ The project is licensed under [Apache License, Version 2.0](LICENSE).
   as a fork of the equivalent file in `johnynek/bazel-deps` although it underwent heavy modification. The
   `SimpleRepositoryListener` is a reasonably direct translation of a file from the `aether examples` project.
   While not other code was directly copied from these earlier projects, this project is a spiritual successor
-  of these projects. 
+  of these projects.
