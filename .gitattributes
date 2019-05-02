@@ -1,5 +1,6 @@
 # DO NOT EDIT: File is auto-generated
 * -text
+*.bzl text
 *.java text
 *.md text
 *.rake text
