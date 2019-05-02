@@ -106,9 +106,9 @@ final class SimpleTransferListener
 
     if ( !( event.getException() instanceof MetadataNotFoundException ) )
     {
-      if ( _logger.isLoggable( Level.WARNING ) )
+      if ( _logger.isLoggable( Level.INFO ) )
       {
-        _logger.log( Level.WARNING,
+        _logger.log( Level.INFO,
                      "Transfer Failed: " + event.getResource().getResourceName(),
                      event.getException() );
       }
