@@ -413,4 +413,50 @@ public class ApplicationRecordTest
       }
     } );
   }
+
+  @Test
+  public void build_singleOptionalDependency()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "    includeOptional: true\n" );
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:myapp:1.0",
+                                           "com.example:mylib:jar::1.0:compile:optional" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      assertEquals( record.getSource().getConfigLocation(),
+                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 2 );
+      assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
+                    "com.example:myapp,com.example:mylib" );
+
+      {
+        final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
+        assertNotNull( artifactRecord );
+        assertNotNull( artifactRecord.getArtifactModel() );
+        assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+        assertEquals( artifactRecord.getDeps().size(), 1 );
+        assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
+        assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
+      }
+
+      {
+        final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "mylib" );
+        assertNotNull( artifactRecord );
+        assertNull( artifactRecord.getArtifactModel() );
+        assertEquals( artifactRecord.getKey(), "com.example:mylib" );
+        assertEquals( artifactRecord.getDeps().size(), 0 );
+        assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
+      }
+    } );
+  }
 }

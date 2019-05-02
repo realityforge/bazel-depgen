@@ -67,6 +67,7 @@ public class ApplicationConfigTest
       assertEquals( artifact.getVersion(), "0.08" );
       assertEquals( artifact.getClassifier(), "sources" );
       assertEquals( artifact.getType(), "jar" );
+      assertFalse( artifact.isIncludeOptional() );
       assertNull( artifact.getIds() );
       assertNull( artifact.getCoord() );
       assertNull( artifact.getExcludes() );
@@ -91,6 +92,7 @@ public class ApplicationConfigTest
       assertNotNull( artifact );
       assertEquals( artifact.getGroup(), "org.realityforge.gir" );
       assertEquals( artifact.getId(), "gir-core" );
+      assertFalse( artifact.isIncludeOptional() );
       assertNull( artifact.getVersion() );
       assertNull( artifact.getClassifier() );
       assertNull( artifact.getType() );
@@ -116,6 +118,7 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
+      assertFalse( artifact.isIncludeOptional() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -143,6 +146,7 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
+      assertFalse( artifact.isIncludeOptional() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -155,6 +159,34 @@ public class ApplicationConfigTest
 
       assertTrue( excludes.contains( "org.realityforge.javax.annotation:javax.annotation" ) );
       assertTrue( excludes.contains( "org.realityforge.braincheck" ) );
+    } );
+  }
+
+  @Test
+  public void parseDependencyWithIncludeOptional()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
+                         "    includeOptional: true\n" );
+      final ApplicationConfig config = parseDependencies();
+      assertNotNull( config );
+      final List<ArtifactConfig> artifacts = config.getArtifacts();
+      assertNotNull( artifacts );
+
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactConfig artifact = artifacts.get( 0 );
+      assertNotNull( artifact );
+      assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
+      assertTrue( artifact.isIncludeOptional() );
+      assertNull( artifact.getGroup() );
+      assertNull( artifact.getId() );
+      assertNull( artifact.getVersion() );
+      assertNull( artifact.getClassifier() );
+      assertNull( artifact.getType() );
+      assertNull( artifact.getIds() );
+      assertNull( artifact.getExcludes() );
     } );
   }
 

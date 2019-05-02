@@ -123,8 +123,7 @@ public final class ArtifactRecord
       _node
         .getChildren()
         .stream()
-        .filter( c -> !c.getDependency().isOptional() &&
-                      Artifact.SCOPE_COMPILE.equals( c.getDependency().getScope() ) )
+        .filter( c -> shouldIncludeDependency( Artifact.SCOPE_COMPILE, c ) )
         .map( c -> _application.findArtifact( c.getDependency().getArtifact().getGroupId(),
                                               c.getDependency().getArtifact().getArtifactId() ) )
         .collect( Collectors.toList() );
@@ -137,11 +136,16 @@ public final class ArtifactRecord
       _node
         .getChildren()
         .stream()
-        .filter( c -> !c.getDependency().isOptional() &&
-                      Artifact.SCOPE_RUNTIME.equals( c.getDependency().getScope() ) )
+        .filter( c -> shouldIncludeDependency( Artifact.SCOPE_RUNTIME, c ) )
         .map( c -> _application.findArtifact( c.getDependency().getArtifact().getGroupId(),
                                               c.getDependency().getArtifact().getArtifactId() ) )
         .collect( Collectors.toList() );
+  }
+
+  private boolean shouldIncludeDependency( @Nonnull final String scope, @Nonnull final DependencyNode c )
+  {
+    final boolean includeOptional = null != _artifactModel && _artifactModel.includeOptional();
+    return ( includeOptional || !c.getDependency().isOptional() ) && scope.equals( c.getDependency().getScope() );
   }
 
   boolean shouldMatch( @Nonnull final String groupId, @Nonnull final String artifactId )

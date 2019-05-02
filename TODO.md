@@ -30,8 +30,6 @@ complete as there is too much un-said.
 
 * Add ability to add extra runtime or extra compile deps to an artifact
 
-* Add ability to specify that for an artifact, optional dependencies are included
-
 * Add ability to download source artifacts as an `Option`. Add per-artifact rule that can override global option.
 
 * Add ability to add in labels that will be used as an alias of a dependency. This is similar to replacements

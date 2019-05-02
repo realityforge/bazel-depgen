@@ -167,7 +167,7 @@ public abstract class AbstractTest
       for ( final String dependency : dependencies )
       {
         final String[] components = dependency.split( ":" );
-        assert components.length >= 3 && components.length <= 6;
+        assert components.length >= 3 && components.length <= 7;
         final String dependencyGroup = components[ 0 ];
         final String dependencyId = components[ 1 ];
         final String dependencyType = components.length > 3 ? components[ 2 ] : null;
@@ -175,6 +175,7 @@ public abstract class AbstractTest
         final String dependencyVersion =
           components.length == 3 ? components[ 2 ] : components.length == 4 ? components[ 3 ] : components[ 4 ];
         final String dependencyScope = components.length == 6 ? components[ 5 ] : null;
+        final boolean optional = components.length == 7 && "optional".equals( components[ 6 ] );
 
         pomContents += "    <dependency>\n";
         pomContents += "      <groupId>" + dependencyGroup + "</groupId>\n";
@@ -195,6 +196,10 @@ public abstract class AbstractTest
           {
             pomContents += "      <systemPath>" + createTempJarFile() + "</systemPath>\n";
           }
+        }
+        if( optional )
+        {
+          pomContents += "      <optional>true</optional>\n";
         }
         pomContents += "    </dependency>\n";
       }
