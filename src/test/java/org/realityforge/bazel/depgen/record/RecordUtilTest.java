@@ -20,7 +20,6 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.DefaultDependencyNode;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.AbstractTest;
-import org.realityforge.bazel.depgen.FileUtil2;
 import org.realityforge.guiceyloops.server.http.TinyHttpd;
 import org.realityforge.guiceyloops.server.http.TinyHttpdFactory;
 import org.testng.annotations.Test;
@@ -50,7 +49,7 @@ public class RecordUtilTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path filename = FileUtil2.createLocalTempDir().resolve( "file.txt" );
+      final Path filename = FileUtil.createLocalTempDir().resolve( "file.txt" );
       Files.write( filename, new byte[]{ 1, 2, 3 } );
       assertEquals( RecordUtil.sha256( filename.toFile() ),
                     "039058C6F2C0CB492C533B0A4D14EF77CC0F78ABCCCED5287D84A1A2011CFB81" );
@@ -62,7 +61,7 @@ public class RecordUtilTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path filename = FileUtil2.createLocalTempDir().resolve( "file.txt" );
+      final Path filename = FileUtil.createLocalTempDir().resolve( "file.txt" );
       final IllegalStateException exception =
         expectThrows( IllegalStateException.class, () -> RecordUtil.sha256( filename.toFile() ) );
       assertEquals( exception.getMessage(), "Error generating sha256 hash for file " + filename.toFile() );
@@ -74,9 +73,9 @@ public class RecordUtilTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir1 = FileUtil2.createLocalTempDir();
-      final Path dir2 = FileUtil2.createLocalTempDir();
-      final Path dir3 = FileUtil2.createLocalTempDir();
+      final Path dir1 = FileUtil.createLocalTempDir();
+      final Path dir2 = FileUtil.createLocalTempDir();
+      final Path dir3 = FileUtil.createLocalTempDir();
 
       final URI uri = dir1.toUri();
 
@@ -104,8 +103,8 @@ public class RecordUtilTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir1 = FileUtil2.createLocalTempDir();
-      final Path dir2 = FileUtil2.createLocalTempDir();
+      final Path dir1 = FileUtil.createLocalTempDir();
+      final Path dir2 = FileUtil.createLocalTempDir();
 
       final TinyHttpd server1 = TinyHttpdFactory.createServer();
       final TinyHttpd server2 = TinyHttpdFactory.createServer();
@@ -155,7 +154,7 @@ public class RecordUtilTest
         "</settings>\n";
       Files.write( settingsFile, settingsContent.getBytes( StandardCharsets.UTF_8 ) );
 
-      final Path dir = FileUtil2.createLocalTempDir();
+      final Path dir = FileUtil.createLocalTempDir();
 
       final HttpServer server = HttpServer.create( new InetSocketAddress( InetAddress.getLocalHost(), 0 ), 0 );
       server

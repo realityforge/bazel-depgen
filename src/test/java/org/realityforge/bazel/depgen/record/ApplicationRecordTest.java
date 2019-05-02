@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
-import org.realityforge.bazel.depgen.FileUtil2;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -22,7 +21,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil2.createLocalTempDir();
+      final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir,
                          "artifacts:\n" +
@@ -67,7 +66,7 @@ public class ApplicationRecordTest
         "</settings>\n";
       Files.write( settingsFile, settingsContent.getBytes( StandardCharsets.UTF_8 ) );
 
-      final Path dir = FileUtil2.createLocalTempDir();
+      final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir,
                          "repositories:\n" +
@@ -89,7 +88,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil2.createLocalTempDir();
+      final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir,
                          "artifacts:\n" +
@@ -171,7 +170,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil2.createLocalTempDir();
+      final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir,
                          "artifacts:\n" +
@@ -216,7 +215,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil2.createLocalTempDir();
+      final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir,
                          "artifacts:\n" +
@@ -261,7 +260,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil2.createLocalTempDir();
+      final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir,
                          "artifacts:\n" +
@@ -307,7 +306,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil2.createLocalTempDir();
+      final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir,
                          "artifacts:\n" +
@@ -369,7 +368,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil2.createLocalTempDir();
+      final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir,
                          "artifacts:\n" +

@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen;
 
+import gir.io.FileUtil;
 import java.nio.file.Path;
 import org.testng.annotations.Test;
 
@@ -11,7 +12,7 @@ public class IntegrationTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil2.createLocalTempDir();
+      final Path dir = FileUtil.createLocalTempDir();
 
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 

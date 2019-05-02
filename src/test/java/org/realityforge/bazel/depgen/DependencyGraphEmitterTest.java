@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen;
 
+import gir.io.FileUtil;
 import java.nio.file.Path;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.graph.DependencyNode;
@@ -14,7 +15,7 @@ public class DependencyGraphEmitterTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil2.createLocalTempDir();
+      final Path dir = FileUtil.createLocalTempDir();
 
       deployTempArtifactToLocalRepository( dir,
                                            "com.example:myapp:1.0",
@@ -41,7 +42,7 @@ public class DependencyGraphEmitterTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil2.createLocalTempDir();
+      final Path dir = FileUtil.createLocalTempDir();
 
       deployTempArtifactToLocalRepository( dir,
                                            "com.example:myapp:1.0",
