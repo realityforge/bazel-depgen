@@ -15,7 +15,7 @@ complete as there is too much un-said.
   if specific deps are needed.
 
 * Enhance options in `dependencies.yml` so that it determines the output format of the tool. This includes things like
-  name of function to add symbols, prefixes for names, whether to support `omit_*` config.
+  prefixes for names, whether to support `omit_*` config.
 
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
   all the tests pass.

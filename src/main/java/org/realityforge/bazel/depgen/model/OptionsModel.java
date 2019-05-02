@@ -57,6 +57,12 @@ public final class OptionsModel
     return _extensionFile;
   }
 
+  @Nonnull
+  public String getGenerateRulesMacroName()
+  {
+    return _source.getGenerateRulesMacroName();
+  }
+
   public boolean failOnInvalidPom()
   {
     return _source.isFailOnInvalidPom();

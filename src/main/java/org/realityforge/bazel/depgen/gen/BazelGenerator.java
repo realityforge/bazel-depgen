@@ -78,7 +78,7 @@ def foo():
 def bar():
   native.maven_jar(name = "bar", ...)
 */
-      output.write( "def generate_workspace_rules():" );
+      output.write( "def " + _record.getSource().getOptions().getGenerateRulesMacroName() + "():" );
       output.incIndent();
       output.write( "\"\"\"" );
       output.incIndent();
