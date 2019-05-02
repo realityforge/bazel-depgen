@@ -97,7 +97,6 @@ public final class ApplicationModel
     return _replacements;
   }
 
-
   @Nullable
   public ReplacementModel findReplacement( @Nonnull final String groupId, @Nonnull final String artifactId )
   {
