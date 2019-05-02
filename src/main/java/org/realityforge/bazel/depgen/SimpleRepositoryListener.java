@@ -32,7 +32,8 @@ final class SimpleRepositoryListener
   @Override
   public void artifactDescriptorInvalid( @Nonnull final RepositoryEvent event )
   {
-    _logger.warning( "Invalid artifact descriptor for " + event.getArtifact() + ": " + event.getException().getMessage() );
+    _logger.warning( "Invalid artifact descriptor for " + event.getArtifact() + ": " +
+                     event.getException().getMessage() );
   }
 
   @Override
