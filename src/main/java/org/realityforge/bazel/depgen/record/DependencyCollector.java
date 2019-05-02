@@ -54,7 +54,8 @@ final class DependencyCollector
     {
       final File file = artifact.getFile();
       assert null != file;
-      final List<String> urls = RecordUtil.deriveUrls( artifact, node.getRepositories() );
+      final List<String> urls =
+        RecordUtil.deriveUrls( artifact, node.getRepositories(), _record.getAuthenticationContexts() );
       _record.artifact( node, RecordUtil.sha256( file ), urls );
       return true;
     }

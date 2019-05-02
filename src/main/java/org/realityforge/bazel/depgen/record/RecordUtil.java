@@ -6,12 +6,16 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.util.HashUtil;
@@ -67,7 +71,9 @@ final class RecordUtil
   }
 
   @Nonnull
-  static List<String> deriveUrls( @Nonnull final Artifact artifact, @Nonnull final List<RemoteRepository> repositories )
+  static List<String> deriveUrls( @Nonnull final Artifact artifact,
+                                  @Nonnull final List<RemoteRepository> repositories,
+                                  @Nonnull final Map<String, AuthenticationContext> authenticationContexts )
   {
     final ArrayList<String> urls = new ArrayList<>();
     for ( final RemoteRepository remoteRepository : repositories )
@@ -82,6 +88,18 @@ final class RecordUtil
         {
           final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
           connection.setRequestMethod( "HEAD" );
+          final AuthenticationContext context = authenticationContexts.get( remoteRepository.getId() );
+          if ( null != context )
+          {
+            final String username = context.get( AuthenticationContext.USERNAME );
+            final String password = context.get( AuthenticationContext.PASSWORD );
+            if ( null != username && null != password )
+            {
+              final String encoded =
+                Base64.getEncoder().encodeToString( ( username + ":" + password ).getBytes( StandardCharsets.UTF_8 ) );
+              connection.setRequestProperty( "Authorization", "Basic " + encoded );
+            }
+          }
           connection.connect();
           final int responseCode = connection.getResponseCode();
           if ( 200 == responseCode )
