@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.transfer.AbstractTransferListener;
+import org.eclipse.aether.transfer.ArtifactNotFoundException;
 import org.eclipse.aether.transfer.MetadataNotFoundException;
 import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transfer.TransferResource;
@@ -104,13 +105,14 @@ final class SimpleTransferListener
   {
     transferCompleted( event );
 
-    if ( !( event.getException() instanceof MetadataNotFoundException ) )
+    final Exception exception = event.getException();
+    if ( !( exception instanceof MetadataNotFoundException ) && !( exception instanceof ArtifactNotFoundException ) )
     {
       if ( _logger.isLoggable( Level.INFO ) )
       {
         _logger.log( Level.INFO,
                      "Transfer Failed: " + event.getResource().getResourceName(),
-                     event.getException() );
+                     exception );
       }
     }
   }
