@@ -429,39 +429,4 @@ public class ResolverTest
       assertNotNull( result.getRoot() );
     } );
   }
-
-  @Test
-  public void getAuthenticationContexts()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
-      final String settingsContent =
-        "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
-        "  <servers>\n" +
-        "    <server>\n" +
-        "      <id>my-repo</id>\n" +
-        "      <username>root</username>\n" +
-        "      <password>secret</password>\n" +
-        "    </server>\n" +
-        "  </servers>\n" +
-        "</settings>\n";
-      Files.write( settingsFile, settingsContent.getBytes( StandardCharsets.UTF_8 ) );
-
-      final Path dir = FileUtil2.createLocalTempDir();
-
-      writeDependencies( dir,
-                         "repositories:\n" +
-                         "  central: http://repo1.maven.org/maven2\n" +
-                         "  my-repo: http://my-repo.example.com/maven2\n" );
-      final ApplicationRecord record = loadApplicationRecord();
-
-      final Map<String, AuthenticationContext> contexts = record.getAuthenticationContexts();
-      assertEquals( contexts.size(), 1 );
-      final AuthenticationContext context = contexts.get( "my-repo" );
-      assertNotNull( context );
-      assertEquals( context.get( AuthenticationContext.USERNAME ), "root" );
-      assertEquals( context.get( AuthenticationContext.PASSWORD ), "secret" );
-    } );
-  }
 }

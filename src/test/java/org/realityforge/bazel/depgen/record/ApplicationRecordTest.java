@@ -1,10 +1,14 @@
 package org.realityforge.bazel.depgen.record;
 
 import gir.io.FileUtil;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.FileUtil2;
 import org.testng.annotations.Test;
@@ -31,6 +35,7 @@ public class ApplicationRecordTest
 
       assertEquals( record.getSource().getConfigLocation(),
                     FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertTrue( record.getAuthenticationContexts().isEmpty() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
@@ -41,6 +46,41 @@ public class ApplicationRecordTest
                     Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
       assertEquals( artifactRecord.getDeps().size(), 0 );
       assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
+    } );
+  }
+
+  @Test
+  public void getAuthenticationContexts()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
+      final String settingsContent =
+        "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+        "  <servers>\n" +
+        "    <server>\n" +
+        "      <id>my-repo</id>\n" +
+        "      <username>root</username>\n" +
+        "      <password>secret</password>\n" +
+        "    </server>\n" +
+        "  </servers>\n" +
+        "</settings>\n";
+      Files.write( settingsFile, settingsContent.getBytes( StandardCharsets.UTF_8 ) );
+
+      final Path dir = FileUtil2.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "repositories:\n" +
+                         "  central: http://repo1.maven.org/maven2\n" +
+                         "  my-repo: http://my-repo.example.com/maven2\n" );
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final Map<String, AuthenticationContext> contexts = record.getAuthenticationContexts();
+      assertEquals( contexts.size(), 1 );
+      final AuthenticationContext context = contexts.get( "my-repo" );
+      assertNotNull( context );
+      assertEquals( context.get( AuthenticationContext.USERNAME ), "root" );
+      assertEquals( context.get( AuthenticationContext.PASSWORD ), "secret" );
     } );
   }
 
@@ -73,6 +113,7 @@ public class ApplicationRecordTest
 
       assertEquals( record.getSource().getConfigLocation(),
                     FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertTrue( record.getAuthenticationContexts().isEmpty() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 4 );
       assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),

@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen.record;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
@@ -22,19 +24,28 @@ public final class ApplicationRecord
   private final DependencyNode _node;
   @Nonnull
   private final Map<String, ArtifactRecord> _artifacts = new HashMap<>();
+  @Nonnull
+  private final Map<String, AuthenticationContext> _authenticationContexts;
 
   @Nonnull
-  public static ApplicationRecord build( @Nonnull final ApplicationModel model, @Nonnull final DependencyNode node )
+  public static ApplicationRecord build( @Nonnull final ApplicationModel model,
+                                         @Nonnull final DependencyNode node,
+                                         @Nonnull final List<AuthenticationContext> authenticationContexts )
   {
-    final ApplicationRecord record = new ApplicationRecord( model, node );
+    final ApplicationRecord record = new ApplicationRecord( model, node, authenticationContexts );
     node.accept( new DependencyCollector( record ) );
     return record;
   }
 
-  private ApplicationRecord( @Nonnull final ApplicationModel source, @Nonnull final DependencyNode node )
+  private ApplicationRecord( @Nonnull final ApplicationModel source,
+                             @Nonnull final DependencyNode node,
+                             @Nonnull final List<AuthenticationContext> authenticationContexts )
   {
     _source = Objects.requireNonNull( source );
     _node = Objects.requireNonNull( node );
+    final Map<String, AuthenticationContext> contexts = new HashMap<>();
+    authenticationContexts.forEach( c -> contexts.put( c.getRepository().getId(), c ) );
+    _authenticationContexts = Collections.unmodifiableMap( contexts );
   }
 
   @Nonnull
@@ -47,6 +58,12 @@ public final class ApplicationRecord
   public DependencyNode getNode()
   {
     return _node;
+  }
+
+  @Nonnull
+  public Map<String, AuthenticationContext> getAuthenticationContexts()
+  {
+    return _authenticationContexts;
   }
 
   @Nonnull
