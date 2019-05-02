@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.util.Objects;
-import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
