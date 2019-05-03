@@ -118,7 +118,7 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
-      assertFalse( artifact.isIncludeOptional() );
+      assertNull( artifact.isIncludeOptional() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -146,7 +146,7 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
-      assertFalse( artifact.isIncludeOptional() );
+      assertNull( artifact.isIncludeOptional() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
