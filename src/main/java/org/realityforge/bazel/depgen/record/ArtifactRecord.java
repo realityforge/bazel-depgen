@@ -61,6 +61,17 @@ public final class ArtifactRecord
   }
 
   @Nonnull
+  public String getName()
+  {
+    final org.eclipse.aether.artifact.Artifact artifact = _node.getArtifact();
+    return RecordUtil.cleanNamePart( artifact.getGroupId() ) +
+           "_" +
+           RecordUtil.cleanNamePart( artifact.getArtifactId() ) +
+           "_" +
+           RecordUtil.cleanNamePart( artifact.getVersion() );
+  }
+
+  @Nonnull
   public DependencyNode getNode()
   {
     return _node;

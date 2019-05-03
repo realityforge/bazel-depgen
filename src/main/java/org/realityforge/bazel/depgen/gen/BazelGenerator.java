@@ -48,6 +48,7 @@ public final class BazelGenerator
       for ( final ArtifactRecord artifact : _record.getArtifacts() )
       {
         output.write( "# " + artifact.getKey() );
+        output.write( "#   name " + artifact.getName() );
         output.write( "#   sha256 " + artifact.getSha256() );
         output.write( "#   urls " + artifact.getUrls() );
         output.write( "#   runtimeDeps: " +
