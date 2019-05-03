@@ -67,7 +67,7 @@ public class ApplicationConfigTest
       assertEquals( artifact.getVersion(), "0.08" );
       assertEquals( artifact.getClassifier(), "sources" );
       assertEquals( artifact.getType(), "jar" );
-      assertFalse( artifact.isIncludeOptional() );
+      assertNull( artifact.isIncludeOptional() );
       assertNull( artifact.getIds() );
       assertNull( artifact.getCoord() );
       assertNull( artifact.getExcludes() );
@@ -92,7 +92,7 @@ public class ApplicationConfigTest
       assertNotNull( artifact );
       assertEquals( artifact.getGroup(), "org.realityforge.gir" );
       assertEquals( artifact.getId(), "gir-core" );
-      assertFalse( artifact.isIncludeOptional() );
+      assertNull( artifact.isIncludeOptional() );
       assertNull( artifact.getVersion() );
       assertNull( artifact.getClassifier() );
       assertNull( artifact.getType() );
