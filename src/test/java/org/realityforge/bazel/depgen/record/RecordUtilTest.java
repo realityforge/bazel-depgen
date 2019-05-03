@@ -29,6 +29,13 @@ public class RecordUtilTest
   extends AbstractTest
 {
   @Test
+  public void cleanNamePart()
+  {
+    assertEquals( RecordUtil.cleanNamePart( "com.example:mylib:0.98" ), "com_example_mylib_0_98" );
+    assertEquals( RecordUtil.cleanNamePart( "com.example:My-App:22-RC1" ), "com_example_my_app_22_rc1" );
+  }
+
+  @Test
   public void toArtifactKey_dependencyNode()
   {
     assertEquals( RecordUtil.toArtifactKey( new DefaultDependencyNode( new DefaultArtifact( "com.example:mylib:jar:0.98" ) ) ),

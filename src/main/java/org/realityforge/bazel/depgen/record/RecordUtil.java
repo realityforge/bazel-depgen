@@ -27,6 +27,12 @@ final class RecordUtil
   }
 
   @Nonnull
+  static String cleanNamePart( @Nonnull final String name )
+  {
+    return name.toLowerCase().replaceAll( "[^a-z0-9]", "_" );
+  }
+
+  @Nonnull
   static String toArtifactKey( @Nonnull final ArtifactModel model )
   {
     return model.getGroup() + ":" + model.getId();
