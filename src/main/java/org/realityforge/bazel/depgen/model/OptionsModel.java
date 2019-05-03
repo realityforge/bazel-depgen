@@ -63,6 +63,12 @@ public final class OptionsModel
     return _source.getGenerateRulesMacroName();
   }
 
+  @Nonnull
+  public String getNamePrefix()
+  {
+    return _source.getNamePrefix();
+  }
+
   public boolean failOnInvalidPom()
   {
     return _source.isFailOnInvalidPom();

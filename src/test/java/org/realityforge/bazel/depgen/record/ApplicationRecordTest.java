@@ -50,6 +50,52 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void build_namePrefixPresent()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "options:\n" +
+                         "  namePrefix: myapp\n" +
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactRecord artifactRecord = artifacts.get( 0 );
+      assertEquals( artifactRecord.getName(), "myapp_com_example_myapp_1_0" );
+    } );
+  }
+
+  @Test
+  public void build_namePrefixPresent_with_trailing_underscore()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "options:\n" +
+                         "  namePrefix: myapp_\n" +
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactRecord artifactRecord = artifacts.get( 0 );
+      assertEquals( artifactRecord.getName(), "myapp_com_example_myapp_1_0" );
+    } );
+  }
+
+  @Test
   public void getAuthenticationContexts()
     throws Exception
   {

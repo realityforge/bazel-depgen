@@ -64,7 +64,9 @@ public final class ArtifactRecord
   public String getName()
   {
     final org.eclipse.aether.artifact.Artifact artifact = _node.getArtifact();
-    return RecordUtil.cleanNamePart( artifact.getGroupId() ) +
+    final String prefix = RecordUtil.cleanNamePart( _application.getSource().getOptions().getNamePrefix() );
+    return ( prefix.isEmpty() ? "" : prefix.endsWith( "_" ) ? prefix : prefix + "_" ) +
+           RecordUtil.cleanNamePart( artifact.getGroupId() ) +
            "_" +
            RecordUtil.cleanNamePart( artifact.getArtifactId() ) +
            "_" +
