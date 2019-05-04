@@ -14,6 +14,10 @@ complete as there is too much un-said.
 * Consider functionality like [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps) to determine
   if specific deps are needed.
 
+* Scan maven pom and generate appropriate `licenses()` chunk.
+
+* Scan jar artifacts for annotation processors and add them if necessary.
+
 * Enhance options in `dependencies.yml` so that it determines the output format of the tool. This includes things like
   whether to support `omit_*` config.
 
