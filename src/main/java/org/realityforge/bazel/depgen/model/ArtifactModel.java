@@ -194,7 +194,7 @@ public final class ArtifactModel
 
   public boolean includeOptional()
   {
-    final Boolean includeOptional = _source.isIncludeOptional();
+    final Boolean includeOptional = _source.getIncludeOptional();
     return null == includeOptional ? false : includeOptional;
   }
 

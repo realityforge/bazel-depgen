@@ -67,7 +67,7 @@ public class ApplicationConfigTest
       assertEquals( artifact.getVersion(), "0.08" );
       assertEquals( artifact.getClassifier(), "sources" );
       assertEquals( artifact.getType(), "jar" );
-      assertNull( artifact.isIncludeOptional() );
+      assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIds() );
       assertNull( artifact.getCoord() );
       assertNull( artifact.getExcludes() );
@@ -92,7 +92,7 @@ public class ApplicationConfigTest
       assertNotNull( artifact );
       assertEquals( artifact.getGroup(), "org.realityforge.gir" );
       assertEquals( artifact.getId(), "gir-core" );
-      assertNull( artifact.isIncludeOptional() );
+      assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getVersion() );
       assertNull( artifact.getClassifier() );
       assertNull( artifact.getType() );
@@ -118,7 +118,7 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
-      assertNull( artifact.isIncludeOptional() );
+      assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -146,7 +146,7 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
-      assertNull( artifact.isIncludeOptional() );
+      assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -179,7 +179,7 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
-      assertTrue( artifact.isIncludeOptional() );
+      assertTrue( artifact.getIncludeOptional() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );

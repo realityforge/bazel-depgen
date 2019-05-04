@@ -84,7 +84,7 @@ public class ArtifactConfig
     this.version = version;
   }
 
-  public Boolean isIncludeOptional()
+  public Boolean getIncludeOptional()
   {
     return includeOptional;
   }
