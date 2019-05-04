@@ -245,11 +245,118 @@ public class ResolverTest
 
       assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
       assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.jar" ).toFile().exists() );
+      assertFalse( dir.resolve( "com/example/myapp/1.0/myapp-1.0-sources.jar" ).toFile().exists() );
+
+      assertNull( artifact.getProperties().get( Constants.SOURCE_ARTIFACT_FILENAME ) );
 
       assertNotNull( artifact.getFile() );
       assertEquals( artifact.toString(), "com.example:myapp:jar:1.0" );
     } );
   }
+
+  @Test
+  public void deriveArtifact_inRemoteRepository_withSourcesArtifactPresent()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path remoteDir = FileUtil.createLocalTempDir();
+
+      deployTempArtifactToLocalRepository( remoteDir, "com.example:myapp:1.0" );
+      deployTempArtifactToLocalRepository( remoteDir, "com.example:myapp:jar:sources:1.0" );
+      assertTrue( remoteDir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
+      assertTrue( remoteDir.resolve( "com/example/myapp/1.0/myapp-1.0.jar" ).toFile().exists() );
+      assertTrue( remoteDir.resolve( "com/example/myapp/1.0/myapp-1.0-sources.jar" ).toFile().exists() );
+
+      assertFalse( dir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
+      assertFalse( dir.resolve( "com/example/myapp/1.0/myapp-1.0.jar" ).toFile().exists() );
+      assertFalse( dir.resolve( "com/example/myapp/1.0/myapp-1.0-sources.jar" ).toFile().exists() );
+
+      final TestHandler handler = new TestHandler();
+
+      final RemoteRepository remoteRepository =
+        new RemoteRepository.Builder( "local", "default", remoteDir.toUri().toString() ).build();
+      final Resolver resolver =
+        ResolverUtil.createResolver( createLogger( handler ),
+                                     dir,
+                                     Collections.singletonList( remoteRepository ),
+                                     true,
+                                     true );
+
+      final ArtifactModel model =
+        new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", null, null, "1.0", Collections.emptyList() );
+
+      final AtomicBoolean hasFailed = new AtomicBoolean( false );
+
+      final Artifact artifact = resolver.toArtifact( model, exceptions -> hasFailed.set( true ) );
+
+      assertFalse( hasFailed.get() );
+      assertTrue( handler.getRecords().isEmpty() );
+
+      assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
+      assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.jar" ).toFile().exists() );
+      assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0-sources.jar" ).toFile().exists() );
+
+      assertEquals( artifact.getProperties().get( Constants.SOURCE_ARTIFACT_FILENAME ),
+                    dir.resolve( "com/example/myapp/1.0/myapp-1.0-sources.jar" ).toFile().getAbsolutePath() );
+
+      assertNotNull( artifact.getFile() );
+      assertEquals( artifact.toString(), "com.example:myapp:jar:1.0" );
+    } );
+  }
+
+
+  @Test
+  public void deriveArtifact_withNonStandardPackaging_inRemoteRepository_withSourcesArtifactPresent()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path remoteDir = FileUtil.createLocalTempDir();
+
+      deployTempArtifactToLocalRepository( remoteDir, "com.example:myapp:zip:1.0" );
+      deployTempArtifactToLocalRepository( remoteDir, "com.example:myapp:jar:sources:1.0" );
+      assertTrue( remoteDir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
+      assertTrue( remoteDir.resolve( "com/example/myapp/1.0/myapp-1.0.zip" ).toFile().exists() );
+      assertTrue( remoteDir.resolve( "com/example/myapp/1.0/myapp-1.0-sources.jar" ).toFile().exists() );
+
+      assertFalse( dir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
+      assertFalse( dir.resolve( "com/example/myapp/1.0/myapp-1.0.zip" ).toFile().exists() );
+      assertFalse( dir.resolve( "com/example/myapp/1.0/myapp-1.0-sources.jar" ).toFile().exists() );
+
+      final TestHandler handler = new TestHandler();
+
+      final RemoteRepository remoteRepository =
+        new RemoteRepository.Builder( "local", "default", remoteDir.toUri().toString() ).build();
+      final Resolver resolver =
+        ResolverUtil.createResolver( createLogger( handler ),
+                                     dir,
+                                     Collections.singletonList( remoteRepository ),
+                                     true,
+                                     true );
+
+      final ArtifactModel model =
+        new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", "zip", null, "1.0", Collections.emptyList() );
+
+      final AtomicBoolean hasFailed = new AtomicBoolean( false );
+
+      final Artifact artifact = resolver.toArtifact( model, exceptions -> hasFailed.set( true ) );
+
+      assertFalse( hasFailed.get() );
+      assertTrue( handler.getRecords().isEmpty() );
+
+      assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
+      assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.zip" ).toFile().exists() );
+      assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0-sources.jar" ).toFile().exists() );
+
+      assertEquals( artifact.getProperties().get( Constants.SOURCE_ARTIFACT_FILENAME ),
+                    dir.resolve( "com/example/myapp/1.0/myapp-1.0-sources.jar" ).toFile().getAbsolutePath() );
+
+      assertNotNull( artifact.getFile() );
+      assertEquals( artifact.toString(), "com.example:myapp:zip:1.0" );
+    } );
+  }
+
 
   @Test
   public void deriveArtifact()

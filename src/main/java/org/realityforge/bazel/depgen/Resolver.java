@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -27,6 +28,7 @@ import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
+import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
@@ -149,7 +151,29 @@ final class Resolver
       {
         onInvalidPomFn.accept( exceptions );
       }
-      return result.getArtifact();
+
+      org.eclipse.aether.artifact.Artifact resultArtifact = result.getArtifact();
+      if ( model.includeSource() )
+      {
+        final SubArtifact sourcesArtifact = new SubArtifact( artifact, "sources", "jar" );
+        try
+        {
+          final ArtifactResult sourceArtifactResult =
+            _system.resolveArtifact( _session, new ArtifactRequest( sourcesArtifact, _repositories, null ) );
+          final HashMap<String, String> properties = new HashMap<>( resultArtifact.getProperties() );
+          properties.put( Constants.SOURCE_ARTIFACT_FILENAME,
+                          sourceArtifactResult.getArtifact().getFile().getAbsolutePath() );
+          resultArtifact = resultArtifact.setProperties( properties );
+        }
+        catch ( final ArtifactResolutionException ignored )
+        {
+          // User has already received a warning to console and ultimately it is only a warning as most
+          // builds will continue to work if source is not available.
+          //TODO: in the future if we are running in a strict mode this will generate a failue
+        }
+      }
+
+      return resultArtifact;
     }
     catch ( final ArtifactResolutionException are )
     {
