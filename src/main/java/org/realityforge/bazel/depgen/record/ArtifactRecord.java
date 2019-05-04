@@ -82,9 +82,9 @@ public final class ArtifactRecord
 
   /**
    * Return the sha256 of the specified artifact.
-   * This MUST be non-null when {@link #getArtifactModel()} is non-null.
+   * This MUST be null when {@link #getReplacementModel()} is non-null otherwise it must be non-null.
    *
-   * @return the sha256 of artifact or null if {@link #getArtifactModel()} returns null.
+   * @return the sha256 of artifact or null if {@link #getReplacementModel()} returns a non-null value.
    */
   @Nullable
   public String getSha256()
@@ -94,7 +94,7 @@ public final class ArtifactRecord
 
   /**
    * Return the urls that the artifact can be downloaded from.
-   * This MUST be non-null and non-empty when {@link #getArtifactModel()} is non-null.
+   * This MUST be null when {@link #getReplacementModel()} is non-null otherwise it must be non-null and non-empty.
    *
    * @return the urls.
    */
