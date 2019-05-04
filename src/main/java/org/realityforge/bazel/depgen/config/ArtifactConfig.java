@@ -12,6 +12,7 @@ public class ArtifactConfig
   private String classifier;
   private String version;
   private Boolean includeOptional;
+  private Boolean includeSource;
   private List<String> excludes;
 
   public String getCoord()
@@ -94,6 +95,16 @@ public class ArtifactConfig
     this.includeOptional = includeOptional;
   }
 
+  public Boolean getIncludeSource()
+  {
+    return includeSource;
+  }
+
+  public void setIncludeSource( final Boolean includeSource )
+  {
+    this.includeSource = includeSource;
+  }
+
   public List<String> getExcludes()
   {
     return excludes;
@@ -116,6 +127,7 @@ public class ArtifactConfig
            ", classifier='" + classifier + '\'' +
            ", version='" + version + '\'' +
            ", includeOptional=" + includeOptional +
+           ", includeSource=" + includeSource +
            ", excludes=" + excludes +
            "']";
   }

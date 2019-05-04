@@ -198,6 +198,12 @@ public final class ArtifactModel
     return null == includeOptional ? false : includeOptional;
   }
 
+  public boolean includeSource()
+  {
+    final Boolean includeSource = _source.getIncludeSource();
+    return null == includeSource ? true : includeSource;
+  }
+
   @Nonnull
   public List<ExcludeModel> getExcludes()
   {
