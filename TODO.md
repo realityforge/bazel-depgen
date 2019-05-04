@@ -46,3 +46,5 @@ complete as there is too much un-said.
   for a particular run. This is useful if repositories have come back online or needed to be rebuilt. We may also
   need to be able to configure repositories as never cache targets. (Useful for staging repositories). This second
   approach would involve changing the way we represent repositories in the tool.
+
+* Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
