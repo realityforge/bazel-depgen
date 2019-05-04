@@ -34,6 +34,7 @@ public final class ArtifactRecord
                   @Nullable final ArtifactModel artifactModel,
                   @Nullable final ReplacementModel replacementModel )
   {
+    assert ( null == sha256 && null == urls ) || ( null != sha256 && null != urls && !urls.isEmpty() );
     assert null == artifactModel || null == replacementModel;
     _application = Objects.requireNonNull( application );
     _node = Objects.requireNonNull( node );
@@ -42,11 +43,11 @@ public final class ArtifactRecord
       _sha256 = Objects.requireNonNull( sha256 );
       _urls = Collections.unmodifiableList( new ArrayList<>( Objects.requireNonNull( urls ) ) );
       _replacementModel = null;
-      assert !_urls.isEmpty();
       _artifactModel = artifactModel;
     }
     else
     {
+      assert null == sha256;
       _sha256 = null;
       _urls = null;
       _replacementModel = replacementModel;
