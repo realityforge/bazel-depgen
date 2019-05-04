@@ -39,3 +39,10 @@ complete as there is too much un-said.
 * Add ability to add in labels that will be used as an alias of a dependency. This is similar to replacements
   except that it is done at the time that the `setup_workspace()` based on parameters passed and while replacements
   always occur.
+
+* Add caching of the urls to avoid expensive recalculation. Essentially we would create a `depgen.properties` in
+  download cache that lists the base repository urls that have been tested against. The tool would read from this
+  by default. We would also need a commandline flag that indicated that `depgen.properties` should be regenerated
+  for a particular run. This is useful if repositories have come back online or needed to be rebuilt. We may also
+  need to be able to configure repositories as never cache targets. (Useful for staging repositories). This second
+  approach would involve changing the way we represent repositories in the tool.
