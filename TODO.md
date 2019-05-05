@@ -34,7 +34,7 @@ complete as there is too much un-said.
 
 * Add ability to add extra runtime or extra compile deps to an artifact
 
-* Add ability to download source artifacts as an `Option`. Add per-artifact rule that can override global option.
+* Add global configuration into `OptionsConfig` to control whether the default behaviour is to download source artifacts.
 
 * Add ability to add in labels that will be used as an alias of a dependency. This is similar to replacements
   except that it is done at the time that the `setup_workspace()` based on parameters passed and while replacements
