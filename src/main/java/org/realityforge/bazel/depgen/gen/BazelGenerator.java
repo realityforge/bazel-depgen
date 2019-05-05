@@ -49,24 +49,34 @@ public final class BazelGenerator
       {
         output.write( "# " + artifact.getKey() );
         output.write( "#   name " + artifact.getName() );
-        output.write( "#   sha256 " + artifact.getSha256() );
-        output.write( "#   urls " + artifact.getUrls() );
+        final String sha256 = artifact.getSha256();
+        if ( null != sha256 )
+        {
+          output.write( "#   sha256 " + sha256 );
+          output.write( "#   urls " + artifact.getUrls() );
+        }
         final String sourceSha256 = artifact.getSourceSha256();
         if ( null != sourceSha256 )
         {
           output.write( "#   sourceSha256 " + sourceSha256 );
           output.write( "#   sourceUrls " + artifact.getSourceUrls() );
         }
-        output.write( "#   runtimeDeps: " +
-                      artifact.getRuntimeDeps()
-                        .stream()
-                        .map( ArtifactRecord::getKey )
-                        .collect( Collectors.joining( " " ) ) );
-        output.write( "#   deps: " +
-                      artifact.getDeps()
-                        .stream()
-                        .map( ArtifactRecord::getKey )
-                        .collect( Collectors.joining( " " ) ) );
+        if ( !artifact.getRuntimeDeps().isEmpty() )
+        {
+          output.write( "#   runtimeDeps: " +
+                        artifact.getRuntimeDeps()
+                          .stream()
+                          .map( ArtifactRecord::getKey )
+                          .collect( Collectors.joining( " " ) ) );
+        }
+        if ( !artifact.getDeps().isEmpty() )
+        {
+          output.write( "#   deps: " +
+                        artifact.getDeps()
+                          .stream()
+                          .map( ArtifactRecord::getKey )
+                          .collect( Collectors.joining( " " ) ) );
+        }
       }
 
       //TODO: Add omit snippets like
