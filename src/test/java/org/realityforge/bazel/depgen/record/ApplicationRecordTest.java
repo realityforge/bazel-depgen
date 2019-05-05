@@ -51,7 +51,7 @@ public class ApplicationRecordTest
     } );
   }
 
-   @Test
+  @Test
   public void build_artifact_with_source()
     throws Exception
   {
@@ -80,7 +80,8 @@ public class ApplicationRecordTest
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
       assertEquals( artifactRecord.getUrls(),
                     Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
-      assertEquals( artifactRecord.getSourceSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+      assertEquals( artifactRecord.getSourceSha256(),
+                    "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
       assertEquals( artifactRecord.getSourceUrls(),
                     Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0-sources.jar" ) );
       assertEquals( artifactRecord.getDeps().size(), 0 );
