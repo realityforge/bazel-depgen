@@ -286,6 +286,12 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example_myapp_1_0" );
+        assertEquals( artifactRecord.getSha256(),
+                      "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+        assertEquals( artifactRecord.getUrls(),
+                      Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
+        assertNull( artifactRecord.getSourceSha256() );
+        assertNull( artifactRecord.getSourceUrls() );
         assertEquals( artifactRecord.getDeps().size(), 1 );
         assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
@@ -297,6 +303,75 @@ public class ApplicationRecordTest
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getName(), "com_example_mylib_1_0" );
+        assertEquals( artifactRecord.getSha256(),
+                      "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+        assertEquals( artifactRecord.getUrls(),
+                      Collections.singletonList( dir.toUri() + "com/example/mylib/1.0/mylib-1.0.jar" ) );
+        assertNull( artifactRecord.getSourceSha256() );
+        assertNull( artifactRecord.getSourceUrls() );
+        assertEquals( artifactRecord.getDeps().size(), 0 );
+        assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
+      }
+    } );
+  }
+
+  @Test
+  public void build_singleDependency_with_Sources()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      assertEquals( record.getSource().getConfigLocation(),
+                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 2 );
+      assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
+                    "com.example:myapp,com.example:mylib" );
+
+      {
+        final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
+        assertNotNull( artifactRecord );
+        assertNotNull( artifactRecord.getArtifactModel() );
+        assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+        assertEquals( artifactRecord.getName(), "com_example_myapp_1_0" );
+        assertEquals( artifactRecord.getSha256(),
+                      "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+        assertEquals( artifactRecord.getUrls(),
+                      Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
+        assertEquals( artifactRecord.getSourceSha256(),
+                      "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+        assertEquals( artifactRecord.getSourceUrls(),
+                      Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0-sources.jar" ) );
+        assertEquals( artifactRecord.getDeps().size(), 1 );
+        assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
+        assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
+      }
+
+      {
+        final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "mylib" );
+        assertNotNull( artifactRecord );
+        assertNull( artifactRecord.getArtifactModel() );
+        assertEquals( artifactRecord.getKey(), "com.example:mylib" );
+        assertEquals( artifactRecord.getName(), "com_example_mylib_1_0" );
+        assertEquals( artifactRecord.getSha256(),
+                      "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+        assertEquals( artifactRecord.getUrls(),
+                      Collections.singletonList( dir.toUri() + "com/example/mylib/1.0/mylib-1.0.jar" ) );
+        assertEquals( artifactRecord.getSourceSha256(),
+                      "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+        assertEquals( artifactRecord.getSourceUrls(),
+                      Collections.singletonList( dir.toUri() + "com/example/mylib/1.0/mylib-1.0-sources.jar" ) );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
       }
