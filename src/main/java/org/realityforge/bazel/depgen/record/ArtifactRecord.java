@@ -26,15 +26,23 @@ public final class ArtifactRecord
   private final String _sha256;
   @Nullable
   private final List<String> _urls;
+  @Nullable
+  private final String _sourceSha256;
+  @Nullable
+  private final List<String> _sourceUrls;
 
   ArtifactRecord( @Nonnull final ApplicationRecord application,
                   @Nonnull final DependencyNode node,
                   @Nullable final String sha256,
                   @Nullable final List<String> urls,
+                  @Nullable final String sourceSha256,
+                  @Nullable final List<String> sourceUrls,
                   @Nullable final ArtifactModel artifactModel,
                   @Nullable final ReplacementModel replacementModel )
   {
     assert ( null == sha256 && null == urls ) || ( null != sha256 && null != urls && !urls.isEmpty() );
+    assert ( null == sourceSha256 && null == sourceUrls ) ||
+           ( null != sourceSha256 && null != sourceUrls && !sourceUrls.isEmpty() );
     assert null == artifactModel || null == replacementModel;
     _application = Objects.requireNonNull( application );
     _node = Objects.requireNonNull( node );
@@ -44,12 +52,19 @@ public final class ArtifactRecord
       _urls = Collections.unmodifiableList( new ArrayList<>( Objects.requireNonNull( urls ) ) );
       _replacementModel = null;
       _artifactModel = artifactModel;
+      _sourceSha256 = sourceSha256;
+      _sourceUrls = null != sourceUrls ?
+                    Collections.unmodifiableList( new ArrayList<>( Objects.requireNonNull( sourceUrls ) ) ) :
+                    null;
     }
     else
     {
       assert null == sha256;
+      assert null == sourceSha256;
       _sha256 = null;
       _urls = null;
+      _sourceSha256 = null;
+      _sourceUrls = null;
       _replacementModel = replacementModel;
       _artifactModel = null;
     }
@@ -102,6 +117,32 @@ public final class ArtifactRecord
   public List<String> getUrls()
   {
     return _urls;
+  }
+
+  /**
+   * Return the sha256 of the source artifact associated with the artifact.
+   * This MAY be non-null when {@link #getReplacementModel()} is non-null and MUST be non-null
+   * if {@link #getSourceUrls()} returns a non-null value.
+   *
+   * @return the sha256 of the source artifact associated with the artifact.
+   */
+  @Nullable
+  public String getSourceSha256()
+  {
+    return _sourceSha256;
+  }
+
+  /**
+   * Return the urls that the source artifact can be downloaded from.
+   * This MAY be non-null when {@link #getReplacementModel()} is non-null and MUST be non-null
+   * if {@link #getSourceSha256()} returns a non-null value.
+   *
+   * @return the urls.
+   */
+  @Nullable
+  public List<String> getSourceUrls()
+  {
+    return _sourceUrls;
   }
 
   /**

@@ -44,6 +44,45 @@ public class ApplicationRecordTest
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
       assertEquals( artifactRecord.getUrls(),
                     Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
+      assertNull( artifactRecord.getSourceSha256() );
+      assertNull( artifactRecord.getSourceUrls() );
+      assertEquals( artifactRecord.getDeps().size(), 0 );
+      assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
+    } );
+  }
+
+   @Test
+  public void build_artifact_with_source()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      assertNotNull( record.getNode() );
+
+      assertEquals( record.getSource().getConfigLocation(),
+                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertTrue( record.getAuthenticationContexts().isEmpty() );
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactRecord artifactRecord = artifacts.get( 0 );
+      assertNotNull( artifactRecord.getArtifactModel() );
+      assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+      assertEquals( artifactRecord.getName(), "com_example_myapp_1_0" );
+      assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+      assertEquals( artifactRecord.getUrls(),
+                    Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
+      assertEquals( artifactRecord.getSourceSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+      assertEquals( artifactRecord.getSourceUrls(),
+                    Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0-sources.jar" ) );
       assertEquals( artifactRecord.getDeps().size(), 0 );
       assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
     } );

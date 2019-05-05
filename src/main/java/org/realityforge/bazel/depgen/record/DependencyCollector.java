@@ -8,7 +8,9 @@ import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.DependencyVisitor;
+import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
+import org.realityforge.bazel.depgen.Constants;
 
 final class DependencyCollector
   implements DependencyVisitor
@@ -56,7 +58,27 @@ final class DependencyCollector
       assert null != file;
       final List<String> urls =
         RecordUtil.deriveUrls( artifact, node.getRepositories(), _record.getAuthenticationContexts() );
-      _record.artifact( node, RecordUtil.sha256( file ), urls );
+
+      final String sourceSha256;
+      final List<String> sourceUrls;
+      final String sourcesFilename = artifact.getProperty( Constants.SOURCE_ARTIFACT_FILENAME, null );
+      if ( null != sourcesFilename )
+      {
+        final File sourcesFile = new File( sourcesFilename );
+        final org.eclipse.aether.artifact.Artifact sourcesArtifact =
+          new SubArtifact( artifact, "sources", "jar" ).setFile( sourcesFile );
+
+        sourceSha256 = RecordUtil.sha256( sourcesFile );
+        sourceUrls =
+          RecordUtil.deriveUrls( sourcesArtifact, node.getRepositories(), _record.getAuthenticationContexts() );
+      }
+      else
+      {
+        sourceSha256 = null;
+        sourceUrls = null;
+      }
+
+      _record.artifact( node, RecordUtil.sha256( file ), urls, sourceSha256, sourceUrls );
       return true;
     }
   }
