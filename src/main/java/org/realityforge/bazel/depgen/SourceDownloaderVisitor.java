@@ -53,7 +53,9 @@ final class SourceDownloaderVisitor
     try
     {
       final ArtifactResult sourceArtifactResult =
-        _resolver.getSystem().resolveArtifact( _resolver.getSession(), new ArtifactRequest( sourcesArtifact, _resolver.getRepositories(), null ) );
+        _resolver.getSystem()
+          .resolveArtifact( _resolver.getSession(),
+                            new ArtifactRequest( sourcesArtifact, _resolver.getRepositories(), null ) );
       final HashMap<String, String> properties = new HashMap<>( artifact.getProperties() );
       properties.put( Constants.SOURCE_ARTIFACT_FILENAME,
                       sourceArtifactResult.getArtifact().getFile().getAbsolutePath() );
