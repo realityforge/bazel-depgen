@@ -83,9 +83,9 @@ public final class ArtifactRecord
     final String prefix = RecordUtil.cleanNamePart( _application.getSource().getOptions().getNamePrefix() );
     return ( prefix.isEmpty() ? "" : prefix.endsWith( "_" ) ? prefix : prefix + "_" ) +
            RecordUtil.cleanNamePart( artifact.getGroupId() ) +
-           "_" +
+           "__" +
            RecordUtil.cleanNamePart( artifact.getArtifactId() ) +
-           "_" +
+           "__" +
            RecordUtil.cleanNamePart( artifact.getVersion() );
   }
 
