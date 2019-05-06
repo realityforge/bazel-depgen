@@ -5,13 +5,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import org.eclipse.aether.artifact.Artifact;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
 
+@SuppressWarnings( "Duplicates" )
 public final class BazelGenerator
 {
   @Nonnull
@@ -36,6 +39,9 @@ public final class BazelGenerator
       output.newLine();
 
       emitDependencyGraphIfRequired( output );
+
+      output.write( "load('@bazel_tools//tools/build_defs/repo:http.bzl', 'http_file')" );
+      output.newLine();
 
       emitArtifactRule( output );
 
@@ -109,12 +115,95 @@ def bar():
       output.newLine();
       output.write( "# Verify the version of Bazel is compatible" );
       output.write( "versions.check(\"0.23.0\")" );
-      output.newLine();
 
       //TODO: Add assertion in output to verify dependencies.yml file has hash that matches value that was last generated from
 
+      for ( final ArtifactRecord artifact : _record.getArtifacts() )
+      {
+        if ( null != artifact.getReplacementModel() )
+        {
+          continue;
+        }
+        output.newLine();
+        emitArtifactHttpFileRule( output, artifact );
+
+        final String sourceSha256 = artifact.getSourceSha256();
+        if ( null != sourceSha256 )
+        {
+          output.newLine();
+          final List<String> sourceUrls = artifact.getSourceUrls();
+          assert null != sourceUrls && !sourceUrls.isEmpty();
+          emitArtifactSourcesHttpFileRule( output, artifact );
+        }
+      }
+
       output.decIndent();
     }
+  }
+
+  private void emitArtifactSourcesHttpFileRule( @Nonnull final StarlarkFileOutput output,
+                                                @Nonnull final ArtifactRecord artifact )
+    throws IOException
+  {
+    final String sourceSha256 = artifact.getSourceSha256();
+    assert null != sourceSha256;
+    final StringBuilder sb = new StringBuilder();
+    sb.append( "http_file(name = '" );
+    sb.append( artifact.getName() );
+    sb.append( "__sources', urls = [" );
+    final List<String> urls = artifact.getSourceUrls();
+    assert null != urls && !urls.isEmpty();
+    sb.append( urls.stream().map( v -> "'" + v + "'" ).collect( Collectors.joining( "," ) ) );
+    sb.append( "], downloaded_file_path = '" );
+    final Artifact a = artifact.getNode().getArtifact();
+    assert null != a;
+    sb.append( a.getGroupId().replaceAll( "\\.", "/" ) );
+    sb.append( "/" );
+    sb.append( a.getArtifactId() );
+    sb.append( "/" );
+    sb.append( a.getVersion() );
+    sb.append( "/" );
+    sb.append( a.getArtifactId() );
+    sb.append( "-" );
+    sb.append( a.getVersion() );
+    sb.append( "-sources." );
+    sb.append( a.getExtension() );
+    sb.append( "', sha256 = '" );
+    sb.append( sourceSha256 );
+    sb.append( "')" );
+    output.write( sb.toString() );
+  }
+
+  private void emitArtifactHttpFileRule( @Nonnull final StarlarkFileOutput output,
+                                         @Nonnull final ArtifactRecord artifact )
+    throws IOException
+  {
+    final StringBuilder sb = new StringBuilder();
+    sb.append( "http_file(name = '" );
+    sb.append( artifact.getName() );
+    sb.append( "', urls = [" );
+    final List<String> urls = artifact.getUrls();
+    assert null != urls && !urls.isEmpty();
+    sb.append( urls.stream().map( v -> "'" + v + "'" ).collect( Collectors.joining( "," ) ) );
+    sb.append( "], downloaded_file_path = '" );
+    final Artifact a = artifact.getNode().getArtifact();
+    assert null != a;
+    sb.append( a.getGroupId().replaceAll( "\\.", "/" ) );
+    sb.append( "/" );
+    sb.append( a.getArtifactId() );
+    sb.append( "/" );
+    sb.append( a.getVersion() );
+    sb.append( "/" );
+    sb.append( a.getArtifactId() );
+    sb.append( "-" );
+    sb.append( a.getVersion() );
+    sb.append( a.getClassifier().isEmpty() ? "" : "-" + a.getClassifier() );
+    sb.append( "." );
+    sb.append( a.getExtension() );
+    sb.append( "', sha256 = '" );
+    sb.append( artifact.getSha256() );
+    sb.append( "')" );
+    output.write( sb.toString() );
   }
 
   private void emitDependencyGraphIfRequired( final StarlarkFileOutput output )
