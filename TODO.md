@@ -46,3 +46,5 @@ complete as there is too much un-said.
   approach would involve changing the way we represent repositories in the tool.
 
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
+
+* Optionally pass output through buildifier.
