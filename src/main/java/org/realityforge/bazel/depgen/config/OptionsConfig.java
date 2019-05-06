@@ -20,6 +20,7 @@ public class OptionsConfig
   private boolean failOnInvalidPom = true;
   private boolean failOnMissingPom = true;
   private boolean emitDependencyGraph = true;
+  private boolean includeSource = true;
 
   @Nonnull
   public String getWorkspaceDirectory()
@@ -93,5 +94,15 @@ public class OptionsConfig
   public void setEmitDependencyGraph( final boolean emitDependencyGraph )
   {
     this.emitDependencyGraph = emitDependencyGraph;
+  }
+
+  public boolean isIncludeSource()
+  {
+    return includeSource;
+  }
+
+  public void setIncludeSource( final boolean includeSource )
+  {
+    this.includeSource = includeSource;
   }
 }

@@ -24,6 +24,7 @@ public class OptionsModelTest
     assertTrue( model.failOnMissingPom() );
     assertTrue( model.failOnInvalidPom() );
     assertTrue( model.emitDependencyGraph() );
+    assertTrue( model.includeSource() );
   }
 
   @Test
@@ -37,6 +38,7 @@ public class OptionsModelTest
     source.setFailOnMissingPom( false );
     source.setFailOnInvalidPom( false );
     source.setEmitDependencyGraph( false );
+    source.setIncludeSource( false );
 
     final OptionsModel model = OptionsModel.parse( FileUtil.getCurrentDirectory(), source );
     assertEquals( model.getSource(), source );
@@ -48,6 +50,6 @@ public class OptionsModelTest
     assertEquals( model.getNamePrefix(), "myprj_" );
     assertFalse( model.failOnMissingPom() );
     assertFalse( model.failOnInvalidPom() );
-    assertFalse( model.emitDependencyGraph() );
+    assertFalse( model.includeSource() );
   }
 }

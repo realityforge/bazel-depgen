@@ -198,10 +198,10 @@ public final class ArtifactModel
     return null == includeOptional ? false : includeOptional;
   }
 
-  public boolean includeSource()
+  public boolean includeSource( final boolean defaultIncludeSource )
   {
     final Boolean includeSource = _source.getIncludeSource();
-    return null == includeSource ? true : includeSource;
+    return null == includeSource ? defaultIncludeSource : includeSource;
   }
 
   @Nonnull

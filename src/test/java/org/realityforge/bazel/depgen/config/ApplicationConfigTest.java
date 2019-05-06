@@ -205,6 +205,7 @@ public class ApplicationConfigTest
                          "  workspaceDirectory: workspaceDir\n" +
                          "  failOnMissingPom: false\n" +
                          "  failOnInvalidPom: false\n" +
+                         "  includeSource: false\n" +
                          "  emitDependencyGraph: false\n" +
                          "  generateRulesMacroName: workspace_rules\n" +
                          "  namePrefix: magic_\n" +
@@ -222,6 +223,7 @@ public class ApplicationConfigTest
       assertFalse( options.isFailOnMissingPom() );
       assertFalse( options.isFailOnInvalidPom() );
       assertFalse( options.isEmitDependencyGraph() );
+      assertFalse( options.isIncludeSource() );
     } );
   }
 
@@ -244,6 +246,7 @@ public class ApplicationConfigTest
       assertTrue( options.isFailOnMissingPom() );
       assertTrue( options.isFailOnInvalidPom() );
       assertTrue( options.isEmitDependencyGraph() );
+      assertTrue( options.isIncludeSource() );
     } );
   }
 

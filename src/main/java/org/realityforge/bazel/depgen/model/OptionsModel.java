@@ -83,4 +83,9 @@ public final class OptionsModel
   {
     return _source.isEmitDependencyGraph();
   }
+
+  public boolean includeSource()
+  {
+    return _source.isIncludeSource();
+  }
 }

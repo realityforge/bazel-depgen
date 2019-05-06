@@ -32,7 +32,8 @@ final class SourceDownloaderVisitor
     if ( null != artifact )
     {
       final ArtifactModel artifactModel = _model.findArtifact( artifact.getGroupId(), artifact.getArtifactId() );
-      if ( null == artifactModel || artifactModel.includeSource() )
+      final boolean includeSource = _model.getOptions().includeSource();
+      if ( null == artifactModel ? includeSource : artifactModel.includeSource( includeSource ) )
       {
         node.setArtifact( downloadSourcesArtifact( artifact ) );
       }

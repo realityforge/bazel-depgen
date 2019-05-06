@@ -26,7 +26,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertFalse( model.includeOptional() );
-    assertTrue( model.includeSource() );
+    assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp" );
   }
@@ -46,7 +46,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertFalse( model.includeOptional() );
-    assertTrue( model.includeSource() );
+    assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jar:1.0" );
   }
@@ -66,7 +66,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jszip" );
     assertNull( model.getClassifier() );
     assertFalse( model.includeOptional() );
-    assertTrue( model.includeSource() );
+    assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jszip:1.0" );
   }
@@ -86,7 +86,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jszip" );
     assertEquals( model.getClassifier(), "sources" );
     assertFalse( model.includeOptional() );
-    assertTrue( model.includeSource() );
+    assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jszip:sources:1.0" );
   }
@@ -133,7 +133,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertTrue( model.includeOptional() );
-    assertTrue( model.includeSource() );
+    assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
   }
 
@@ -153,7 +153,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertFalse( model.includeOptional() );
-    assertFalse( model.includeSource() );
+    assertFalse( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
   }
 
@@ -173,7 +173,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertFalse( model.includeOptional() );
-    assertTrue( model.includeSource() );
+    assertTrue( model.includeSource( true ) );
     final List<ExcludeModel> excludes = model.getExcludes();
     assertFalse( excludes.isEmpty() );
     assertEquals( excludes.size(), 2 );
@@ -202,7 +202,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertFalse( model.includeOptional() );
-    assertTrue( model.includeSource() );
+    assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp" );
   }
@@ -246,7 +246,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertFalse( model.includeOptional() );
-    assertTrue( model.includeSource() );
+    assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jar:1.0" );
   }
@@ -269,7 +269,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertEquals( model.getClassifier(), "sources" );
     assertFalse( model.includeOptional() );
-    assertTrue( model.includeSource() );
+    assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jar:sources:1.0" );
   }
@@ -294,7 +294,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jszip" );
     assertEquals( model.getClassifier(), "sources" );
     assertFalse( model.includeOptional() );
-    assertTrue( model.includeSource() );
+    assertTrue( model.includeSource( true ) );
     final List<ExcludeModel> excludes = model.getExcludes();
     assertFalse( excludes.isEmpty() );
     assertEquals( excludes.size(), 2 );

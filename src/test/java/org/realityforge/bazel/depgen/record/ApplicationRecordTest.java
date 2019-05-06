@@ -90,6 +90,88 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void build_artifact_with_source_where_localInclude_overrides_global_exclude()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "options:\n" +
+                         "    includeSource: false\n" +
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "    includeSource: true\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      assertNotNull( record.getNode() );
+
+      assertEquals( record.getSource().getConfigLocation(),
+                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertTrue( record.getAuthenticationContexts().isEmpty() );
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactRecord artifactRecord = artifacts.get( 0 );
+      assertEquals( artifactRecord.getSourceSha256(),
+                    "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+      assertEquals( artifactRecord.getSourceUrls(),
+                    Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0-sources.jar" ) );
+    } );
+  }
+
+  @Test
+  public void build_artifact_with_source_but_global_includeSourceFalse()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "options:\n" +
+                         "    includeSource: false\n" +
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactRecord artifactRecord = artifacts.get( 0 );
+      assertNull( artifactRecord.getSourceSha256() );
+      assertNull( artifactRecord.getSourceUrls() );
+    } );
+  }
+
+  @Test
+  public void build_artifact_with_source_but_local_includeSourceFalse()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "    includeSource: false\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactRecord artifactRecord = artifacts.get( 0 );
+      assertNull( artifactRecord.getSourceSha256() );
+      assertNull( artifactRecord.getSourceUrls() );
+    } );
+  }
+
+  @Test
   public void build_namePrefixPresent()
     throws Exception
   {
