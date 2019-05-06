@@ -197,7 +197,7 @@ public abstract class AbstractTest
             pomContents += "      <systemPath>" + createTempJarFile() + "</systemPath>\n";
           }
         }
-        if( optional )
+        if ( optional )
         {
           pomContents += "      <optional>true</optional>\n";
         }
