@@ -206,7 +206,7 @@ def bar():
     output.write( sb.toString() );
   }
 
-  private void emitDependencyGraphIfRequired( final StarlarkFileOutput output )
+  private void emitDependencyGraphIfRequired( @Nonnull final StarlarkFileOutput output )
     throws IOException
   {
     if ( _record.getSource().getOptions().emitDependencyGraph() )
