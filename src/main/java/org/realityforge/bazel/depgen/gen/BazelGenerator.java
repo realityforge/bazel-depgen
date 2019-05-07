@@ -38,6 +38,8 @@ public final class BazelGenerator
 
       output.newLine();
 
+      emitModuleDocstring( output );
+
       emitDependencyGraphIfRequired( output );
 
       output.write( "load('@bazel_tools//tools/build_defs/repo:http.bzl', 'http_file')" );
@@ -139,6 +141,20 @@ def bar():
 
       output.decIndent();
     }
+  }
+
+  private void emitModuleDocstring( @Nonnull final StarlarkFileOutput output )
+    throws IOException
+  {
+    output.write( "\"\"\"" );
+    output.incIndent();
+    output.write( "Macro rules to load dependencies defined in '" + getRelativePathToDependenciesYaml() + "'." );
+    output.newLine();
+    output.write( "Invoke '" +
+                  _record.getSource().getOptions().getGenerateRulesMacroName() +
+                  "' from a WORKSPACE file.\n" );
+    output.decIndent();
+    output.write( "\"\"\"" );
   }
 
   private void emitArtifactSourcesHttpFileRule( @Nonnull final StarlarkFileOutput output,
