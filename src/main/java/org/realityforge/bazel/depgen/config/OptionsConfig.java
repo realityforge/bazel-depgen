@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen.config;
 
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class OptionsConfig
 {
@@ -14,12 +15,12 @@ public class OptionsConfig
   private String workspaceDirectory = DEFAULT_WORKSPACE_DIR;
   @Nonnull
   private String extensionFile = DEFAULT_EXTENSION_FILE;
-  @Nonnull
-  private String workspaceMacroName = DEFAULT_WORKSPACE_MACRO_NAME;
-  @Nonnull
-  private String targetMacroName = DEFAULT_TARGET_MACRO_NAME;
-  @Nonnull
-  private String namePrefix = DEFAULT_NAME_PREFIX;
+  @Nullable
+  private String workspaceMacroName;
+  @Nullable
+  private String targetMacroName;
+  @Nullable
+  private String namePrefix;
   private boolean failOnInvalidPom = true;
   private boolean failOnMissingPom = true;
   private boolean emitDependencyGraph = true;
@@ -47,7 +48,7 @@ public class OptionsConfig
     this.extensionFile = Objects.requireNonNull( extensionFile );
   }
 
-  @Nonnull
+  @Nullable
   public String getWorkspaceMacroName()
   {
     return workspaceMacroName;
@@ -58,7 +59,7 @@ public class OptionsConfig
     this.workspaceMacroName = Objects.requireNonNull( workspaceMacroName );
   }
 
-  @Nonnull
+  @Nullable
   public String getTargetMacroName()
   {
     return targetMacroName;
@@ -69,7 +70,7 @@ public class OptionsConfig
     this.targetMacroName = Objects.requireNonNull( targetMacroName );
   }
 
-  @Nonnull
+  @Nullable
   public String getNamePrefix()
   {
     return namePrefix;

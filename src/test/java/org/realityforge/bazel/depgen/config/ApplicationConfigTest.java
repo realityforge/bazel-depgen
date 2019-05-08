@@ -243,9 +243,9 @@ public class ApplicationConfigTest
 
       assertEquals( options.getWorkspaceDirectory(), OptionsConfig.DEFAULT_WORKSPACE_DIR );
       assertEquals( options.getExtensionFile(), OptionsConfig.DEFAULT_EXTENSION_FILE );
-      assertEquals( options.getWorkspaceMacroName(), OptionsConfig.DEFAULT_WORKSPACE_MACRO_NAME );
-      assertEquals( options.getTargetMacroName(), OptionsConfig.DEFAULT_TARGET_MACRO_NAME );
-      assertEquals( options.getNamePrefix(), OptionsConfig.DEFAULT_NAME_PREFIX );
+      assertNull( options.getWorkspaceMacroName() );
+      assertNull( options.getTargetMacroName() );
+      assertNull( options.getNamePrefix() );
       assertTrue( options.isFailOnMissingPom() );
       assertTrue( options.isFailOnInvalidPom() );
       assertTrue( options.isEmitDependencyGraph() );

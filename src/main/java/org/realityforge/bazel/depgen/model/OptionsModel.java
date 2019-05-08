@@ -60,19 +60,25 @@ public final class OptionsModel
   @Nonnull
   public String getWorkspaceMacroName()
   {
-    return _source.getWorkspaceMacroName();
+    final String workspaceMacroName = _source.getWorkspaceMacroName();
+    return null == workspaceMacroName ? OptionsConfig.DEFAULT_WORKSPACE_MACRO_NAME : workspaceMacroName;
   }
 
   @Nonnull
   public String getTargetMacroName()
   {
-    return _source.getTargetMacroName();
+    final String targetMacroName = _source.getTargetMacroName();
+    return null == targetMacroName ? OptionsConfig.DEFAULT_TARGET_MACRO_NAME : targetMacroName;
   }
 
   @Nonnull
   public String getNamePrefix()
   {
-    return _source.getNamePrefix();
+    //Name prefix if non-null and non-empty should be suffixed with '_'
+    final String namePrefix = _source.getNamePrefix();
+    return null == namePrefix ? OptionsConfig.DEFAULT_NAME_PREFIX :
+           ( namePrefix.isEmpty() ? "" :
+             ( namePrefix.endsWith( "_" ) ? namePrefix : namePrefix + "_" ) );
   }
 
   public boolean failOnInvalidPom()
