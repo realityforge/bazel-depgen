@@ -49,7 +49,8 @@ public final class BazelGenerator
       try ( final StarlarkFileOutput output = new StarlarkFileOutput( buildfile ) )
       {
         output.write( "# File is auto-generated from " + getRelativePathToDependenciesYaml() );
-        output.write( "# Contents can be edited and will not be overridden by https://github.com/realityforge/bazel-depgen" );
+        output.write( "# Contents can be edited and will not be overridden " +
+                      "by https://github.com/realityforge/bazel-depgen" );
       }
     }
   }
@@ -276,7 +277,9 @@ def bar():
   private void emitDoNotEdit( @Nonnull final StarlarkFileOutput output )
     throws IOException
   {
-    output.write( "# DO NOT EDIT: File is auto-generated from " + getRelativePathToDependenciesYaml() + " by https://github.com/realityforge/bazel-depgen" );
+    output.write( "# DO NOT EDIT: File is auto-generated from " +
+                  getRelativePathToDependenciesYaml() +
+                  " by https://github.com/realityforge/bazel-depgen" );
   }
 
   @Nonnull
