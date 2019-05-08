@@ -29,9 +29,16 @@ public final class BazelGenerator
     throws Exception
   {
     final Path extensionFile = _record.getSource().getOptions().getExtensionFile();
+    final Path dir = extensionFile.getParent();
 
-    mkdirs( extensionFile.getParent() );
+    mkdirs( dir );
 
+    emitExtensionFile( extensionFile );
+  }
+
+  private void emitExtensionFile( final Path extensionFile )
+    throws Exception
+  {
     try ( final StarlarkFileOutput output = new StarlarkFileOutput( extensionFile ) )
     {
       emitDoNotEdit( output );
