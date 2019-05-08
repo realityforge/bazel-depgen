@@ -43,14 +43,12 @@ public final class BazelGenerator
       emitDependencyGraphIfRequired( output );
 
       output.write( "load('@bazel_tools//tools/build_defs/repo:http.bzl', 'http_file')" );
+      // Load versions rule so can assert bazel version
+      output.write( "load(\"@bazel_skylib//:lib/versions.bzl\", \"versions\")" );
       output.newLine();
 
       emitArtifactRule( output );
 
-      output.newLine();
-
-      // Load versions rule so can assert bazel version
-      output.write( "load(\"@bazel_skylib//:lib/versions.bzl\", \"versions\")" );
       output.newLine();
 
       for ( final ArtifactRecord artifact : _record.getArtifacts() )
