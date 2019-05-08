@@ -19,7 +19,7 @@ public class OptionsModelTest
     assertEquals( model.getWorkspaceDirectory(), FileUtil.getCurrentDirectory() );
     assertEquals( model.getExtensionFile(),
                   FileUtil.getCurrentDirectory().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );
-    assertEquals( model.getGenerateRulesMacroName(), OptionsConfig.DEFAULT_GENERATE_RULES_MACRO_NAME );
+    assertEquals( model.getWorkspaceMacroName(), OptionsConfig.DEFAULT_WORKSPACE_MACRO_NAME );
     assertEquals( model.getNamePrefix(), OptionsConfig.DEFAULT_NAME_PREFIX );
     assertTrue( model.failOnMissingPom() );
     assertTrue( model.failOnInvalidPom() );
@@ -33,7 +33,7 @@ public class OptionsModelTest
     final OptionsConfig source = new OptionsConfig();
     source.setWorkspaceDirectory( ".." );
     source.setExtensionFile( "dependencies.bzl" );
-    source.setGenerateRulesMacroName( "gen_myprj_dependency_rules" );
+    source.setWorkspaceMacroName( "gen_myprj_dependency_rules" );
     source.setNamePrefix( "myprj_" );
     source.setFailOnMissingPom( false );
     source.setFailOnInvalidPom( false );
@@ -46,7 +46,7 @@ public class OptionsModelTest
                   FileUtil.getCurrentDirectory().resolve( ".." ).normalize() );
     assertEquals( model.getExtensionFile(),
                   FileUtil.getCurrentDirectory().resolve( "dependencies.bzl" ) );
-    assertEquals( model.getGenerateRulesMacroName(), "gen_myprj_dependency_rules" );
+    assertEquals( model.getWorkspaceMacroName(), "gen_myprj_dependency_rules" );
     assertEquals( model.getNamePrefix(), "myprj_" );
     assertFalse( model.failOnMissingPom() );
     assertFalse( model.failOnInvalidPom() );

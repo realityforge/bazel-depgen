@@ -7,14 +7,14 @@ public class OptionsConfig
 {
   public static final String DEFAULT_WORKSPACE_DIR = ".";
   public static final String DEFAULT_EXTENSION_FILE = "3rdparty/dependencies.bzl";
-  public static final String DEFAULT_GENERATE_RULES_MACRO_NAME = "generate_workspace_rules";
+  public static final String DEFAULT_WORKSPACE_MACRO_NAME = "generate_workspace_rules";
   public static final String DEFAULT_NAME_PREFIX = "";
   @Nonnull
   private String workspaceDirectory = DEFAULT_WORKSPACE_DIR;
   @Nonnull
   private String extensionFile = DEFAULT_EXTENSION_FILE;
   @Nonnull
-  private String generateRulesMacroName = DEFAULT_GENERATE_RULES_MACRO_NAME;
+  private String workspaceMacroName = DEFAULT_WORKSPACE_MACRO_NAME;
   @Nonnull
   private String namePrefix = DEFAULT_NAME_PREFIX;
   private boolean failOnInvalidPom = true;
@@ -45,14 +45,14 @@ public class OptionsConfig
   }
 
   @Nonnull
-  public String getGenerateRulesMacroName()
+  public String getWorkspaceMacroName()
   {
-    return generateRulesMacroName;
+    return workspaceMacroName;
   }
 
-  public void setGenerateRulesMacroName( @Nonnull final String generateRulesMacroName )
+  public void setWorkspaceMacroName( @Nonnull final String workspaceMacroName )
   {
-    this.generateRulesMacroName = Objects.requireNonNull( generateRulesMacroName );
+    this.workspaceMacroName = Objects.requireNonNull( workspaceMacroName );
   }
 
   @Nonnull

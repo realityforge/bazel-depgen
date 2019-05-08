@@ -68,7 +68,7 @@ public final class BazelGenerator
       output.write( "load('@bazel_tools//tools/build_defs/repo:http.bzl', 'http_file')" );
       output.newLine();
 
-      output.write( "def " + _record.getSource().getOptions().getGenerateRulesMacroName() + "():" );
+      output.write( "def " + _record.getSource().getOptions().getWorkspaceMacroName() + "():" );
       output.incIndent();
       output.write( "\"\"\"" );
       output.incIndent();
@@ -174,7 +174,7 @@ public final class BazelGenerator
     output.write( "Macro rules to load dependencies defined in '" + getRelativePathToDependenciesYaml() + "'." );
     output.newLine();
     output.write( "Invoke '" +
-                  _record.getSource().getOptions().getGenerateRulesMacroName() +
+                  _record.getSource().getOptions().getWorkspaceMacroName() +
                   "' from a WORKSPACE file." );
     output.decIndent();
     output.write( "\"\"\"" );

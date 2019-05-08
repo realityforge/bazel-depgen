@@ -58,9 +58,9 @@ public final class OptionsModel
   }
 
   @Nonnull
-  public String getGenerateRulesMacroName()
+  public String getWorkspaceMacroName()
   {
-    return _source.getGenerateRulesMacroName();
+    return _source.getWorkspaceMacroName();
   }
 
   @Nonnull
