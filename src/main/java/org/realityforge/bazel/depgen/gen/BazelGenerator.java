@@ -85,8 +85,6 @@ public final class BazelGenerator
       output.decIndent();
       output.write( "\"\"\"" );
 
-      //TODO: Add assertion in output to verify dependencies.yml file has hash that matches value that was last generated from
-
       for ( final ArtifactRecord artifact : _record.getArtifacts() )
       {
         if ( null != artifact.getReplacementModel() )

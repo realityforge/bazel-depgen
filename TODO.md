@@ -46,3 +46,5 @@ complete as there is too much un-said.
 * Optionally pass output through buildifier.
 
 * Add global and per-artifact visibility which is applied to alias. Defaults to public.
+
+* Add assertion to workspace or target macro to verify dependencies.yml file has hash that matches hash of file that generated macro
