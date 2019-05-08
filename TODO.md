@@ -52,3 +52,5 @@ complete as there is too much un-said.
 * Make `generate_targets()` macro name configurable.
 
 * Add global and per-artifact visibility which is applied to alias. Defaults to public.
+
+* Name prefix should apply to macro names unless overridden.
