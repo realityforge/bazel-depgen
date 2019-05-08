@@ -106,8 +106,30 @@ public final class BazelGenerator
 
       output.newLine();
 
+      output.write( "def generate_targets(" +
+                    _record.getArtifacts()
+                      .stream()
+                      .map( a -> "omit_" + a.getAlias() + "=False" )
+                      .collect( Collectors.joining( ", " ) ) + "):" );
+      output.incIndent();
+      output.write( "\"\"\"" );
+      output.incIndent();
+      output.write( "Macro to define targets for dependencies specified by '" +
+                    getRelativePathToDependenciesYaml() +
+                    "'." );
+      output.decIndent();
+      output.write( "\"\"\"" );
+      output.newLine();
+
       for ( final ArtifactRecord artifact : _record.getArtifacts() )
       {
+        output.newLine();
+        output.write( "if not omit_" + artifact.getAlias() + ":");
+        output.incIndent();
+        output.write( "native.alias(name = '" + artifact.getAlias() + "', " +
+                      "actual = ':" + artifact.getName() + "', visibility = ['//visibility:public'] )" );
+        output.decIndent();
+
         output.write( "# " + artifact.getKey() );
         output.write( "#   name " + artifact.getName() );
         final String sha256 = artifact.getSha256();
@@ -139,6 +161,8 @@ public final class BazelGenerator
                           .collect( Collectors.joining( " " ) ) );
         }
       }
+
+      output.decIndent();
     }
   }
 
