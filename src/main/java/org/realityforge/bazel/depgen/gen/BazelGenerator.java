@@ -124,7 +124,7 @@ public final class BazelGenerator
       for ( final ArtifactRecord artifact : _record.getArtifacts() )
       {
         output.newLine();
-        output.write( "if not omit_" + artifact.getAlias() + ":");
+        output.write( "if not omit_" + artifact.getAlias() + ":" );
         output.incIndent();
         output.write( "native.alias(name = '" + artifact.getAlias() + "', " +
                       "actual = ':" + artifact.getName() + "', visibility = ['//visibility:public'] )" );
