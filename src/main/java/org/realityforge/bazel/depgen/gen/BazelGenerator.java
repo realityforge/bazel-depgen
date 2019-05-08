@@ -251,7 +251,7 @@ def bar():
   private void emitDoNotEdit( @Nonnull final StarlarkFileOutput output )
     throws IOException
   {
-    output.write( "# DO NOT EDIT: File is auto-generated from " + getRelativePathToDependenciesYaml() );
+    output.write( "# DO NOT EDIT: File is auto-generated from " + getRelativePathToDependenciesYaml() + " by https://github.com/realityforge/bazel-depgen" );
   }
 
   @Nonnull
