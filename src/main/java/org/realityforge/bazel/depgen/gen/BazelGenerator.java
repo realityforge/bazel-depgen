@@ -1,9 +1,6 @@
 package org.realityforge.bazel.depgen.gen;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
@@ -72,8 +69,6 @@ public final class BazelGenerator
       // Load versions rule so can assert bazel version
       output.write( "load(\"@bazel_skylib//:lib/versions.bzl\", \"versions\")" );
       output.newLine();
-
-      emitArtifactRule( output );
 
       output.newLine();
 
@@ -291,22 +286,5 @@ def bar():
       .toAbsolutePath()
       .normalize()
       .relativize( configLocation.toAbsolutePath().normalize() );
-  }
-
-  private void emitArtifactRule( @Nonnull final StarlarkFileOutput output )
-    throws IOException
-  {
-    final InputStream resource = BazelGenerator.class.getResourceAsStream( "artifact.bzl" );
-    if ( null == resource )
-    {
-      throw new IllegalStateException( "Unable to locate artifact.bzl resource." );
-    }
-
-    final BufferedReader stream = new BufferedReader( new InputStreamReader( resource ) );
-    String line;
-    while ( ( line = stream.readLine() ) != null )
-    {
-      output.write( line );
-    }
   }
 }
