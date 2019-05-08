@@ -66,7 +66,7 @@ public class OptionsConfig
 
   public void setTargetMacroName( @Nonnull final String targetMacroName )
   {
-    this.targetMacroName = targetMacroName;
+    this.targetMacroName = Objects.requireNonNull( targetMacroName );
   }
 
   @Nonnull
