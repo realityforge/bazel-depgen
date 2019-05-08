@@ -68,39 +68,6 @@ public final class BazelGenerator
       output.write( "load('@bazel_tools//tools/build_defs/repo:http.bzl', 'http_file')" );
       output.newLine();
 
-      for ( final ArtifactRecord artifact : _record.getArtifacts() )
-      {
-        output.write( "# " + artifact.getKey() );
-        output.write( "#   name " + artifact.getName() );
-        final String sha256 = artifact.getSha256();
-        if ( null != sha256 )
-        {
-          output.write( "#   sha256 " + sha256 );
-          output.write( "#   urls " + artifact.getUrls() );
-        }
-        final String sourceSha256 = artifact.getSourceSha256();
-        if ( null != sourceSha256 )
-        {
-          output.write( "#   sourceSha256 " + sourceSha256 );
-          output.write( "#   sourceUrls " + artifact.getSourceUrls() );
-        }
-        if ( !artifact.getRuntimeDeps().isEmpty() )
-        {
-          output.write( "#   runtimeDeps: " +
-                        artifact.getRuntimeDeps()
-                          .stream()
-                          .map( ArtifactRecord::getKey )
-                          .collect( Collectors.joining( " " ) ) );
-        }
-        if ( !artifact.getDeps().isEmpty() )
-        {
-          output.write( "#   deps: " +
-                        artifact.getDeps()
-                          .stream()
-                          .map( ArtifactRecord::getKey )
-                          .collect( Collectors.joining( " " ) ) );
-        }
-      }
       output.write( "def " + _record.getSource().getOptions().getGenerateRulesMacroName() + "():" );
       output.incIndent();
       output.write( "\"\"\"" );
@@ -136,6 +103,42 @@ public final class BazelGenerator
       }
 
       output.decIndent();
+
+      output.newLine();
+
+      for ( final ArtifactRecord artifact : _record.getArtifacts() )
+      {
+        output.write( "# " + artifact.getKey() );
+        output.write( "#   name " + artifact.getName() );
+        final String sha256 = artifact.getSha256();
+        if ( null != sha256 )
+        {
+          output.write( "#   sha256 " + sha256 );
+          output.write( "#   urls " + artifact.getUrls() );
+        }
+        final String sourceSha256 = artifact.getSourceSha256();
+        if ( null != sourceSha256 )
+        {
+          output.write( "#   sourceSha256 " + sourceSha256 );
+          output.write( "#   sourceUrls " + artifact.getSourceUrls() );
+        }
+        if ( !artifact.getRuntimeDeps().isEmpty() )
+        {
+          output.write( "#   runtimeDeps: " +
+                        artifact.getRuntimeDeps()
+                          .stream()
+                          .map( ArtifactRecord::getKey )
+                          .collect( Collectors.joining( " " ) ) );
+        }
+        if ( !artifact.getDeps().isEmpty() )
+        {
+          output.write( "#   deps: " +
+                        artifact.getDeps()
+                          .stream()
+                          .map( ArtifactRecord::getKey )
+                          .collect( Collectors.joining( " " ) ) );
+        }
+      }
     }
   }
 
