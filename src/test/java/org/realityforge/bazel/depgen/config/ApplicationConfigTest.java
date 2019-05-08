@@ -208,6 +208,7 @@ public class ApplicationConfigTest
                          "  includeSource: false\n" +
                          "  emitDependencyGraph: false\n" +
                          "  workspaceMacroName: workspace_rules\n" +
+                         "  targetMacroName: gen_targets\n" +
                          "  namePrefix: magic_\n" +
                          "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
       final ApplicationConfig config = parseDependencies();
@@ -219,6 +220,7 @@ public class ApplicationConfigTest
       assertEquals( options.getWorkspaceDirectory(), "workspaceDir" );
       assertEquals( options.getExtensionFile(), "workspaceDir/vendor/workspace.bzl" );
       assertEquals( options.getWorkspaceMacroName(), "workspace_rules" );
+      assertEquals( options.getTargetMacroName(), "gen_targets" );
       assertEquals( options.getNamePrefix(), "magic_" );
       assertFalse( options.isFailOnMissingPom() );
       assertFalse( options.isFailOnInvalidPom() );
@@ -242,6 +244,7 @@ public class ApplicationConfigTest
       assertEquals( options.getWorkspaceDirectory(), OptionsConfig.DEFAULT_WORKSPACE_DIR );
       assertEquals( options.getExtensionFile(), OptionsConfig.DEFAULT_EXTENSION_FILE );
       assertEquals( options.getWorkspaceMacroName(), OptionsConfig.DEFAULT_WORKSPACE_MACRO_NAME );
+      assertEquals( options.getTargetMacroName(), OptionsConfig.DEFAULT_TARGET_MACRO_NAME );
       assertEquals( options.getNamePrefix(), OptionsConfig.DEFAULT_NAME_PREFIX );
       assertTrue( options.isFailOnMissingPom() );
       assertTrue( options.isFailOnInvalidPom() );

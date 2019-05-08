@@ -64,6 +64,12 @@ public final class OptionsModel
   }
 
   @Nonnull
+  public String getTargetMacroName()
+  {
+    return _source.getTargetMacroName();
+  }
+
+  @Nonnull
   public String getNamePrefix()
   {
     return _source.getNamePrefix();

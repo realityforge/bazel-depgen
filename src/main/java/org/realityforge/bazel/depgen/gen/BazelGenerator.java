@@ -106,7 +106,7 @@ public final class BazelGenerator
 
       output.newLine();
 
-      output.write( "def generate_targets(" +
+      output.write( "def " + _record.getSource().getOptions().getTargetMacroName() + "(" +
                     _record.getArtifacts()
                       .stream()
                       .map( a -> "omit_" + a.getAlias() + "=False" )
@@ -176,6 +176,9 @@ public final class BazelGenerator
     output.write( "Invoke '" +
                   _record.getSource().getOptions().getWorkspaceMacroName() +
                   "' from a WORKSPACE file." );
+    output.write( "Invoke '" +
+                  _record.getSource().getOptions().getTargetMacroName() +
+                  "' from a BUILD.bazel file." );
     output.decIndent();
     output.write( "\"\"\"" );
   }
