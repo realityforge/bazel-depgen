@@ -41,6 +41,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
       assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
       assertEquals( artifactRecord.getUrls(),
                     Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
@@ -77,6 +78,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
       assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
       assertEquals( artifactRecord.getUrls(),
                     Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
@@ -191,6 +193,7 @@ public class ApplicationRecordTest
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getName(), "myapp_com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias(), "myapp_com_example__myapp" );
     } );
   }
 
@@ -214,6 +217,7 @@ public class ApplicationRecordTest
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getName(), "myapp_com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias(), "myapp_com_example__myapp" );
     } );
   }
 
@@ -296,6 +300,7 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
+        assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
         assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
                       Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
@@ -311,6 +316,7 @@ public class ApplicationRecordTest
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
+        assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 1 );
         assertEquals( artifactRecord.getRuntimeDeps().get( 0 ).getKey(), "com.example:rtB" );
@@ -322,6 +328,7 @@ public class ApplicationRecordTest
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:rtA" );
         assertEquals( artifactRecord.getName(), "com_example__rta__33_0" );
+        assertEquals( artifactRecord.getAlias(), "com_example__rta" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
       }
@@ -332,6 +339,7 @@ public class ApplicationRecordTest
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:rtB" );
         assertEquals( artifactRecord.getName(), "com_example__rtb__2_0" );
+        assertEquals( artifactRecord.getAlias(), "com_example__rtb" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
       }
@@ -368,6 +376,7 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
+        assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
         assertEquals( artifactRecord.getSha256(),
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
@@ -385,6 +394,7 @@ public class ApplicationRecordTest
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
+        assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
         assertEquals( artifactRecord.getSha256(),
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
@@ -427,6 +437,7 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
+        assertEquals( artifactRecord.getAlias(), "com_example__myapp_" );
         assertEquals( artifactRecord.getSha256(),
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
@@ -446,6 +457,7 @@ public class ApplicationRecordTest
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
+        assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
         assertEquals( artifactRecord.getSha256(),
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
@@ -490,6 +502,7 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
+        assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 1 );
         assertEquals( artifactRecord.getRuntimeDeps().get( 0 ).getKey(), "com.example:rtA" );
@@ -501,6 +514,7 @@ public class ApplicationRecordTest
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:rtA" );
         assertEquals( artifactRecord.getName(), "com_example__rta__33_0" );
+        assertEquals( artifactRecord.getAlias(), "com_example__rta" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
       }
