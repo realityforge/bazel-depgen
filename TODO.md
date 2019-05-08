@@ -48,3 +48,7 @@ complete as there is too much un-said.
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
 
 * Optionally pass output through buildifier.
+
+* Make `generate_targets()` macro name configurable.
+
+* Add global and per-artifact visibility which is applied to alias. Defaults to public.
