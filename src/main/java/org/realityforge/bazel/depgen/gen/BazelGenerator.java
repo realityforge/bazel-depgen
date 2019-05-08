@@ -68,7 +68,12 @@ public final class BazelGenerator
       output.write( "load('@bazel_tools//tools/build_defs/repo:http.bzl', 'http_file')" );
       output.newLine();
 
-      output.write( "def " + _record.getSource().getOptions().getWorkspaceMacroName() + "():" );
+      output.write( "def " + _record.getSource().getOptions().getWorkspaceMacroName() + "(" +
+                    _record.getArtifacts()
+                      .stream()
+                      .filter( a -> null != a.getReplacementModel() )
+                      .map( a -> "omit_" + a.getAlias() + "=False" )
+                      .collect( Collectors.joining( ", " ) ) + "):" );
       output.incIndent();
       output.write( "\"\"\"" );
       output.incIndent();
@@ -89,6 +94,8 @@ public final class BazelGenerator
           continue;
         }
         output.newLine();
+        output.write( "if not omit_" + artifact.getAlias() + ":" );
+        output.incIndent();
         emitArtifactHttpFileRule( output, artifact );
 
         final String sourceSha256 = artifact.getSourceSha256();
@@ -99,6 +106,7 @@ public final class BazelGenerator
           assert null != sourceUrls && !sourceUrls.isEmpty();
           emitArtifactSourcesHttpFileRule( output, artifact );
         }
+        output.decIndent();
       }
 
       output.decIndent();
