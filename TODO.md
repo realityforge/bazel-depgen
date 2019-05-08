@@ -50,5 +50,3 @@ complete as there is too much un-said.
 * Optionally pass output through buildifier.
 
 * Add global and per-artifact visibility which is applied to alias. Defaults to public.
-
-* Name prefix should apply to macro names unless overridden.

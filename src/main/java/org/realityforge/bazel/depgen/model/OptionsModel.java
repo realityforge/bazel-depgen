@@ -61,14 +61,14 @@ public final class OptionsModel
   public String getWorkspaceMacroName()
   {
     final String workspaceMacroName = _source.getWorkspaceMacroName();
-    return null == workspaceMacroName ? OptionsConfig.DEFAULT_WORKSPACE_MACRO_NAME : workspaceMacroName;
+    return null == workspaceMacroName ? getNamePrefix() + OptionsConfig.DEFAULT_WORKSPACE_MACRO_NAME : workspaceMacroName;
   }
 
   @Nonnull
   public String getTargetMacroName()
   {
     final String targetMacroName = _source.getTargetMacroName();
-    return null == targetMacroName ? OptionsConfig.DEFAULT_TARGET_MACRO_NAME : targetMacroName;
+    return null == targetMacroName ? getNamePrefix() + OptionsConfig.DEFAULT_TARGET_MACRO_NAME : targetMacroName;
   }
 
   @Nonnull

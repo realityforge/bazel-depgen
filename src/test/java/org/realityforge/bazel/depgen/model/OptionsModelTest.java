@@ -29,6 +29,18 @@ public class OptionsModelTest
   }
 
   @Test
+  public void parseWithNamePrefixSpecified()
+  {
+    final OptionsConfig source = new OptionsConfig();
+    source.setNamePrefix( "myprj" );
+
+    final OptionsModel model = OptionsModel.parse( FileUtil.getCurrentDirectory(), source );
+    assertEquals( model.getWorkspaceMacroName(), "myprj_" + OptionsConfig.DEFAULT_WORKSPACE_MACRO_NAME );
+    assertEquals( model.getTargetMacroName(), "myprj_" + OptionsConfig.DEFAULT_TARGET_MACRO_NAME );
+    assertEquals( model.getNamePrefix(), "myprj_" );
+  }
+
+  @Test
   public void parse()
   {
     final OptionsConfig source = new OptionsConfig();
