@@ -79,7 +79,6 @@ public final class BazelGenerator
       output.write( "Must be run from a WORKSPACE file." );
       output.decIndent();
       output.write( "\"\"\"" );
-      output.newLine();
 
       //TODO: Add assertion in output to verify dependencies.yml file has hash that matches value that was last generated from
 
