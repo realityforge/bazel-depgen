@@ -165,7 +165,7 @@ def bar():
     output.newLine();
     output.write( "Invoke '" +
                   _record.getSource().getOptions().getGenerateRulesMacroName() +
-                  "' from a WORKSPACE file.\n" );
+                  "' from a WORKSPACE file." );
     output.decIndent();
     output.write( "\"\"\"" );
   }
