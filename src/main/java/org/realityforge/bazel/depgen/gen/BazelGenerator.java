@@ -66,8 +66,6 @@ public final class BazelGenerator
       emitDependencyGraphIfRequired( output );
 
       output.write( "load('@bazel_tools//tools/build_defs/repo:http.bzl', 'http_file')" );
-      // Load versions rule so can assert bazel version
-      output.write( "load(\"@bazel_skylib//:lib/versions.bzl\", \"versions\")" );
       output.newLine();
 
       output.newLine();
@@ -134,8 +132,6 @@ def bar():
       output.decIndent();
       output.write( "\"\"\"" );
       output.newLine();
-      output.write( "# Verify the version of Bazel is compatible" );
-      output.write( "versions.check(\"0.23.0\")" );
 
       //TODO: Add assertion in output to verify dependencies.yml file has hash that matches value that was last generated from
 
