@@ -30,10 +30,28 @@ public final class BazelGenerator
   {
     final Path extensionFile = _record.getSource().getOptions().getExtensionFile();
     final Path dir = extensionFile.getParent();
+    final Path buildfile = dir.resolve( "BUILD.bazel" );
 
     mkdirs( dir );
 
+    emitBuildFileIfNecessary( buildfile );
+
     emitExtensionFile( extensionFile );
+  }
+
+  private void emitBuildFileIfNecessary( @Nonnull final Path buildfile )
+    throws Exception
+  {
+    // The tool will only emit the `BUILD.bazel` file if none exist. If one exists then
+    // the tool assumes the user has supplied it or it is an artifact from a previous run.
+    if ( !buildfile.toFile().exists() )
+    {
+      try ( final StarlarkFileOutput output = new StarlarkFileOutput( buildfile ) )
+      {
+        output.write( "# File is auto-generated from " + getRelativePathToDependenciesYaml() );
+        output.write( "# Contents can be edited and will not be overridden by https://github.com/realityforge/bazel-depgen" );
+      }
+    }
   }
 
   private void emitExtensionFile( final Path extensionFile )
