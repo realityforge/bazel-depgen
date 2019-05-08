@@ -101,23 +101,6 @@ public final class BazelGenerator
                           .collect( Collectors.joining( " " ) ) );
         }
       }
-
-      //TODO: Add omit snippets like
-/*
-def closure_repositories(
-    omit_foo=False,
-    omit_bar=False):
-  if not omit_foo:
-    foo()
-  if not omit_bar:
-    bar()
-
-def foo():
-  native.maven_jar(name = "foo", ...)
-
-def bar():
-  native.maven_jar(name = "bar", ...)
-*/
       output.write( "def " + _record.getSource().getOptions().getGenerateRulesMacroName() + "():" );
       output.incIndent();
       output.write( "\"\"\"" );
