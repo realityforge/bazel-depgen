@@ -36,11 +36,6 @@ public final class ApplicationConfig
     return applicationConfig;
   }
 
-  public ApplicationConfig()
-  {
-    repositories.put( MAVEN_CENTRAL_ID, MAVEN_CENTRAL_URL );
-  }
-
   private void setConfigLocation( @Nonnull final Path configLocation )
   {
     _configLocation = configLocation;

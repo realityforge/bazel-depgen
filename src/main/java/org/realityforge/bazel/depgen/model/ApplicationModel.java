@@ -21,6 +21,8 @@ public final class ApplicationModel
   private final List<ArtifactModel> _artifacts;
   @Nonnull
   private final List<ReplacementModel> _replacements;
+  @Nonnull
+  private final Map<String, String> _repositories;
 
   @Nonnull
   public static ApplicationModel parse( @Nonnull final ApplicationConfig source )
@@ -31,18 +33,26 @@ public final class ApplicationModel
       source.getArtifacts().stream().flatMap( c -> ArtifactModel.parse( c ).stream() ).collect( Collectors.toList() );
     final List<ReplacementModel> replacements =
       source.getReplacements().stream().map( ReplacementModel::parse ).collect( Collectors.toList() );
-    return new ApplicationModel( source, optionsModel, artifactModels, replacements );
+    final Map<String, String> sourceRepositories = source.getRepositories();
+    final Map<String, String> repositories =
+      sourceRepositories.isEmpty() ?
+      Collections.singletonMap( ApplicationConfig.MAVEN_CENTRAL_ID, ApplicationConfig.MAVEN_CENTRAL_URL ) :
+      sourceRepositories;
+
+    return new ApplicationModel( source, optionsModel, artifactModels, replacements, repositories );
   }
 
   private ApplicationModel( @Nonnull final ApplicationConfig source,
                             @Nonnull final OptionsModel options,
                             @Nonnull final List<ArtifactModel> artifacts,
-                            @Nonnull final List<ReplacementModel> replacements )
+                            @Nonnull final List<ReplacementModel> replacements,
+                            @Nonnull final Map<String, String> repositories )
   {
     _source = Objects.requireNonNull( source );
     _options = Objects.requireNonNull( options );
     _artifacts = Objects.requireNonNull( artifacts );
     _replacements = Objects.requireNonNull( replacements );
+    _repositories = Collections.unmodifiableMap( Objects.requireNonNull( repositories ) );
   }
 
   @Nonnull
@@ -66,7 +76,7 @@ public final class ApplicationModel
   @Nonnull
   public Map<String, String> getRepositories()
   {
-    return Collections.unmodifiableMap( _source.getRepositories() );
+    return _repositories;
   }
 
   @Nonnull
