@@ -37,12 +37,6 @@ final class StarlarkFileOutput
     emit( "\n" );
   }
 
-  private void emit( @Nonnull final String string )
-    throws IOException
-  {
-    _outputStream.write( string.getBytes( StandardCharsets.US_ASCII ) );
-  }
-
   void incIndent()
   {
     _indent++;
@@ -59,5 +53,11 @@ final class StarlarkFileOutput
     throws Exception
   {
     _outputStream.close();
+  }
+
+  private void emit( @Nonnull final String string )
+    throws IOException
+  {
+    _outputStream.write( string.getBytes( StandardCharsets.US_ASCII ) );
   }
 }
