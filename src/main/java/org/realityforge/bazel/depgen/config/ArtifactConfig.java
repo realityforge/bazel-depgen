@@ -114,21 +114,4 @@ public class ArtifactConfig
   {
     this.excludes = excludes;
   }
-
-  @Override
-  public String toString()
-  {
-    return "ArtifactConfig[" +
-           "coord='" + coord + '\'' +
-           ", group='" + group + '\'' +
-           ", id='" + id + '\'' +
-           ", ids='" + ids + '\'' +
-           ", type='" + type + '\'' +
-           ", classifier='" + classifier + '\'' +
-           ", version='" + version + '\'' +
-           ", includeOptional=" + includeOptional +
-           ", includeSource=" + includeSource +
-           ", excludes=" + excludes +
-           "']";
-  }
 }

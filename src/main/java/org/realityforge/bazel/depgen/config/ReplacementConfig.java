@@ -58,15 +58,4 @@ public class ReplacementConfig
   {
     this.target = Objects.requireNonNull( target );
   }
-
-  @Override
-  public String toString()
-  {
-    return "ReplacementConfig[" +
-           "coord='" + coord + '\'' +
-           ", group='" + group + '\'' +
-           ", id='" + id + '\'' +
-           ", target='" + target +
-           "']";
-  }
 }
