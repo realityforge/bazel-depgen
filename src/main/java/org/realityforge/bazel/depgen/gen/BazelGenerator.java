@@ -2,6 +2,8 @@ package org.realityforge.bazel.depgen.gen;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -11,7 +13,7 @@ import org.realityforge.bazel.depgen.DependencyGraphEmitter;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
 
-@SuppressWarnings( "Duplicates" )
+@SuppressWarnings( { "Duplicates", "StringBufferReplaceableByString" } )
 public final class BazelGenerator
 {
   @Nonnull
@@ -132,8 +134,11 @@ public final class BazelGenerator
         output.newLine();
         output.write( "if not omit_" + artifact.getAlias() + ":" );
         output.incIndent();
-        output.write( "native.alias(name = '" + artifact.getAlias() + "', " +
-                      "actual = ':" + artifact.getName() + "', visibility = ['//visibility:public'] )" );
+        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        arguments.put( "name", "'" + artifact.getAlias() + "'" );
+        arguments.put( "actual", "':" + artifact.getName() + "'" );
+        arguments.put( "visibility", Collections.singletonList( "'//visibility:public'" ) );
+        output.writeCall( "native.alias", arguments );
         output.decIndent();
 
         output.newLine();
@@ -196,16 +201,16 @@ public final class BazelGenerator
   {
     final String sourceSha256 = artifact.getSourceSha256();
     assert null != sourceSha256;
-    final StringBuilder sb = new StringBuilder();
-    sb.append( "http_file(name = '" );
-    sb.append( artifact.getName() );
-    sb.append( "__sources', urls = [" );
+
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "'" + artifact.getAlias() + "__sources'" );
     final List<String> urls = artifact.getSourceUrls();
     assert null != urls && !urls.isEmpty();
-    sb.append( urls.stream().map( v -> "'" + v + "'" ).collect( Collectors.joining( "," ) ) );
-    sb.append( "], downloaded_file_path = '" );
+    arguments.put( "urls", urls.stream().map( v -> "'" + v + "'" ).collect( Collectors.toList() ) );
     final Artifact a = artifact.getNode().getArtifact();
     assert null != a;
+    final StringBuilder sb = new StringBuilder();
+    sb.append( "'" );
     sb.append( a.getGroupId().replaceAll( "\\.", "/" ) );
     sb.append( "/" );
     sb.append( a.getArtifactId() );
@@ -217,26 +222,47 @@ public final class BazelGenerator
     sb.append( a.getVersion() );
     sb.append( "-sources." );
     sb.append( a.getExtension() );
-    sb.append( "', sha256 = '" );
-    sb.append( sourceSha256 );
-    sb.append( "')" );
-    output.write( sb.toString() );
+    sb.append( "'" );
+    arguments.put( "downloaded_file_path", sb.toString() );
+    arguments.put( "sha256", "'" + sourceSha256 + "'" );
+    output.writeCall( "http_file", arguments );
+
+    final StringBuilder sb2 = new StringBuilder();
+    sb2.append( "http_file(name = '" );
+    sb2.append( artifact.getName() );
+    sb2.append( "__sources', urls = [" );
+    sb2.append( urls.stream().map( v -> "'" + v + "'" ).collect( Collectors.joining( "," ) ) );
+    sb2.append( "], downloaded_file_path = '" );
+    sb2.append( a.getGroupId().replaceAll( "\\.", "/" ) );
+    sb2.append( "/" );
+    sb2.append( a.getArtifactId() );
+    sb2.append( "/" );
+    sb2.append( a.getVersion() );
+    sb2.append( "/" );
+    sb2.append( a.getArtifactId() );
+    sb2.append( "-" );
+    sb2.append( a.getVersion() );
+    sb2.append( "-sources." );
+    sb2.append( a.getExtension() );
+    sb2.append( "', sha256 = '" );
+    sb2.append( sourceSha256 );
+    sb2.append( "')" );
+    output.write( sb2.toString() );
   }
 
   private void emitArtifactHttpFileRule( @Nonnull final StarlarkFileOutput output,
                                          @Nonnull final ArtifactRecord artifact )
     throws IOException
   {
-    final StringBuilder sb = new StringBuilder();
-    sb.append( "http_file(name = '" );
-    sb.append( artifact.getName() );
-    sb.append( "', urls = [" );
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "'" + artifact.getAlias() + "'" );
     final List<String> urls = artifact.getUrls();
     assert null != urls && !urls.isEmpty();
-    sb.append( urls.stream().map( v -> "'" + v + "'" ).collect( Collectors.joining( "," ) ) );
-    sb.append( "], downloaded_file_path = '" );
+    arguments.put( "urls", urls.stream().map( v -> "'" + v + "'" ).collect( Collectors.toList() ) );
     final Artifact a = artifact.getNode().getArtifact();
     assert null != a;
+    final StringBuilder sb = new StringBuilder();
+    sb.append( "'" );
     sb.append( a.getGroupId().replaceAll( "\\.", "/" ) );
     sb.append( "/" );
     sb.append( a.getArtifactId() );
@@ -249,10 +275,10 @@ public final class BazelGenerator
     sb.append( a.getClassifier().isEmpty() ? "" : "-" + a.getClassifier() );
     sb.append( "." );
     sb.append( a.getExtension() );
-    sb.append( "', sha256 = '" );
-    sb.append( artifact.getSha256() );
-    sb.append( "')" );
-    output.write( sb.toString() );
+    sb.append( "'" );
+    arguments.put( "downloaded_file_path", sb.toString() );
+    arguments.put( "sha256", "'" + artifact.getSha256() + "'" );
+    output.writeCall( "http_file", arguments );
   }
 
   private void emitDependencyGraphIfRequired( @Nonnull final StarlarkFileOutput output )
