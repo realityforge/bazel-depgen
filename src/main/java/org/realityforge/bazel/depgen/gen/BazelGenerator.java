@@ -226,28 +226,6 @@ public final class BazelGenerator
     arguments.put( "downloaded_file_path", sb.toString() );
     arguments.put( "sha256", "'" + sourceSha256 + "'" );
     output.writeCall( "http_file", arguments );
-
-    final StringBuilder sb2 = new StringBuilder();
-    sb2.append( "http_file(name = '" );
-    sb2.append( artifact.getName() );
-    sb2.append( "__sources', urls = [" );
-    sb2.append( urls.stream().map( v -> "'" + v + "'" ).collect( Collectors.joining( "," ) ) );
-    sb2.append( "], downloaded_file_path = '" );
-    sb2.append( a.getGroupId().replaceAll( "\\.", "/" ) );
-    sb2.append( "/" );
-    sb2.append( a.getArtifactId() );
-    sb2.append( "/" );
-    sb2.append( a.getVersion() );
-    sb2.append( "/" );
-    sb2.append( a.getArtifactId() );
-    sb2.append( "-" );
-    sb2.append( a.getVersion() );
-    sb2.append( "-sources." );
-    sb2.append( a.getExtension() );
-    sb2.append( "', sha256 = '" );
-    sb2.append( sourceSha256 );
-    sb2.append( "')" );
-    output.write( sb2.toString() );
   }
 
   private void emitArtifactHttpFileRule( @Nonnull final StarlarkFileOutput output,
