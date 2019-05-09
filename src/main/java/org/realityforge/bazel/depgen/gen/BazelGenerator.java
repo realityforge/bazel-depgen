@@ -136,6 +136,7 @@ public final class BazelGenerator
                       "actual = ':" + artifact.getName() + "', visibility = ['//visibility:public'] )" );
         output.decIndent();
 
+        output.newLine();
         output.write( "# " + artifact.getKey() );
         output.write( "#   name " + artifact.getName() );
         final String sha256 = artifact.getSha256();
