@@ -82,7 +82,7 @@ public final class ApplicationModel
   }
 
   @Nullable
-  ArtifactModel findArtifact( @Nonnull final Predicate<ArtifactModel> predicate )
+  private ArtifactModel findArtifact( @Nonnull final Predicate<ArtifactModel> predicate )
   {
     return getArtifacts()
       .stream()
@@ -104,7 +104,7 @@ public final class ApplicationModel
   }
 
   @Nullable
-  ReplacementModel findReplacement( @Nonnull final Predicate<ReplacementModel> predicate )
+  private ReplacementModel findReplacement( @Nonnull final Predicate<ReplacementModel> predicate )
   {
     return getReplacements()
       .stream()
