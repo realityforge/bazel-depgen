@@ -4,7 +4,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class OptionsConfig
+public final class OptionsConfig
 {
   public static final String DEFAULT_WORKSPACE_DIR = ".";
   public static final String DEFAULT_EXTENSION_FILE = "3rdparty/dependencies.bzl";

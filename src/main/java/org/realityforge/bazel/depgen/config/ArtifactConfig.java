@@ -2,7 +2,7 @@ package org.realityforge.bazel.depgen.config;
 
 import java.util.List;
 
-public class ArtifactConfig
+public final class ArtifactConfig
 {
   private String coord;
   private String group;

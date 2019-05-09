@@ -4,7 +4,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ReplacementConfig
+public final class ReplacementConfig
 {
   @Nullable
   private String coord;

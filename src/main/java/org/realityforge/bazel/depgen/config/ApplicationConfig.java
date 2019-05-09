@@ -12,7 +12,7 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 @SuppressWarnings( { "unused", "WeakerAccess" } )
-public class ApplicationConfig
+public final class ApplicationConfig
 {
   public static final String MAVEN_CENTRAL_ID = "central";
   public static final String MAVEN_CENTRAL_URL = "https://repo.maven.apache.org/maven2/";
