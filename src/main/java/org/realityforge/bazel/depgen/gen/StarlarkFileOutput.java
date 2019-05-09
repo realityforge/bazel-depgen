@@ -5,6 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
 
 final class StarlarkFileOutput
@@ -35,6 +38,58 @@ final class StarlarkFileOutput
     throws IOException
   {
     emit( "\n" );
+  }
+
+  void writeCall( @Nonnull final String functionName, @Nonnull final LinkedHashMap<String, Object> arguments )
+    throws IOException
+  {
+    if ( arguments.isEmpty() )
+    {
+      write( functionName + "()" );
+    }
+    else
+    {
+      write( functionName + "(" );
+      incIndent();
+      for ( final Map.Entry<String, Object> entry : arguments.entrySet() )
+      {
+        final String key = entry.getKey();
+        final Object value = entry.getValue();
+        if ( null == value )
+        {
+          write( key + " = None," );
+        }
+        else if ( value instanceof List )
+        {
+          final List arg = (List) value;
+          if ( arg.isEmpty() )
+          {
+            write( key + " = []," );
+          }
+          else if ( 1 == arg.size() )
+          {
+            write( key + " = [" + arg.get( 0 ) + "]," );
+          }
+          else
+          {
+            write( key + " = [" );
+            incIndent();
+            for ( final Object innerValue : arg )
+            {
+              write( innerValue + "," );
+            }
+            decIndent();
+            write( "]," );
+          }
+        }
+        else
+        {
+          write( key + " = " + value + "," );
+        }
+      }
+      decIndent();
+      write( ")" );
+    }
   }
 
   void incIndent()

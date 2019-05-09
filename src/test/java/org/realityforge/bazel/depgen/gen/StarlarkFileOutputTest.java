@@ -4,6 +4,9 @@ import gir.io.FileUtil;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.testng.annotations.Test;
@@ -54,6 +57,128 @@ public class StarlarkFileOutputTest
                          "J\n" );
     } );
   }
+
+  @Test
+  public void writeCall_emptyFunction()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file =
+        writeFileContent( output -> output.writeCall( "myFunction", new LinkedHashMap<>() ) );
+
+      assertFileContent( file, "myFunction()\n" );
+    } );
+  }
+
+  @Test
+  public void writeCall_indent()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file =
+        writeFileContent( output -> {
+          output.incIndent();
+          output.writeCall( "myFunction", new LinkedHashMap<>() );
+          output.decIndent();
+        } );
+
+      assertFileContent( file, "    myFunction()\n" );
+    } );
+  }
+
+  @Test
+  public void writeCall_singleArg()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file =
+        writeFileContent( output -> {
+          output.incIndent();
+          final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+          arguments.put( "name", "'Foo'" );
+          output.writeCall( "myFunction", arguments );
+          output.decIndent();
+        } );
+
+      assertFileContent( file,
+                         "    myFunction(\n" +
+                         "        name = 'Foo',\n" +
+                         "    )\n" );
+    } );
+  }
+
+  @Test
+  public void writeCall_singleArrayArg()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file =
+        writeFileContent( output -> {
+          output.incIndent();
+          final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+          arguments.put( "name", Arrays.asList( "1", "2", "3" ) );
+          output.writeCall( "myFunction", arguments );
+          output.decIndent();
+        } );
+
+      assertFileContent( file,
+                         "    myFunction(\n" +
+                         "        name = [\n" +
+                         "            1,\n" +
+                         "            2,\n" +
+                         "            3,\n" +
+                         "        ],\n" +
+                         "    )\n" );
+    } );
+  }
+
+  @Test
+  public void writeCall_singleMultiValueArrayArg()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file =
+        writeFileContent( output -> {
+          output.incIndent();
+          final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+          arguments.put( "name", Arrays.asList( "1", "2", "3" ) );
+          output.writeCall( "myFunction", arguments );
+          output.decIndent();
+        } );
+
+      assertFileContent( file,
+                         "    myFunction(\n" +
+                         "        name = [\n" +
+                         "            1,\n" +
+                         "            2,\n" +
+                         "            3,\n" +
+                         "        ],\n" +
+                         "    )\n" );
+    } );
+  }
+
+  @Test
+  public void writeCall_multiArg()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file =
+        writeFileContent( output -> {
+          output.incIndent();
+          final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+          arguments.put( "name", "'com_biz__myartifact'" );
+          arguments.put( "actual", "':com_biz__myartifact_42'" );
+          arguments.put( "visibility", Collections.singletonList( "'//visibility:public'" ) );
+          output.writeCall( "myFunction", arguments );
+          output.decIndent();
+        } );
+
+      assertFileContent( file,
+                         "    myFunction(\n" +
+                         "        name = 'com_biz__myartifact',\n" +
+                         "        actual = ':com_biz__myartifact_42',\n" +
+                         "        visibility = ['//visibility:public'],\n" +
+                         "    )\n" );
     } );
   }
 
