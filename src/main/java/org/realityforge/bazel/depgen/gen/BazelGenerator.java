@@ -71,7 +71,7 @@ public final class BazelGenerator
       output.write( "def " + _record.getSource().getOptions().getWorkspaceMacroName() + "(" +
                     _record.getArtifacts()
                       .stream()
-                      .filter( a -> null != a.getReplacementModel() )
+                      .filter( a -> null == a.getReplacementModel() )
                       .map( a -> "omit_" + a.getAlias() + "=False" )
                       .collect( Collectors.joining( ", " ) ) + "):" );
       output.incIndent();
@@ -114,7 +114,7 @@ public final class BazelGenerator
       output.write( "def " + _record.getSource().getOptions().getTargetMacroName() + "(" +
                     _record.getArtifacts()
                       .stream()
-                      .filter( a -> null != a.getReplacementModel() )
+                      .filter( a -> null == a.getReplacementModel() )
                       .map( a -> "omit_" + a.getAlias() + "=False" )
                       .collect( Collectors.joining( ", " ) ) + "):" );
       output.incIndent();
