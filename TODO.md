@@ -42,6 +42,11 @@ complete as there is too much un-said.
 
 * Add global and per-artifact visibility which is applied to alias. Defaults to public.
 
+* Add the ability to specify alias per-artifact.
+
+* Add global configuration option such that alias can be just the artifact name. Generate an error at build time
+  if there is a collision between artifacts.
+
 * Add assertion to workspace or target macro to verify dependencies.yml file has hash that matches hash of file that generated macro
 
 * Add support for managed dependencies which essentially contains a list of artifacts that include version
