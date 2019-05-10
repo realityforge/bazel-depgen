@@ -134,6 +134,7 @@ public final class BazelGenerator
         output.write( "if not omit_" + artifact.getAlias() + ":" );
         output.incIndent();
         emitAlias( output, artifact );
+        emitJavaImport( output, artifact );
         output.decIndent();
 
         output.newLine();
@@ -171,6 +172,40 @@ public final class BazelGenerator
 
       output.decIndent();
     }
+  }
+
+  private void emitJavaImport( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + artifact.getName() + "\"" );
+    arguments.put( "jars", Collections.singletonList( "\"@" + artifact.getName() + "//file\"" ) );
+    //TODO: In the future we may need to derive appropriate license tag but for now we are ignoring it
+    arguments.put( "licenses", Collections.singletonList( "\"notice\"" ) );
+    arguments.put( "tags",
+                   Collections.singletonList( "\"maven_coordinates=" +
+                                              artifact.getMavenCoordinatesBazelTag() +
+                                              "\"" ) );
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    final List<ArtifactRecord> deps = artifact.getDeps();
+    if ( !deps.isEmpty() )
+    {
+      arguments.put( "deps",
+                     deps.stream().map( a -> "\"" + a.getAlias() + "\"" ).sorted().collect( Collectors.toList() ) );
+    }
+    //TODO: Should exports argument === deps or should we do something else here?
+    // probably exports should contain the plugin associated with jar if any but it is unclear if
+    // dependencies should be rolled up
+    final List<ArtifactRecord> runtimeDeps = artifact.getRuntimeDeps();
+    if ( !runtimeDeps.isEmpty() )
+    {
+      arguments.put( "runtime_deps",
+                     runtimeDeps.stream()
+                       .map( a -> "\"" + a.getAlias() + "\"" )
+                       .sorted()
+                       .collect( Collectors.toList() ) );
+    }
+    output.writeCall( "java_import", arguments );
   }
 
   private void emitAlias( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
