@@ -74,7 +74,7 @@ public final class BazelGenerator
                     _record.getArtifacts()
                       .stream()
                       .filter( a -> null == a.getReplacementModel() )
-                      .map( a -> "omit_" + a.getAlias() + "=False" )
+                      .map( a -> "omit_" + a.getAlias() + " = False" )
                       .collect( Collectors.joining( ", " ) ) + "):" );
       output.incIndent();
       output.write( "\"\"\"" );
@@ -117,7 +117,7 @@ public final class BazelGenerator
                     _record.getArtifacts()
                       .stream()
                       .filter( a -> null == a.getReplacementModel() )
-                      .map( a -> "omit_" + a.getAlias() + "=False" )
+                      .map( a -> "omit_" + a.getAlias() + " = False" )
                       .collect( Collectors.joining( ", " ) ) + "):" );
       output.incIndent();
       output.write( "\"\"\"" );
