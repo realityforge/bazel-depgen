@@ -180,7 +180,6 @@ public final class BazelGenerator
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + artifact.getName() + "\"" );
     arguments.put( "jars", Collections.singletonList( "\"@" + artifact.getName() + "//file\"" ) );
-    //TODO: In the future we may need to derive appropriate license tag but for now we are ignoring it
     arguments.put( "licenses", Collections.singletonList( "\"notice\"" ) );
     if( null != artifact.getSourceSha256() )
     {

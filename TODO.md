@@ -51,3 +51,7 @@ complete as there is too much un-said.
 * Add the ability to control whether `exports` contains all the `deps` or only contains associated `java_plugins`
   (if present). This should be configurable on a per-artifact as well as a global level. The default should be ???
   (`true` matches maven conventions, `false` matches bazel conventions)
+
+* Figure out how to populate `licenses` arguments in the future (possibly via scanning poms and heuristics or
+  explicit configuration). Alternatively just set if to dummy values as most projects don't have it as a central
+  part of the build process.
