@@ -67,7 +67,7 @@ public final class BazelGenerator
 
       emitDependencyGraphIfRequired( output );
 
-      output.write( "load('@bazel_tools//tools/build_defs/repo:http.bzl', 'http_file')" );
+      output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
       output.newLine();
 
       output.write( "def " + _record.getSource().getOptions().getWorkspaceMacroName() + "(" +
@@ -134,9 +134,9 @@ public final class BazelGenerator
         output.write( "if not omit_" + artifact.getAlias() + ":" );
         output.incIndent();
         final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-        arguments.put( "name", "'" + artifact.getAlias() + "'" );
-        arguments.put( "actual", "':" + artifact.getName() + "'" );
-        arguments.put( "visibility", Collections.singletonList( "'//visibility:public'" ) );
+        arguments.put( "name", "\"" + artifact.getAlias() + "\"" );
+        arguments.put( "actual", "\":" + artifact.getName() + "\"" );
+        arguments.put( "visibility", Collections.singletonList( "\"//visibility:public\"" ) );
         output.writeCall( "native.alias", arguments );
         output.decIndent();
 
@@ -202,11 +202,11 @@ public final class BazelGenerator
     assert null != sourceSha256;
 
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "'" + artifact.getAlias() + "__sources'" );
+    arguments.put( "name", "\"" + artifact.getAlias() + "__sources\"" );
     final Artifact a = artifact.getNode().getArtifact();
     assert null != a;
     final StringBuilder sb = new StringBuilder();
-    sb.append( "'" );
+    sb.append( "\"" );
     sb.append( a.getGroupId().replaceAll( "\\.", "/" ) );
     sb.append( "/" );
     sb.append( a.getArtifactId() );
@@ -218,9 +218,9 @@ public final class BazelGenerator
     sb.append( a.getVersion() );
     sb.append( "-sources." );
     sb.append( a.getExtension() );
-    sb.append( "'" );
+    sb.append( "\"" );
     arguments.put( "downloaded_file_path", sb.toString() );
-    arguments.put( "sha256", "'" + sourceSha256 + "'" );
+    arguments.put( "sha256", "\"" + sourceSha256 + "\"" );
     final List<String> urls = artifact.getSourceUrls();
     assert null != urls && !urls.isEmpty();
     arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
@@ -232,11 +232,11 @@ public final class BazelGenerator
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "'" + artifact.getAlias() + "'" );
+    arguments.put( "name", "\"" + artifact.getAlias() + "\"" );
     final Artifact a = artifact.getNode().getArtifact();
     assert null != a;
     final StringBuilder sb = new StringBuilder();
-    sb.append( "'" );
+    sb.append( "\"" );
     sb.append( a.getGroupId().replaceAll( "\\.", "/" ) );
     sb.append( "/" );
     sb.append( a.getArtifactId() );
@@ -249,9 +249,9 @@ public final class BazelGenerator
     sb.append( a.getClassifier().isEmpty() ? "" : "-" + a.getClassifier() );
     sb.append( "." );
     sb.append( a.getExtension() );
-    sb.append( "'" );
+    sb.append( "\"" );
     arguments.put( "downloaded_file_path", sb.toString() );
-    arguments.put( "sha256", "'" + artifact.getSha256() + "'" );
+    arguments.put( "sha256", "\"" + artifact.getSha256() + "\"" );
     final List<String> urls = artifact.getUrls();
     assert null != urls && !urls.isEmpty();
     arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
