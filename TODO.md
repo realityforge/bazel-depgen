@@ -55,13 +55,3 @@ complete as there is too much un-said.
 * Figure out how to populate `licenses` arguments in the future (possibly via scanning poms and heuristics or
   explicit configuration). Alternatively just set if to dummy values as most projects don't have it as a central
   part of the build process.
-
-* Format macro definitions with multiple args with an arg per-line ala:
-
-```python
-def closure_repositories(
-    omit_aopalliance = False,
-    omit_args4j = False,
-    ...
-    omit_phantomjs = False):
-```

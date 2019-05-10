@@ -40,6 +40,34 @@ final class StarlarkFileOutput
     emit( "\n" );
   }
 
+  void writeMacroStart( @Nonnull final String name, @Nonnull final List<String> arguments )
+    throws IOException
+  {
+    final int size = arguments.size();
+    if ( 0 == size )
+    {
+      write( "def " + name + "():" );
+    }
+    else if ( 1 == size )
+    {
+      write( "def " + name + "(" + arguments.get( 0 ) + "):" );
+    }
+    else
+    {
+      write( "def " + name + "(" );
+      incIndent();
+      incIndent();
+      int index = 0;
+      for ( final String argument : arguments )
+      {
+        index++;
+        write( argument + ( index == size ? "):" : "," ) );
+      }
+      decIndent();
+      decIndent();
+    }
+  }
+
   void writeCall( @Nonnull final String functionName, @Nonnull final LinkedHashMap<String, Object> arguments )
     throws IOException
   {

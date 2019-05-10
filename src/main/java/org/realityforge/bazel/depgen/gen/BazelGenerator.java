@@ -70,12 +70,12 @@ public final class BazelGenerator
       output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
       output.newLine();
 
-      output.write( "def " + _record.getSource().getOptions().getWorkspaceMacroName() + "(" +
-                    _record.getArtifacts()
-                      .stream()
-                      .filter( a -> null == a.getReplacementModel() )
-                      .map( a -> "omit_" + a.getAlias() + " = False" )
-                      .collect( Collectors.joining( ", " ) ) + "):" );
+      output.writeMacroStart( _record.getSource().getOptions().getWorkspaceMacroName(),
+                              _record.getArtifacts()
+                                .stream()
+                                .filter( a -> null == a.getReplacementModel() )
+                                .map( a -> "omit_" + a.getAlias() + " = False" )
+                                .collect( Collectors.toList() ) );
       output.incIndent();
       output.write( "\"\"\"" );
       output.incIndent();
@@ -113,12 +113,12 @@ public final class BazelGenerator
 
       output.newLine();
 
-      output.write( "def " + _record.getSource().getOptions().getTargetMacroName() + "(" +
-                    _record.getArtifacts()
-                      .stream()
-                      .filter( a -> null == a.getReplacementModel() )
-                      .map( a -> "omit_" + a.getAlias() + " = False" )
-                      .collect( Collectors.joining( ", " ) ) + "):" );
+      output.writeMacroStart( _record.getSource().getOptions().getTargetMacroName(),
+                              _record.getArtifacts()
+                                .stream()
+                                .filter( a -> null == a.getReplacementModel() )
+                                .map( a -> "omit_" + a.getAlias() + " = False" )
+                                .collect( Collectors.toList() ) );
       output.incIndent();
       output.write( "\"\"\"" );
       output.incIndent();
@@ -181,7 +181,7 @@ public final class BazelGenerator
     arguments.put( "name", "\"" + artifact.getName() + "\"" );
     arguments.put( "jars", Collections.singletonList( "\"@" + artifact.getName() + "//file\"" ) );
     arguments.put( "licenses", Collections.singletonList( "\"notice\"" ) );
-    if( null != artifact.getSourceSha256() )
+    if ( null != artifact.getSourceSha256() )
     {
       arguments.put( "srcjar", "\"@" + artifact.getName() + "__sources//file\"" );
     }

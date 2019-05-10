@@ -182,6 +182,58 @@ public class StarlarkFileOutputTest
     } );
   }
 
+  @Test
+  public void writeMacro_noArgs()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file =
+        writeFileContent( output -> {
+          output.incIndent();
+          output.writeMacroStart( "myMacro", Collections.emptyList() );
+          output.decIndent();
+        } );
+
+      assertFileContent( file, "    def myMacro():\n" );
+    } );
+  }
+
+  @Test
+  public void writeMacro_singleArg()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file =
+        writeFileContent( output -> {
+          output.incIndent();
+          output.writeMacroStart( "myMacro", Collections.singletonList( "foo" ) );
+          output.decIndent();
+        } );
+
+      assertFileContent( file, "    def myMacro(foo):\n" );
+    } );
+  }
+
+  @Test
+  public void writeMacro_multipleArgs()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file =
+        writeFileContent( output -> {
+          output.incIndent();
+          output.writeMacroStart( "myMacro", Arrays.asList( "foo", "bar = True", "baz = \"yes\"" ) );
+          output.decIndent();
+        } );
+
+      assertFileContent( file,
+                         "    def myMacro(\n" +
+                         "            foo,\n" +
+                         "            bar = True,\n" +
+                         "            baz = \"yes\"):\n" );
+    } );
+  }
+
   @FunctionalInterface
   interface WriterCallback
   {
