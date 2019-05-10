@@ -51,6 +51,9 @@ public final class BazelGenerator
                       getRelativePathToDependenciesYaml() +
                       " by https://github.com/realityforge/bazel-depgen" );
         output.write( "# Contents can be edited and will not be overridden." );
+
+        output.write( "package(default_visibility = [\"//visibility:public\"])" );
+        output.newLine();
       }
     }
   }
