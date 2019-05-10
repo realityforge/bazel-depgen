@@ -233,7 +233,7 @@ public final class BazelGenerator
     sb.append( a.getExtension() );
     sb.append( "\"" );
     arguments.put( "downloaded_file_path", sb.toString() );
-    arguments.put( "sha256", "\"" + sourceSha256 + "\"" );
+    arguments.put( "sha256", "\"" + sourceSha256.toLowerCase() + "\"" );
     final List<String> urls = artifact.getSourceUrls();
     assert null != urls && !urls.isEmpty();
     arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
@@ -264,7 +264,9 @@ public final class BazelGenerator
     sb.append( a.getExtension() );
     sb.append( "\"" );
     arguments.put( "downloaded_file_path", sb.toString() );
-    arguments.put( "sha256", "\"" + artifact.getSha256() + "\"" );
+    final String sha256 = artifact.getSha256();
+    assert null != sha256;
+    arguments.put( "sha256", "\"" + sha256.toLowerCase() + "\"" );
     final List<String> urls = artifact.getUrls();
     assert null != urls && !urls.isEmpty();
     arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
