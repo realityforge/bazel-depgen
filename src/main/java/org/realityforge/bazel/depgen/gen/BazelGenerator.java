@@ -130,6 +130,10 @@ public final class BazelGenerator
 
       for ( final ArtifactRecord artifact : _record.getArtifacts() )
       {
+        if ( null != artifact.getReplacementModel() )
+        {
+          continue;
+        }
         output.newLine();
         output.write( "if not omit_" + artifact.getAlias() + ":" );
         output.incIndent();
