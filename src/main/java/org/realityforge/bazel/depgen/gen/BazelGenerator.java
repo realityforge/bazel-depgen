@@ -182,6 +182,10 @@ public final class BazelGenerator
     arguments.put( "jars", Collections.singletonList( "\"@" + artifact.getName() + "//file\"" ) );
     //TODO: In the future we may need to derive appropriate license tag but for now we are ignoring it
     arguments.put( "licenses", Collections.singletonList( "\"notice\"" ) );
+    if( null != artifact.getSourceSha256() )
+    {
+      arguments.put( "srcjar", "\"@" + artifact.getName() + "__sources//file\"" );
+    }
     arguments.put( "tags",
                    Collections.singletonList( "\"maven_coordinates=" +
                                               artifact.getMavenCoordinatesBazelTag() +
