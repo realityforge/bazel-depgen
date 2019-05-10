@@ -127,7 +127,6 @@ public final class BazelGenerator
                     "'." );
       output.decIndent();
       output.write( "\"\"\"" );
-      output.newLine();
 
       for ( final ArtifactRecord artifact : _record.getArtifacts() )
       {
