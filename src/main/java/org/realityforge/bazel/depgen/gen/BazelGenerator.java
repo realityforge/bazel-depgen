@@ -197,9 +197,6 @@ public final class BazelGenerator
       arguments.put( "deps",
                      deps.stream().map( a -> "\"" + a.getAlias() + "\"" ).sorted().collect( Collectors.toList() ) );
     }
-    //TODO: Should exports argument === deps or should we do something else here?
-    // probably exports should contain the plugin associated with jar if any but it is unclear if
-    // dependencies should be rolled up
     final List<ArtifactRecord> runtimeDeps = artifact.getRuntimeDeps();
     if ( !runtimeDeps.isEmpty() )
     {

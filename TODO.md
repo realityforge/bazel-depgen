@@ -45,3 +45,7 @@ complete as there is too much un-said.
 * Add assertion to workspace or target macro to verify dependencies.yml file has hash that matches hash of file that generated macro
 
 * Add support for managed dependencies which essentially contains a list of artifacts that include version
+
+* Add the ability to control whether `exports` contains all the `deps` or only contains associated `java_plugins`
+  (if present). This should be configurable on a per-artifact as well as a global level. The default should be ???
+  (`true` matches maven conventions, `false` matches bazel conventions)
