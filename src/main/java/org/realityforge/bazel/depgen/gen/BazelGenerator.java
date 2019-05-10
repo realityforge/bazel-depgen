@@ -173,7 +173,7 @@ public final class BazelGenerator
                        .sorted()
                        .collect( Collectors.toList() ) );
     }
-    output.writeCall( "java_import", arguments );
+    output.writeCall( "native.java_import", arguments );
   }
 
   private void emitAlias( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
