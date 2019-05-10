@@ -203,9 +203,6 @@ public final class BazelGenerator
 
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "'" + artifact.getAlias() + "__sources'" );
-    final List<String> urls = artifact.getSourceUrls();
-    assert null != urls && !urls.isEmpty();
-    arguments.put( "urls", urls.stream().map( v -> "'" + v + "'" ).collect( Collectors.toList() ) );
     final Artifact a = artifact.getNode().getArtifact();
     assert null != a;
     final StringBuilder sb = new StringBuilder();
@@ -224,6 +221,9 @@ public final class BazelGenerator
     sb.append( "'" );
     arguments.put( "downloaded_file_path", sb.toString() );
     arguments.put( "sha256", "'" + sourceSha256 + "'" );
+    final List<String> urls = artifact.getSourceUrls();
+    assert null != urls && !urls.isEmpty();
+    arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
     output.writeCall( "http_file", arguments );
   }
 
@@ -233,9 +233,6 @@ public final class BazelGenerator
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "'" + artifact.getAlias() + "'" );
-    final List<String> urls = artifact.getUrls();
-    assert null != urls && !urls.isEmpty();
-    arguments.put( "urls", urls.stream().map( v -> "'" + v + "'" ).collect( Collectors.toList() ) );
     final Artifact a = artifact.getNode().getArtifact();
     assert null != a;
     final StringBuilder sb = new StringBuilder();
@@ -255,6 +252,9 @@ public final class BazelGenerator
     sb.append( "'" );
     arguments.put( "downloaded_file_path", sb.toString() );
     arguments.put( "sha256", "'" + artifact.getSha256() + "'" );
+    final List<String> urls = artifact.getUrls();
+    assert null != urls && !urls.isEmpty();
+    arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
     output.writeCall( "http_file", arguments );
   }
 
