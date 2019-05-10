@@ -42,6 +42,7 @@ public class ApplicationRecordTest
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
       assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
       assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+      assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
       assertEquals( artifactRecord.getUrls(),
                     Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
@@ -79,6 +80,7 @@ public class ApplicationRecordTest
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
       assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
       assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+      assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
       assertEquals( artifactRecord.getUrls(),
                     Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
@@ -194,6 +196,7 @@ public class ApplicationRecordTest
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getName(), "myapp_com_example__myapp__1_0" );
       assertEquals( artifactRecord.getAlias(), "myapp_com_example__myapp" );
+      assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
     } );
   }
 
@@ -218,6 +221,7 @@ public class ApplicationRecordTest
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getName(), "myapp_com_example__myapp__1_0" );
       assertEquals( artifactRecord.getAlias(), "myapp_com_example__myapp" );
+      assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
     } );
   }
 
@@ -301,6 +305,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+        assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
         assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
                       Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
@@ -317,6 +322,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
+        assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 1 );
         assertEquals( artifactRecord.getRuntimeDeps().get( 0 ).getKey(), "com.example:rtB" );
@@ -329,6 +335,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:rtA" );
         assertEquals( artifactRecord.getName(), "com_example__rta__33_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__rta" );
+      assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtA:33.0" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
       }
@@ -340,6 +347,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:rtB" );
         assertEquals( artifactRecord.getName(), "com_example__rtb__2_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__rtb" );
+        assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtB:2.0" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
       }
@@ -377,6 +385,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+        assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
         assertEquals( artifactRecord.getSha256(),
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
@@ -395,6 +404,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
+        assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
         assertEquals( artifactRecord.getSha256(),
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
@@ -438,6 +448,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+        assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
         assertEquals( artifactRecord.getSha256(),
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
@@ -458,6 +469,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
+        assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
         assertEquals( artifactRecord.getSha256(),
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
@@ -503,6 +515,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+        assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 1 );
         assertEquals( artifactRecord.getRuntimeDeps().get( 0 ).getKey(), "com.example:rtA" );
@@ -515,6 +528,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:rtA" );
         assertEquals( artifactRecord.getName(), "com_example__rta__33_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__rta" );
+        assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtA:33.0" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
       }

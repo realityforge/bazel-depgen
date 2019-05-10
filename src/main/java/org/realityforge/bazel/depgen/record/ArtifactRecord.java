@@ -94,6 +94,13 @@ public final class ArtifactRecord
   }
 
   @Nonnull
+  public String getMavenCoordinatesBazelTag()
+  {
+    final org.eclipse.aether.artifact.Artifact artifact = _node.getArtifact();
+    return artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion();
+  }
+
+  @Nonnull
   public DependencyNode getNode()
   {
     return _node;
