@@ -215,7 +215,7 @@ public final class BazelGenerator
     assert null != sourceSha256;
 
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + artifact.getAlias() + "__sources\"" );
+    arguments.put( "name", "\"" + artifact.getName() + "__sources\"" );
     final Artifact a = artifact.getNode().getArtifact();
     assert null != a;
     final StringBuilder sb = new StringBuilder();
@@ -245,7 +245,7 @@ public final class BazelGenerator
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + artifact.getAlias() + "\"" );
+    arguments.put( "name", "\"" + artifact.getName() + "\"" );
     final Artifact a = artifact.getNode().getArtifact();
     assert null != a;
     final StringBuilder sb = new StringBuilder();
