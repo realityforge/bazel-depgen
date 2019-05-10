@@ -60,3 +60,5 @@ complete as there is too much un-said.
 * Figure out how to populate `licenses` arguments in the future (possibly via scanning poms and heuristics or
   explicit configuration). Alternatively just set if to dummy values as most projects don't have it as a central
   part of the build process.
+
+* Support alternative to `http_file` that supports basic authentication.
