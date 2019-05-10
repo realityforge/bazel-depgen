@@ -133,11 +133,7 @@ public final class BazelGenerator
         output.newLine();
         output.write( "if not omit_" + artifact.getAlias() + ":" );
         output.incIndent();
-        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-        arguments.put( "name", "\"" + artifact.getAlias() + "\"" );
-        arguments.put( "actual", "\":" + artifact.getName() + "\"" );
-        arguments.put( "visibility", Collections.singletonList( "\"//visibility:public\"" ) );
-        output.writeCall( "native.alias", arguments );
+        emitAlias( output, artifact );
         output.decIndent();
 
         output.newLine();
@@ -175,6 +171,16 @@ public final class BazelGenerator
 
       output.decIndent();
     }
+  }
+
+  private void emitAlias( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + artifact.getAlias() + "\"" );
+    arguments.put( "actual", "\":" + artifact.getName() + "\"" );
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:public\"" ) );
+    output.writeCall( "native.alias", arguments );
   }
 
   private void emitModuleDocstring( @Nonnull final StarlarkFileOutput output )
