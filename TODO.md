@@ -45,15 +45,3 @@ complete as there is too much un-said.
 * Add assertion to workspace or target macro to verify dependencies.yml file has hash that matches hash of file that generated macro
 
 * Add support for managed dependencies which essentially contains a list of artifacts that include version
-
-* Add helper method to `StarlarkFileOutput` that formats a call with each parameter on a new line. i.e.
-
-```python
-gwt_application(
-    name = "react4j_todomvc_dev",
-    srcs = _SRCS,
-    modules = ["react4j.todomvc.TodomvcDev"],
-    resources = _RESOURCES,
-    deps = _DEPS,
-)
-```
