@@ -81,7 +81,13 @@ public final class ArtifactRecord
   @Nonnull
   public String getName()
   {
-    return getAlias() + "__" + RecordUtil.cleanNamePart( getArtifact().getVersion() );
+    final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
+    return getNamePrefix() +
+           RecordUtil.cleanNamePart( artifact.getGroupId() ) +
+           "__" +
+           RecordUtil.cleanNamePart( artifact.getArtifactId() ) +
+           "__" +
+           RecordUtil.cleanNamePart( artifact.getVersion() );
   }
 
   @Nonnull
