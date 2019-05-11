@@ -42,6 +42,8 @@ complete as there is too much un-said.
 
 * Add global and per-artifact visibility which is applied to alias. Defaults to public.
 
+* If an artifact is not declared then the alias should have private visibility
+
 * Add the ability to specify alias per-artifact.
 
 * Add global configuration option such that alias can be just the artifact name. Generate an error at build time
