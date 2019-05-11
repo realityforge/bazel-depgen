@@ -62,4 +62,3 @@ complete as there is too much un-said.
 * Scan `WORKSPACE` and verify that workspace rule is called from within it? Would need a global option to
   disable this check in case it is called from downstream macro. Probably the best we can do is scan for load
   string. If not present then issue a warning (and also  indicate how the warning can be suppressed)
-
