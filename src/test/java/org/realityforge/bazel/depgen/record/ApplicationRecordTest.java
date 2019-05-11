@@ -928,4 +928,53 @@ public class ApplicationRecordTest
       assertThrows( NullPointerException.class, () -> record.getArtifact( "com.example", "other-no-exist" ) );
     } );
   }
+
+  @Test
+  public void getAlias_withAliasStrategy()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "options:\n" +
+                         "  aliasStrategy: ArtifactId\n" +
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactRecord artifactRecord = artifacts.get( 0 );
+      assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+      assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias(), "myapp" );
+    } );
+  }
+
+  @Test
+  public void getAlias_withAliasStrategyAndPrefix()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "options:\n" +
+                         "  namePrefix: gwt_\n" +
+                         "  aliasStrategy: ArtifactId\n" +
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactRecord artifactRecord = artifacts.get( 0 );
+      assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+      assertEquals( artifactRecord.getName(), "gwt_com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias(), "gwt_myapp" );
+    } );
+  }
 }

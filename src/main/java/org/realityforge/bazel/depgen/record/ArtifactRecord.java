@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
+import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
 
@@ -94,11 +95,19 @@ public final class ArtifactRecord
   public String getAlias()
   {
     final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
-    final String prefix = RecordUtil.cleanNamePart( _application.getSource().getOptions().getNamePrefix() );
-    return prefix +
-           RecordUtil.cleanNamePart( artifact.getGroupId() ) +
-           "__" +
-           RecordUtil.cleanNamePart( artifact.getArtifactId() );
+    final AliasStrategy aliasStrategy = _application.getSource().getOptions().getAliasStrategy();
+    if ( AliasStrategy.GroupIdAndArtifactId == aliasStrategy )
+    {
+      return getNamePrefix() +
+             RecordUtil.cleanNamePart( artifact.getGroupId() ) +
+             "__" +
+             RecordUtil.cleanNamePart( artifact.getArtifactId() );
+    }
+    else
+    {
+      assert AliasStrategy.ArtifactId == aliasStrategy;
+      return getNamePrefix() + RecordUtil.cleanNamePart( artifact.getArtifactId() );
+    }
   }
 
   @Nonnull
