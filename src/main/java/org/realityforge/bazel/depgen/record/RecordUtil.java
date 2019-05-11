@@ -33,20 +33,6 @@ final class RecordUtil
   }
 
   @Nonnull
-  static String toArtifactKey( @Nonnull final ArtifactModel model )
-  {
-    return model.getGroup() + ":" + model.getId();
-  }
-
-  @Nonnull
-  static String toArtifactKey( @Nonnull final DependencyNode node )
-  {
-    final Artifact artifact = node.getArtifact();
-    assert null != artifact;
-    return artifact.getGroupId() + ":" + artifact.getArtifactId();
-  }
-
-  @Nonnull
   static String artifactToPath( @Nonnull final Artifact artifact )
   {
     return artifact.getGroupId().replaceAll( "\\.", "/" ) +

@@ -74,7 +74,8 @@ public final class ArtifactRecord
   @Nonnull
   public String getKey()
   {
-    return null != _artifactModel ? RecordUtil.toArtifactKey( _artifactModel ) : RecordUtil.toArtifactKey( _node );
+    final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
+    return artifact.getGroupId() + ":" + artifact.getArtifactId();
   }
 
   @Nonnull

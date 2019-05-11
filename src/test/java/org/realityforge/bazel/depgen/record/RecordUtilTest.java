@@ -36,13 +36,6 @@ public class RecordUtilTest
   }
 
   @Test
-  public void toArtifactKey_dependencyNode()
-  {
-    assertEquals( RecordUtil.toArtifactKey( new DefaultDependencyNode( new DefaultArtifact( "com.example:mylib:jar:0.98" ) ) ),
-                  "com.example:mylib" );
-  }
-
-  @Test
   public void artifactToPath()
   {
     assertEquals( RecordUtil.artifactToPath( new DefaultArtifact( "com.example:mylib:jar:0.98" ) ),
