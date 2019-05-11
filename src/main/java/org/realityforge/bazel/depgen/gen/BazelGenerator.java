@@ -204,7 +204,14 @@ public final class BazelGenerator
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + artifact.getAlias() + "\"" );
     arguments.put( "actual", "\":" + artifact.getName() + "\"" );
-    arguments.put( "visibility", Collections.singletonList( "\"//visibility:public\"" ) );
+    if ( null != artifact.getArtifactModel() )
+    {
+      arguments.put( "visibility", Collections.singletonList( "\"//visibility:public\"" ) );
+    }
+    else
+    {
+      arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    }
     output.writeCall( "native.alias", arguments );
   }
 

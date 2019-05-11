@@ -4,8 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* If an artifact is not declared then the alias should have private visibility
-
 * Add global and per-artifact visibility which is applied to alias. Defaults to public.
 
 * Scan jar artifacts for annotation processors and add them if necessary.
