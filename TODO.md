@@ -13,7 +13,7 @@ complete as there is too much un-said.
 
 * Add the ability to control whether `exports` contains all the `deps` or only contains associated `java_plugins`
   (if present). This should be configurable on a per-artifact as well as a global level. The default should be ???
-  (`true` matches maven conventions, `false` matches bazel conventions)
+  (`true` matches maven conventions, `false` matches bazel conventions) - `exportDeps` is config name?
 
 * Incorporate features from [bazel_maven_repository](https://github.com/square/bazel_maven_repository) such as:
   - Store jars in the "content addressable" cache, which is machine-wide, and survives even `bazel clean --expunge`
