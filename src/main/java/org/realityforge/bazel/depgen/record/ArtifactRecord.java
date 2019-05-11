@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen.record;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -199,6 +200,7 @@ public final class ArtifactRecord
         .map( c -> _application.getArtifact( c.getDependency().getArtifact().getGroupId(),
                                              c.getDependency().getArtifact().getArtifactId() ) )
         .distinct()
+        .sorted( Comparator.comparing( ArtifactRecord::getKey ) )
         .collect( Collectors.toList() );
   }
 
@@ -213,6 +215,7 @@ public final class ArtifactRecord
         .map( c -> _application.getArtifact( c.getDependency().getArtifact().getGroupId(),
                                              c.getDependency().getArtifact().getArtifactId() ) )
         .distinct()
+        .sorted( Comparator.comparing( ArtifactRecord::getKey ) )
         .collect( Collectors.toList() );
   }
 

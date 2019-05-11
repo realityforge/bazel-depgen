@@ -539,6 +539,74 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void depsAreSorted()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:myapp:1.0",
+                                           "com.example:mylib1:1.0",
+                                           "com.example:mylib3:1.0",
+                                           "com.example:mylib2:1.0",
+                                           "com.example:mylib4:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib1:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib2:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib3:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib4:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 5 );
+
+      final ArtifactRecord artifactRecord = record.getArtifact( "com.example", "myapp" );
+      final List<ArtifactRecord> deps = artifactRecord.getDeps();
+      assertEquals( deps.size(), 4 );
+      assertEquals( deps.get( 0 ).getArtifact().toString(), "com.example:mylib1:jar:1.0" );
+      assertEquals( deps.get( 1 ).getArtifact().toString(), "com.example:mylib2:jar:1.0" );
+      assertEquals( deps.get( 2 ).getArtifact().toString(), "com.example:mylib3:jar:1.0" );
+      assertEquals( deps.get( 3 ).getArtifact().toString(), "com.example:mylib4:jar:1.0" );
+    } );
+  }
+
+  @Test
+  public void runtimeDepsAreSorted()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:myapp:1.0",
+                                           "com.example:mylib1:jar::1.0:runtime",
+                                           "com.example:mylib3:jar::1.0:runtime",
+                                           "com.example:mylib2:jar::1.0:runtime",
+                                           "com.example:mylib4:jar::1.0:runtime" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib1:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib2:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib3:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib4:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 5 );
+
+      final ArtifactRecord artifactRecord = record.getArtifact( "com.example", "myapp" );
+      final List<ArtifactRecord> deps = artifactRecord.getRuntimeDeps();
+      assertEquals( deps.size(), 4 );
+      assertEquals( deps.get( 0 ).getArtifact().toString(), "com.example:mylib1:jar:1.0" );
+      assertEquals( deps.get( 1 ).getArtifact().toString(), "com.example:mylib2:jar:1.0" );
+      assertEquals( deps.get( 2 ).getArtifact().toString(), "com.example:mylib3:jar:1.0" );
+      assertEquals( deps.get( 3 ).getArtifact().toString(), "com.example:mylib4:jar:1.0" );
+    } );
+  }
+
+  @Test
   public void multipleDependenciesWithSameKeyOmitsSecondIfBothHaveClassifiers()
     throws Exception
   {
