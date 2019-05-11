@@ -99,8 +99,18 @@ public final class ApplicationRecord
     final ArtifactModel model = _source.findArtifact( groupId, artifactId );
     final ArtifactRecord record = new ArtifactRecord( this, node, sha256, urls, sourceSha256, sourceUrls, model, null );
     final String key = record.getKey();
-    assert !_artifacts.containsKey( key );
-    _artifacts.put( key, record );
+    final ArtifactRecord existing = _artifacts.get( key );
+    if ( null == existing )
+    {
+      _artifacts.put( key, record );
+    }
+    else
+    {
+      if ( !"".equals( existing.getArtifact().getClassifier() ) && "".equals( node.getArtifact().getClassifier() ) )
+      {
+        _artifacts.put( key, record );
+      }
+    }
   }
 
   @Nonnull

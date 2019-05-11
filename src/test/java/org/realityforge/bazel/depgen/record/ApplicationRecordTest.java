@@ -485,6 +485,60 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void multipleDependenciesWithSameKeyOmitsSecond()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:myapp:1.0",
+                                           "com.example:mylib:jar:sources:1.0",
+                                           "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 2 );
+
+      final ArtifactRecord artifactRecord = record.getArtifact( "com.example", "myapp" );
+      final List<ArtifactRecord> deps = artifactRecord.getDeps();
+      assertEquals( deps.size(), 1 );
+      assertEquals( deps.get( 0 ).getArtifact().toString(), "com.example:mylib:jar:1.0" );
+    } );
+  }
+
+  @Test
+  public void multipleDependenciesWithSameKeyOmitsSecondIfBothHaveClassifiers()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:myapp:1.0",
+                                           "com.example:mylib:jar:stripped:1.0",
+                                           "com.example:mylib:jar:sources:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:stripped:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 2 );
+
+      final ArtifactRecord artifactRecord = record.getArtifact( "com.example", "myapp" );
+      final List<ArtifactRecord> deps = artifactRecord.getDeps();
+      assertEquals( deps.size(), 1 );
+      assertEquals( deps.get( 0 ).getArtifact().toString(), "com.example:mylib:jar:stripped:1.0" );
+    } );
+  }
+
+  @Test
   public void build_singleRuntimeDependency()
     throws Exception
   {
