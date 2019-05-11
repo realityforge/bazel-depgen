@@ -190,8 +190,8 @@ public final class ArtifactRecord
         .getChildren()
         .stream()
         .filter( c -> shouldIncludeDependency( Artifact.SCOPE_COMPILE, c ) )
-        .map( c -> _application.findArtifact( c.getDependency().getArtifact().getGroupId(),
-                                              c.getDependency().getArtifact().getArtifactId() ) )
+        .map( c -> _application.getArtifact( c.getDependency().getArtifact().getGroupId(),
+                                             c.getDependency().getArtifact().getArtifactId() ) )
         .collect( Collectors.toList() );
   }
 
@@ -203,8 +203,8 @@ public final class ArtifactRecord
         .getChildren()
         .stream()
         .filter( c -> shouldIncludeDependency( Artifact.SCOPE_RUNTIME, c ) )
-        .map( c -> _application.findArtifact( c.getDependency().getArtifact().getGroupId(),
-                                              c.getDependency().getArtifact().getArtifactId() ) )
+        .map( c -> _application.getArtifact( c.getDependency().getArtifact().getGroupId(),
+                                             c.getDependency().getArtifact().getArtifactId() ) )
         .collect( Collectors.toList() );
   }
 
