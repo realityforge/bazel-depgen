@@ -1,6 +1,8 @@
 package org.realityforge.bazel.depgen.config;
 
 import java.util.List;
+import java.util.Objects;
+import javax.annotation.Nonnull;
 
 public final class ArtifactConfig
 {
@@ -11,6 +13,7 @@ public final class ArtifactConfig
   private String type;
   private String classifier;
   private String version;
+  private String alias;
   private Boolean includeOptional;
   private Boolean includeSource;
   private List<String> excludes;
@@ -83,6 +86,16 @@ public final class ArtifactConfig
   public void setVersion( final String version )
   {
     this.version = version;
+  }
+
+  public String getAlias()
+  {
+    return alias;
+  }
+
+  public void setAlias( @Nonnull final String alias )
+  {
+    this.alias = Objects.requireNonNull( alias );
   }
 
   public Boolean getIncludeOptional()

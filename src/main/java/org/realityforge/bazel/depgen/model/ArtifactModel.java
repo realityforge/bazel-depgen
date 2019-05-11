@@ -192,6 +192,12 @@ public final class ArtifactModel
     return null != _version;
   }
 
+  @Nullable
+  public String getAlias()
+  {
+    return _source.getAlias();
+  }
+
   public boolean includeOptional()
   {
     final Boolean includeOptional = _source.getIncludeOptional();

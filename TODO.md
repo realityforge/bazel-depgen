@@ -44,8 +44,6 @@ complete as there is too much un-said.
 
 * If an artifact is not declared then the alias should have private visibility
 
-* Add the ability to specify alias per-artifact.
-
 * Add global configuration option such that alias can be just the artifact name. Generate an error at build time
   if there is a collision between artifacts.
 
