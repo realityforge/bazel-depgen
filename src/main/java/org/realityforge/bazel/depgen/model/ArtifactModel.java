@@ -132,7 +132,7 @@ public final class ArtifactModel
     final List<String> visibility = source.getVisibility();
     final List<String> avisibility =
       null == visibility ?
-      Collections.singletonList( "//visibility:public" ) :
+      Collections.emptyList() :
       Collections.unmodifiableList( new ArrayList<>( visibility ) );
 
     return

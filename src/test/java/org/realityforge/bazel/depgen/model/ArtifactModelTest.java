@@ -30,7 +30,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
-    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
+    assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp" );
   }
 
@@ -52,7 +52,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
-    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
+    assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jar:1.0" );
   }
 
@@ -74,7 +74,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
-    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
+    assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jszip:1.0" );
   }
 
@@ -96,7 +96,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
-    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
+    assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jszip:sources:1.0" );
   }
 
@@ -145,7 +145,7 @@ public class ArtifactModelTest
     assertTrue( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
-    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
+    assertTrue( model.getVisibility().isEmpty() );
   }
 
   @Test
@@ -181,7 +181,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertFalse( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
-    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
+    assertTrue( model.getVisibility().isEmpty() );
   }
 
   @Test
@@ -252,7 +252,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
-    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
+    assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp" );
   }
 
@@ -297,7 +297,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
-    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
+    assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jar:1.0" );
   }
 
@@ -321,7 +321,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
-    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
+    assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jar:sources:1.0" );
   }
 
