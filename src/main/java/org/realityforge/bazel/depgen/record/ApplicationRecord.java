@@ -34,7 +34,29 @@ public final class ApplicationRecord
   {
     final ApplicationRecord record = new ApplicationRecord( model, node, authenticationContexts );
     node.accept( new DependencyCollector( record ) );
+    ensureAliasesAreUnique( record );
     return record;
+  }
+
+  private static void ensureAliasesAreUnique( @Nonnull final ApplicationRecord record )
+  {
+    final HashMap<String, ArtifactRecord> aliases = new HashMap<>();
+    for ( final ArtifactRecord artifact : record.getArtifacts() )
+    {
+      final String alias = artifact.getAlias();
+      final ArtifactRecord existing = aliases.get( alias );
+      if ( null != existing )
+      {
+        throw new IllegalStateException( "Multiple artifacts have the same alias '" + alias + "' which is " +
+                                         "not supported. Either change the aliasStrategy option or explicitly " +
+                                         "specify the alias for the artifacts '" + existing.getArtifact() +
+                                         "' and '" + artifact.getArtifact() + "'." );
+      }
+      else
+      {
+        aliases.put( alias, artifact );
+      }
+    }
   }
 
   private ApplicationRecord( @Nonnull final ApplicationModel source,

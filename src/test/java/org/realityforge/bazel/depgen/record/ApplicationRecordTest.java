@@ -977,4 +977,26 @@ public class ApplicationRecordTest
       assertEquals( artifactRecord.getAlias(), "gwt_myapp" );
     } );
   }
+
+  @Test
+  public void loadWhereDuplicateAliasesExist()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "options:\n" +
+                         "  aliasStrategy: ArtifactId\n" +
+                         "artifacts:\n" +
+                         "  - coord: com.example.app1:core:42.0\n" +
+                         "  - coord: com.example.app2:core:37.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
+
+      final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+      assertEquals( exception.getMessage(),
+                    "Multiple artifacts have the same alias 'core' which is not supported. Either change the aliasStrategy option or explicitly specify the alias for the artifacts 'com.example.app1:core:jar:42.0' and 'com.example.app2:core:jar:37.0'." );
+    } );
+  }
 }
