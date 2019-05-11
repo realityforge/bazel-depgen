@@ -96,6 +96,12 @@ public final class ArtifactRecord
   }
 
   @Nonnull
+  private String getNamePrefix()
+  {
+    return RecordUtil.cleanNamePart( _application.getSource().getOptions().getNamePrefix() );
+  }
+
+  @Nonnull
   public String getMavenCoordinatesBazelTag()
   {
     final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
