@@ -54,6 +54,20 @@ public final class BazelGenerator
 
         output.write( "package(default_visibility = [\"//visibility:public\"])" );
         output.newLine();
+
+        final Path extensionFile = _record.getSource().getOptions().getExtensionFile();
+        final Path workspaceDirectory = _record.getSource().getOptions().getWorkspaceDirectory();
+
+        output.write( "load(\"//" +
+                      workspaceDirectory.relativize( extensionFile.getParent() ) +
+                      ":" +
+                      extensionFile.getName( extensionFile.getNameCount() - 1 ) +
+                      "\", \"" +
+                      _record.getSource().getOptions().getTargetMacroName() +
+                      "\")" );
+        output.newLine();
+
+        output.write( _record.getSource().getOptions().getTargetMacroName() + "()" );
       }
     }
   }
