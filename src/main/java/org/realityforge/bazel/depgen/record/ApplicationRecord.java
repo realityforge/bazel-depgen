@@ -103,6 +103,12 @@ public final class ApplicationRecord
     _artifacts.put( key, record );
   }
 
+  @Nonnull
+  ArtifactRecord getArtifact( @Nonnull final String groupId, @Nonnull final String artifactId )
+  {
+    return Objects.requireNonNull( findArtifact( groupId, artifactId ) );
+  }
+
   @Nullable
   ArtifactRecord findArtifact( @Nonnull final String groupId, @Nonnull final String artifactId )
   {

@@ -759,4 +759,24 @@ public class ApplicationRecordTest
       assertNull( record.findArtifact( "com.example", "other-no-exist" ) );
     } );
   }
+
+  @Test
+  public void getArtifact()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final ArtifactRecord artifact1 = record.getArtifact( "com.example", "myapp" );
+      assertNotNull( artifact1 );
+      assertEquals( artifact1.getKey(), "com.example:myapp" );
+
+      assertThrows( NullPointerException.class, () -> record.getArtifact( "com.example", "other-no-exist" ) );
+    } );
+  }
 }
