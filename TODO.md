@@ -44,9 +44,6 @@ complete as there is too much un-said.
 
 * If an artifact is not declared then the alias should have private visibility
 
-* Add global configuration option such that alias can be just the artifact name. Generate an error at build time
-  if there is a collision between artifacts.
-
 * Add assertion to workspace or target macro to verify dependencies.yml file has hash that matches hash of file that generated macro
 
 * Add support for managed dependencies which essentially contains a list of artifacts that include version
