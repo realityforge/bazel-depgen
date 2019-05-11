@@ -210,6 +210,7 @@ public class ApplicationConfigTest
                          "  workspaceMacroName: workspace_rules\n" +
                          "  targetMacroName: gen_targets\n" +
                          "  namePrefix: magic_\n" +
+                         "  aliasStrategy: ArtifactId\n" +
                          "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
@@ -222,6 +223,7 @@ public class ApplicationConfigTest
       assertEquals( options.getWorkspaceMacroName(), "workspace_rules" );
       assertEquals( options.getTargetMacroName(), "gen_targets" );
       assertEquals( options.getNamePrefix(), "magic_" );
+      assertEquals( options.getAliasStrategy(), AliasStrategy.ArtifactId );
       assertFalse( options.isFailOnMissingPom() );
       assertFalse( options.isFailOnInvalidPom() );
       assertFalse( options.isEmitDependencyGraph() );
@@ -246,6 +248,7 @@ public class ApplicationConfigTest
       assertNull( options.getWorkspaceMacroName() );
       assertNull( options.getTargetMacroName() );
       assertNull( options.getNamePrefix() );
+      assertNull( options.getAliasStrategy() );
       assertTrue( options.isFailOnMissingPom() );
       assertTrue( options.isFailOnInvalidPom() );
       assertTrue( options.isEmitDependencyGraph() );
