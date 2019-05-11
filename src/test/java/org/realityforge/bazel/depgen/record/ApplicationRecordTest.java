@@ -335,7 +335,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:rtA" );
         assertEquals( artifactRecord.getName(), "com_example__rta__33_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__rta" );
-      assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtA:33.0" );
+        assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtA:33.0" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
       }
