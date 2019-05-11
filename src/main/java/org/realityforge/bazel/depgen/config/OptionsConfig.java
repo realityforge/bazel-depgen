@@ -78,7 +78,7 @@ public final class OptionsConfig
 
   public void setNamePrefix( @Nonnull final String namePrefix )
   {
-    this.namePrefix = namePrefix;
+    this.namePrefix = Objects.requireNonNull( namePrefix );
   }
 
   public boolean isFailOnInvalidPom()
