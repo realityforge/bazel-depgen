@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen.model;
 
 import gir.io.FileUtil;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -22,6 +23,7 @@ public class OptionsModelTest
     assertEquals( model.getWorkspaceMacroName(), OptionsConfig.DEFAULT_WORKSPACE_MACRO_NAME );
     assertEquals( model.getTargetMacroName(), OptionsConfig.DEFAULT_TARGET_MACRO_NAME );
     assertEquals( model.getNamePrefix(), OptionsConfig.DEFAULT_NAME_PREFIX );
+    assertEquals( model.getAliasStrategy(), OptionsConfig.DEFAULT_ALIAS_STRATEGY );
     assertTrue( model.failOnMissingPom() );
     assertTrue( model.failOnInvalidPom() );
     assertTrue( model.emitDependencyGraph() );
@@ -49,6 +51,7 @@ public class OptionsModelTest
     source.setWorkspaceMacroName( "gen_myprj_dependency_rules" );
     source.setTargetMacroName( "gen_myprj_targets" );
     source.setNamePrefix( "myprj_" );
+    source.setAliasStrategy( AliasStrategy.ArtifactId );
     source.setFailOnMissingPom( false );
     source.setFailOnInvalidPom( false );
     source.setEmitDependencyGraph( false );
@@ -63,6 +66,7 @@ public class OptionsModelTest
     assertEquals( model.getWorkspaceMacroName(), "gen_myprj_dependency_rules" );
     assertEquals( model.getTargetMacroName(), "gen_myprj_targets" );
     assertEquals( model.getNamePrefix(), "myprj_" );
+    assertEquals( model.getAliasStrategy(), AliasStrategy.ArtifactId );
     assertFalse( model.failOnMissingPom() );
     assertFalse( model.failOnInvalidPom() );
     assertFalse( model.includeSource() );

@@ -3,6 +3,7 @@ package org.realityforge.bazel.depgen.model;
 import java.nio.file.Path;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 
 public final class OptionsModel
@@ -61,7 +62,9 @@ public final class OptionsModel
   public String getWorkspaceMacroName()
   {
     final String workspaceMacroName = _source.getWorkspaceMacroName();
-    return null == workspaceMacroName ? getNamePrefix() + OptionsConfig.DEFAULT_WORKSPACE_MACRO_NAME : workspaceMacroName;
+    return null == workspaceMacroName ?
+           getNamePrefix() + OptionsConfig.DEFAULT_WORKSPACE_MACRO_NAME :
+           workspaceMacroName;
   }
 
   @Nonnull
@@ -79,6 +82,13 @@ public final class OptionsModel
     return null == namePrefix ? OptionsConfig.DEFAULT_NAME_PREFIX :
            ( namePrefix.isEmpty() ? "" :
              ( namePrefix.endsWith( "_" ) ? namePrefix : namePrefix + "_" ) );
+  }
+
+  @Nonnull
+  public AliasStrategy getAliasStrategy()
+  {
+    final AliasStrategy strategy = _source.getAliasStrategy();
+    return null == strategy ? OptionsConfig.DEFAULT_ALIAS_STRATEGY : strategy;
   }
 
   public boolean failOnInvalidPom()
