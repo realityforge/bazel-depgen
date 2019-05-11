@@ -212,6 +212,7 @@ public final class ArtifactRecord
         .filter( c -> shouldIncludeDependency( Artifact.SCOPE_RUNTIME, c ) )
         .map( c -> _application.getArtifact( c.getDependency().getArtifact().getGroupId(),
                                              c.getDependency().getArtifact().getArtifactId() ) )
+        .distinct()
         .collect( Collectors.toList() );
   }
 
