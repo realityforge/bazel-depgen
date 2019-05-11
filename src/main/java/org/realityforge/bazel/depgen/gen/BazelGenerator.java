@@ -206,7 +206,12 @@ public final class BazelGenerator
     arguments.put( "actual", "\":" + artifact.getName() + "\"" );
     if ( null != artifact.getArtifactModel() )
     {
-      arguments.put( "visibility", Collections.singletonList( "\"//visibility:public\"" ) );
+      arguments.put( "visibility",
+                     artifact.getArtifactModel()
+                       .getVisibility()
+                       .stream()
+                       .map( v -> "\"" + v + "\"" )
+                       .collect( Collectors.toList() ) );
     }
     else
     {

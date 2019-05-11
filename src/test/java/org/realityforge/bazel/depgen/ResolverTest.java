@@ -39,7 +39,14 @@ public class ResolverTest
                                      true );
 
       final ArtifactModel model =
-        new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", null, null, "1.0", Collections.emptyList() );
+        new ArtifactModel( new ArtifactConfig(),
+                           "com.example",
+                           "myapp",
+                           null,
+                           null,
+                           "1.0",
+                           Collections.emptyList(),
+                           Collections.emptyList() );
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
 
@@ -76,7 +83,14 @@ public class ResolverTest
                                      true );
 
       final ArtifactModel model =
-        new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", null, null, "1.0", Collections.emptyList() );
+        new ArtifactModel( new ArtifactConfig(),
+                           "com.example",
+                           "myapp",
+                           null,
+                           null,
+                           "1.0",
+                           Collections.emptyList(),
+                           Collections.emptyList() );
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
 
@@ -114,7 +128,14 @@ public class ResolverTest
                                      true );
 
       final ArtifactModel model =
-        new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", null, null, "1.0", Collections.emptyList() );
+        new ArtifactModel( new ArtifactConfig(),
+                           "com.example",
+                           "myapp",
+                           null,
+                           null,
+                           "1.0",
+                           Collections.emptyList(),
+                           Collections.emptyList() );
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
 
@@ -148,7 +169,14 @@ public class ResolverTest
         ResolverUtil.createResolver( createLogger( handler ), dir, Collections.emptyList(), true, true );
 
       final ArtifactModel model =
-        new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", null, null, "1.0", Collections.emptyList() );
+        new ArtifactModel( new ArtifactConfig(),
+                           "com.example",
+                           "myapp",
+                           null,
+                           null,
+                           "1.0",
+                           Collections.emptyList(),
+                           Collections.emptyList() );
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
 
@@ -184,7 +212,14 @@ public class ResolverTest
         ResolverUtil.createResolver( createLogger( handler ), dir, Collections.emptyList(), true, false );
 
       final ArtifactModel model =
-        new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", null, null, "1.0", Collections.emptyList() );
+        new ArtifactModel( new ArtifactConfig(),
+                           "com.example",
+                           "myapp",
+                           null,
+                           null,
+                           "1.0",
+                           Collections.emptyList(),
+                           Collections.emptyList() );
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
 
@@ -234,7 +269,14 @@ public class ResolverTest
                                      true );
 
       final ArtifactModel model =
-        new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", null, null, "1.0", Collections.emptyList() );
+        new ArtifactModel( new ArtifactConfig(),
+                           "com.example",
+                           "myapp",
+                           null,
+                           null,
+                           "1.0",
+                           Collections.emptyList(),
+                           Collections.emptyList() );
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
 
@@ -271,7 +313,14 @@ public class ResolverTest
         ResolverUtil.createResolver( createLogger( handler ), dir, Collections.emptyList(), true, true );
 
       final ArtifactModel model =
-        new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", null, null, "1.0", Collections.emptyList() );
+        new ArtifactModel( new ArtifactConfig(),
+                           "com.example",
+                           "myapp",
+                           null,
+                           null,
+                           "1.0",
+                           Collections.emptyList(),
+                           Collections.emptyList() );
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );
 

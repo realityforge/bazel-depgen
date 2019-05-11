@@ -1,6 +1,7 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
@@ -29,6 +30,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
     assertEquals( model.toCoord(), "com.example:myapp" );
   }
 
@@ -50,6 +52,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
     assertEquals( model.toCoord(), "com.example:myapp:jar:1.0" );
   }
 
@@ -71,6 +74,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
     assertEquals( model.toCoord(), "com.example:myapp:jszip:1.0" );
   }
 
@@ -92,6 +96,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
     assertEquals( model.toCoord(), "com.example:myapp:jszip:sources:1.0" );
   }
 
@@ -140,6 +145,7 @@ public class ArtifactModelTest
     assertTrue( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
   }
 
   @Test
@@ -175,6 +181,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertFalse( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
   }
 
   @Test
@@ -207,6 +214,27 @@ public class ArtifactModelTest
   }
 
   @Test
+  public void parseArtifactWithVisibility()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setVisibility( Arrays.asList( "//project:__subpackages__", "//other:__subpackages__" ) );
+
+    final ArtifactModel model = parseModel( source );
+    assertEquals( model.getSource(), source );
+    assertEquals( model.getGroup(), "com.example" );
+    assertEquals( model.getId(), "myapp" );
+    assertFalse( model.isVersioned() );
+    assertNull( model.getVersion() );
+    assertEquals( model.getType(), "jar" );
+    assertNull( model.getClassifier() );
+    assertFalse( model.includeOptional() );
+    assertTrue( model.includeSource( true ) );
+    assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.getVisibility(), Arrays.asList( "//project:__subpackages__", "//other:__subpackages__" ) );
+  }
+
+  @Test
   public void parseArtifactWithSpec2Elements()
   {
     final ArtifactConfig source = new ArtifactConfig();
@@ -224,6 +252,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
     assertEquals( model.toCoord(), "com.example:myapp" );
   }
 
@@ -268,6 +297,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
     assertEquals( model.toCoord(), "com.example:myapp:jar:1.0" );
   }
 
@@ -291,6 +321,7 @@ public class ArtifactModelTest
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertTrue( model.getExcludes().isEmpty() );
+    assertEquals( model.getVisibility(), Collections.singletonList( "//visibility:public" ) );
     assertEquals( model.toCoord(), "com.example:myapp:jar:sources:1.0" );
   }
 

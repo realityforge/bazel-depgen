@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +25,8 @@ public final class ArtifactModel
   private final String _version;
   @Nonnull
   private final List<ExcludeModel> _excludes;
+  @Nonnull
+  private final List<String> _visibility;
 
   @Nonnull
   public static List<ArtifactModel> parse( @Nonnull final ArtifactConfig source )
@@ -126,11 +129,16 @@ public final class ArtifactModel
         .stream()
         .map( ExcludeModel::parse )
         .collect( Collectors.toList() );
+    final List<String> visibility = source.getVisibility();
+    final List<String> avisibility =
+      null == visibility ?
+      Collections.singletonList( "//visibility:public" ) :
+      Collections.unmodifiableList( new ArrayList<>( visibility ) );
 
     return
       ids
         .stream()
-        .map( aid -> new ArtifactModel( source, agroup, aid, atype, aclassifier, aversion, aexcludes ) )
+        .map( aid -> new ArtifactModel( source, agroup, aid, atype, aclassifier, aversion, aexcludes, avisibility ) )
         .collect( Collectors.toList() );
   }
 
@@ -140,7 +148,8 @@ public final class ArtifactModel
                         @Nullable final String type,
                         @Nullable final String classifier,
                         @Nullable final String version,
-                        @Nonnull final List<ExcludeModel> excludes )
+                        @Nonnull final List<ExcludeModel> excludes,
+                        @Nonnull final List<String> visibility )
   {
     _source = Objects.requireNonNull( source );
     _group = Objects.requireNonNull( group );
@@ -149,6 +158,7 @@ public final class ArtifactModel
     _classifier = classifier;
     _version = version;
     _excludes = Objects.requireNonNull( excludes );
+    _visibility = Objects.requireNonNull( visibility );
   }
 
   @Nonnull
@@ -214,6 +224,12 @@ public final class ArtifactModel
   public List<ExcludeModel> getExcludes()
   {
     return _excludes;
+  }
+
+  @Nonnull
+  public List<String> getVisibility()
+  {
+    return _visibility;
   }
 
   @Nonnull

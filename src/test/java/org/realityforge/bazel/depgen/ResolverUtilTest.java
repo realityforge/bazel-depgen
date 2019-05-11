@@ -110,7 +110,14 @@ public class ResolverUtilTest
   public void deriveExclusions_noExcludes()
   {
     final ArtifactModel artifactModel =
-      new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", "jar", null, "1.0", Collections.emptyList() );
+      new ArtifactModel( new ArtifactConfig(),
+                         "com.example",
+                         "myapp",
+                         "jar",
+                         null,
+                         "1.0",
+                         Collections.emptyList(),
+                         Collections.emptyList() );
     final ArrayList<Exclusion> exclusions = ResolverUtil.deriveExclusions( artifactModel );
 
     assertTrue( exclusions.isEmpty() );
@@ -123,7 +130,14 @@ public class ResolverUtilTest
     excludes.add( new ExcludeModel( "org.oss", null ) );
     excludes.add( new ExcludeModel( "com.biz", "zelib" ) );
     final ArtifactModel artifactModel =
-      new ArtifactModel( new ArtifactConfig(), "com.example", "myapp", "jar", null, "1.0", excludes );
+      new ArtifactModel( new ArtifactConfig(),
+                         "com.example",
+                         "myapp",
+                         "jar",
+                         null,
+                         "1.0",
+                         excludes,
+                         Collections.emptyList() );
     final ArrayList<Exclusion> exclusions = ResolverUtil.deriveExclusions( artifactModel );
 
     assertFalse( exclusions.isEmpty() );

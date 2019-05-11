@@ -73,6 +73,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getIds() );
       assertNull( artifact.getCoord() );
       assertNull( artifact.getExcludes() );
+      assertNull( artifact.getVisibility() );
     } );
   }
 
@@ -103,6 +104,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getIds() );
       assertNull( artifact.getCoord() );
       assertNull( artifact.getExcludes() );
+      assertNull( artifact.getVisibility() );
     } );
   }
 
@@ -132,6 +134,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getType() );
       assertNull( artifact.getIds() );
       assertNull( artifact.getExcludes() );
+      assertNull( artifact.getVisibility() );
     } );
   }
 
@@ -171,6 +174,42 @@ public class ApplicationConfigTest
   }
 
   @Test
+  public void parseDependencyWithVisibility()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
+                         "    visibility: ['//some/package:__pkg__', '//other/package:__subpackages__']\n" );
+      final ApplicationConfig config = parseDependencies();
+      assertNotNull( config );
+      final List<ArtifactConfig> artifacts = config.getArtifacts();
+      assertNotNull( artifacts );
+
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactConfig artifact = artifacts.get( 0 );
+      assertNotNull( artifact );
+      assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
+      assertNull( artifact.getAlias() );
+      assertNull( artifact.getIncludeOptional() );
+      assertNull( artifact.getIncludeSource() );
+      assertNull( artifact.getGroup() );
+      assertNull( artifact.getId() );
+      assertNull( artifact.getVersion() );
+      assertNull( artifact.getClassifier() );
+      assertNull( artifact.getType() );
+      assertNull( artifact.getIds() );
+      assertNull( artifact.getExcludes() );
+      final List<String> visibility = artifact.getVisibility();
+      assertNotNull( visibility );
+      assertEquals( visibility.size(), 2 );
+
+      assertTrue( visibility.contains( "//some/package:__pkg__" ) );
+      assertTrue( visibility.contains( "//other/package:__subpackages__" ) );
+    } );
+  }
+
+  @Test
   public void parseDependencyWithIncludeOptional()
     throws Exception
   {
@@ -198,6 +237,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getType() );
       assertNull( artifact.getIds() );
       assertNull( artifact.getExcludes() );
+      assertNull( artifact.getVisibility() );
     } );
   }
 

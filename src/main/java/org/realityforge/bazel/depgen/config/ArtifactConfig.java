@@ -17,6 +17,7 @@ public final class ArtifactConfig
   private Boolean includeOptional;
   private Boolean includeSource;
   private List<String> excludes;
+  private List<String> visibility;
 
   public String getCoord()
   {
@@ -126,5 +127,15 @@ public final class ArtifactConfig
   public void setExcludes( final List<String> excludes )
   {
     this.excludes = excludes;
+  }
+
+  public List<String> getVisibility()
+  {
+    return visibility;
+  }
+
+  public void setVisibility( final List<String> visibility )
+  {
+    this.visibility = visibility;
   }
 }
