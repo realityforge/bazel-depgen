@@ -88,6 +88,6 @@ public final class ApplicationConfig
 
   public void setReplacements( @Nonnull final List<ReplacementConfig> replacements )
   {
-    this.replacements = replacements;
+    this.replacements = Objects.requireNonNull( replacements );
   }
 }
