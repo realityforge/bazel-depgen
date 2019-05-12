@@ -19,6 +19,8 @@ public class ApplicationModelTest
     inIsolatedDirectory( () -> {
       writeDependencies( "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
+                         "excludes:\n" +
+                         "  - coord: com.example:blib\n" +
                          "replacements:\n" +
                          "  - coord: com.example:alib\n" +
                          "    target: \"@com_example//:alib\"\n" );
@@ -45,6 +47,30 @@ public class ApplicationModelTest
       assertEquals( replacementModel.getGroup(), "com.example" );
       assertEquals( replacementModel.getId(), "alib" );
       assertEquals( replacementModel.getTarget(), "@com_example//:alib" );
+
+      final List<GlobalExcludeModel> excludes = model.getExcludes();
+      assertEquals( excludes.size(), 1 );
+      final GlobalExcludeModel excludeModel = excludes.get( 0 );
+      assertEquals( excludeModel.getGroup(), "com.example" );
+      assertEquals( excludeModel.getId(), "blib" );
+    } );
+  }
+
+  @Test
+  public void isExcluded()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "excludes:\n" +
+                         "  - coord: com.example:blib\n" );
+      final Path configFile = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      final ApplicationConfig source = ApplicationConfig.parse( configFile );
+      final ApplicationModel model = ApplicationModel.parse( source );
+
+      assertFalse( model.isExcluded( "com.example", "alib" ) );
+      assertTrue( model.isExcluded( "com.example", "blib" ) );
     } );
   }
 

@@ -42,8 +42,6 @@ complete as there is too much un-said.
 
 * Support non-jar dependencies and expose them as files/filegroups
 
-* Add support for global excludes
-
 * Add ability to add extra runtime or extra compile deps to an artifact
 
 * Add caching of the urls to avoid expensive recalculation. Essentially we would create a `depgen.properties` in

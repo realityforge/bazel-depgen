@@ -364,6 +364,47 @@ public class ApplicationConfigTest
     } );
   }
 
+  @Test
+  public void parseExcludesDefinedUsingGroupAndId()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "excludes:\n" +
+                         "  - group: com.example\n" +
+                         "    id: myapp\n" );
+      final ApplicationConfig config = parseDependencies();
+      assertNotNull( config );
+
+      final List<ExcludeConfig> excludes = config.getExcludes();
+
+      assertEquals( excludes.size(), 1 );
+      final ExcludeConfig exclude = excludes.get( 0 );
+      assertEquals( exclude.getGroup(), "com.example" );
+      assertEquals( exclude.getId(), "myapp" );
+      assertNull( exclude.getCoord() );
+    } );
+  }
+
+  @Test
+  public void parseExcludesDefinedUsingCoord()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "excludes:\n" +
+                         "  - coord: com.example:myapp\n" );
+      final ApplicationConfig config = parseDependencies();
+      assertNotNull( config );
+
+      final List<ExcludeConfig> excludes = config.getExcludes();
+
+      assertEquals( excludes.size(), 1 );
+      final ExcludeConfig exclude = excludes.get( 0 );
+      assertEquals( exclude.getCoord(), "com.example:myapp" );
+      assertNull( exclude.getGroup() );
+      assertNull( exclude.getId() );
+    } );
+  }
+
   @Nonnull
   private ApplicationConfig parseDependencies()
     throws Exception

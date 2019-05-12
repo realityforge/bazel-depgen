@@ -226,6 +226,8 @@ public final class ArtifactRecord
       _node
         .getChildren()
         .stream()
+        .filter( c -> !_application.getSource().isExcluded( c.getDependency().getArtifact().getGroupId(),
+                                                            c.getDependency().getArtifact().getArtifactId() ) )
         .filter( c -> shouldIncludeDependency( Artifact.SCOPE_COMPILE, c ) )
         .map( c -> _application.getArtifact( c.getDependency().getArtifact().getGroupId(),
                                              c.getDependency().getArtifact().getArtifactId() ) )
@@ -242,6 +244,8 @@ public final class ArtifactRecord
         .getChildren()
         .stream()
         .filter( c -> shouldIncludeDependency( Artifact.SCOPE_RUNTIME, c ) )
+        .filter( c -> !_application.getSource().isExcluded( c.getDependency().getArtifact().getGroupId(),
+                                                            c.getDependency().getArtifact().getArtifactId() ) )
         .map( c -> _application.getArtifact( c.getDependency().getArtifact().getGroupId(),
                                              c.getDependency().getArtifact().getArtifactId() ) )
         .distinct()

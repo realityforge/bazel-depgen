@@ -24,6 +24,8 @@ public final class ApplicationConfig
   private List<ArtifactConfig> artifacts = new ArrayList<>();
   @Nonnull
   private List<ReplacementConfig> replacements = new ArrayList<>();
+  @Nonnull
+  private List<ExcludeConfig> excludes = new ArrayList<>();
 
   @Nonnull
   public static ApplicationConfig parse( @Nonnull final Path path )
@@ -89,5 +91,16 @@ public final class ApplicationConfig
   public void setReplacements( @Nonnull final List<ReplacementConfig> replacements )
   {
     this.replacements = Objects.requireNonNull( replacements );
+  }
+
+  @Nonnull
+  public List<ExcludeConfig> getExcludes()
+  {
+    return excludes;
+  }
+
+  public void setExcludes( @Nonnull final List<ExcludeConfig> excludes )
+  {
+    this.excludes = Objects.requireNonNull( excludes );
   }
 }

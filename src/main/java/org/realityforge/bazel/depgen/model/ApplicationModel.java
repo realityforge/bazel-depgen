@@ -22,6 +22,8 @@ public final class ApplicationModel
   @Nonnull
   private final List<ReplacementModel> _replacements;
   @Nonnull
+  private final List<GlobalExcludeModel> _excludes;
+  @Nonnull
   private final Map<String, String> _repositories;
 
   @Nonnull
@@ -33,25 +35,29 @@ public final class ApplicationModel
       source.getArtifacts().stream().flatMap( c -> ArtifactModel.parse( c ).stream() ).collect( Collectors.toList() );
     final List<ReplacementModel> replacements =
       source.getReplacements().stream().map( ReplacementModel::parse ).collect( Collectors.toList() );
+    final List<GlobalExcludeModel> excludes =
+      source.getExcludes().stream().map( GlobalExcludeModel::parse ).collect( Collectors.toList() );
     final Map<String, String> sourceRepositories = source.getRepositories();
     final Map<String, String> repositories =
       sourceRepositories.isEmpty() ?
       Collections.singletonMap( ApplicationConfig.MAVEN_CENTRAL_ID, ApplicationConfig.MAVEN_CENTRAL_URL ) :
       sourceRepositories;
 
-    return new ApplicationModel( source, optionsModel, artifactModels, replacements, repositories );
+    return new ApplicationModel( source, optionsModel, artifactModels, replacements, excludes, repositories );
   }
 
   private ApplicationModel( @Nonnull final ApplicationConfig source,
                             @Nonnull final OptionsModel options,
                             @Nonnull final List<ArtifactModel> artifacts,
                             @Nonnull final List<ReplacementModel> replacements,
+                            @Nonnull final List<GlobalExcludeModel> excludes,
                             @Nonnull final Map<String, String> repositories )
   {
     _source = Objects.requireNonNull( source );
     _options = Objects.requireNonNull( options );
     _artifacts = Objects.requireNonNull( artifacts );
     _replacements = Objects.requireNonNull( replacements );
+    _excludes = Objects.requireNonNull( excludes );
     _repositories = Collections.unmodifiableMap( Objects.requireNonNull( repositories ) );
   }
 
@@ -105,6 +111,19 @@ public final class ApplicationModel
   public List<ReplacementModel> getReplacements()
   {
     return _replacements;
+  }
+
+  @Nonnull
+  public List<GlobalExcludeModel> getExcludes()
+  {
+    return _excludes;
+  }
+
+  public boolean isExcluded( @Nonnull final String groupId, @Nonnull final String artifactId )
+  {
+    return _excludes
+      .stream()
+      .anyMatch( exclude -> exclude.getGroup().equals( groupId ) && exclude.getId().equals( artifactId ) );
   }
 
   @Nullable

@@ -38,6 +38,11 @@ final class DependencyCollector
       // So we can just avoid processing any child nodes.
       return false;
     }
+    else if ( hasExclude( node.getDependency() ) )
+    {
+      // Explicitly excluded dependency
+      return false;
+    }
     else if ( hasReplacement( node.getDependency() ) )
     {
       // Manually supplied dependency
@@ -81,6 +86,12 @@ final class DependencyCollector
       _record.artifact( node, RecordUtil.sha256( file ), urls, sourceSha256, sourceUrls );
       return true;
     }
+  }
+
+  private boolean hasExclude( @Nonnull final Dependency dependency )
+  {
+    final org.eclipse.aether.artifact.Artifact artifact = dependency.getArtifact();
+    return _record.getSource().isExcluded( artifact.getGroupId(), artifact.getArtifactId() );
   }
 
   private boolean hasReplacement( @Nonnull final Dependency dependency )
