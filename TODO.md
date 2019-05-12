@@ -4,7 +4,18 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
+* Add caching of the urls to avoid expensive recalculation. Essentially we would create a `depgen.properties` in
+  download cache that lists the base repository urls that have been tested against. The tool would read from this
+  by default. We would also need a commandline flag that indicated that `depgen.properties` should be regenerated
+  for a particular run. This is useful if repositories have come back online or needed to be rebuilt. We may also
+  need to be able to configure repositories as never cache targets. (Useful for staging repositories). This second
+  approach would involve changing the way we represent repositories in the tool.
+
 * Scan jar artifacts for annotation processors and add them if necessary.
+
+* Add the ability to control whether `exports` contains all the `deps` or only contains associated `java_plugins`
+  (if present). This should be configurable on a per-artifact as well as a global level. The default should be ???
+  (`true` matches maven conventions, `false` matches bazel conventions) - `exportDeps` is config name?
 
 * Add `init` command that initializes `dependencies.bzl` from template that includes all the options and
   documentation for each option.
@@ -14,10 +25,6 @@ complete as there is too much un-said.
 * Add `remove` command that removes a dependency.
 
 * Add `upgrade` command that updates the version of a dependency.
-
-* Add the ability to control whether `exports` contains all the `deps` or only contains associated `java_plugins`
-  (if present). This should be configurable on a per-artifact as well as a global level. The default should be ???
-  (`true` matches maven conventions, `false` matches bazel conventions) - `exportDeps` is config name?
 
 * Incorporate features from [bazel_maven_repository](https://github.com/square/bazel_maven_repository) such as:
   - Store jars in the "content addressable" cache, which is machine-wide, and survives even `bazel clean --expunge`
@@ -39,13 +46,6 @@ complete as there is too much un-said.
 * Support non-jar dependencies and expose them as files/filegroups
 
 * Add ability to add extra runtime or extra compile deps to an artifact
-
-* Add caching of the urls to avoid expensive recalculation. Essentially we would create a `depgen.properties` in
-  download cache that lists the base repository urls that have been tested against. The tool would read from this
-  by default. We would also need a commandline flag that indicated that `depgen.properties` should be regenerated
-  for a particular run. This is useful if repositories have come back online or needed to be rebuilt. We may also
-  need to be able to configure repositories as never cache targets. (Useful for staging repositories). This second
-  approach would involve changing the way we represent repositories in the tool.
 
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
 
