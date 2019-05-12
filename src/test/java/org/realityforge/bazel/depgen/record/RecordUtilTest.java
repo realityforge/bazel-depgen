@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.graph.DefaultDependencyNode;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.guiceyloops.server.http.TinyHttpd;
@@ -174,9 +173,7 @@ public class RecordUtilTest
       server.start();
       try
       {
-        final InetSocketAddress address1 = server.getAddress();
-        final String repositoryUrl =
-          "http://" + address1.getAddress().getCanonicalHostName() + ":" + address1.getPort() + "/";
+        final String repositoryUrl = toUrl( server );
 
         writeDependencies( dir,
                            "repositories:\n" +
@@ -196,6 +193,228 @@ public class RecordUtilTest
         server.stop( 1 );
       }
     } );
+  }
+
+  @Test
+  public void lookupArtifactInRepository_file_url()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      final URI uri = dir.toUri();
+
+      final RemoteRepository repo = new RemoteRepository.Builder( "dir1", "default", uri.toString() ).build();
+
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final String url =
+        RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                               repo,
+                                               Collections.emptyMap() );
+      assertNotNull( url );
+      assertTrue( url.startsWith( repo.getUrl() ) );
+      assertTrue( url.endsWith( "com/example/myapp/1.0/myapp-1.0.jar" ) );
+    } );
+  }
+
+  @Test
+  public void lookupArtifactInRepository_file_url_missing()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      final URI uri = dir.toUri();
+
+      final RemoteRepository repo = new RemoteRepository.Builder( "dir1", "default", uri.toString() ).build();
+
+      final String url =
+        RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                               repo,
+                                               Collections.emptyMap() );
+      assertNull( url );
+    } );
+  }
+
+  @Test
+  public void lookupArtifactInRepository_http_url()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      final TinyHttpd server = TinyHttpdFactory.createServer();
+      server.setHttpHandler( e -> serveFilePath( dir, e ) );
+
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      server.start();
+      try
+      {
+        final RemoteRepository repo = new RemoteRepository.Builder( "http", "default", server.getBaseURL() ).build();
+
+        final String url =
+          RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                                 repo,
+                                                 Collections.emptyMap() );
+        assertNotNull( url );
+        assertTrue( url.startsWith( repo.getUrl() ) );
+        assertTrue( url.endsWith( "com/example/myapp/1.0/myapp-1.0.jar" ) );
+      }
+      finally
+      {
+        server.stop();
+      }
+    } );
+  }
+
+  @Test
+  public void lookupArtifactInRepository_http_url_missing()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      final TinyHttpd server1 = TinyHttpdFactory.createServer();
+      server1.setHttpHandler( e -> serveFilePath( dir, e ) );
+
+      server1.start();
+      try
+      {
+        final RemoteRepository repo = new RemoteRepository.Builder( "http", "default", server1.getBaseURL() ).build();
+
+        final String url =
+          RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                                 repo,
+                                                 Collections.emptyMap() );
+        assertNull( url );
+      }
+      finally
+      {
+        server1.stop();
+      }
+    } );
+  }
+
+  @Test
+  public void lookupArtifactInRepository_authenticated_http_url()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final String username = "root";
+      final String password = "secret";
+      emitSettings( "my-repo", username, password );
+
+      final Path dir = FileUtil.createLocalTempDir();
+
+      final HttpServer server = serveDirectoryWithBasicAuth( dir, username, password );
+
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      server.start();
+      try
+      {
+        final String repositoryUrl = toUrl( server );
+
+        writeDependencies( dir, "repositories:\n  my-repo: " + repositoryUrl + "\n" );
+        final ApplicationRecord record = loadApplicationRecord();
+
+        final String url =
+          RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                                 record.getNode().getRepositories().get( 0 ),
+                                                 record.getAuthenticationContexts() );
+        assertNotNull( url );
+        assertTrue( url.startsWith( repositoryUrl ) );
+        assertTrue( url.endsWith( "com/example/myapp/1.0/myapp-1.0.jar" ) );
+      }
+      finally
+      {
+        server.stop( 1 );
+      }
+    } );
+  }
+
+  @Test
+  public void lookupArtifactInRepository_authenticated_http_url_missing()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final String username = "root";
+      final String password = "secret";
+      emitSettings( "my-repo", username, password );
+
+      final Path dir = FileUtil.createLocalTempDir();
+
+      final HttpServer server = serveDirectoryWithBasicAuth( dir, username, password );
+
+      server.start();
+      try
+      {
+        final String repositoryUrl = toUrl( server );
+
+        writeDependencies( dir, "repositories:\n  my-repo: " + repositoryUrl + "\n" );
+        final ApplicationRecord record = loadApplicationRecord();
+
+        final String url =
+          RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                                 record.getNode().getRepositories().get( 0 ),
+                                                 record.getAuthenticationContexts() );
+        assertNull( url );
+      }
+      finally
+      {
+        server.stop( 1 );
+      }
+    } );
+  }
+
+  @SuppressWarnings( "SameParameterValue" )
+  @Nonnull
+  private HttpServer serveDirectoryWithBasicAuth( @Nonnull final Path dir,
+                                                  @Nonnull final String username,
+                                                  @Nonnull final String password )
+    throws IOException
+  {
+    final HttpServer server = HttpServer.create( new InetSocketAddress( InetAddress.getLocalHost(), 0 ), 0 );
+    server
+      .createContext( "/", e -> serveFilePath( dir, e ) )
+      .setAuthenticator( new BasicAuthenticator( "MyRealm" )
+      {
+        @Override
+        public boolean checkCredentials( @Nonnull final String suppliedUsername,
+                                         @Nonnull final String suppliedPassword )
+        {
+          return username.equals( suppliedUsername ) && password.equals( suppliedPassword );
+        }
+      } );
+    server.setExecutor( Executors.newCachedThreadPool() );
+    return server;
+  }
+
+  @Nonnull
+  private String toUrl( @Nonnull final HttpServer server )
+  {
+    final InetSocketAddress address = server.getAddress();
+    return "http://" + address.getAddress().getCanonicalHostName() + ":" + address.getPort() + "/";
+  }
+
+  @SuppressWarnings( "SameParameterValue" )
+  private void emitSettings( final String serverId, final String username, final String password )
+    throws IOException
+  {
+    final String settingsContent =
+      "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+      "  <servers>\n" +
+      "    <server>\n" +
+      "      <id>" + serverId + "</id>\n" +
+      "      <username>" + username + "</username>\n" +
+      "      <password>" + password + "</password>\n" +
+      "    </server>\n" +
+      "  </servers>\n" +
+      "</settings>\n";
+    final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
+    Files.write( settingsFile, settingsContent.getBytes( StandardCharsets.UTF_8 ) );
   }
 
   private void serveFilePath( @Nonnull final Path baseDirectory, @Nonnull final HttpExchange httpExchange )

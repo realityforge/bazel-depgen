@@ -13,11 +13,10 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.util.HashUtil;
 
 final class RecordUtil
@@ -70,49 +69,10 @@ final class RecordUtil
     final ArrayList<String> urls = new ArrayList<>();
     for ( final RemoteRepository remoteRepository : repositories )
     {
-      try
+      final String url = lookupArtifactInRepository( artifact, remoteRepository, authenticationContexts );
+      if ( null != url )
       {
-        final String repoUrl = remoteRepository.getUrl();
-        final URI uri = new URI( repoUrl + ( repoUrl.endsWith( "/" ) ? "" : "/" ) + artifactToPath( artifact ) );
-        final URL url = uri.toURL();
-        final String protocol = url.getProtocol();
-        if ( "http".equals( protocol ) || "https".equals( protocol ) )
-        {
-          final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-          connection.setRequestMethod( "HEAD" );
-          final AuthenticationContext context = authenticationContexts.get( remoteRepository.getId() );
-          if ( null != context )
-          {
-            final String username = context.get( AuthenticationContext.USERNAME );
-            final String password = context.get( AuthenticationContext.PASSWORD );
-            if ( null != username && null != password )
-            {
-              final String encoded =
-                Base64.getEncoder().encodeToString( ( username + ":" + password ).getBytes( StandardCharsets.UTF_8 ) );
-              connection.setRequestProperty( "Authorization", "Basic " + encoded );
-            }
-          }
-          connection.connect();
-          final int responseCode = connection.getResponseCode();
-          if ( 200 == responseCode )
-          {
-            urls.add( url.toExternalForm() );
-          }
-        }
-        else if ( "file".equals( protocol ) )
-        {
-          // Attempt to open file and if it is present then there should be no exception
-          url.openStream().close();
-          urls.add( uri.toString() );
-        }
-        else
-        {
-          final String message = "Unsupported repository protocol for " + artifact + " with url " + url + ".";
-          throw new IllegalStateException( message );
-        }
-      }
-      catch ( final IOException | URISyntaxException ignored )
-      {
+        urls.add( url );
       }
     }
 
@@ -121,5 +81,57 @@ final class RecordUtil
       throw new IllegalStateException( "Unable to locate artifact " + artifact + " in any repository." );
     }
     return urls;
+  }
+
+  @Nullable
+  static String lookupArtifactInRepository( @Nonnull final Artifact artifact,
+                                            @Nonnull final RemoteRepository remoteRepository,
+                                            @Nonnull final Map<String, AuthenticationContext> authenticationContexts )
+  {
+    try
+    {
+      final String repoUrl = remoteRepository.getUrl();
+      final URI uri = new URI( repoUrl + ( repoUrl.endsWith( "/" ) ? "" : "/" ) + artifactToPath( artifact ) );
+      final URL url = uri.toURL();
+      final String protocol = url.getProtocol();
+      if ( "http".equals( protocol ) || "https".equals( protocol ) )
+      {
+        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod( "HEAD" );
+        final AuthenticationContext context = authenticationContexts.get( remoteRepository.getId() );
+        if ( null != context )
+        {
+          final String username = context.get( AuthenticationContext.USERNAME );
+          final String password = context.get( AuthenticationContext.PASSWORD );
+          if ( null != username && null != password )
+          {
+            final String encoded =
+              Base64.getEncoder().encodeToString( ( username + ":" + password ).getBytes( StandardCharsets.UTF_8 ) );
+            connection.setRequestProperty( "Authorization", "Basic " + encoded );
+          }
+        }
+        connection.connect();
+        final int responseCode = connection.getResponseCode();
+        if ( 200 == responseCode )
+        {
+          return url.toExternalForm();
+        }
+      }
+      else if ( "file".equals( protocol ) )
+      {
+        // Attempt to open file and if it is present then there should be no exception
+        url.openStream().close();
+        return uri.toString();
+      }
+      else
+      {
+        final String message = "Unsupported repository protocol for " + artifact + " with url " + url + ".";
+        throw new IllegalStateException( message );
+      }
+    }
+    catch ( final IOException | URISyntaxException ignored )
+    {
+    }
+    return null;
   }
 }
