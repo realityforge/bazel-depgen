@@ -184,14 +184,14 @@ public final class BazelGenerator
     if ( !deps.isEmpty() )
     {
       arguments.put( "deps",
-                     deps.stream().map( a -> "\":" + a.getAlias() + "\"" ).sorted().collect( Collectors.toList() ) );
+                     deps.stream().map( a -> "\":" + a.getLabel() + "\"" ).sorted().collect( Collectors.toList() ) );
     }
     final List<ArtifactRecord> runtimeDeps = artifact.getRuntimeDeps();
     if ( !runtimeDeps.isEmpty() )
     {
       arguments.put( "runtime_deps",
                      runtimeDeps.stream()
-                       .map( a -> "\":" + a.getAlias() + "\"" )
+                       .map( a -> "\":" + a.getLabel() + "\"" )
                        .sorted()
                        .collect( Collectors.toList() ) );
     }

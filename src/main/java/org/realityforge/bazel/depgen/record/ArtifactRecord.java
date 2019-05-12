@@ -92,6 +92,12 @@ public final class ArtifactRecord
   }
 
   @Nonnull
+  public String getLabel()
+  {
+    return null != _replacementModel ? _replacementModel.getTarget() : getAlias();
+  }
+
+  @Nonnull
   public String getAlias()
   {
     final String declaredAlias = null != _artifactModel ? _artifactModel.getAlias() : null;

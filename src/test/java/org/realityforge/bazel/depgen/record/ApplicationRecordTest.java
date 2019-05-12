@@ -825,6 +825,7 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord.getArtifactModel() );
         assertNull( artifactRecord.getReplacementModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+        assertEquals( artifactRecord.getLabel(), "com_example__myapp" );
         assertEquals( artifactRecord.getDeps().size(), 1 );
         assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
         assertNotNull( artifactRecord.getDeps().get( 0 ).getReplacementModel() );
@@ -837,6 +838,7 @@ public class ApplicationRecordTest
         assertNull( artifactRecord.getArtifactModel() );
         assertNotNull( artifactRecord.getReplacementModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
+        assertEquals( artifactRecord.getLabel(), "@com_example//:mylib" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
       }
