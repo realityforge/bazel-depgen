@@ -58,33 +58,40 @@ final class DependencyCollector
     }
     else
     {
-      final File file = artifact.getFile();
-      assert null != file;
-      final List<String> urls =
-        RecordUtil.deriveUrls( artifact, node.getRepositories(), _record.getAuthenticationContexts() );
-
-      final String sourceSha256;
-      final List<String> sourceUrls;
-      final String sourcesFilename = artifact.getProperty( Constants.SOURCE_ARTIFACT_FILENAME, null );
-      if ( null != sourcesFilename )
-      {
-        final File sourcesFile = new File( sourcesFilename );
-        final org.eclipse.aether.artifact.Artifact sourcesArtifact =
-          new SubArtifact( artifact, "sources", "jar" ).setFile( sourcesFile );
-
-        sourceSha256 = RecordUtil.sha256( sourcesFile );
-        sourceUrls =
-          RecordUtil.deriveUrls( sourcesArtifact, node.getRepositories(), _record.getAuthenticationContexts() );
-      }
-      else
-      {
-        sourceSha256 = null;
-        sourceUrls = null;
-      }
-
-      _record.artifact( node, RecordUtil.sha256( file ), urls, sourceSha256, sourceUrls );
+      processArtifact( node );
       return true;
     }
+  }
+
+  private void processArtifact( @Nonnull final DependencyNode node )
+  {
+    final org.eclipse.aether.artifact.Artifact artifact = node.getArtifact();
+    assert null != artifact;
+    final File file = artifact.getFile();
+    assert null != file;
+    final List<String> urls =
+      RecordUtil.deriveUrls( artifact, node.getRepositories(), _record.getAuthenticationContexts() );
+
+    final String sourceSha256;
+    final List<String> sourceUrls;
+    final String sourcesFilename = artifact.getProperty( Constants.SOURCE_ARTIFACT_FILENAME, null );
+    if ( null != sourcesFilename )
+    {
+      final File sourcesFile = new File( sourcesFilename );
+      final org.eclipse.aether.artifact.Artifact sourcesArtifact =
+        new SubArtifact( artifact, "sources", "jar" ).setFile( sourcesFile );
+
+      sourceSha256 = RecordUtil.sha256( sourcesFile );
+      sourceUrls =
+        RecordUtil.deriveUrls( sourcesArtifact, node.getRepositories(), _record.getAuthenticationContexts() );
+    }
+    else
+    {
+      sourceSha256 = null;
+      sourceUrls = null;
+    }
+
+    _record.artifact( node, RecordUtil.sha256( file ), urls, sourceSha256, sourceUrls );
   }
 
   private boolean hasExclude( @Nonnull final Dependency dependency )
