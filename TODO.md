@@ -4,10 +4,20 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
+* Replacements should emit correct label in bazel output
+
+* Excludes and replacements should be correctly annotated in dependency grap output
+
 * Scan jar artifacts for annotation processors and add them if necessary.
 
 * Add `init` command that initializes `dependencies.bzl` from template that includes all the options and
   documentation for each option.
+
+* Add `add` command that adds a dependency.
+
+* Add `remove` command that removes a dependency.
+
+* Add `upgrade` command that updates the version of a dependency.
 
 * Add the ability to control whether `exports` contains all the `deps` or only contains associated `java_plugins`
   (if present). This should be configurable on a per-artifact as well as a global level. The default should be ???
