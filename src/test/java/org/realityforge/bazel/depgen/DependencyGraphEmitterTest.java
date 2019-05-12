@@ -4,6 +4,7 @@ import gir.io.FileUtil;
 import java.nio.file.Path;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.graph.DependencyNode;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -64,14 +65,75 @@ public class DependencyGraphEmitterTest
     } );
   }
 
+  @Test
+  public void emitGraphWithReplacement()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:myapp:1.0",
+                                           "com.example:mylib:1.0",
+                                           "com.example:rtA:jar::33.0:runtime" );
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:mylib:1.0",
+                                           "com.example:rtB:jar::2.0:runtime" );
+      deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:rtB:2.0" );
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "replacements:\n" +
+                              "  - coord: com.example:rtA\n" +
+                              "    target: //foo/rta" );
+      final String output = collectOutput( createResolver( dir ) );
+      assertEquals( output,
+                    "\\- com.example:myapp:jar:1.0 [compile]\n" +
+                    "   +- com.example:mylib:jar:1.0 [compile]\n" +
+                    "   |  \\- com.example:rtB:jar:2.0 [runtime]\n" +
+                    "   \\- com.example:rtA:jar:33.0 [runtime] REPLACED BY //foo/rta\n" );
+    } );
+  }
+
+  @Test
+  public void emitGraphWithExclude()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:myapp:1.0",
+                                           "com.example:mylib:1.0",
+                                           "com.example:rtA:jar::33.0:runtime" );
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:mylib:1.0",
+                                           "com.example:rtB:jar::2.0:runtime" );
+      deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:rtB:2.0" );
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "excludes:\n" +
+                              "  - coord: com.example:rtB\n" );
+      final String output = collectOutput( createResolver( dir ) );
+      assertEquals( output,
+                    "\\- com.example:myapp:jar:1.0 [compile]\n" +
+                    "   +- com.example:mylib:jar:1.0 [compile]\n" +
+                    "   |  \\- com.example:rtB:jar:2.0 [runtime] EXCLUDED\n" +
+                    "   \\- com.example:rtA:jar:33.0 [runtime]\n" );
+    } );
+  }
   @Nonnull
   private String collectOutput( @Nonnull final Resolver resolver )
     throws Exception
   {
-    final DependencyNode root = resolveDependencies( resolver, loadApplicationModel() );
+    final ApplicationModel model = loadApplicationModel();
+    final DependencyNode root = resolveDependencies( resolver, model );
 
     final StringBuilder sb = new StringBuilder();
-    root.accept( new DependencyGraphEmitter( line -> {
+    root.accept( new DependencyGraphEmitter( model, line -> {
       sb.append( line );
       sb.append( "\n" );
     } ) );

@@ -309,7 +309,8 @@ public final class BazelGenerator
     if ( _record.getSource().getOptions().emitDependencyGraph() )
     {
       output.write( "# Dependency Graph Generated from the input data" );
-      _record.getNode().accept( new DependencyGraphEmitter( line -> {
+      _record.getNode().accept( new DependencyGraphEmitter( _record.getSource(), line -> {
+
         try
         {
           output.write( "# " + line );

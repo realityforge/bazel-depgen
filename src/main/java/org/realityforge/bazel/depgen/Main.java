@@ -140,7 +140,7 @@ public class Main
       if ( c_logger.isLoggable( dependencyGraphLevel ) )
       {
         c_logger.log( dependencyGraphLevel, "Dependency Graph:" );
-        node.accept( new DependencyGraphEmitter( line -> c_logger.log( dependencyGraphLevel, line ) ) );
+        node.accept( new DependencyGraphEmitter( model, line -> c_logger.log( dependencyGraphLevel, line ) ) );
       }
       final ApplicationRecord record = ApplicationRecord.build( model, node, resolver.getAuthenticationContexts() );
 

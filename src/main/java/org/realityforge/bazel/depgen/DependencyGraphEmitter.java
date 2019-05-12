@@ -12,6 +12,8 @@ import org.eclipse.aether.graph.DependencyVisitor;
 import org.eclipse.aether.util.artifact.ArtifactIdUtils;
 import org.eclipse.aether.util.graph.manager.DependencyManagerUtils;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
+import org.realityforge.bazel.depgen.model.ReplacementModel;
 
 /**
  * A dependency visitor that emits the graph in a format based on Mavens output.
@@ -26,12 +28,15 @@ public final class DependencyGraphEmitter
   }
 
   @Nonnull
+  private final ApplicationModel _model;
+  @Nonnull
   private final LineEmitterFn _emitter;
   @Nonnull
   private final List<ChildInfo> _childInfos = new ArrayList<>();
 
-  public DependencyGraphEmitter( @Nonnull final LineEmitterFn emitter )
+  public DependencyGraphEmitter( @Nonnull final ApplicationModel model, @Nonnull final LineEmitterFn emitter )
   {
+    _model = Objects.requireNonNull( model );
     _emitter = Objects.requireNonNull( emitter );
   }
 
@@ -106,6 +111,19 @@ public final class DependencyGraphEmitter
         buffer.append( w );
       }
       buffer.append( ")" );
+    }
+    final boolean excluded =
+      null != d && _model.isExcluded( d.getArtifact().getGroupId(), d.getArtifact().getArtifactId() );
+    if ( excluded )
+    {
+      buffer.append( " EXCLUDED" );
+    }
+    final ReplacementModel replacementModel =
+      null != d ? _model.findReplacement( d.getArtifact().getGroupId(), d.getArtifact().getArtifactId() ) : null;
+    if ( null != replacementModel )
+    {
+      buffer.append( " REPLACED BY " );
+      buffer.append( replacementModel.getTarget() );
     }
     return buffer.toString();
   }
