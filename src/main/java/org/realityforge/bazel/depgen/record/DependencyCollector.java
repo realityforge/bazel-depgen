@@ -54,7 +54,6 @@ final class DependencyCollector
                  Artifact.SCOPE_RUNTIME.equals( node.getDependency().getScope() ) ) )
     {
       // Only compile and runtime scoped dependencies are collected
-      // Manually supplied dependency
       return false;
     }
     else
