@@ -1,6 +1,7 @@
 package org.realityforge.bazel.depgen.record;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -69,8 +70,13 @@ final class DependencyCollector
     assert null != artifact;
     final File file = artifact.getFile();
     assert null != file;
+
+    final Path metadataFilename = file.getAbsoluteFile().toPath().getParent().resolve( DepgenMetadata.FILENAME );
+    final DepgenMetadata metadata = new DepgenMetadata( metadataFilename );
+
+    final String sha256 = metadata.getSha256( artifact.getClassifier(), artifact.getFile() );
     final List<String> urls =
-      RecordUtil.deriveUrls( artifact, node.getRepositories(), _record.getAuthenticationContexts() );
+      metadata.getUrls( artifact, node.getRepositories(), _record.getAuthenticationContexts() );
 
     final String sourceSha256;
     final List<String> sourceUrls;
@@ -81,9 +87,8 @@ final class DependencyCollector
       final org.eclipse.aether.artifact.Artifact sourcesArtifact =
         new SubArtifact( artifact, "sources", "jar" ).setFile( sourcesFile );
 
-      sourceSha256 = RecordUtil.sha256( sourcesFile );
-      sourceUrls =
-        RecordUtil.deriveUrls( sourcesArtifact, node.getRepositories(), _record.getAuthenticationContexts() );
+      sourceSha256 = metadata.getSha256( sourcesArtifact.getClassifier(), sourcesArtifact.getFile() );
+      sourceUrls = metadata.getUrls( sourcesArtifact, node.getRepositories(), _record.getAuthenticationContexts() );
     }
     else
     {
@@ -91,7 +96,7 @@ final class DependencyCollector
       sourceUrls = null;
     }
 
-    _record.artifact( node, RecordUtil.sha256( file ), urls, sourceSha256, sourceUrls );
+    _record.artifact( node, sha256, urls, sourceSha256, sourceUrls );
   }
 
   private boolean hasExclude( @Nonnull final Dependency dependency )
