@@ -880,7 +880,6 @@ public class ApplicationRecordTest
     } );
   }
 
-
   @Test
   public void build_whereRuntimeDependencyExcluded()
     throws Exception
