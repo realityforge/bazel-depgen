@@ -26,7 +26,7 @@ complete as there is too much un-said.
 
 * Add `remove` command that removes a dependency.
 
-* Add `upgrade` command that updates the version of a dependency.
+* Add `update` command that updates the version of a dependency.
 
 * Incorporate features from [bazel_maven_repository](https://github.com/square/bazel_maven_repository) such as:
   - Store jars in the "content addressable" cache, which is machine-wide, and survives even `bazel clean --expunge`
