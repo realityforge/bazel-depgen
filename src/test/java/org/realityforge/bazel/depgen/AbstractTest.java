@@ -36,19 +36,27 @@ public abstract class AbstractTest
   protected final ApplicationRecord loadApplicationRecord()
     throws Exception
   {
+    return loadApplicationRecord( FileUtil.createLocalTempDir() );
+  }
+
+  @Nonnull
+  protected final ApplicationRecord loadApplicationRecord( @Nonnull final Path cacheDir )
+    throws Exception
+  {
     final ApplicationModel model = loadApplicationModel();
-    final Resolver resolver = createResolver( model );
+    final Resolver resolver = createResolver( model, cacheDir );
     final DependencyNode root = resolveDependencies( resolver, model );
     return ApplicationRecord.build( model, root, resolver.getAuthenticationContexts() );
   }
 
   @Nonnull
-  private Resolver createResolver( @Nonnull final ApplicationModel model )
+  private Resolver createResolver( @Nonnull final ApplicationModel model,
+                                   @Nonnull final Path cacheDir )
     throws Exception
   {
     final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
     return ResolverUtil.createResolver( createLogger(),
-                                        FileUtil.createLocalTempDir(),
+                                        cacheDir,
                                         model,
                                         SettingsUtil.loadSettings( settingsFile, createLogger() ) );
   }

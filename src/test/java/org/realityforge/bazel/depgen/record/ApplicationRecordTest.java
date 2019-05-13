@@ -423,6 +423,8 @@ public class ApplicationRecordTest
   {
     inIsolatedDirectory( () -> {
       final Path dir = FileUtil.createLocalTempDir();
+      final String url = dir.toUri().toString();
+      final String urlEncoded = url.replaceAll( ":", "\\\\:" );
 
       writeDependencies( dir,
                          "artifacts:\n" +
@@ -432,7 +434,8 @@ public class ApplicationRecordTest
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
-      final ApplicationRecord record = loadApplicationRecord();
+      final Path cacheDir = FileUtil.createLocalTempDir();
+      final ApplicationRecord record = loadApplicationRecord( cacheDir );
 
       assertEquals( record.getSource().getConfigLocation(),
                     FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
@@ -460,6 +463,13 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getDeps().size(), 1 );
         assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
+        final Path path =
+          artifactRecord.getArtifact().getFile().getParentFile().toPath().resolve( DepgenMetadata.FILENAME );
+        assertEquals( loadPropertiesContent( path ),
+                      "<default>.local.url=" + urlEncoded + "com/example/myapp/1.0/myapp-1.0.jar\n" +
+                      "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" +
+                      "sources.local.url=" + urlEncoded + "com/example/myapp/1.0/myapp-1.0-sources.jar\n" +
+                      "sources.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" );
       }
 
       {
@@ -480,6 +490,13 @@ public class ApplicationRecordTest
                       Collections.singletonList( dir.toUri() + "com/example/mylib/1.0/mylib-1.0-sources.jar" ) );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
+        final Path path =
+          artifactRecord.getArtifact().getFile().getParentFile().toPath().resolve( DepgenMetadata.FILENAME );
+        assertEquals( loadPropertiesContent( path ),
+                      "<default>.local.url=" + urlEncoded + "com/example/mylib/1.0/mylib-1.0.jar\n" +
+                      "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" +
+                      "sources.local.url=" + urlEncoded + "com/example/mylib/1.0/mylib-1.0-sources.jar\n" +
+                      "sources.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" );
       }
     } );
   }
