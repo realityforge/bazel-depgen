@@ -6,10 +6,13 @@ complete as there is too much un-said.
 
 * Add caching of the urls to avoid expensive recalculation. Essentially we would create a `depgen.properties` in
   download cache that lists the base repository urls that have been tested against. The tool would read from this
-  by default. We would also need a commandline flag that indicated that `depgen.properties` should be regenerated
-  for a particular run. This is useful if repositories have come back online or needed to be rebuilt. We may also
-  need to be able to configure repositories as never cache targets. (Useful for staging repositories). This second
-  approach would involve changing the way we represent repositories in the tool.
+  by default.
+
+* Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
+  online or needed to be rebuilt.
+
+* Configure repositories so that url checks against it can not be cached. This will require changes to the way we
+  represent repositories.
 
 * Scan jar artifacts for annotation processors and add them if necessary.
 
