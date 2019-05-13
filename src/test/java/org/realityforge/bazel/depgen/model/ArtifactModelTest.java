@@ -179,7 +179,7 @@ public class ArtifactModelTest
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
     assertEquals( model.getType(), "jar" );
-    assertTrue( model.exportDeps( true ) );
+    assertFalse( model.exportDeps( true ) );
   }
 
   @Test
