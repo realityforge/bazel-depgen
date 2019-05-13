@@ -4,10 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Add caching of the urls to avoid expensive recalculation. Essentially we would create a `depgen.properties` in
-  download cache that lists the base repository urls that have been tested against. The tool would read from this
-  by default.
-
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
   online or needed to be rebuilt.
 
