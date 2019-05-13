@@ -14,6 +14,9 @@ complete as there is too much un-said.
 * Configure repositories so that url checks against it can not be cached. This will require changes to the way we
   represent repositories.
 
+* Add check that will make sure when accessing the cache that the repository url matches prefix of the url in the
+  cache. If not the cache entry is removed and updated.
+
 * Scan jar artifacts for annotation processors and add them if necessary.
 
 * Add the ability to control whether `exports` contains all the `deps` or only contains associated `java_plugins`
