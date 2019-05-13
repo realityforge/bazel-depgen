@@ -4,12 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
-  online or needed to be rebuilt.
-
-* Configure repositories so that url checks against it can not be cached. This will require changes to the way we
-  represent repositories.
-
 * Add check that will make sure when accessing the cache that the repository url matches prefix of the url in the
   cache. If not the cache entry is removed and updated.
 
@@ -18,6 +12,12 @@ complete as there is too much un-said.
 * Add the ability to control whether `exports` contains all the `deps` or only contains associated `java_plugins`
   (if present). This should be configurable on a per-artifact as well as a global level. The default should be ???
   (`true` matches maven conventions, `false` matches bazel conventions) - `exportDeps` is config name?
+
+* Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
+  online or needed to be rebuilt.
+
+* Configure repositories so that url checks against it can not be cached. This will require changes to the way we
+  represent repositories.
 
 * Add `init` command that initializes `dependencies.bzl` from template that includes all the options and
   documentation for each option.
