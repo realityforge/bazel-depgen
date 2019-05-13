@@ -29,6 +29,7 @@ public class ArtifactModelTest
     assertNull( model.getAlias() );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
+    assertFalse( model.exportDeps( false ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp" );
@@ -51,6 +52,7 @@ public class ArtifactModelTest
     assertNull( model.getAlias() );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
+    assertFalse( model.exportDeps( false ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jar:1.0" );
@@ -73,6 +75,7 @@ public class ArtifactModelTest
     assertNull( model.getAlias() );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
+    assertFalse( model.exportDeps( false ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jszip:1.0" );
@@ -95,6 +98,7 @@ public class ArtifactModelTest
     assertNull( model.getAlias() );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
+    assertFalse( model.exportDeps( false ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jszip:sources:1.0" );
@@ -144,8 +148,39 @@ public class ArtifactModelTest
     assertNull( model.getAlias() );
     assertTrue( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
+    assertFalse( model.exportDeps( false ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertTrue( model.getVisibility().isEmpty() );
+  }
+
+  @Test
+  public void parseArtifactWithExportDeps()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setExportDeps( true );
+
+    final ArtifactModel model = parseModel( source );
+    assertEquals( model.getSource(), source );
+    assertEquals( model.getGroup(), "com.example" );
+    assertEquals( model.getId(), "myapp" );
+    assertEquals( model.getType(), "jar" );
+    assertTrue( model.exportDeps( false ) );
+  }
+
+  @Test
+  public void parseArtifactWithExportDeps_overrideGlobal()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setExportDeps( false );
+
+    final ArtifactModel model = parseModel( source );
+    assertEquals( model.getSource(), source );
+    assertEquals( model.getGroup(), "com.example" );
+    assertEquals( model.getId(), "myapp" );
+    assertEquals( model.getType(), "jar" );
+    assertTrue( model.exportDeps( true ) );
   }
 
   @Test
@@ -180,6 +215,7 @@ public class ArtifactModelTest
     assertNull( model.getAlias() );
     assertFalse( model.includeOptional() );
     assertFalse( model.includeSource( true ) );
+    assertFalse( model.exportDeps( false ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertTrue( model.getVisibility().isEmpty() );
   }
@@ -201,6 +237,7 @@ public class ArtifactModelTest
     assertNull( model.getClassifier() );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
+    assertFalse( model.exportDeps( false ) );
     final List<ExcludeModel> excludes = model.getExcludes();
     assertFalse( excludes.isEmpty() );
     assertEquals( excludes.size(), 2 );
@@ -230,6 +267,7 @@ public class ArtifactModelTest
     assertNull( model.getClassifier() );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
+    assertFalse( model.exportDeps( false ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertEquals( model.getVisibility(), Arrays.asList( "//project:__subpackages__", "//other:__subpackages__" ) );
   }
@@ -251,6 +289,7 @@ public class ArtifactModelTest
     assertNull( model.getClassifier() );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
+    assertFalse( model.exportDeps( false ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp" );
@@ -296,6 +335,7 @@ public class ArtifactModelTest
     assertNull( model.getClassifier() );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
+    assertFalse( model.exportDeps( false ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jar:1.0" );
@@ -320,6 +360,7 @@ public class ArtifactModelTest
     assertEquals( model.getClassifier(), "sources" );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
+    assertFalse( model.exportDeps( false ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertTrue( model.getVisibility().isEmpty() );
     assertEquals( model.toCoord(), "com.example:myapp:jar:sources:1.0" );
@@ -346,6 +387,7 @@ public class ArtifactModelTest
     assertEquals( model.getClassifier(), "sources" );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
+    assertFalse( model.exportDeps( false ) );
     final List<ExcludeModel> excludes = model.getExcludes();
     assertFalse( excludes.isEmpty() );
     assertEquals( excludes.size(), 2 );

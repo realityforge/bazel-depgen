@@ -7,8 +7,8 @@ complete as there is too much un-said.
 * Scan jar artifacts for annotation processors and add them if necessary.
 
 * Add the ability to control whether `exports` contains all the `deps` or only contains associated `java_plugins`
-  (if present). This should be configurable on a per-artifact as well as a global level. The default should be ???
-  (`true` matches maven conventions, `false` matches bazel conventions) - `exportDeps` is config name?
+  (if present). This should be configurable at a global level. The default should be ???
+  (`true` matches maven conventions, `false` matches bazel conventions).
 
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
   online or needed to be rebuilt.

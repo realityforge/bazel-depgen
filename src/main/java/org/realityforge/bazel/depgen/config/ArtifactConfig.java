@@ -16,6 +16,7 @@ public final class ArtifactConfig
   private String alias;
   private Boolean includeOptional;
   private Boolean includeSource;
+  private Boolean exportDeps;
   private List<String> excludes;
   private List<String> visibility;
 
@@ -117,6 +118,16 @@ public final class ArtifactConfig
   public void setIncludeSource( final Boolean includeSource )
   {
     this.includeSource = includeSource;
+  }
+
+  public Boolean getExportDeps()
+  {
+    return exportDeps;
+  }
+
+  public void setExportDeps( final Boolean exportDeps )
+  {
+    this.exportDeps = exportDeps;
   }
 
   public List<String> getExcludes()

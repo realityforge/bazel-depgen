@@ -195,6 +195,11 @@ public final class BazelGenerator
                        .sorted()
                        .collect( Collectors.toList() ) );
     }
+    if ( artifact.shouldExportDeps() )
+    {
+      arguments.put( "exports",
+                     deps.stream().map( a -> "\":" + a.getLabel() + "\"" ).sorted().collect( Collectors.toList() ) );
+    }
     output.writeCall( "native.java_import", arguments );
   }
 

@@ -259,6 +259,11 @@ public final class ArtifactRecord
         .collect( Collectors.toList() );
   }
 
+  public boolean shouldExportDeps()
+  {
+    return null != _artifactModel && _artifactModel.exportDeps( false );
+  }
+
   private boolean shouldIncludeDependency( @Nonnull final String scope, @Nonnull final DependencyNode c )
   {
     final boolean includeOptional = null != _artifactModel && _artifactModel.includeOptional();

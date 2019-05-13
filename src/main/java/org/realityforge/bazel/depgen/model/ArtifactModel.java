@@ -220,6 +220,11 @@ public final class ArtifactModel
     return null == includeSource ? defaultIncludeSource : includeSource;
   }
 
+  public boolean exportDeps( final boolean defaultExportDeps )
+  {
+    final Boolean exportDeps = _source.getExportDeps();
+    return null == exportDeps ? defaultExportDeps : exportDeps;
+  }
   @Nonnull
   public List<ExcludeModel> getExcludes()
   {

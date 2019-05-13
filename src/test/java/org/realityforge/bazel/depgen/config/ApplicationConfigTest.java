@@ -70,6 +70,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getAlias() );
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
+      assertNull( artifact.getExportDeps() );
       assertNull( artifact.getIds() );
       assertNull( artifact.getCoord() );
       assertNull( artifact.getExcludes() );
@@ -98,6 +99,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getAlias() );
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
+      assertNull( artifact.getExportDeps() );
       assertNull( artifact.getVersion() );
       assertNull( artifact.getClassifier() );
       assertNull( artifact.getType() );
@@ -127,6 +129,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getAlias() );
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
+      assertNull( artifact.getExportDeps() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -158,6 +161,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getAlias() );
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
+      assertNull( artifact.getExportDeps() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -193,6 +197,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getAlias() );
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
+      assertNull( artifact.getExportDeps() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -230,6 +235,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getAlias() );
       assertTrue( artifact.getIncludeOptional() );
       assertFalse( artifact.getIncludeSource() );
+      assertNull( artifact.getExportDeps() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -238,6 +244,27 @@ public class ApplicationConfigTest
       assertNull( artifact.getIds() );
       assertNull( artifact.getExcludes() );
       assertNull( artifact.getVisibility() );
+    } );
+  }
+
+  @Test
+  public void parseDependencyWithExportDeps()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
+                         "    exportDeps: true\n" );
+      final ApplicationConfig config = parseDependencies();
+      assertNotNull( config );
+      final List<ArtifactConfig> artifacts = config.getArtifacts();
+      assertNotNull( artifacts );
+
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactConfig artifact = artifacts.get( 0 );
+      assertNotNull( artifact );
+      assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
+      assertTrue( artifact.getExportDeps() );
     } );
   }
 
