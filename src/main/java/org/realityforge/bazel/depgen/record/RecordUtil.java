@@ -8,9 +8,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,28 +57,6 @@ final class RecordUtil
     {
       throw new IllegalStateException( "Error generating sha256 hash for file " + file, ioe );
     }
-  }
-
-  @Nonnull
-  static List<String> deriveUrls( @Nonnull final Artifact artifact,
-                                  @Nonnull final List<RemoteRepository> repositories,
-                                  @Nonnull final Map<String, AuthenticationContext> authenticationContexts )
-  {
-    final ArrayList<String> urls = new ArrayList<>();
-    for ( final RemoteRepository remoteRepository : repositories )
-    {
-      final String url = lookupArtifactInRepository( artifact, remoteRepository, authenticationContexts );
-      if ( null != url )
-      {
-        urls.add( url );
-      }
-    }
-
-    if ( urls.isEmpty() )
-    {
-      throw new IllegalStateException( "Unable to locate artifact " + artifact + " in any repository." );
-    }
-    return urls;
   }
 
   @Nullable
