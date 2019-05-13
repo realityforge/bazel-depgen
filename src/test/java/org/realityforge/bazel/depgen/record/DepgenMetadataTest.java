@@ -249,11 +249,4 @@ public class DepgenMetadataTest
       assertEquals( urls.get( 1 ), "http://b.com/com/example/myapp/1.0/myapp-1.0.jar" );
     } );
   }
-
-  @Nonnull
-  private String loadPropertiesContent( @Nonnull final Path file )
-    throws IOException
-  {
-    return new String( Files.readAllBytes( file ), StandardCharsets.ISO_8859_1 ).replaceAll( "^#[^\n]*\n", "" );
-  }
 }

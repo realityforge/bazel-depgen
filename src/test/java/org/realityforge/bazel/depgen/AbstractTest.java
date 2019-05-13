@@ -6,6 +6,7 @@ import gir.io.Exec;
 import gir.io.FileUtil;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -235,6 +236,13 @@ public abstract class AbstractTest
                                                       "default",
                                                       localRepository.toUri().toString() ).build() );
     resolver.getSystem().deploy( resolver.getSession(), request );
+  }
+
+  @Nonnull
+  protected final String loadPropertiesContent( @Nonnull final Path file )
+    throws IOException
+  {
+    return new String( Files.readAllBytes( file ), StandardCharsets.ISO_8859_1 ).replaceAll( "^#[^\n]*\n", "" );
   }
 
   @Nonnull
