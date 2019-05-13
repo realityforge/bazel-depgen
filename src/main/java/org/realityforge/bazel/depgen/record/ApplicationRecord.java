@@ -30,10 +30,11 @@ public final class ApplicationRecord
   @Nonnull
   public static ApplicationRecord build( @Nonnull final ApplicationModel model,
                                          @Nonnull final DependencyNode node,
-                                         @Nonnull final List<AuthenticationContext> authenticationContexts )
+                                         @Nonnull final List<AuthenticationContext> authenticationContexts,
+                                         @Nonnull final RecordBuildCallback callback )
   {
     final ApplicationRecord record = new ApplicationRecord( model, node, authenticationContexts );
-    node.accept( new DependencyCollector( record ) );
+    node.accept( new DependencyCollector( record, callback ) );
     ensureAliasesAreUnique( record );
     return record;
   }

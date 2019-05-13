@@ -46,7 +46,10 @@ public abstract class AbstractTest
     final ApplicationModel model = loadApplicationModel();
     final Resolver resolver = createResolver( model, cacheDir );
     final DependencyNode root = resolveDependencies( resolver, model );
-    return ApplicationRecord.build( model, root, resolver.getAuthenticationContexts() );
+    return ApplicationRecord.build( model,
+                                    root,
+                                    resolver.getAuthenticationContexts(),
+                                    ( message ) -> fail( message ) );
   }
 
   @Nonnull

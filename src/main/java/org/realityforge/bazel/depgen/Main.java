@@ -142,7 +142,8 @@ public class Main
         c_logger.log( dependencyGraphLevel, "Dependency Graph:" );
         node.accept( new DependencyGraphEmitter( model, line -> c_logger.log( dependencyGraphLevel, line ) ) );
       }
-      final ApplicationRecord record = ApplicationRecord.build( model, node, resolver.getAuthenticationContexts() );
+      final ApplicationRecord record =
+        ApplicationRecord.build( model, node, resolver.getAuthenticationContexts(), c_logger::warning );
 
       new BazelGenerator( record ).generate();
     }

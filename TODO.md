@@ -4,9 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Add check that will make sure when accessing the cache that the repository url matches prefix of the url in the
-  cache. If not the cache entry is removed and updated.
-
 * Scan jar artifacts for annotation processors and add them if necessary.
 
 * Add the ability to control whether `exports` contains all the `deps` or only contains associated `java_plugins`

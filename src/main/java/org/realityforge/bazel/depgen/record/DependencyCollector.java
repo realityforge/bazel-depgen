@@ -18,10 +18,13 @@ final class DependencyCollector
 {
   @Nonnull
   private final ApplicationRecord _record;
+  @Nonnull
+  private final RecordBuildCallback _callback;
 
-  DependencyCollector( @Nonnull final ApplicationRecord record )
+  DependencyCollector( @Nonnull final ApplicationRecord record, @Nonnull final RecordBuildCallback callback )
   {
     _record = Objects.requireNonNull( record );
+    _callback = Objects.requireNonNull( callback );
   }
 
   @Override
@@ -76,7 +79,7 @@ final class DependencyCollector
 
     final String sha256 = metadata.getSha256( artifact.getClassifier(), artifact.getFile() );
     final List<String> urls =
-      metadata.getUrls( artifact, node.getRepositories(), _record.getAuthenticationContexts() );
+      metadata.getUrls( artifact, node.getRepositories(), _record.getAuthenticationContexts(), _callback );
 
     final String sourceSha256;
     final List<String> sourceUrls;
@@ -88,7 +91,8 @@ final class DependencyCollector
         new SubArtifact( artifact, "sources", "jar" ).setFile( sourcesFile );
 
       sourceSha256 = metadata.getSha256( sourcesArtifact.getClassifier(), sourcesArtifact.getFile() );
-      sourceUrls = metadata.getUrls( sourcesArtifact, node.getRepositories(), _record.getAuthenticationContexts() );
+      sourceUrls =
+        metadata.getUrls( sourcesArtifact, node.getRepositories(), _record.getAuthenticationContexts(), _callback );
     }
     else
     {

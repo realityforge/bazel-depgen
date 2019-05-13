@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen.record;
 
 import gir.io.FileUtil;
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -9,10 +8,10 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -178,7 +177,8 @@ public class DepgenMetadataTest
       final List<String> urls =
         metadata.getUrls( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
                           Arrays.asList( repo1, repo2, repo3 ),
-                          Collections.emptyMap() );
+                          Collections.emptyMap(),
+                          Assert::fail );
       assertEquals( urls.size(), 2 );
       assertTrue( urls.get( 0 ).startsWith( repo1.getUrl() ) );
       assertTrue( urls.get( 1 ).startsWith( repo2.getUrl() ) );
@@ -216,7 +216,8 @@ public class DepgenMetadataTest
       final List<String> urls =
         metadata.getUrls( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
                           Arrays.asList( repo1, repo2, repo3 ),
-                          Collections.emptyMap() );
+                          Collections.emptyMap(),
+                          Assert::fail );
       assertEquals( urls.size(), 2 );
       assertEquals( urls.get( 0 ), "http://a.com/com/example/myapp/1.0/myapp-1.0.jar" );
       assertEquals( urls.get( 1 ), "http://b.com/com/example/myapp/1.0/myapp-1.0.jar" );
@@ -243,10 +244,60 @@ public class DepgenMetadataTest
       final List<String> urls =
         metadata.getUrls( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
                           Arrays.asList( repo1, repo2, repo3 ),
-                          Collections.emptyMap() );
+                          Collections.emptyMap(),
+                          Assert::fail );
       assertEquals( urls.size(), 2 );
       assertEquals( urls.get( 0 ), "http://a.com/com/example/myapp/1.0/myapp-1.0.jar" );
       assertEquals( urls.get( 1 ), "http://b.com/com/example/myapp/1.0/myapp-1.0.jar" );
+    } );
+  }
+
+  @Test
+  public void getUrls_cachedButWithBadUrl()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+
+      final Path dir1 = FileUtil.createLocalTempDir();
+
+      final URI uri = dir1.toUri();
+
+      // dir1 has a http protocol in cache but our configuration uses file protocol so we should end up
+      // searching remote repository and updating cache.
+      Files.write( file, ( "<default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar\n" +
+                           "<default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar\n" +
+                           "<default>.dir3.url=-\n" ).getBytes( StandardCharsets.ISO_8859_1 ) );
+
+      deployTempArtifactToLocalRepository( dir1, "com.example:myapp:1.0" );
+
+      final DepgenMetadata metadata = new DepgenMetadata( file );
+
+      final RemoteRepository repo1 = new RemoteRepository.Builder( "dir1", "default", uri.toString() ).build();
+      final RemoteRepository repo2 = new RemoteRepository.Builder( "dir2", "default", "http://b.com" ).build();
+      final RemoteRepository repo3 = new RemoteRepository.Builder( "dir3", "default", "http://c.com" ).build();
+
+      final String expectedWarning =
+        "Cache entry '<default>.dir1.url' for artifact 'com.example:myapp:jar:1.0' contains a url " +
+        "'http://a.com/com/example/myapp/1.0/myapp-1.0.jar' that does not match the repository url '" +
+        repo1.getUrl() + "'. Removing cache entry.";
+      final List<String> urls =
+        metadata.getUrls( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                          Arrays.asList( repo1, repo2, repo3 ),
+                          Collections.emptyMap(),
+                          e -> assertEquals( e, expectedWarning ) );
+      assertEquals( urls.size(), 2 );
+      assertTrue( urls.get( 0 ).startsWith( repo1.getUrl() ) );
+      assertTrue( urls.get( 0 ).endsWith( "com/example/myapp/1.0/myapp-1.0.jar" ) );
+      assertEquals( urls.get( 1 ), "http://b.com/com/example/myapp/1.0/myapp-1.0.jar" );
+
+      assertTrue( file.toFile().exists() );
+
+      assertEquals( loadPropertiesContent( file ),
+                    "<default>.dir1.url=" +
+                    repo1.getUrl().replaceAll( ":", "\\\\:" ) + "com/example/myapp/1.0/myapp-1.0.jar\n" +
+                    "<default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar\n" +
+                    "<default>.dir3.url=-\n" );
     } );
   }
 }

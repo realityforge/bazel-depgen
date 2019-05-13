@@ -65,14 +65,25 @@ final class DepgenMetadata
   @Nonnull
   List<String> getUrls( @Nonnull final Artifact artifact,
                         @Nonnull final List<RemoteRepository> repositories,
-                        @Nonnull final Map<String, AuthenticationContext> authenticationContexts )
+                        @Nonnull final Map<String, AuthenticationContext> authenticationContexts,
+                        @Nonnull final RecordBuildCallback callback )
   {
     final ArrayList<String> urls = new ArrayList<>();
     for ( final RemoteRepository remoteRepository : repositories )
     {
+      final String key = classifierAsKey( artifact.getClassifier() ) + "." + remoteRepository.getId() + ".url";
+      final Properties properties = getCachedProperties();
+      final String existing = properties.getProperty( key );
+      if ( null != existing && !URL_SENTINEL.equals( existing ) && !existing.startsWith( remoteRepository.getUrl() ) )
+      {
+        callback.onWarning( "Cache entry '" + key + "' for artifact '" + artifact + "' contains a url '" +
+                            existing + "' that does not match the repository url '" + remoteRepository.getUrl() +
+                            "'. Removing cache entry." );
+        properties.remove( key );
+      }
+
       final String url =
-        getOrCompute( classifierAsKey( artifact.getClassifier() ) + "." + remoteRepository.getId() + ".url",
-                      () -> lookupArtifact( artifact, remoteRepository, authenticationContexts ) );
+        getOrCompute( key, () -> lookupArtifact( artifact, remoteRepository, authenticationContexts ) );
       if ( !URL_SENTINEL.equals( url ) )
       {
         urls.add( url );
