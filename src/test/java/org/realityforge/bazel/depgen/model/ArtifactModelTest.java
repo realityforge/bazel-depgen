@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
