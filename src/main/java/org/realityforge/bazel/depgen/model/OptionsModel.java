@@ -110,4 +110,9 @@ public final class OptionsModel
   {
     return _source.isIncludeSource();
   }
+
+  public boolean exportDeps()
+  {
+    return _source.isExportDeps();
+  }
 }

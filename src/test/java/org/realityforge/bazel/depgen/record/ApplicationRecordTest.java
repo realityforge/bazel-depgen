@@ -1179,4 +1179,38 @@ public class ApplicationRecordTest
       assertFalse( artifactRecord2.shouldExportDeps() );
     } );
   }
+
+  @Test
+  public void shouldExportDeps_perArtifactConfig_combinedWithGlobalConfig()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "options:\n" +
+                         "  exportDeps: true\n" +
+                         "artifacts:\n" +
+                         "  - coord: com.example.app1:core:42.0\n" +
+                         "    exportDeps: false\n" +
+                         "  - coord: com.example.app2:core:37.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 2 );
+      assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
+                    "com.example.app1:core,com.example.app2:core" );
+
+      final ArtifactRecord artifactRecord1 = artifacts.get( 0 );
+      assertEquals( artifactRecord1.getKey(), "com.example.app1:core" );
+      assertFalse( artifactRecord1.shouldExportDeps() );
+
+      final ArtifactRecord artifactRecord2 = artifacts.get( 1 );
+      assertEquals( artifactRecord2.getKey(), "com.example.app2:core" );
+      assertTrue( artifactRecord2.shouldExportDeps() );
+    } );
+  }
 }

@@ -28,6 +28,7 @@ public class OptionsModelTest
     assertTrue( model.failOnInvalidPom() );
     assertTrue( model.emitDependencyGraph() );
     assertTrue( model.includeSource() );
+    assertFalse( model.exportDeps() );
   }
 
   @Test
@@ -56,6 +57,7 @@ public class OptionsModelTest
     source.setFailOnInvalidPom( false );
     source.setEmitDependencyGraph( false );
     source.setIncludeSource( false );
+    source.setExportDeps( true );
 
     final OptionsModel model = OptionsModel.parse( FileUtil.getCurrentDirectory(), source );
     assertEquals( model.getSource(), source );
@@ -70,5 +72,6 @@ public class OptionsModelTest
     assertFalse( model.failOnMissingPom() );
     assertFalse( model.failOnInvalidPom() );
     assertFalse( model.includeSource() );
+    assertTrue( model.exportDeps() );
   }
 }

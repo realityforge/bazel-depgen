@@ -296,6 +296,7 @@ public class ApplicationConfigTest
                          "  failOnMissingPom: false\n" +
                          "  failOnInvalidPom: false\n" +
                          "  includeSource: false\n" +
+                         "  exportDeps: true\n" +
                          "  emitDependencyGraph: false\n" +
                          "  workspaceMacroName: workspace_rules\n" +
                          "  targetMacroName: gen_targets\n" +
@@ -318,6 +319,7 @@ public class ApplicationConfigTest
       assertFalse( options.isFailOnInvalidPom() );
       assertFalse( options.isEmitDependencyGraph() );
       assertFalse( options.isIncludeSource() );
+      assertTrue( options.isExportDeps() );
     } );
   }
 
@@ -343,6 +345,7 @@ public class ApplicationConfigTest
       assertTrue( options.isFailOnInvalidPom() );
       assertTrue( options.isEmitDependencyGraph() );
       assertTrue( options.isIncludeSource() );
+      assertFalse( options.isExportDeps() );
     } );
   }
 

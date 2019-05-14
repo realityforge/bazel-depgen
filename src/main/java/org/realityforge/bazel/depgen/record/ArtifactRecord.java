@@ -261,7 +261,7 @@ public final class ArtifactRecord
 
   public boolean shouldExportDeps()
   {
-    return null != _artifactModel && _artifactModel.exportDeps( false );
+    return null != _artifactModel && _artifactModel.exportDeps( _application.getSource().getOptions().exportDeps() );
   }
 
   private boolean shouldIncludeDependency( @Nonnull final String scope, @Nonnull final DependencyNode c )

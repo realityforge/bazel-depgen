@@ -28,6 +28,7 @@ public final class OptionsConfig
   private boolean failOnMissingPom = true;
   private boolean emitDependencyGraph = true;
   private boolean includeSource = true;
+  private boolean exportDeps = false;
 
   @Nonnull
   public String getWorkspaceDirectory()
@@ -133,5 +134,15 @@ public final class OptionsConfig
   public void setIncludeSource( final boolean includeSource )
   {
     this.includeSource = includeSource;
+  }
+
+  public boolean isExportDeps()
+  {
+    return exportDeps;
+  }
+
+  public void setExportDeps( final boolean exportDeps )
+  {
+    this.exportDeps = exportDeps;
   }
 }

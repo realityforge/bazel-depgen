@@ -6,10 +6,6 @@ complete as there is too much un-said.
 
 * Scan jar artifacts for annotation processors and add them if necessary.
 
-* Add the ability to control whether `exports` contains all the `deps` or only contains associated `java_plugins`
-  (if present). This should be configurable at a global level. The default should be ???
-  (`true` matches maven conventions, `false` matches bazel conventions).
-
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
   online or needed to be rebuilt.
 
@@ -68,3 +64,5 @@ complete as there is too much un-said.
 * Scan `WORKSPACE` and verify that workspace rule is called from within it? Would need a global option to
   disable this check in case it is called from downstream macro. Probably the best we can do is scan for load
   string. If not present then issue a warning (and also  indicate how the warning can be suppressed)
+
+* Consider default value for global `exportDeps` option: `true` matches maven conventions, `false` matches bazel conventions
