@@ -66,7 +66,7 @@ public abstract class AbstractTest
   }
 
   @Nonnull
-  protected final Resolver createResolver( @Nonnull final Path localRepositoryDirectory )
+  final Resolver createResolver( @Nonnull final Path localRepositoryDirectory )
     throws Exception
   {
     final RemoteRepository remoteRepository =
@@ -79,8 +79,8 @@ public abstract class AbstractTest
   }
 
   @Nonnull
-  protected final DependencyNode resolveDependencies( @Nonnull final Resolver resolver,
-                                                      @Nonnull final ApplicationModel model )
+  final DependencyNode resolveDependencies( @Nonnull final Resolver resolver,
+                                            @Nonnull final ApplicationModel model )
     throws DependencyResolutionException
   {
     final DependencyResult result = resolver.resolveDependencies( model, ( m, e ) -> fail() );
