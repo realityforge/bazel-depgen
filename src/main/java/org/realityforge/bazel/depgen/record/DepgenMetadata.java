@@ -30,7 +30,7 @@ final class DepgenMetadata
 {
   @Nonnull
   static final String FILENAME = "_depgen.properties";
-  private static final String URL_SENTINEL = "-";
+  static final String SENTINEL = "-";
   @Nonnull
   private final Path _file;
   @Nullable
@@ -74,7 +74,7 @@ final class DepgenMetadata
       final String key = classifierAsKey( artifact.getClassifier() ) + "." + remoteRepository.getId() + ".url";
       final Properties properties = getCachedProperties();
       final String existing = properties.getProperty( key );
-      if ( null != existing && !URL_SENTINEL.equals( existing ) && !existing.startsWith( remoteRepository.getUrl() ) )
+      if ( null != existing && !SENTINEL.equals( existing ) && !existing.startsWith( remoteRepository.getUrl() ) )
       {
         callback.onWarning( "Cache entry '" + key + "' for artifact '" + artifact + "' contains a url '" +
                             existing + "' that does not match the repository url '" + remoteRepository.getUrl() +
@@ -84,7 +84,7 @@ final class DepgenMetadata
 
       final String url =
         getOrCompute( key, () -> lookupArtifact( artifact, remoteRepository, authenticationContexts ) );
-      if ( !URL_SENTINEL.equals( url ) )
+      if ( !SENTINEL.equals( url ) )
       {
         urls.add( url );
       }
@@ -104,7 +104,7 @@ final class DepgenMetadata
   {
     final String url =
       RecordUtil.lookupArtifactInRepository( artifact, remoteRepository, authenticationContexts );
-    return null == url ? URL_SENTINEL : url;
+    return null == url ? SENTINEL : url;
   }
 
   /**
