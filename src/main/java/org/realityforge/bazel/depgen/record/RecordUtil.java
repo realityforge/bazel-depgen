@@ -1,15 +1,21 @@
 package org.realityforge.bazel.depgen.record;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Map;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.eclipse.aether.artifact.Artifact;
@@ -109,5 +115,46 @@ final class RecordUtil
     {
     }
     return null;
+  }
+
+  @Nonnull
+  static String readAnnotationProcessors( @Nonnull final File file )
+  {
+    if ( file.getName().endsWith( ".jar" ) )
+    {
+      try
+      {
+        try ( final JarFile jar = new JarFile( file ) )
+        {
+          final ZipEntry entry = jar.getEntry( "META-INF/services/javax.annotation.processing.Processor" );
+          if ( null != entry )
+          {
+            try ( final Reader input = new InputStreamReader( jar.getInputStream( entry ) ) )
+            {
+              try ( final BufferedReader reader = new BufferedReader( input ) )
+              {
+                final ArrayList<String> processors = new ArrayList<>();
+                String line;
+                while ( null != ( line = reader.readLine() ) )
+                {
+                  final String l = line.trim();
+                  if ( !l.isEmpty() )
+                  {
+                    processors.add( l );
+                  }
+                }
+                return String.join( ",", processors );
+              }
+            }
+          }
+        }
+      }
+      catch ( final IOException ignored )
+      {
+        //
+      }
+    }
+
+    return DepgenMetadata.SENTINEL;
   }
 }
