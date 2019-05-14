@@ -28,6 +28,7 @@ import org.eclipse.aether.util.artifact.SubArtifact;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
+import org.testng.Assert;
 import static org.testng.Assert.*;
 
 public abstract class AbstractTest
@@ -49,7 +50,7 @@ public abstract class AbstractTest
     return ApplicationRecord.build( model,
                                     root,
                                     resolver.getAuthenticationContexts(),
-                                    ( message ) -> fail( message ) );
+                                    Assert::fail );
   }
 
   @Nonnull
