@@ -66,7 +66,6 @@ final class SourceDownloaderVisitor
     {
       // User has already received a warning to console and ultimately it is only a warning as most
       // builds will continue to work if source is not available.
-      //TODO: in the future if we are running in a strict mode this will generate a failue
       return artifact;
     }
   }
