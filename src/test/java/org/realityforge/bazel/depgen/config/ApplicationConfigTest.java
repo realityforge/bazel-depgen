@@ -68,6 +68,7 @@ public class ApplicationConfigTest
       assertEquals( artifact.getClassifier(), "sources" );
       assertEquals( artifact.getType(), "jar" );
       assertNull( artifact.getAlias() );
+      assertNull( artifact.getNature() );
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
       assertNull( artifact.getExportDeps() );
@@ -97,6 +98,7 @@ public class ApplicationConfigTest
       assertEquals( artifact.getGroup(), "org.realityforge.gir" );
       assertEquals( artifact.getId(), "gir-core" );
       assertNull( artifact.getAlias() );
+      assertNull( artifact.getNature() );
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
       assertNull( artifact.getExportDeps() );
@@ -127,6 +129,7 @@ public class ApplicationConfigTest
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
       assertNull( artifact.getAlias() );
+      assertNull( artifact.getNature() );
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
       assertNull( artifact.getExportDeps() );
@@ -159,6 +162,7 @@ public class ApplicationConfigTest
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
       assertNull( artifact.getAlias() );
+      assertNull( artifact.getNature() );
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
       assertNull( artifact.getExportDeps() );
@@ -195,6 +199,7 @@ public class ApplicationConfigTest
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
       assertNull( artifact.getAlias() );
+      assertNull( artifact.getNature() );
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
       assertNull( artifact.getExportDeps() );
@@ -233,6 +238,7 @@ public class ApplicationConfigTest
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
       assertNull( artifact.getAlias() );
+      assertNull( artifact.getNature() );
       assertNotNull( artifact.getIncludeOptional() );
       assertTrue( artifact.getIncludeOptional() );
       assertNotNull( artifact.getIncludeSource() );
@@ -286,6 +292,24 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:0.08" );
       assertEquals( artifact.getAlias(), "mighty-gir-core" );
+    } );
+  }
+
+  @Test
+  public void parseDependencyWithNature()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.gir:gir-core:0.08\n" +
+                         "    nature: Plugin\n" );
+      final ApplicationConfig config = parseDependencies();
+      final List<ArtifactConfig> artifacts = config.getArtifacts();
+
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactConfig artifact = artifacts.get( 0 );
+      assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:0.08" );
+      assertEquals( artifact.getNature(), Nature.Plugin );
     } );
   }
 

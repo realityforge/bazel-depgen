@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
+import org.realityforge.bazel.depgen.config.Nature;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -26,6 +27,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertNull( model.getAlias() );
+    assertEquals( model.getNature(), Nature.Auto );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -49,6 +51,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertNull( model.getAlias() );
+    assertEquals( model.getNature(), Nature.Auto );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -72,6 +75,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jszip" );
     assertNull( model.getClassifier() );
     assertNull( model.getAlias() );
+    assertEquals( model.getNature(), Nature.Auto );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -95,6 +99,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jszip" );
     assertEquals( model.getClassifier(), "sources" );
     assertNull( model.getAlias() );
+    assertEquals( model.getNature(), Nature.Auto );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -145,6 +150,7 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertNull( model.getAlias() );
+    assertEquals( model.getNature(), Nature.Auto );
     assertTrue( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -194,6 +200,21 @@ public class ArtifactModelTest
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
     assertEquals( model.getAlias(), "my-app" );
+    assertEquals( model.getNature(), Nature.Auto );
+  }
+
+  @Test
+  public void parseArtifactWithNature()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setNature( Nature.LibraryAndPlugin );
+
+    final ArtifactModel model = parseModel( source );
+    assertEquals( model.getSource(), source );
+    assertEquals( model.getGroup(), "com.example" );
+    assertEquals( model.getId(), "myapp" );
+    assertEquals( model.getNature(), Nature.LibraryAndPlugin );
   }
 
   @Test

@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
+import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
 
@@ -125,6 +126,19 @@ public final class ArtifactRecord
         assert AliasStrategy.ArtifactId == aliasStrategy;
         return getNamePrefix() + RecordUtil.cleanNamePart( artifact.getArtifactId() );
       }
+    }
+  }
+
+  @Nonnull
+  public Nature getNature()
+  {
+    if ( null == _artifactModel || Nature.Auto == _artifactModel.getNature() )
+    {
+      return null == getProcessors() ? Nature.Library : Nature.Plugin;
+    }
+    else
+    {
+      return _artifactModel.getNature();
     }
   }
 

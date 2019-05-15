@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
+import org.realityforge.bazel.depgen.config.Nature;
 
 public final class ArtifactModel
 {
@@ -206,6 +207,13 @@ public final class ArtifactModel
   public String getAlias()
   {
     return _source.getAlias();
+  }
+
+  @Nonnull
+  public Nature getNature()
+  {
+    final Nature nature = _source.getNature();
+    return null == nature ? Nature.Auto : nature;
   }
 
   public boolean includeOptional()
