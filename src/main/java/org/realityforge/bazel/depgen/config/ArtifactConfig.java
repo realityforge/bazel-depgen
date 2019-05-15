@@ -32,6 +32,8 @@ public final class ArtifactConfig
   @Nullable
   private Boolean exportDeps;
   @Nullable
+  private Boolean generatesApi;
+  @Nullable
   private List<String> excludes;
   @Nullable
   private List<String> visibility;
@@ -166,6 +168,17 @@ public final class ArtifactConfig
   public void setExportDeps( @Nonnull final Boolean exportDeps )
   {
     this.exportDeps = Objects.requireNonNull( exportDeps );
+  }
+
+  @Nullable
+  public Boolean getGeneratesApi()
+  {
+    return generatesApi;
+  }
+
+  public void setGeneratesApi( @Nonnull final Boolean generatesApi )
+  {
+    this.generatesApi = Objects.requireNonNull( generatesApi );
   }
 
   @Nullable

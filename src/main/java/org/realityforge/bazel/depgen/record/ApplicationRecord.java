@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.AuthenticationContext;
+import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
@@ -123,6 +124,15 @@ public final class ApplicationRecord
     final ArtifactModel model = _source.findArtifact( groupId, artifactId );
     final ArtifactRecord record =
       new ArtifactRecord( this, node, sha256, urls, sourceSha256, sourceUrls, processors, model, null );
+    if ( null != model &&
+         null != model.getSource().getGeneratesApi() &&
+         ( null == processors || Nature.Library == record.getNature() ) )
+    {
+      final String message =
+        "Artifact '" + node.getArtifact() + "' has specified the 'generatesApi' configuration " +
+        "setting but is not a plugin or contains no annotation processors. ";
+      throw new IllegalStateException( message );
+    }
     final String key = record.getKey();
     final ArtifactRecord existing = _artifacts.get( key );
     if ( null == existing )

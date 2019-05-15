@@ -72,6 +72,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
       assertNull( artifact.getExportDeps() );
+      assertNull( artifact.getGeneratesApi() );
       assertNull( artifact.getIds() );
       assertNull( artifact.getCoord() );
       assertNull( artifact.getExcludes() );
@@ -102,6 +103,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
       assertNull( artifact.getExportDeps() );
+      assertNull( artifact.getGeneratesApi() );
       assertNull( artifact.getVersion() );
       assertNull( artifact.getClassifier() );
       assertNull( artifact.getType() );
@@ -133,6 +135,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
       assertNull( artifact.getExportDeps() );
+      assertNull( artifact.getGeneratesApi() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -166,6 +169,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
       assertNull( artifact.getExportDeps() );
+      assertNull( artifact.getGeneratesApi() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -203,6 +207,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getIncludeOptional() );
       assertNull( artifact.getIncludeSource() );
       assertNull( artifact.getExportDeps() );
+      assertNull( artifact.getGeneratesApi() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -244,6 +249,7 @@ public class ApplicationConfigTest
       assertNotNull( artifact.getIncludeSource() );
       assertFalse( artifact.getIncludeSource() );
       assertNull( artifact.getExportDeps() );
+      assertNull( artifact.getGeneratesApi() );
       assertNull( artifact.getGroup() );
       assertNull( artifact.getId() );
       assertNull( artifact.getVersion() );
@@ -274,6 +280,28 @@ public class ApplicationConfigTest
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
       assertNotNull( artifact.getExportDeps() );
       assertTrue( artifact.getExportDeps() );
+    } );
+  }
+
+  @Test
+  public void generatesApi()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
+                         "    generatesApi: true\n" );
+      final ApplicationConfig config = parseDependencies();
+      assertNotNull( config );
+      final List<ArtifactConfig> artifacts = config.getArtifacts();
+      assertNotNull( artifacts );
+
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactConfig artifact = artifacts.get( 0 );
+      assertNotNull( artifact );
+      assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
+      assertNotNull( artifact.getGeneratesApi() );
+      assertTrue( artifact.getGeneratesApi() );
     } );
   }
 

@@ -143,6 +143,19 @@ public final class ArtifactRecord
     }
   }
 
+  public boolean generatesApi()
+  {
+    if ( null == _artifactModel )
+    {
+      return true;
+    }
+    else
+    {
+      final Boolean generatesApi = _artifactModel.getSource().getGeneratesApi();
+      return null == generatesApi ? true : generatesApi;
+    }
+  }
+
   @Nonnull
   private String getNamePrefix()
   {

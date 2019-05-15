@@ -273,6 +273,10 @@ public final class BazelGenerator
     {
       arguments.put( "processor_class", "\"" + processorClass + "\"" );
     }
+    if ( artifact.generatesApi() )
+    {
+      arguments.put( "generates_api", "True" );
+    }
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     arguments.put( "deps", Collections.singletonList( "\":" + artifact.getName() + "__library\"" ) );
     output.writeCall( "native.java_plugin", arguments );

@@ -4,10 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Add the ability to specify per-artifact `generates_api` configuration that is only valid if the artifact
-  contains processors. If there is multiple plugins in a single jar that require different values for
-  `generates_api` then the dependency will need to be manually configured.
-
 * Excludes on an artifact should affect any transitive dependency rather than just direct dependencies.
 
 * Figure out bug with exclusions evidenced by `react4j-todomvc`. We should not try to trace dependencies if they
