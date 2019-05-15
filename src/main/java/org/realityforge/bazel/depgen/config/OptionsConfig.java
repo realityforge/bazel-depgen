@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 public final class OptionsConfig
 {
   public static final String DEFAULT_WORKSPACE_DIR = ".";
-  public static final String DEFAULT_EXTENSION_FILE = "3rdparty/dependencies.bzl";
+  public static final String DEFAULT_EXTENSION_FILE = "thirdparty/dependencies.bzl";
   public static final String DEFAULT_WORKSPACE_MACRO_NAME = "generate_workspace_rules";
   public static final String DEFAULT_TARGET_MACRO_NAME = "generate_targets";
   public static final String DEFAULT_NAME_PREFIX = "";
