@@ -233,7 +233,9 @@ public class ApplicationConfigTest
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
       assertNull( artifact.getAlias() );
+      assertNotNull( artifact.getIncludeOptional() );
       assertTrue( artifact.getIncludeOptional() );
+      assertNotNull( artifact.getIncludeSource() );
       assertFalse( artifact.getIncludeSource() );
       assertNull( artifact.getExportDeps() );
       assertNull( artifact.getGroup() );
@@ -264,6 +266,7 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
+      assertNotNull( artifact.getExportDeps() );
       assertTrue( artifact.getExportDeps() );
     } );
   }
