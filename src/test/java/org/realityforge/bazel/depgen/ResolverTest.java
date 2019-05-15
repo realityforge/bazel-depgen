@@ -23,7 +23,7 @@ public class ResolverTest
   extends AbstractTest
 {
   @Test
-  public void deriveArtifact_missingArtifact()
+  public void toArtifact_missingArtifact()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -64,7 +64,7 @@ public class ResolverTest
   }
 
   @Test
-  public void deriveArtifact_pomMissing_when_failOnMissingPom()
+  public void toArtifact_pomMissing_when_failOnMissingPom()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -108,7 +108,7 @@ public class ResolverTest
   }
 
   @Test
-  public void deriveArtifact_pomMissing_when_not_failOnMissingPom()
+  public void toArtifact_pomMissing_when_not_failOnMissingPom()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -153,7 +153,7 @@ public class ResolverTest
   }
 
   @Test
-  public void deriveArtifact_pomInvalid_when_failOnInvalidPom()
+  public void toArtifact_pomInvalid_when_failOnInvalidPom()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -195,7 +195,7 @@ public class ResolverTest
   }
 
   @Test
-  public void deriveArtifact_pomInvalid_when_not_failOnInvalidPom()
+  public void toArtifact_pomInvalid_when_not_failOnInvalidPom()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -243,7 +243,7 @@ public class ResolverTest
   }
 
   @Test
-  public void deriveArtifact_inRemoteRepository()
+  public void toArtifact_inRemoteRepository()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -297,7 +297,7 @@ public class ResolverTest
   }
 
   @Test
-  public void deriveArtifact()
+  public void toArtifact()
     throws Exception
   {
     inIsolatedDirectory( () -> {
