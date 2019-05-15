@@ -16,6 +16,12 @@ complete as there is too much un-said.
   artifact is marked as a plugin but contains no annotation processors, the assumption is that it is another
   compiler plugin (i.e. an error-prone plugin) and a plugin will be created for the library that has null processor.
 
+* Figure out bug with exclusions evidenced by `react4j-todomvc`. We should not try to trace dependencies if they
+  are excluded. For dependencies that are not in any remote repository then excludes should stop that being a
+  problem.
+
+* Figure out bug why `react4j-todomvc`'s gwt-dev artifact lookup is failing in our tool but not in other tools. 
+
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
   online or needed to be rebuilt.
 
