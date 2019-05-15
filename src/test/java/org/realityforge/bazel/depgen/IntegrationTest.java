@@ -22,7 +22,6 @@ public class IntegrationTest
                          "  - group: com.example\n" +
                          "    version: 1.0\n" +
                          "    ids: ['myapp']\n" +
-                         "    classifier:\n" +
                          "    type: jar\n" +
                          "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n" );
       final String output = runCommand();
