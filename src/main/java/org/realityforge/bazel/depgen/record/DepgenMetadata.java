@@ -6,6 +6,8 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -95,6 +97,15 @@ final class DepgenMetadata
       throw new IllegalStateException( "Unable to locate artifact " + artifact + " in any repository." );
     }
     return urls;
+  }
+
+  @Nullable
+  List<String> getProcessors( @Nonnull final File file )
+  {
+    final String processors = getOrCompute( "processors", () -> RecordUtil.readAnnotationProcessors( file ) );
+    return SENTINEL.equals( processors ) ?
+           null :
+           Collections.unmodifiableList( Arrays.asList( processors.split( "," ) ) );
   }
 
   @Nonnull

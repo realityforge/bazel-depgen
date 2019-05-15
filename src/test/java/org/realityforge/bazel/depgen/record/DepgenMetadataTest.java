@@ -300,4 +300,119 @@ public class DepgenMetadataTest
                     "<default>.dir3.url=-\n" );
     } );
   }
+
+  @Test
+  public void getProcessors_jar_withNoProcessor()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+
+      assertFalse( file.toFile().exists() );
+
+      final DepgenMetadata metadata = new DepgenMetadata( file );
+
+      final Path path = createTempJarFile();
+      final List<String> processors = metadata.getProcessors( path.toFile() );
+      assertNull( processors );
+
+      assertTrue( file.toFile().exists() );
+
+      assertEquals( loadPropertiesContent( file ), "processors=-\n" );
+    } );
+  }
+
+  @Test
+  public void getProcessors_jarWithSingleProcessor()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+
+      final DepgenMetadata metadata = new DepgenMetadata( file );
+
+      final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                                       "react4j.processor.ReactProcessor\n" );
+      final List<String> processors = metadata.getProcessors( path.toFile() );
+      assertNotNull( processors );
+      assertEquals( processors, Collections.singletonList( "react4j.processor.ReactProcessor" ) );
+
+      assertTrue( file.toFile().exists() );
+
+      assertEquals( loadPropertiesContent( file ), "processors=react4j.processor.ReactProcessor\n" );
+    } );
+  }
+
+  @Test
+  public void getProcessors_jarWithMultipleProcessor()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+
+      final DepgenMetadata metadata = new DepgenMetadata( file );
+
+      final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                                       "react4j.processor.ReactProcessor\n" +
+                                       "arez.processor.ArezProcessor\n" );
+      final List<String> processors = metadata.getProcessors( path.toFile() );
+      assertNotNull( processors );
+      assertEquals( processors, Arrays.asList( "react4j.processor.ReactProcessor", "arez.processor.ArezProcessor" ) );
+
+      assertTrue( file.toFile().exists() );
+
+      assertEquals( loadPropertiesContent( file ),
+                    "processors=react4j.processor.ReactProcessor,arez.processor.ArezProcessor\n" );
+    } );
+  }
+
+  @Test
+  public void getProcessors_cachedProperties_noProcessors()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+
+      Files.write( file, "processors=-\n".getBytes( StandardCharsets.ISO_8859_1 ) );
+
+      final DepgenMetadata metadata = new DepgenMetadata( file );
+
+      final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                                       "react4j.processor.ReactProcessor\n" +
+                                       "arez.processor.ArezProcessor\n" );
+      final List<String> processors = metadata.getProcessors( path.toFile() );
+      assertNull( processors );
+
+      assertTrue( file.toFile().exists() );
+
+      assertEquals( loadPropertiesContent( file ), "processors=-\n" );
+    } );
+  }
+
+  @Test
+  public void getProcessors_cachedProperties_multipleProcessors()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+
+      Files.write( file,
+                   "processors=react4j.processor.ReactProcessor,arez.processor.ArezProcessor\n".getBytes(
+                     StandardCharsets.ISO_8859_1 ) );
+
+      final DepgenMetadata metadata = new DepgenMetadata( file );
+
+      final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                                       "react4j.processor.ReactProcessor\n" +
+                                       "arez.processor.ArezProcessor\n" );
+      final List<String> processors = metadata.getProcessors( path.toFile() );
+      assertNotNull( processors );
+      assertEquals( processors, Arrays.asList( "react4j.processor.ReactProcessor", "arez.processor.ArezProcessor" ) );
+
+      assertTrue( file.toFile().exists() );
+
+      assertEquals( loadPropertiesContent( file ),
+                    "processors=react4j.processor.ReactProcessor,arez.processor.ArezProcessor\n" );
+    } );
+  }
 }
