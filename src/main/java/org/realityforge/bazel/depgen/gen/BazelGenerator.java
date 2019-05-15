@@ -2,16 +2,20 @@ package org.realityforge.bazel.depgen.gen;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.eclipse.aether.artifact.Artifact;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
+import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
+import org.realityforge.bazel.depgen.util.BazelUtil;
 
 @SuppressWarnings( { "Duplicates", "StringBufferReplaceableByString" } )
 public final class BazelGenerator
@@ -156,7 +160,29 @@ public final class BazelGenerator
         output.write( "if not omit_" + artifact.getAlias() + ":" );
         output.incIndent();
         emitAlias( output, artifact );
-        emitJavaImport( output, artifact );
+        final Nature nature = artifact.getNature();
+        if ( Nature.Library == nature )
+        {
+          emitJavaImport( output, artifact, "" );
+        }
+        else if ( Nature.Plugin == nature || Nature.LibraryAndPlugin == nature )
+        {
+          emitJavaImport( output, artifact, "__library" );
+          final List<String> processors = artifact.getProcessors();
+          if ( null == processors )
+          {
+            emitJavaPlugin( output, artifact, null );
+          }
+          else
+          {
+            for ( final String processor : processors )
+            {
+              emitJavaPlugin( output, artifact, processor );
+            }
+          }
+          emitJavaLibrary( output, artifact );
+        }
+
         output.decIndent();
       }
 
@@ -164,11 +190,13 @@ public final class BazelGenerator
     }
   }
 
-  private void emitJavaImport( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
+  private void emitJavaImport( @Nonnull final StarlarkFileOutput output,
+                               @Nonnull final ArtifactRecord artifact,
+                               @Nonnull final String nameSuffix )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + artifact.getName() + "\"" );
+    arguments.put( "name", "\"" + artifact.getName() + nameSuffix + "\"" );
     arguments.put( "jars", Collections.singletonList( "\"@" + artifact.getName() + "//file\"" ) );
     arguments.put( "licenses", Collections.singletonList( "\"notice\"" ) );
     if ( null != artifact.getSourceSha256() )
@@ -201,6 +229,61 @@ public final class BazelGenerator
                      deps.stream().map( a -> "\":" + a.getLabel() + "\"" ).sorted().collect( Collectors.toList() ) );
     }
     output.writeCall( "native.java_import", arguments );
+  }
+
+  private void emitJavaLibrary( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + artifact.getName() + "\"" );
+    final Nature nature = artifact.getNature();
+    if ( Nature.Plugin == nature || Nature.LibraryAndPlugin == nature )
+    {
+      final ArrayList<String> plugins = new ArrayList<>();
+      final List<String> processors = artifact.getProcessors();
+      if ( null == processors )
+      {
+        plugins.add( "\"" + pluginName( artifact, null ) + "\"" );
+      }
+      else
+      {
+        for ( final String processor : processors )
+        {
+          plugins.add( "\"" + pluginName( artifact, processor ) + "\"" );
+        }
+      }
+      arguments.put( "exported_plugins", plugins );
+    }
+    if ( Nature.Library == nature || Nature.LibraryAndPlugin == nature )
+    {
+      arguments.put( "exports", Collections.singletonList( "\"" + artifact.getName() + "__Library\"" ) );
+    }
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    output.writeCall( "native.java_library", arguments );
+  }
+
+  private void emitJavaPlugin( @Nonnull final StarlarkFileOutput output,
+                               @Nonnull final ArtifactRecord artifact,
+                               @Nullable final String processorClass )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + pluginName( artifact, processorClass ) + "\"" );
+    if ( null != processorClass )
+    {
+      arguments.put( "processor_class", "\"" + processorClass + "\"" );
+    }
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    arguments.put( "deps", Collections.singletonList( "\":" + artifact.getName() + "__library\"" ) );
+    output.writeCall( "native.java_plugin", arguments );
+  }
+
+  @Nonnull
+  private String pluginName( @Nonnull final ArtifactRecord artifact, @Nullable final String processorClass )
+  {
+    return artifact.getName() +
+           ( null == processorClass ? "" : BazelUtil.cleanNamePart( "__" + processorClass ) ) +
+           "__plugin";
   }
 
   private void emitAlias( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
