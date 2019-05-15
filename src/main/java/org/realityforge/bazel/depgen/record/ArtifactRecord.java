@@ -14,6 +14,7 @@ import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
+import org.realityforge.bazel.depgen.util.BazelUtil;
 
 public final class ArtifactRecord
 {
@@ -89,11 +90,11 @@ public final class ArtifactRecord
   {
     final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
     return getNamePrefix() +
-           RecordUtil.cleanNamePart( artifact.getGroupId() ) +
+           BazelUtil.cleanNamePart( artifact.getGroupId() ) +
            "__" +
-           RecordUtil.cleanNamePart( artifact.getArtifactId() ) +
+           BazelUtil.cleanNamePart( artifact.getArtifactId() ) +
            "__" +
-           RecordUtil.cleanNamePart( artifact.getVersion() );
+           BazelUtil.cleanNamePart( artifact.getVersion() );
   }
 
   @Nonnull
@@ -108,7 +109,7 @@ public final class ArtifactRecord
     final String declaredAlias = null != _artifactModel ? _artifactModel.getAlias() : null;
     if ( null != declaredAlias )
     {
-      return RecordUtil.cleanNamePart( declaredAlias );
+      return BazelUtil.cleanNamePart( declaredAlias );
     }
     else
     {
@@ -117,14 +118,14 @@ public final class ArtifactRecord
       if ( AliasStrategy.GroupIdAndArtifactId == aliasStrategy )
       {
         return getNamePrefix() +
-               RecordUtil.cleanNamePart( artifact.getGroupId() ) +
+               BazelUtil.cleanNamePart( artifact.getGroupId() ) +
                "__" +
-               RecordUtil.cleanNamePart( artifact.getArtifactId() );
+               BazelUtil.cleanNamePart( artifact.getArtifactId() );
       }
       else
       {
         assert AliasStrategy.ArtifactId == aliasStrategy;
-        return getNamePrefix() + RecordUtil.cleanNamePart( artifact.getArtifactId() );
+        return getNamePrefix() + BazelUtil.cleanNamePart( artifact.getArtifactId() );
       }
     }
   }
@@ -145,7 +146,7 @@ public final class ArtifactRecord
   @Nonnull
   private String getNamePrefix()
   {
-    return RecordUtil.cleanNamePart( _application.getSource().getOptions().getNamePrefix() );
+    return BazelUtil.cleanNamePart( _application.getSource().getOptions().getNamePrefix() );
   }
 
   @Nonnull

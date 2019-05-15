@@ -30,12 +30,6 @@ final class RecordUtil
   }
 
   @Nonnull
-  static String cleanNamePart( @Nonnull final String name )
-  {
-    return name.toLowerCase().replaceAll( "[^a-z0-9]", "_" );
-  }
-
-  @Nonnull
   static String artifactToPath( @Nonnull final Artifact artifact )
   {
     return artifact.getGroupId().replaceAll( "\\.", "/" ) +
