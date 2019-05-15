@@ -4,6 +4,17 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
+* Generate a plugin for every annotation processor. The plugins have private visibility. The plugins are
+  aggregated into a single library that exports the plugins  for consumption by build. The artifact defines
+  `generates_api` at the artifact level so if there is multiple plugins in a single jar with different settings
+  then it will need to be manually configured.
+
+* Artifacts can have a `type`/`mode`/`aspect`/`nature` that determine whether they are `plugin only` (i.e.
+  aggregate library contains no `deps`, just `exported_plugins` and `neverlink = True`), `library only` (i.e.
+  normal scenario), `both` (i.e. has `deps` as well as `exported_plugins`) or `auto` (i.e. will be marked as a
+  `plugin only` if annotation processors are detected, otherwise will be marked as a `library only`). If an
+  artifact is marked as a plugin but contains no annotation processors, the assumption is that it is another
+  compiler plugin (i.e. an error-prone plugin) and a plugin will be created for the library that has null processor.
 
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
   online or needed to be rebuilt.
