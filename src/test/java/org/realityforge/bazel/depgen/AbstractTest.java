@@ -258,17 +258,24 @@ public abstract class AbstractTest
   }
 
   @Nonnull
-  private Path createTempJarFile()
+  protected final Path createTempJarFile()
     throws IOException
   {
-    final Path jarFile = Files.createTempFile( "data", ".jar" );
+    return createJarFile( "data.txt", "Hi" );
+  }
+
+  @Nonnull
+  protected final Path createJarFile( @Nonnull final String filename, @Nonnull final String contents )
+    throws IOException
+  {
+    final Path jarFile = Files.createTempFile( FileUtil.getCurrentDirectory(), "data", ".jar" );
     final JarOutputStream outputStream = new JarOutputStream( new FileOutputStream( jarFile.toFile() ) );
-    final JarEntry entry = new JarEntry( "data.txt" );
+    final JarEntry entry = new JarEntry( filename );
     entry.setCreationTime( FileTime.fromMillis( 0 ) );
     entry.setTime( 0 );
     entry.setComment( null );
     outputStream.putNextEntry( entry );
-    outputStream.write( "Hi".getBytes() );
+    outputStream.write( contents.getBytes( StandardCharsets.UTF_8 ) );
     outputStream.closeEntry();
     outputStream.close();
     return jarFile;

@@ -4,7 +4,6 @@ import com.sun.net.httpserver.BasicAuthenticator;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import gir.io.FileUtil;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -12,11 +11,8 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileTime;
 import java.util.Collections;
 import java.util.concurrent.Executors;
-import java.util.jar.JarEntry;
-import java.util.jar.JarOutputStream;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -371,22 +367,5 @@ public class RecordUtilTest
     {
       httpExchange.close();
     }
-  }
-
-  @Nonnull
-  private Path createJarFile( @Nonnull final String filename, @Nonnull final String contents )
-    throws IOException
-  {
-    final Path jarFile = Files.createTempFile( FileUtil.getCurrentDirectory(), "data", ".jar" );
-    final JarOutputStream outputStream = new JarOutputStream( new FileOutputStream( jarFile.toFile() ) );
-    final JarEntry entry = new JarEntry( filename );
-    entry.setCreationTime( FileTime.fromMillis( 0 ) );
-    entry.setTime( 0 );
-    entry.setComment( null );
-    outputStream.putNextEntry( entry );
-    outputStream.write( contents.getBytes( StandardCharsets.UTF_8 ) );
-    outputStream.closeEntry();
-    outputStream.close();
-    return jarFile;
   }
 }
