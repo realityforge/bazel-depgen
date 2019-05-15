@@ -24,6 +24,8 @@ complete as there is too much un-said.
 
 * Figure out bug why `react4j-todomvc`'s gwt-dev artifact lookup is failing in our tool but not in other tools. 
 
+* Improve error handling when parse fails. Report a more user-friendly error.
+
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
   online or needed to be rebuilt.
 
