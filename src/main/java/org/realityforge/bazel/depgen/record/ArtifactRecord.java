@@ -55,9 +55,7 @@ public final class ArtifactRecord
       _replacementModel = null;
       _artifactModel = artifactModel;
       _sourceSha256 = sourceSha256;
-      _sourceUrls = null != sourceUrls ?
-                    Collections.unmodifiableList( new ArrayList<>( Objects.requireNonNull( sourceUrls ) ) ) :
-                    null;
+      _sourceUrls = null != sourceUrls ? Collections.unmodifiableList( new ArrayList<>( sourceUrls ) ) : null;
     }
     else
     {
