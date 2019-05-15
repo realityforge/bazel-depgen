@@ -9,13 +9,6 @@ complete as there is too much un-said.
   `generates_api` at the artifact level so if there is multiple plugins in a single jar with different settings
   then it will need to be manually configured.
 
-* Artifacts can have a `type`/`mode`/`aspect`/`nature` that determine whether they are `plugin only` (i.e.
-  aggregate library contains no `deps`, just `exported_plugins` and `neverlink = True`), `library only` (i.e.
-  normal scenario), `both` (i.e. has `deps` as well as `exported_plugins`) or `auto` (i.e. will be marked as a
-  `plugin only` if annotation processors are detected, otherwise will be marked as a `library only`). If an
-  artifact is marked as a plugin but contains no annotation processors, the assumption is that it is another
-  compiler plugin (i.e. an error-prone plugin) and a plugin will be created for the library that has null processor.
-
 * Excludes on an artifact should affect any transitive dependency rather than just direct dependencies.
 
 * Figure out bug with exclusions evidenced by `react4j-todomvc`. We should not try to trace dependencies if they
