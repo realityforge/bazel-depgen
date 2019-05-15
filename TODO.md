@@ -4,10 +4,9 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Generate a plugin for every annotation processor. The plugins have private visibility. The plugins are
-  aggregated into a single library that exports the plugins  for consumption by build. The artifact defines
-  `generates_api` at the artifact level so if there is multiple plugins in a single jar with different settings
-  then it will need to be manually configured.
+* Add the ability to specify per-artifact `generates_api` configuration that is only valid if the artifact
+  contains processors. If there is multiple plugins in a single jar that require different values for
+  `generates_api` then the dependency will need to be manually configured.
 
 * Excludes on an artifact should affect any transitive dependency rather than just direct dependencies.
 
