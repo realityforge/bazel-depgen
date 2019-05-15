@@ -377,9 +377,7 @@ public class DepgenMetadataTest
 
       final DepgenMetadata metadata = new DepgenMetadata( file );
 
-      final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
-                                       "react4j.processor.ReactProcessor\n" +
-                                       "arez.processor.ArezProcessor\n" );
+      final Path path = createTempJarFile();
       final List<String> processors = metadata.getProcessors( path.toFile() );
       assertNull( processors );
 
