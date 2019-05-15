@@ -32,6 +32,8 @@ public final class ArtifactRecord
   private final String _sourceSha256;
   @Nullable
   private final List<String> _sourceUrls;
+  @Nullable
+  private final List<String> _processors;
 
   ArtifactRecord( @Nonnull final ApplicationRecord application,
                   @Nonnull final DependencyNode node,
@@ -39,6 +41,7 @@ public final class ArtifactRecord
                   @Nullable final List<String> urls,
                   @Nullable final String sourceSha256,
                   @Nullable final List<String> sourceUrls,
+                  @Nullable final List<String> processors,
                   @Nullable final ArtifactModel artifactModel,
                   @Nullable final ReplacementModel replacementModel )
   {
@@ -56,15 +59,18 @@ public final class ArtifactRecord
       _artifactModel = artifactModel;
       _sourceSha256 = sourceSha256;
       _sourceUrls = null != sourceUrls ? Collections.unmodifiableList( new ArrayList<>( sourceUrls ) ) : null;
+      _processors = null != processors ? Collections.unmodifiableList( new ArrayList<>( processors ) ) : null;
     }
     else
     {
       assert null == sha256;
       assert null == sourceSha256;
+      assert null == processors;
       _sha256 = null;
       _urls = null;
       _sourceSha256 = null;
       _sourceUrls = null;
+      _processors = null;
       _replacementModel = replacementModel;
       _artifactModel = null;
     }
@@ -221,6 +227,17 @@ public final class ArtifactRecord
   public ReplacementModel getReplacementModel()
   {
     return _replacementModel;
+  }
+
+  /**
+   * Return the name of any annotation processors that this artifact defines.
+   *
+   * @return the name of any annotation processors that this artifact defines.
+   */
+  @Nullable
+  public List<String> getProcessors()
+  {
+    return _processors;
   }
 
   @Nonnull

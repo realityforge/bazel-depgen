@@ -229,9 +229,18 @@ public abstract class AbstractTest
                                                             @Nonnull final String... dependencies )
     throws Exception
   {
+    deployTempArtifactToLocalRepository( localRepository, coords, createTempJarFile(), dependencies );
+  }
+
+  protected final void deployTempArtifactToLocalRepository( @Nonnull final Path localRepository,
+                                                            @Nonnull final String coords,
+                                                            @Nonnull final Path file,
+                                                            @Nonnull final String... dependencies )
+    throws Exception
+  {
     final Resolver resolver = createResolver( localRepository );
 
-    final Artifact jarArtifact = new DefaultArtifact( coords ).setFile( createTempJarFile().toFile() );
+    final Artifact jarArtifact = new DefaultArtifact( coords ).setFile( file.toFile() );
     final Artifact pomArtifact =
       new SubArtifact( jarArtifact, "", "pom" )
         .setFile( createTempPomFile( jarArtifact.getGroupId(),

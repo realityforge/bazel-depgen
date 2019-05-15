@@ -100,7 +100,9 @@ final class DependencyCollector
       sourceUrls = null;
     }
 
-    _record.artifact( node, sha256, urls, sourceSha256, sourceUrls );
+    final List<String> processors = metadata.getProcessors( file );
+
+    _record.artifact( node, sha256, urls, sourceSha256, sourceUrls, processors );
   }
 
   private boolean hasExclude( @Nonnull final Dependency dependency )

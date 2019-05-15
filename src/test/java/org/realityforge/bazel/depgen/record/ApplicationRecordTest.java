@@ -4,6 +4,7 @@ import gir.io.FileUtil;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -306,6 +307,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
+        assertNull( artifactRecord.getProcessors() );
         assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
                       Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
@@ -323,6 +325,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
+        assertNull( artifactRecord.getProcessors() );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 1 );
         assertEquals( artifactRecord.getRuntimeDeps().get( 0 ).getKey(), "com.example:rtB" );
@@ -336,6 +339,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getName(), "com_example__rta__33_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__rta" );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtA:33.0" );
+        assertNull( artifactRecord.getProcessors() );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
       }
@@ -348,6 +352,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getName(), "com_example__rtb__2_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__rtb" );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtB:2.0" );
+        assertNull( artifactRecord.getProcessors() );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
       }
@@ -386,6 +391,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
+        assertNull( artifactRecord.getProcessors() );
         assertEquals( artifactRecord.getSha256(),
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
@@ -405,6 +411,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
+        assertNull( artifactRecord.getProcessors() );
         assertEquals( artifactRecord.getSha256(),
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
@@ -452,6 +459,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
+        assertNull( artifactRecord.getProcessors() );
         assertEquals( artifactRecord.getSha256(),
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
@@ -468,6 +476,7 @@ public class ApplicationRecordTest
         assertEquals( loadPropertiesContent( path ),
                       "<default>.local.url=" + urlEncoded + "com/example/myapp/1.0/myapp-1.0.jar\n" +
                       "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" +
+                      "processors=-\n" +
                       "sources.local.url=" + urlEncoded + "com/example/myapp/1.0/myapp-1.0-sources.jar\n" +
                       "sources.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" );
       }
@@ -480,6 +489,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
+        assertNull( artifactRecord.getProcessors() );
         assertEquals( artifactRecord.getSha256(),
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
@@ -1213,4 +1223,34 @@ public class ApplicationRecordTest
       assertTrue( artifactRecord2.shouldExportDeps() );
     } );
   }
+
+  @Test
+  public void parseWhereArtifactContainsProcessors()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      final Path jarFile =
+        createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                       "react4j.processor.ReactProcessor\n" +
+                       "arez.processor.ArezProcessor\n" );
+
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactRecord artifactRecord = artifacts.get( 0 );
+      assertNotNull( artifactRecord.getArtifactModel() );
+      assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+      assertEquals( artifactRecord.getProcessors(),
+                    Arrays.asList( "react4j.processor.ReactProcessor", "arez.processor.ArezProcessor" ) );
+    } );
+  }
+
 }
