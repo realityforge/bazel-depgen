@@ -16,6 +16,8 @@ complete as there is too much un-said.
   artifact is marked as a plugin but contains no annotation processors, the assumption is that it is another
   compiler plugin (i.e. an error-prone plugin) and a plugin will be created for the library that has null processor.
 
+* Excludes on an artifact should affect any transitive dependency rather than just direct dependencies.
+
 * Figure out bug with exclusions evidenced by `react4j-todomvc`. We should not try to trace dependencies if they
   are excluded. For dependencies that are not in any remote repository then excludes should stop that being a
   problem.
