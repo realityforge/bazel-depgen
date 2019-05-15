@@ -37,8 +37,6 @@ The project is licensed under [Apache License, Version 2.0](LICENSE).
 * This project is heavily inspired by [johnynek/bazel-deps](https://github.com/johnynek/bazel-deps.git)
   which was forked from [pgr0ss/bazel-deps](https://github.com/pgr0ss/bazel-deps) which was inspired by
   the [aether examples](https://github.com/eclipse/aether-demo/blob/322fa556494335faaf3ad3b7dbe8f89aaaf6222d/aether-demo-snippets/src/main/java/org/eclipse/aether/examples/GetDependencyTree.java)
-  for walking maven dependencies. Credit goes to those projects for trail blazing. The `artifact.bzl` began
-  as a fork of the equivalent file in `johnynek/bazel-deps` although it underwent heavy modification. The
-  `SimpleRepositoryListener` is a reasonably direct translation of a file from the `aether examples` project.
-  While not other code was directly copied from these earlier projects, this project is a spiritual successor
-  of these projects.
+  for walking maven dependencies. Credit goes to those projects for trail blazing. The `SimpleRepositoryListener`
+  class is a reasonably direct translation of a file from the `aether examples` project. While no other code was
+  directly copied from these earlier projects, this project is a spiritual successor of these projects.
