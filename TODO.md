@@ -27,17 +27,8 @@ complete as there is too much un-said.
 
 * Add `update` command that updates the version of a dependency.
 
-* Incorporate features from [bazel_maven_repository](https://github.com/square/bazel_maven_repository) such as:
-  - Store jars in the "content addressable" cache, which is machine-wide, and survives even `bazel clean --expunge`
-  - `maven_jvm_artifact` which defines `deps` attribute (i.e. Any dependencies needed at compile-time for consumers
-    of this target), `runtime_deps` attribute (i.e. Any dependencies needed only at runtime - built into _test and
-    _binary deploy jars) and `exports` attribute (i.e. Any targets listed here are treated by the consuming rule as
-    if it had declared them).
-
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
   all the tests pass.
-
-* Model output on existing tools such as above and https://github.com/bazelbuild/rules_jvm_external#generated-targets
 
 * Add language types for `kotlin`, `scala`, `java`, `aar`, `j2cl`. Add some tags to go along with it.
   - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
