@@ -82,6 +82,7 @@ final class DepgenMetadata
                             existing + "' that does not match the repository url '" + remoteRepository.getUrl() +
                             "'. Removing cache entry." );
         properties.remove( key );
+        saveCachedProperties();
       }
 
       final String url =
