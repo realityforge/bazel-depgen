@@ -34,9 +34,6 @@ complete as there is too much un-said.
     _binary deploy jars) and `exports` attribute (i.e. Any targets listed here are treated by the consuming rule as
     if it had declared them).
 
-* Consider functionality like [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps) to determine
-  if specific deps are needed.
-
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
   all the tests pass.
 
