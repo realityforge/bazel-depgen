@@ -4,8 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Improve error handling when parse fails. Report a more user-friendly error.
-
 * Improve user feedback when running and downloading dependencies. Report to user unless in quiet mode.
 
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back

@@ -168,7 +168,19 @@ public class Main
       final String message = tse.getMessage();
       if ( null != message )
       {
-        c_logger.log( Level.WARNING, message, tse.getCause() );
+        c_logger.log( Level.WARNING, message );
+        final Throwable cause = tse.getCause();
+        if ( null != cause )
+        {
+          if ( c_logger.isLoggable( Level.INFO ) )
+          {
+            c_logger.log( Level.INFO, "Cause: " + cause.toString() );
+            if ( c_logger.isLoggable( Level.FINE ) )
+            {
+              cause.printStackTrace();
+            }
+          }
+        }
       }
       System.exit( tse.getExitCode() );
     }

@@ -48,4 +48,38 @@ public class IntegrationTest
                                     "--- End Config ---" );
     } );
   }
+
+  @Test
+  public void invalidYaml()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "artifacts: 's\n" +
+                         "  - group: org.realityforge.gir\n" );
+
+      final String output = runCommand( 3 );
+      assertOutputContains( output, "Error: Failed to read dependencies file " );
+      assertOutputContains( output, "Cause: while scanning a quoted scalar" );
+      assertOutputDoesNotContain( output, "\tat org.yaml.snakeyaml.Yaml.load(" );
+    } );
+  }
+
+  @Test
+  public void invalidYamlInVerboseMode()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "artifacts: 's\n" +
+                         "  - group: org.realityforge.gir\n" );
+
+      final String output = runCommand( 3, "--verbose" );
+      assertOutputContains( output, "Error: Failed to read dependencies file " );
+      assertOutputContains( output, "Cause: while scanning a quoted scalar" );
+      assertOutputContains( output, "\tat org.yaml.snakeyaml.Yaml.load(" );
+    } );
+  }
 }
