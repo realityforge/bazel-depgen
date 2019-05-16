@@ -143,14 +143,14 @@ public class ResolverUtilTest
     assertFalse( exclusions.isEmpty() );
     final Exclusion exclusion1 = exclusions.get( 0 );
     assertEquals( exclusion1.getGroupId(), "org.oss" );
-    assertEquals( exclusion1.getArtifactId(), "" );
-    assertEquals( exclusion1.getExtension(), "" );
-    assertEquals( exclusion1.getClassifier(), "" );
+    assertEquals( exclusion1.getArtifactId(), "*" );
+    assertEquals( exclusion1.getExtension(), "*" );
+    assertEquals( exclusion1.getClassifier(), "*" );
 
     final Exclusion exclusion2 = exclusions.get( 1 );
     assertEquals( exclusion2.getGroupId(), "com.biz" );
     assertEquals( exclusion2.getArtifactId(), "zelib" );
-    assertEquals( exclusion2.getExtension(), "" );
-    assertEquals( exclusion2.getClassifier(), "" );
+    assertEquals( exclusion2.getExtension(), "*" );
+    assertEquals( exclusion2.getClassifier(), "*" );
   }
 }

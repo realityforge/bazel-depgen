@@ -152,7 +152,8 @@ final class ResolverUtil
     final ArrayList<Exclusion> exclusions = new ArrayList<>();
     for ( final ExcludeModel exclude : artifactModel.getExcludes() )
     {
-      exclusions.add( new Exclusion( exclude.getGroup(), exclude.getId(), null, null ) );
+      final String id = exclude.getId();
+      exclusions.add( new Exclusion( exclude.getGroup(), null == id ? "*" : id, "*", "*" ) );
     }
     return exclusions;
   }
