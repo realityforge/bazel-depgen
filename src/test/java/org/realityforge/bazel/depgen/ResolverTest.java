@@ -439,31 +439,20 @@ public class ResolverTest
   }
 
   @Test
-  public void resolveDependencies_passingModel()
+  public void resolveDependencies_excludedDependencyMissing()
     throws Exception
   {
     inIsolatedDirectory( () -> {
       final Path dir = FileUtil.createLocalTempDir();
 
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib:1.0",
-                                           "com.example:rtA:jar::33.0:runtime" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:mylib:1.0",
-                                           "com.example:rtB:jar::2.0:runtime",
-                                           "org.test4j:core:jar::44.0:test" );
-      deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:rtB:2.0",
-                                           // Provided ignored by traversal
-                                           "com.example:container:jar::4.0:provided",
-                                           // System collected but should be ignored at later stage
-                                           "com.example:kernel:jar::4.0:system" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
 
       final Resolver resolver =
         ResolverUtil.createResolver( createLogger(), dir, Collections.emptyList(), true, true );
 
-      writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    excludes: ['com.example:mylib']\n" );
       final ApplicationModel model = loadApplicationModel();
 
       final AtomicBoolean hasFailed = new AtomicBoolean( false );

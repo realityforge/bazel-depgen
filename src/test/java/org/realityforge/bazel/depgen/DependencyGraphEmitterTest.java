@@ -121,7 +121,6 @@ public class DependencyGraphEmitterTest
       assertEquals( output,
                     "\\- com.example:myapp:jar:1.0 [compile]\n" +
                     "   +- com.example:mylib:jar:1.0 [compile]\n" +
-                    "   |  \\- com.example:rtB:jar:2.0 [runtime] EXCLUDED\n" +
                     "   \\- com.example:rtA:jar:33.0 [runtime]\n" );
     } );
   }
