@@ -35,8 +35,6 @@ complete as there is too much un-said.
   - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
   - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
 
-* Add ability to add extra runtime or extra compile deps to an artifact
-
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
 
 * Optionally pass output through [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier).
