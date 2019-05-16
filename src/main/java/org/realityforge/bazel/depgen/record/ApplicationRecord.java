@@ -130,7 +130,7 @@ public final class ApplicationRecord
     {
       final String message =
         "Artifact '" + node.getArtifact() + "' has specified the 'generatesApi' configuration " +
-        "setting but is not a plugin or contains no annotation processors. ";
+        "setting but is not a plugin or contains no annotation processors.";
       throw new IllegalStateException( message );
     }
     final String key = record.getKey();
