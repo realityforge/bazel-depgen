@@ -6,7 +6,7 @@ complete as there is too much un-said.
 
 * Improve error handling when parse fails. Report a more user-friendly error.
 
-* Improve user feedback when running and downloading dependencies. Report to user unless in quiet mode..
+* Improve user feedback when running and downloading dependencies. Report to user unless in quiet mode.
 
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
   online or needed to be rebuilt.
