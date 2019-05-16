@@ -4,14 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Excludes on an artifact should affect any transitive dependency rather than just direct dependencies.
-
-* Figure out bug with exclusions evidenced by `react4j-todomvc`. We should not try to trace dependencies if they
-  are excluded. For dependencies that are not in any remote repository then excludes should stop that being a
-  problem.
-
-* Figure out bug why `react4j-todomvc`'s gwt-dev artifact lookup is failing in our tool but not in other tools. 
-
 * Improve error handling when parse fails. Report a more user-friendly error.
 
 * Improve user feedback when running and downloading dependencies. Report to user unless in quiet mode..
