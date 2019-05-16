@@ -56,7 +56,7 @@ complete as there is too much un-said.
 
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
 
-* Optionally pass output through buildifier.
+* Optionally pass output through [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier).
 
 * Add assertion to workspace or target macro to verify dependencies.yml file has hash that matches hash of file that generated macro
 
