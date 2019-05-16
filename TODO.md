@@ -56,7 +56,5 @@ complete as there is too much un-said.
 
 * Support alternative to `http_file` that supports basic authentication.
 
-* Consider default value for global `exportDeps` option: `true` matches maven conventions, `false` matches bazel conventions
-
 * Add Bazel target/task that will regenerate dependencies. [Mabel](https://github.com/menny/mabel) has a set
   of `//resolver/..` tasks that may act as inspiration. Ultimately they will just invoke the CLI tool.
