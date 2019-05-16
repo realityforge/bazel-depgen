@@ -48,7 +48,8 @@ complete as there is too much un-said.
 
 * Model output on existing tools such as above and https://github.com/bazelbuild/rules_jvm_external#generated-targets
 
-* Add language types for `kotlin`, `scala`, `java`, `j2cl`. Add some tags to go along with it.
+* Add language types for `kotlin`, `scala`, `java`, `aar`, `j2cl`. Add some tags to go along with it.
+  - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
 
 * Support non-jar dependencies and expose them as files/filegroups
 
@@ -58,7 +59,10 @@ complete as there is too much un-said.
 
 * Optionally pass output through [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier).
 
-* Add assertion to workspace or target macro to verify dependencies.yml file has hash that matches hash of file that generated macro
+* Add assertion to workspace or target macro to verify dependencies.yml file has hash that matches hash
+  of file that generated macro. This task should only be run if one of the dependencies is actually referenced.
+  This would allow tasks (such as `regenerate dependencies`) to run that did not reference dependencies.
+  - See [file_hash](https://github.com/atlassian/bazel-tools/tree/master/file_hash)
 
 * Add support for managed dependencies which essentially contains a list of artifacts that include version
 
@@ -75,3 +79,6 @@ complete as there is too much un-said.
   string. If not present then issue a warning (and also  indicate how the warning can be suppressed)
 
 * Consider default value for global `exportDeps` option: `true` matches maven conventions, `false` matches bazel conventions
+
+* Add Bazel target/task that will regenerate dependencies. [Mabel](https://github.com/menny/mabel) has a set
+  of `//resolver/..` tasks that may act as inspiration. Ultimately they will just invoke the CLI tool. 
