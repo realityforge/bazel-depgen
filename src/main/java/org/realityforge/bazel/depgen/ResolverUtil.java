@@ -30,6 +30,7 @@ import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ExcludeModel;
+import org.realityforge.bazel.depgen.model.GlobalExcludeModel;
 import org.realityforge.bazel.depgen.model.OptionsModel;
 
 final class ResolverUtil
@@ -144,6 +145,17 @@ final class ResolverUtil
       repositories.add( builder.build() );
     }
     return repositories;
+  }
+
+  @Nonnull
+  static ArrayList<Exclusion> deriveGlobalExclusions( @Nonnull final ApplicationModel model )
+  {
+    final ArrayList<Exclusion> exclusions = new ArrayList<>();
+    for ( final GlobalExcludeModel exclude : model.getExcludes() )
+    {
+      exclusions.add( new Exclusion( exclude.getGroup(), exclude.getId(), "*", "*" ) );
+    }
+    return exclusions;
   }
 
   @Nonnull

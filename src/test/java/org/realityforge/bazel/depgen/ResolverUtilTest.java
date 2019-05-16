@@ -14,6 +14,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ExcludeModel;
 import org.testng.annotations.Test;
@@ -152,5 +153,32 @@ public class ResolverUtilTest
     assertEquals( exclusion2.getArtifactId(), "zelib" );
     assertEquals( exclusion2.getExtension(), "*" );
     assertEquals( exclusion2.getClassifier(), "*" );
+  }
+
+  @Test
+  public void deriveGlobalExclusions()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "excludes:\n" +
+                         "  - coord: org.oss:app\n" +
+                         "  - coord: com.biz:zelib\n" );
+      final ApplicationModel model = loadApplicationModel();
+
+      final ArrayList<Exclusion> exclusions = ResolverUtil.deriveGlobalExclusions( model );
+
+      assertFalse( exclusions.isEmpty() );
+      final Exclusion exclusion1 = exclusions.get( 0 );
+      assertEquals( exclusion1.getGroupId(), "org.oss" );
+      assertEquals( exclusion1.getArtifactId(), "app" );
+      assertEquals( exclusion1.getExtension(), "*" );
+      assertEquals( exclusion1.getClassifier(), "*" );
+
+      final Exclusion exclusion2 = exclusions.get( 1 );
+      assertEquals( exclusion2.getGroupId(), "com.biz" );
+      assertEquals( exclusion2.getArtifactId(), "zelib" );
+      assertEquals( exclusion2.getExtension(), "*" );
+      assertEquals( exclusion2.getClassifier(), "*" );
+    } );
   }
 }
