@@ -28,6 +28,7 @@ import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
+import org.eclipse.aether.util.graph.traverser.FatArtifactTraverser;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 
@@ -87,6 +88,7 @@ final class Resolver
   {
     final DefaultRepositorySystemSession session = (DefaultRepositorySystemSession) _session;
     session.setDependencySelector( new ReplacementDependencySelector( model ) );
+    session.setDependencyTraverser( new FatArtifactTraverser() );
     final DependencyResult result = resolveDependencies( deriveRootDependencies( model, onInvalidPomFn ) );
     result.getRoot().accept( new SourceDownloaderVisitor( this, model ) );
     return result;
