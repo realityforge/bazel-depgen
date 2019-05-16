@@ -16,6 +16,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyFilter;
+import org.eclipse.aether.graph.Exclusion;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactDescriptorException;
@@ -29,6 +30,7 @@ import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.util.graph.manager.ClassicDependencyManager;
 import org.eclipse.aether.util.graph.selector.AndDependencySelector;
+import org.eclipse.aether.util.graph.selector.ExclusionDependencySelector;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.eclipse.aether.util.graph.traverser.FatArtifactTraverser;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
@@ -89,8 +91,9 @@ final class Resolver
     throws DependencyResolutionException
   {
     final DefaultRepositorySystemSession session = (DefaultRepositorySystemSession) _session;
-    session.setDependencySelector( new ReplacementDependencySelector( model ) );
-    session.setDependencySelector( new AndDependencySelector( new ReplacementDependencySelector( model ),
+    final ArrayList<Exclusion> exclusions = ResolverUtil.deriveGlobalExclusions( model );
+    session.setDependencySelector( new AndDependencySelector( new ExclusionDependencySelector( exclusions ),
+                                                              new ReplacementDependencySelector( model ),
                                                               new OptionalDependencySelector( model ) ) );
     session.setDependencyTraverser( new FatArtifactTraverser() );
     session.setDependencyManager( new ClassicDependencyManager() );
