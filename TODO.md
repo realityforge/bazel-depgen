@@ -30,10 +30,10 @@ complete as there is too much un-said.
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
   all the tests pass.
 
-* Add language types for `kotlin`, `scala`, `java`, `aar`, `j2cl`. Add some tags to go along with it.
+* Add language types for `kotlin`, `scala`, `java`, `aar`, `j2cl` that control how artifacts defined. Some
+  artifacts may support multiple languages. Support non-jar dependencies and expose them as files/filegroups
   - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
-
-* Support non-jar dependencies and expose them as files/filegroups
+  - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
 
 * Add ability to add extra runtime or extra compile deps to an artifact
 
