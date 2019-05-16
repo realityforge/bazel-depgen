@@ -40,3 +40,8 @@ The project is licensed under [Apache License, Version 2.0](LICENSE).
   for walking maven dependencies. Credit goes to those projects for trail blazing. The `SimpleRepositoryListener`
   class is a reasonably direct translation of a file from the `aether examples` project. While no other code was
   directly copied from these earlier projects, this project is a spiritual successor of these projects.
+
+* The project also took ideas from other similar projects:
+  - [rules_jvm_external](https://github.com/bazelbuild/rules_jvm_external)
+  - [Mabel](https://github.com/menny/mabel)
+  - [bazel_maven_repository](https://github.com/square/bazel_maven_repository)
