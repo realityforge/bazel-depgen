@@ -13,7 +13,7 @@ import org.realityforge.bazel.depgen.model.ApplicationModel;
  * walking any child dependencies of replacement. This ultimately means that
  * the dependency node appears in the output but children of replacement node
  * do not influence the shape of the graph (by adding dependency that may conflict
- * eith another dependency).
+ * with another dependency).
  */
 final class ReplacementDependencySelector
   implements DependencySelector
