@@ -1,6 +1,7 @@
 package org.realityforge.bazel.depgen.model;
 
 import gir.io.FileUtil;
+import java.nio.file.Path;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
@@ -45,33 +46,37 @@ public class OptionsModelTest
 
   @Test
   public void parse()
+    throws Exception
   {
-    final OptionsConfig source = new OptionsConfig();
-    source.setWorkspaceDirectory( ".." );
-    source.setExtensionFile( "dependencies.bzl" );
-    source.setWorkspaceMacroName( "gen_myprj_dependency_rules" );
-    source.setTargetMacroName( "gen_myprj_targets" );
-    source.setNamePrefix( "myprj_" );
-    source.setAliasStrategy( AliasStrategy.ArtifactId );
-    source.setFailOnMissingPom( false );
-    source.setFailOnInvalidPom( false );
-    source.setEmitDependencyGraph( false );
-    source.setIncludeSource( false );
-    source.setExportDeps( true );
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path thirdpartyDir = dir.resolve( "thirdparty" );
 
-    final OptionsModel model = OptionsModel.parse( FileUtil.getCurrentDirectory(), source );
-    assertEquals( model.getSource(), source );
-    assertEquals( model.getWorkspaceDirectory(),
-                  FileUtil.getCurrentDirectory().resolve( ".." ).normalize() );
-    assertEquals( model.getExtensionFile(),
-                  FileUtil.getCurrentDirectory().resolve( "dependencies.bzl" ) );
-    assertEquals( model.getWorkspaceMacroName(), "gen_myprj_dependency_rules" );
-    assertEquals( model.getTargetMacroName(), "gen_myprj_targets" );
-    assertEquals( model.getNamePrefix(), "myprj_" );
-    assertEquals( model.getAliasStrategy(), AliasStrategy.ArtifactId );
-    assertFalse( model.failOnMissingPom() );
-    assertFalse( model.failOnInvalidPom() );
-    assertFalse( model.includeSource() );
-    assertTrue( model.exportDeps() );
+      final OptionsConfig source = new OptionsConfig();
+      source.setWorkspaceDirectory( ".." );
+      source.setExtensionFile( "dependencies.bzl" );
+      source.setWorkspaceMacroName( "gen_myprj_dependency_rules" );
+      source.setTargetMacroName( "gen_myprj_targets" );
+      source.setNamePrefix( "myprj_" );
+      source.setAliasStrategy( AliasStrategy.ArtifactId );
+      source.setFailOnMissingPom( false );
+      source.setFailOnInvalidPom( false );
+      source.setEmitDependencyGraph( false );
+      source.setIncludeSource( false );
+      source.setExportDeps( true );
+
+      final OptionsModel model = OptionsModel.parse( thirdpartyDir, source );
+      assertEquals( model.getSource(), source );
+      assertEquals( model.getWorkspaceDirectory(), dir.normalize() );
+      assertEquals( model.getExtensionFile(), dir.resolve( "dependencies.bzl" ) );
+      assertEquals( model.getWorkspaceMacroName(), "gen_myprj_dependency_rules" );
+      assertEquals( model.getTargetMacroName(), "gen_myprj_targets" );
+      assertEquals( model.getNamePrefix(), "myprj_" );
+      assertEquals( model.getAliasStrategy(), AliasStrategy.ArtifactId );
+      assertFalse( model.failOnMissingPom() );
+      assertFalse( model.failOnInvalidPom() );
+      assertFalse( model.includeSource() );
+      assertTrue( model.exportDeps() );
+    } );
   }
 }

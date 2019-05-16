@@ -27,7 +27,7 @@ public final class OptionsModel
   {
     final Path workspaceDirectory =
       baseDirectory.resolve( source.getWorkspaceDirectory() ).toAbsolutePath().normalize();
-    final Path extensionFile = baseDirectory.resolve( source.getExtensionFile() ).toAbsolutePath().normalize();
+    final Path extensionFile = workspaceDirectory.resolve( source.getExtensionFile() ).toAbsolutePath().normalize();
     return new OptionsModel( source, workspaceDirectory, extensionFile );
   }
 
