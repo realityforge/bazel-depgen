@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen;
 
+import java.io.Console;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -32,17 +33,19 @@ final class SimpleTransferListener
   @Override
   public void transferInitiated( @Nonnull final TransferEvent event )
   {
-    if ( _logger.isLoggable( Level.FINE ) )
+    final Console console = System.console();
+    if ( null != console && _logger.isLoggable( Level.INFO ) )
     {
-      _logger.fine( ( TransferEvent.RequestType.PUT == event.getRequestType() ? "Uploading" : "Downloading" ) +
-                    ": " + event.getResource().getRepositoryUrl() + event.getResource().getResourceName() );
+      final String label = TransferEvent.RequestType.PUT == event.getRequestType() ? "Uploading" : "Downloading";
+      console.writer().println( label + ": " + path( event.getResource() ) );
     }
   }
 
   @Override
   public void transferProgressed( @Nonnull final TransferEvent event )
   {
-    if ( _logger.isLoggable( Level.FINE ) )
+    final Console console = System.console();
+    if ( null != console && _logger.isLoggable( Level.INFO ) )
     {
       final TransferResource resource = event.getResource();
       _downloads.put( resource, event.getTransferredBytes() );
@@ -62,7 +65,7 @@ final class SimpleTransferListener
       pad( buffer, pad );
       buffer.append( '\r' );
 
-      _logger.fine( buffer.toString() );
+      console.writer().print( buffer.toString() );
     }
   }
 
@@ -71,7 +74,8 @@ final class SimpleTransferListener
   {
     transferCompleted( event );
 
-    if ( _logger.isLoggable( Level.FINE ) )
+    final Console console = System.console();
+    if ( null != console && _logger.isLoggable( Level.INFO ) )
     {
       final TransferResource resource = event.getResource();
       final long contentLength = event.getTransferredBytes();
@@ -93,11 +97,16 @@ final class SimpleTransferListener
           throughput = "";
         }
 
-        _logger.fine( ( TransferEvent.RequestType.PUT == event.getRequestType() ? "Uploaded" : "Downloaded" ) + ": " +
-                      resource.getRepositoryUrl() + resource.getResourceName() +
-                      " (" + len + throughput + ")" );
+        final String label = TransferEvent.RequestType.PUT == event.getRequestType() ? "Uploaded" : "Downloaded";
+        console.writer().println( label + ": " + path( resource ) + " (" + len + throughput + ")" );
       }
     }
+  }
+
+  @Nonnull
+  private String path( @Nonnull final TransferResource resource )
+  {
+    return resource.getRepositoryUrl() + resource.getResourceName();
   }
 
   @Override
@@ -121,11 +130,13 @@ final class SimpleTransferListener
   {
     _downloads.remove( event.getResource() );
 
-    if ( _logger.isLoggable( Level.FINE ) )
+    final Console console = System.console();
+    if ( null != console && _logger.isLoggable( Level.INFO ) )
     {
       final StringBuilder buffer = new StringBuilder( 64 );
       pad( buffer, lastLength );
       buffer.append( '\r' );
+      console.writer().print( buffer.toString() );
     }
   }
 
