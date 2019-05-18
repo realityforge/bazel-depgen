@@ -35,7 +35,7 @@ final class SourceDownloaderVisitor
       final boolean includeSource = _model.getOptions().includeSource();
       if ( null == artifactModel ? includeSource : artifactModel.includeSource( includeSource ) )
       {
-        node.setArtifact( downloadSourcesArtifact( artifact ) );
+        node.setArtifact( downloadSourcesArtifact( node ) );
       }
     }
     return true;
@@ -48,8 +48,10 @@ final class SourceDownloaderVisitor
   }
 
   @Nonnull
-  private org.eclipse.aether.artifact.Artifact downloadSourcesArtifact( @Nonnull final org.eclipse.aether.artifact.Artifact artifact )
+  private org.eclipse.aether.artifact.Artifact downloadSourcesArtifact( @Nonnull final DependencyNode node )
   {
+    final org.eclipse.aether.artifact.Artifact artifact = node.getArtifact();
+    assert null != artifact;
     final SubArtifact sourcesArtifact = new SubArtifact( artifact, "sources", "jar" );
     try
     {
