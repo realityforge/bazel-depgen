@@ -7,6 +7,8 @@ complete as there is too much un-said.
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
   online or needed to be rebuilt.
 
+* Add caching into system so that when unable to locate source for an artifact, that we can cache the check.
+
 * Configure repositories so that url checks against it can not be cached. This will require changes to the way we
   represent repositories.
 
@@ -39,6 +41,7 @@ complete as there is too much un-said.
   of file that generated macro. This task should only be run if one of the dependencies is actually referenced.
   This would allow tasks (such as `regenerate dependencies`) to run that did not reference dependencies.
   - See [file_hash](https://github.com/atlassian/bazel-tools/tree/master/file_hash)
+  - A better option is to write a tiny java cli that hashes the input file. The jar can be on maven central.
 
 * Add support for managed dependencies which essentially contains a list of artifacts that include version
 
