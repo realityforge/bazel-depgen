@@ -45,6 +45,24 @@ public final class DepgenMetadata
   }
 
   /**
+   * Return the value associated with key.
+   *
+   * @param key the property key.
+   * @return the value or null if no such value.
+   */
+  @Nullable
+  public String getProperty( @Nonnull final String key )
+  {
+    return getCachedProperties().getProperty( key );
+  }
+
+  public void updateProperty( @Nonnull final String key, @Nonnull final String value )
+  {
+    getCachedProperties().setProperty( key, value );
+    saveCachedProperties();
+  }
+
+  /**
    * Return the sha256 for artifact with filename and classifier.
    *
    * @param classifier the artifacts classifier or the empty string if no classifier.
@@ -63,6 +81,7 @@ public final class DepgenMetadata
    * @param artifact               the artifact.
    * @param repositories           the remote repositories associated with the artifact.
    * @param authenticationContexts the authentication contexts used to authenticate against repositories.
+   * @param callback               the callback that used to notify invoker or errors/warnings.
    * @return the urls where the artifact is present.
    */
   @Nonnull
@@ -130,8 +149,7 @@ public final class DepgenMetadata
   @Nonnull
   private String getOrCompute( @Nonnull final String key, @Nonnull final Supplier<String> action )
   {
-    final Properties properties = getCachedProperties();
-    final String existingValue = properties.getProperty( key );
+    final String existingValue = getProperty( key );
     if ( null != existingValue )
     {
       return existingValue;
@@ -139,8 +157,7 @@ public final class DepgenMetadata
     else
     {
       final String value = action.get();
-      properties.setProperty( key, value );
-      saveCachedProperties();
+      updateProperty( key, value );
       return value;
     }
   }
