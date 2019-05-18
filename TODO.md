@@ -42,6 +42,8 @@ complete as there is too much un-said.
   This would allow tasks (such as `regenerate dependencies`) to run that did not reference dependencies.
   - See [file_hash](https://github.com/atlassian/bazel-tools/tree/master/file_hash)
   - A better option is to write a tiny java cli that hashes the input file. The jar can be on maven central.
+  - a simpler version may be `result = ctx.execute(["cat", pom_file])` and then the builtin hash function which
+    defers to java hash
 
 * Add support for managed dependencies which essentially contains a list of artifacts that include version
 
