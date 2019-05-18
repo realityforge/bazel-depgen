@@ -39,7 +39,13 @@ public final class DepgenMetadata
   @Nullable
   private Properties _properties;
 
-  public DepgenMetadata( @Nonnull final Path file )
+  @Nonnull
+  public static DepgenMetadata fromDirectory( @Nonnull final Path dir )
+  {
+    return new DepgenMetadata( dir.resolve( FILENAME ) );
+  }
+
+  DepgenMetadata( @Nonnull final Path file )
   {
     _file = Objects.requireNonNull( file );
   }

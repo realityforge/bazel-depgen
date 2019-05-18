@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen.record;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -76,8 +75,7 @@ final class DependencyCollector
     final File file = artifact.getFile();
     assert null != file;
 
-    final Path metadataFilename = file.getAbsoluteFile().toPath().getParent().resolve( DepgenMetadata.FILENAME );
-    final DepgenMetadata metadata = new DepgenMetadata( metadataFilename );
+    final DepgenMetadata metadata = DepgenMetadata.fromDirectory( file.getParentFile().toPath() );
 
     final String sha256 = metadata.getSha256( artifact.getClassifier(), artifact.getFile() );
     final List<String> urls =
