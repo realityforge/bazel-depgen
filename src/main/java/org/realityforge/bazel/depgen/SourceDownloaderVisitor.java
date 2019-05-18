@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -9,12 +10,14 @@ import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
+import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 
 final class SourceDownloaderVisitor
   implements DependencyVisitor
 {
+  private static final String SOURCES_PRESENT_PROPERTY = "sources.present";
   private Resolver _resolver;
   @Nonnull
   private final ApplicationModel _model;
@@ -52,23 +55,42 @@ final class SourceDownloaderVisitor
   {
     final org.eclipse.aether.artifact.Artifact artifact = node.getArtifact();
     assert null != artifact;
-    final SubArtifact sourcesArtifact = new SubArtifact( artifact, "sources", "jar" );
-    try
+    final File file = artifact.getFile();
+    if ( null == file )
     {
-      final ArtifactResult sourceArtifactResult =
-        _resolver.getSystem()
-          .resolveArtifact( _resolver.getSession(),
-                            new ArtifactRequest( sourcesArtifact, _resolver.getRepositories(), null ) );
-      final HashMap<String, String> properties = new HashMap<>( artifact.getProperties() );
-      properties.put( Constants.SOURCE_ARTIFACT_FILENAME,
-                      sourceArtifactResult.getArtifact().getFile().getAbsolutePath() );
-      return artifact.setProperties( properties );
-    }
-    catch ( final ArtifactResolutionException ignored )
-    {
-      // User has already received a warning to console and ultimately it is only a warning as most
-      // builds will continue to work if source is not available.
+      // If we get here then the resolver has determined that the
+      // artifact is a conflict and has not downloaded it
       return artifact;
+    }
+    final DepgenMetadata metadata =
+      new DepgenMetadata( file.getParentFile().toPath().resolve( DepgenMetadata.FILENAME ) );
+    final String sourcesPresent = metadata.getProperty( SOURCES_PRESENT_PROPERTY );
+    if ( "false".equals( sourcesPresent ) )
+    {
+      return artifact;
+    }
+    else
+    {
+      final SubArtifact sourcesArtifact = new SubArtifact( artifact, "sources", "jar" );
+      try
+      {
+        final ArtifactResult sourceArtifactResult =
+          _resolver.getSystem()
+            .resolveArtifact( _resolver.getSession(),
+                              new ArtifactRequest( sourcesArtifact, _resolver.getRepositories(), null ) );
+        final HashMap<String, String> properties = new HashMap<>( artifact.getProperties() );
+        properties.put( Constants.SOURCE_ARTIFACT_FILENAME,
+                        sourceArtifactResult.getArtifact().getFile().getAbsolutePath() );
+        metadata.updateProperty( SOURCES_PRESENT_PROPERTY, "true" );
+        return artifact.setProperties( properties );
+      }
+      catch ( final ArtifactResolutionException ignored )
+      {
+        metadata.updateProperty( SOURCES_PRESENT_PROPERTY, "false" );
+        // User has already received a warning to console and ultimately it is only a warning as most
+        // builds will continue to work if source is not available.
+        return artifact;
+      }
     }
   }
 }
