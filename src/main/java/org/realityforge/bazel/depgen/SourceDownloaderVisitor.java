@@ -19,14 +19,14 @@ final class SourceDownloaderVisitor
   @Nonnull
   private final ApplicationModel _model;
 
-  SourceDownloaderVisitor( final Resolver resolver, @Nonnull final ApplicationModel model )
+  SourceDownloaderVisitor( @Nonnull final Resolver resolver, @Nonnull final ApplicationModel model )
   {
     _resolver = resolver;
     _model = Objects.requireNonNull( model );
   }
 
   @Override
-  public boolean visitEnter( final DependencyNode node )
+  public boolean visitEnter( @Nonnull final DependencyNode node )
   {
     final org.eclipse.aether.artifact.Artifact artifact = node.getArtifact();
     if ( null != artifact )
@@ -42,7 +42,7 @@ final class SourceDownloaderVisitor
   }
 
   @Override
-  public boolean visitLeave( final DependencyNode node )
+  public boolean visitLeave( @Nonnull final DependencyNode node )
   {
     return true;
   }
