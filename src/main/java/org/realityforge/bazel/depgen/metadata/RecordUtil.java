@@ -1,4 +1,4 @@
-package org.realityforge.bazel.depgen.record;
+package org.realityforge.bazel.depgen.metadata;
 
 import java.io.BufferedReader;
 import java.io.File;

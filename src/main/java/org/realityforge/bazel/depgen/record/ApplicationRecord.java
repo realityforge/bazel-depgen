@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.config.Nature;
+import org.realityforge.bazel.depgen.metadata.RecordBuildCallback;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;

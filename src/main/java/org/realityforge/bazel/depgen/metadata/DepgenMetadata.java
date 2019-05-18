@@ -1,4 +1,4 @@
-package org.realityforge.bazel.depgen.record;
+package org.realityforge.bazel.depgen.metadata;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import javax.annotation.Nullable;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.util.OrderedProperties;
 
 /**
@@ -28,17 +29,17 @@ import org.realityforge.bazel.depgen.util.OrderedProperties;
  * <p>The data is derived in the context of a particular {@link ApplicationRecord} so that only the repositories that
  * are registered in <code>dependency.yaml</code> are checked etc.</p>
  */
-final class DepgenMetadata
+public final class DepgenMetadata
 {
   @Nonnull
-  static final String FILENAME = "_depgen.properties";
+  public static final String FILENAME = "_depgen.properties";
   static final String SENTINEL = "-";
   @Nonnull
   private final Path _file;
   @Nullable
   private Properties _properties;
 
-  DepgenMetadata( @Nonnull final Path file )
+  public DepgenMetadata( @Nonnull final Path file )
   {
     _file = Objects.requireNonNull( file );
   }
@@ -51,7 +52,7 @@ final class DepgenMetadata
    * @return the sha256 of the specified artifact.
    */
   @Nonnull
-  String getSha256( @Nonnull final String classifier, @Nonnull final File file )
+  public String getSha256( @Nonnull final String classifier, @Nonnull final File file )
   {
     return getOrCompute( classifierAsKey( classifier ) + ".sha256", () -> RecordUtil.sha256( file ) );
   }
@@ -65,10 +66,10 @@ final class DepgenMetadata
    * @return the urls where the artifact is present.
    */
   @Nonnull
-  List<String> getUrls( @Nonnull final Artifact artifact,
-                        @Nonnull final List<RemoteRepository> repositories,
-                        @Nonnull final Map<String, AuthenticationContext> authenticationContexts,
-                        @Nonnull final RecordBuildCallback callback )
+  public List<String> getUrls( @Nonnull final Artifact artifact,
+                               @Nonnull final List<RemoteRepository> repositories,
+                               @Nonnull final Map<String, AuthenticationContext> authenticationContexts,
+                               @Nonnull final RecordBuildCallback callback )
   {
     final ArrayList<String> urls = new ArrayList<>();
     for ( final RemoteRepository remoteRepository : repositories )
@@ -101,7 +102,7 @@ final class DepgenMetadata
   }
 
   @Nullable
-  List<String> getProcessors( @Nonnull final File file )
+  public List<String> getProcessors( @Nonnull final File file )
   {
     final String processors = getOrCompute( "processors", () -> RecordUtil.readAnnotationProcessors( file ) );
     return SENTINEL.equals( processors ) ?

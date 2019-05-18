@@ -12,6 +12,8 @@ import org.eclipse.aether.graph.DependencyVisitor;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.realityforge.bazel.depgen.Constants;
+import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
+import org.realityforge.bazel.depgen.metadata.RecordBuildCallback;
 
 final class DependencyCollector
   implements DependencyVisitor

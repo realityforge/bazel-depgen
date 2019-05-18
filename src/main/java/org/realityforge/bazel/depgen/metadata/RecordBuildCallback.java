@@ -1,4 +1,4 @@
-package org.realityforge.bazel.depgen.record;
+package org.realityforge.bazel.depgen.metadata;
 
 import javax.annotation.Nonnull;
 

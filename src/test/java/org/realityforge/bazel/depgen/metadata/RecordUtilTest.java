@@ -1,4 +1,4 @@
-package org.realityforge.bazel.depgen.record;
+package org.realityforge.bazel.depgen.metadata;
 
 import com.sun.net.httpserver.BasicAuthenticator;
 import com.sun.net.httpserver.HttpExchange;
@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.guiceyloops.server.http.TinyHttpd;
 import org.realityforge.guiceyloops.server.http.TinyHttpdFactory;
 import org.testng.annotations.Test;
