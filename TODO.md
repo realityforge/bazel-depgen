@@ -55,3 +55,6 @@ complete as there is too much un-said.
 
 * Add Bazel target/task that will regenerate dependencies. [Mabel](https://github.com/menny/mabel) has a set
   of `//resolver/..` tasks that may act as inspiration. Ultimately they will just invoke the CLI tool.
+
+* Look to [bazel-tools](https://github.com/spotify/bazel-tools) from spotify to see if there is other tools that
+  can be incoporated.
