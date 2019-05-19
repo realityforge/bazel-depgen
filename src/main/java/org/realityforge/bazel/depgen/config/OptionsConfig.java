@@ -12,8 +12,8 @@ public final class OptionsConfig
   public static final String DEFAULT_TARGET_MACRO_NAME = "generate_targets";
   public static final String DEFAULT_NAME_PREFIX = "";
   public static final AliasStrategy DEFAULT_ALIAS_STRATEGY = AliasStrategy.GroupIdAndArtifactId;
-  @Nonnull
-  private String workspaceDirectory = DEFAULT_WORKSPACE_DIR;
+  @Nullable
+  private String workspaceDirectory;
   @Nullable
   private String extensionFile;
   @Nullable
@@ -30,7 +30,7 @@ public final class OptionsConfig
   private boolean includeSource = true;
   private boolean exportDeps = false;
 
-  @Nonnull
+  @Nullable
   public String getWorkspaceDirectory()
   {
     return workspaceDirectory;

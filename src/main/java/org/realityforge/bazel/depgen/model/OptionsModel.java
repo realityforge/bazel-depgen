@@ -25,11 +25,26 @@ public final class OptionsModel
   @Nonnull
   static OptionsModel parse( @Nonnull final Path baseDirectory, @Nonnull final OptionsConfig source )
   {
-    final Path workspaceDirectory =
-      baseDirectory.resolve( source.getWorkspaceDirectory() ).toAbsolutePath().normalize();
-    final String extensionFilename = source.getExtensionFile();
-    final Path extensionFile = workspaceDirectory.resolve( null == extensionFilename ? OptionsConfig.DEFAULT_EXTENSION_FILE : extensionFilename ).toAbsolutePath().normalize();
+    final Path workspaceDirectory = deriveWorkspaceDirectory( baseDirectory, source );
+    final Path extensionFile = deriveExtensionFile( workspaceDirectory, source );
     return new OptionsModel( source, workspaceDirectory, extensionFile );
+  }
+
+  @Nonnull
+  private static Path deriveWorkspaceDirectory( @Nonnull final Path baseDirectory, @Nonnull final OptionsConfig source )
+  {
+    final String value = source.getWorkspaceDirectory();
+    final String filename = null == value ? OptionsConfig.DEFAULT_WORKSPACE_DIR : value;
+    return baseDirectory.resolve( filename ).toAbsolutePath().normalize();
+  }
+
+  @Nonnull
+  private static Path deriveExtensionFile( @Nonnull final Path workspaceDirectory,
+                                           @Nonnull final OptionsConfig source )
+  {
+    final String value = source.getExtensionFile();
+    final String filename = null == value ? OptionsConfig.DEFAULT_EXTENSION_FILE : value;
+    return workspaceDirectory.resolve( filename ).toAbsolutePath().normalize();
   }
 
   private OptionsModel( @Nonnull final OptionsConfig source,
