@@ -12,6 +12,11 @@ public final class OptionsConfig
   public static final String DEFAULT_TARGET_MACRO_NAME = "generate_targets";
   public static final String DEFAULT_NAME_PREFIX = "";
   public static final AliasStrategy DEFAULT_ALIAS_STRATEGY = AliasStrategy.GroupIdAndArtifactId;
+  public static final boolean DEFAULT_FAIL_ON_INVALID_POM = true;
+  public static final boolean DEFAULT_FAIL_ON_MISSING_POM = true;
+  public static final boolean DEFAULT_EMIT_DEPENDENCY_GRAPH = true;
+  public static final boolean DEFAULT_INCLUDE_SOURCE = true;
+  public static final boolean DEFAULT_EXPORT_DEPS = false;
   @Nullable
   private String workspaceDirectory;
   @Nullable
@@ -24,11 +29,16 @@ public final class OptionsConfig
   private String namePrefix;
   @Nullable
   private AliasStrategy aliasStrategy;
-  private boolean failOnInvalidPom = true;
-  private boolean failOnMissingPom = true;
-  private boolean emitDependencyGraph = true;
-  private boolean includeSource = true;
-  private boolean exportDeps = false;
+  @Nullable
+  private Boolean failOnInvalidPom;
+  @Nullable
+  private Boolean failOnMissingPom;
+  @Nullable
+  private Boolean emitDependencyGraph;
+  @Nullable
+  private Boolean includeSource;
+  @Nullable
+  private Boolean exportDeps;
 
   @Nullable
   public String getWorkspaceDirectory()
@@ -96,53 +106,58 @@ public final class OptionsConfig
     this.aliasStrategy = Objects.requireNonNull( aliasStrategy );
   }
 
-  public boolean isFailOnInvalidPom()
+  @Nullable
+  public Boolean isFailOnInvalidPom()
   {
     return failOnInvalidPom;
   }
 
-  public void setFailOnInvalidPom( final boolean failOnInvalidPom )
+  public void setFailOnInvalidPom( @Nonnull final Boolean failOnInvalidPom )
   {
-    this.failOnInvalidPom = failOnInvalidPom;
+    this.failOnInvalidPom = Objects.requireNonNull( failOnInvalidPom );
   }
 
-  public boolean isFailOnMissingPom()
+  @Nullable
+  public Boolean isFailOnMissingPom()
   {
     return failOnMissingPom;
   }
 
-  public void setFailOnMissingPom( final boolean failOnMissingPom )
+  public void setFailOnMissingPom( @Nonnull final Boolean failOnMissingPom )
   {
-    this.failOnMissingPom = failOnMissingPom;
+    this.failOnMissingPom = Objects.requireNonNull( failOnMissingPom );
   }
 
-  public boolean isEmitDependencyGraph()
+  @Nullable
+  public Boolean isEmitDependencyGraph()
   {
     return emitDependencyGraph;
   }
 
-  public void setEmitDependencyGraph( final boolean emitDependencyGraph )
+  public void setEmitDependencyGraph( @Nonnull final Boolean emitDependencyGraph )
   {
-    this.emitDependencyGraph = emitDependencyGraph;
+    this.emitDependencyGraph = Objects.requireNonNull( emitDependencyGraph );
   }
 
-  public boolean isIncludeSource()
+  @Nullable
+  public Boolean isIncludeSource()
   {
     return includeSource;
   }
 
-  public void setIncludeSource( final boolean includeSource )
+  public void setIncludeSource( @Nonnull final Boolean includeSource )
   {
-    this.includeSource = includeSource;
+    this.includeSource = Objects.requireNonNull( includeSource );
   }
 
-  public boolean isExportDeps()
+  @Nullable
+  public Boolean isExportDeps()
   {
     return exportDeps;
   }
 
-  public void setExportDeps( final boolean exportDeps )
+  public void setExportDeps( @Nonnull final Boolean exportDeps )
   {
-    this.exportDeps = exportDeps;
+    this.exportDeps = Objects.requireNonNull( exportDeps );
   }
 }

@@ -370,11 +370,11 @@ public class ApplicationConfigTest
       assertEquals( options.getTargetMacroName(), "gen_targets" );
       assertEquals( options.getNamePrefix(), "magic_" );
       assertEquals( options.getAliasStrategy(), AliasStrategy.ArtifactId );
-      assertFalse( options.isFailOnMissingPom() );
-      assertFalse( options.isFailOnInvalidPom() );
-      assertFalse( options.isEmitDependencyGraph() );
-      assertFalse( options.isIncludeSource() );
-      assertTrue( options.isExportDeps() );
+      assertEquals( options.isFailOnMissingPom(), Boolean.FALSE );
+      assertEquals( options.isFailOnInvalidPom(), Boolean.FALSE );
+      assertEquals( options.isEmitDependencyGraph(), Boolean.FALSE );
+      assertEquals( options.isIncludeSource(), Boolean.FALSE );
+      assertEquals( options.isExportDeps(), Boolean.TRUE );
     } );
   }
 
@@ -396,11 +396,11 @@ public class ApplicationConfigTest
       assertNull( options.getTargetMacroName() );
       assertNull( options.getNamePrefix() );
       assertNull( options.getAliasStrategy() );
-      assertTrue( options.isFailOnMissingPom() );
-      assertTrue( options.isFailOnInvalidPom() );
-      assertTrue( options.isEmitDependencyGraph() );
-      assertTrue( options.isIncludeSource() );
-      assertFalse( options.isExportDeps() );
+      assertNull( options.isFailOnMissingPom() );
+      assertNull( options.isFailOnInvalidPom() );
+      assertNull( options.isEmitDependencyGraph() );
+      assertNull( options.isIncludeSource() );
+      assertNull( options.isExportDeps() );
     } );
   }
 
