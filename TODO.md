@@ -42,6 +42,7 @@ complete as there is too much un-said.
   - A better option is to write a tiny java cli that hashes the input file. The jar can be on maven central.
   - a simpler version may be `result = ctx.execute(["cat", pom_file])` and then the builtin hash function which
     defers to java hash
+  - https://github.com/bazelbuild/examples/blob/master/rules/implicit_output/hash.bzl
 
 * Add support for managed dependencies which essentially contains a list of artifacts that include version
 
