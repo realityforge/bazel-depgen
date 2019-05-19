@@ -14,8 +14,8 @@ public final class OptionsConfig
   public static final AliasStrategy DEFAULT_ALIAS_STRATEGY = AliasStrategy.GroupIdAndArtifactId;
   @Nonnull
   private String workspaceDirectory = DEFAULT_WORKSPACE_DIR;
-  @Nonnull
-  private String extensionFile = DEFAULT_EXTENSION_FILE;
+  @Nullable
+  private String extensionFile;
   @Nullable
   private String workspaceMacroName;
   @Nullable
@@ -41,7 +41,7 @@ public final class OptionsConfig
     this.workspaceDirectory = workspaceDirectory;
   }
 
-  @Nonnull
+  @Nullable
   public String getExtensionFile()
   {
     return extensionFile;

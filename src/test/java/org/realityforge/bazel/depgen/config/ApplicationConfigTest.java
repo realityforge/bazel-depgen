@@ -391,7 +391,7 @@ public class ApplicationConfigTest
       assertNotNull( options );
 
       assertEquals( options.getWorkspaceDirectory(), OptionsConfig.DEFAULT_WORKSPACE_DIR );
-      assertEquals( options.getExtensionFile(), OptionsConfig.DEFAULT_EXTENSION_FILE );
+      assertNull( options.getExtensionFile() );
       assertNull( options.getWorkspaceMacroName() );
       assertNull( options.getTargetMacroName() );
       assertNull( options.getNamePrefix() );
