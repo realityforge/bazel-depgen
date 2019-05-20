@@ -30,6 +30,9 @@ complete as there is too much un-said.
   artifacts may support multiple languages. Support non-jar dependencies and expose them as files/filegroups
   - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
   - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
+  - Configuration per language can probably be achieved by having a global default language plus a per-artifact
+    list of languages. Non-default languages generate artifacts with suffixes such as `-j2cl`. Configuration for
+    per-artifact level happens as object below artifact or below config (i.e. `j2cl: {suppress: 'debuggerStatement'}`)
 
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
 
