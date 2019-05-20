@@ -25,6 +25,14 @@ complete as there is too much un-said.
 
 * Add `regenerate` command that regenerates the bazel extension file from `dependencies.yml`.
 
+* Add `hash` command that checks that configuration matches a particular hash and/or generates and reports
+  a hash. To get this working we will most likely need to be able to get the `*Config` objects remove all
+  non-null values if they don't appear in the config and then generate the `YAML` and/or 'json' representation
+  of the config and hash the config contents. Add assertion to workspace or target macro to verify
+  `dependencies.yml` file has hash that matches hash of file that generated macro. This task should only be run
+  if one of the dependencies is actually referenced. This would require adding it as a dependency of all root
+  level targets?. This would allow tasks (i.e. `regenerate`) to run that did not reference dependencies.
+
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
   all the tests pass.
 
@@ -39,15 +47,6 @@ complete as there is too much un-said.
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
 
 * Optionally pass output through [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier).
-
-* Add assertion to workspace or target macro to verify dependencies.yml file has hash that matches hash
-  of file that generated macro. This task should only be run if one of the dependencies is actually referenced.
-  This would allow tasks (such as `regenerate dependencies`) to run that did not reference dependencies.
-  - See [file_hash](https://github.com/atlassian/bazel-tools/tree/master/file_hash)
-  - A better option is to write a tiny java cli that hashes the input file. The jar can be on maven central.
-  - a simpler version may be `result = ctx.execute(["cat", pom_file])` and then the builtin hash function which
-    defers to java hash
-  - https://github.com/bazelbuild/examples/blob/master/rules/implicit_output/hash.bzl
 
 * Add support for managed dependencies which essentially contains a list of artifacts that include version
 
