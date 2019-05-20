@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
@@ -311,7 +310,7 @@ public class ArtifactModelTest
     source.setCoord( "com.example:myapp" );
     source.setLanguages( Arrays.asList( Language.Java, Language.J2cl ) );
 
-    assertEquals( parseModel( source ).getLanguages( Language.Java ), Collections.singletonList( Language.Java ) );
+    assertEquals( parseModel( source ).getLanguages( Language.Java ), Arrays.asList( Language.Java, Language.J2cl ) );
   }
 
   @Test
