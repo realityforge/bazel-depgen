@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen.config;
 
 import gir.io.FileUtil;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +78,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getCoord() );
       assertNull( artifact.getExcludes() );
       assertNull( artifact.getVisibility() );
+      assertNull( artifact.getLanguages() );
     } );
   }
 
@@ -113,6 +113,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getCoord() );
       assertNull( artifact.getExcludes() );
       assertNull( artifact.getVisibility() );
+      assertNull( artifact.getLanguages() );
     } );
   }
 
@@ -146,6 +147,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getIds() );
       assertNull( artifact.getExcludes() );
       assertNull( artifact.getVisibility() );
+      assertNull( artifact.getLanguages() );
     } );
   }
 
@@ -217,12 +219,36 @@ public class ApplicationConfigTest
       assertNull( artifact.getType() );
       assertNull( artifact.getIds() );
       assertNull( artifact.getExcludes() );
+      assertNull( artifact.getLanguages() );
       final List<String> visibility = artifact.getVisibility();
       assertNotNull( visibility );
       assertEquals( visibility.size(), 2 );
 
       assertTrue( visibility.contains( "//some/package:__pkg__" ) );
       assertTrue( visibility.contains( "//other/package:__subpackages__" ) );
+    } );
+  }
+
+  @Test
+  public void parseDependencyWithLanguages()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
+                         "    languages: [J2cl]\n" );
+      final ApplicationConfig config = parseDependencies();
+      assertNotNull( config );
+      final List<ArtifactConfig> artifacts = config.getArtifacts();
+      assertNotNull( artifacts );
+
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactConfig artifact = artifacts.get( 0 );
+      assertNotNull( artifact );
+      assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
+      final List<Language> languages = artifact.getLanguages();
+      assertNotNull( languages );
+      assertEquals( languages, Collections.singletonList( Language.J2cl ) );
     } );
   }
 
@@ -260,6 +286,7 @@ public class ApplicationConfigTest
       assertNull( artifact.getIds() );
       assertNull( artifact.getExcludes() );
       assertNull( artifact.getVisibility() );
+      assertNull( artifact.getLanguages() );
     } );
   }
 
@@ -373,7 +400,7 @@ public class ApplicationConfigTest
       assertEquals( options.getTargetMacroName(), "gen_targets" );
       assertEquals( options.getNamePrefix(), "magic_" );
       assertEquals( options.getAliasStrategy(), AliasStrategy.ArtifactId );
-      assertEquals( options.getLanguages(), Collections.singletonList( Language.Java ) );
+      assertEquals( options.getDefaultLanguage(), Language.Java );
       assertEquals( options.isFailOnMissingPom(), Boolean.FALSE );
       assertEquals( options.isFailOnInvalidPom(), Boolean.FALSE );
       assertEquals( options.isEmitDependencyGraph(), Boolean.FALSE );
@@ -400,7 +427,7 @@ public class ApplicationConfigTest
       assertNull( options.getTargetMacroName() );
       assertNull( options.getNamePrefix() );
       assertNull( options.getAliasStrategy() );
-      assertNull( options.getLanguages() );
+      assertNull( options.getDefaultLanguage() );
       assertNull( options.isFailOnMissingPom() );
       assertNull( options.isFailOnInvalidPom() );
       assertNull( options.isEmitDependencyGraph() );

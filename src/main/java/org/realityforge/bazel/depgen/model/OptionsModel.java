@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
@@ -110,10 +109,10 @@ public final class OptionsModel
   }
 
   @Nonnull
-  public List<Language> getLanguages()
+  public Language getDefaultLanguage()
   {
-    final List<Language> languages = _source.getLanguages();
-    return null == languages ? OptionsConfig.DEFAULT_LANGUAGES : languages;
+    final Language language = _source.getDefaultLanguage();
+    return null == language ? OptionsConfig.DEFAULT_LANGUAGE : language;
   }
 
   public boolean failOnInvalidPom()

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.testng.annotations.Test;
@@ -1529,4 +1530,66 @@ public class ApplicationRecordTest
     } );
   }
 
+  @Test
+  public void artifactWithDefaultLanguage()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactRecord artifactRecord = artifacts.get( 0 );
+      assertEquals( artifactRecord.getLanguages(), Collections.singletonList( Language.Java ) );
+    } );
+  }
+
+  @Test
+  public void artifactWithSpecifiedDefaultLanguage()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "options:\n" +
+                         "  defaultLanguage: J2cl\n" +
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactRecord artifactRecord = artifacts.get( 0 );
+      assertEquals( artifactRecord.getLanguages(), Collections.singletonList( Language.J2cl ) );
+    } );
+  }
+
+  @Test
+  public void artifactWithSpecifiedLanguage()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "    languages: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 1 );
+      final ArtifactRecord artifactRecord = artifacts.get( 0 );
+      assertEquals( artifactRecord.getLanguages(), Collections.singletonList( Language.J2cl ) );
+    } );
+  }
 }

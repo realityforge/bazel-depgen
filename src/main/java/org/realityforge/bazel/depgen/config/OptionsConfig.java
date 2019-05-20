@@ -1,7 +1,5 @@
 package org.realityforge.bazel.depgen.config;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,8 +17,7 @@ public final class OptionsConfig
   public static final boolean DEFAULT_EMIT_DEPENDENCY_GRAPH = true;
   public static final boolean DEFAULT_INCLUDE_SOURCE = true;
   public static final boolean DEFAULT_EXPORT_DEPS = false;
-  public static final List<Language> DEFAULT_LANGUAGES =
-    Collections.unmodifiableList( Collections.singletonList( Language.Java ) );
+  public static final Language DEFAULT_LANGUAGE = Language.Java;
   @Nullable
   private String workspaceDirectory;
   @Nullable
@@ -34,7 +31,7 @@ public final class OptionsConfig
   @Nullable
   private AliasStrategy aliasStrategy;
   @Nullable
-  private List<Language> languages;
+  private Language defaultLanguage;
   @Nullable
   private Boolean failOnInvalidPom;
   @Nullable
@@ -113,14 +110,14 @@ public final class OptionsConfig
   }
 
   @Nullable
-  public List<Language> getLanguages()
+  public Language getDefaultLanguage()
   {
-    return languages;
+    return defaultLanguage;
   }
 
-  public void setLanguages( @Nonnull final List<Language> languages )
+  public void setDefaultLanguage( @Nonnull final Language defaultLanguage )
   {
-    this.languages = Collections.unmodifiableList( Objects.requireNonNull( languages ) );
+    this.defaultLanguage = Objects.requireNonNull( defaultLanguage );
   }
 
   @Nullable

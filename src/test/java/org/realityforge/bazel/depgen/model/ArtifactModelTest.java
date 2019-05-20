@@ -1,10 +1,12 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
+import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -290,6 +292,26 @@ public class ArtifactModelTest
     assertFalse( model.exportDeps( false ) );
     assertTrue( model.getExcludes().isEmpty() );
     assertEquals( model.getVisibility(), Arrays.asList( "//project:__subpackages__", "//other:__subpackages__" ) );
+  }
+
+  @Test
+  public void parseArtifactWithLanguagesSpecified()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setLanguages( Arrays.asList( Language.Java, Language.J2cl ) );
+
+    assertEquals( parseModel( source ).getLanguages( Language.Java ), Arrays.asList( Language.Java, Language.J2cl ) );
+  }
+
+  @Test
+  public void parseArtifactWithLanguagesNotSpecified()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setLanguages( Arrays.asList( Language.Java, Language.J2cl ) );
+
+    assertEquals( parseModel( source ).getLanguages( Language.Java ), Collections.singletonList( Language.Java ) );
   }
 
   @Test

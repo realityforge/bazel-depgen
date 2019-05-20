@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
+import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
@@ -140,6 +141,19 @@ public final class ArtifactRecord
     else
     {
       return _artifactModel.getNature();
+    }
+  }
+
+  @Nonnull
+  public List<Language> getLanguages()
+  {
+    if ( null == _artifactModel )
+    {
+      return Collections.singletonList( _application.getSource().getOptions().getDefaultLanguage() );
+    }
+    else
+    {
+      return _artifactModel.getLanguages( _application.getSource().getOptions().getDefaultLanguage() );
     }
   }
 

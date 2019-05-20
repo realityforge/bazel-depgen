@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen.config;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -37,6 +38,8 @@ public final class ArtifactConfig
   private List<String> excludes;
   @Nullable
   private List<String> visibility;
+  @Nullable
+  private List<Language> languages;
 
   @Nullable
   public String getCoord()
@@ -201,5 +204,16 @@ public final class ArtifactConfig
   public void setVisibility( @Nonnull final List<String> visibility )
   {
     this.visibility = Objects.requireNonNull( visibility );
+  }
+
+  @Nullable
+  public List<Language> getLanguages()
+  {
+    return languages;
+  }
+
+  public void setLanguages( @Nonnull final List<Language> languages )
+  {
+    this.languages = Collections.unmodifiableList( Objects.requireNonNull( languages ) );
   }
 }
