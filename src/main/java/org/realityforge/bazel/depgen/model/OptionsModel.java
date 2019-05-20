@@ -1,9 +1,11 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
+import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 
 public final class OptionsModel
@@ -105,6 +107,13 @@ public final class OptionsModel
   {
     final AliasStrategy strategy = _source.getAliasStrategy();
     return null == strategy ? OptionsConfig.DEFAULT_ALIAS_STRATEGY : strategy;
+  }
+
+  @Nonnull
+  public List<Language> getLanguages()
+  {
+    final List<Language> languages = _source.getLanguages();
+    return null == languages ? OptionsConfig.DEFAULT_LANGUAGES : languages;
   }
 
   public boolean failOnInvalidPom()

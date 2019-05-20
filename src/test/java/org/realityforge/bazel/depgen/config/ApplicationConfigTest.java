@@ -1,6 +1,8 @@
 package org.realityforge.bazel.depgen.config;
 
 import gir.io.FileUtil;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -357,6 +359,7 @@ public class ApplicationConfigTest
                          "  targetMacroName: gen_targets\n" +
                          "  namePrefix: magic_\n" +
                          "  aliasStrategy: ArtifactId\n" +
+                         "  languages: [Java]\n" +
                          "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
@@ -370,6 +373,7 @@ public class ApplicationConfigTest
       assertEquals( options.getTargetMacroName(), "gen_targets" );
       assertEquals( options.getNamePrefix(), "magic_" );
       assertEquals( options.getAliasStrategy(), AliasStrategy.ArtifactId );
+      assertEquals( options.getLanguages(), Collections.singletonList( Language.Java ) );
       assertEquals( options.isFailOnMissingPom(), Boolean.FALSE );
       assertEquals( options.isFailOnInvalidPom(), Boolean.FALSE );
       assertEquals( options.isEmitDependencyGraph(), Boolean.FALSE );
@@ -396,6 +400,7 @@ public class ApplicationConfigTest
       assertNull( options.getTargetMacroName() );
       assertNull( options.getNamePrefix() );
       assertNull( options.getAliasStrategy() );
+      assertNull( options.getLanguages() );
       assertNull( options.isFailOnMissingPom() );
       assertNull( options.isFailOnInvalidPom() );
       assertNull( options.isEmitDependencyGraph() );
