@@ -386,7 +386,7 @@ public class ApplicationConfigTest
                          "  targetMacroName: gen_targets\n" +
                          "  namePrefix: magic_\n" +
                          "  aliasStrategy: ArtifactId\n" +
-                         "  languages: [Java]\n" +
+                         "  defaultLanguage: J2cl\n" +
                          "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
@@ -400,7 +400,7 @@ public class ApplicationConfigTest
       assertEquals( options.getTargetMacroName(), "gen_targets" );
       assertEquals( options.getNamePrefix(), "magic_" );
       assertEquals( options.getAliasStrategy(), AliasStrategy.ArtifactId );
-      assertEquals( options.getDefaultLanguage(), Language.Java );
+      assertEquals( options.getDefaultLanguage(), Language.J2cl );
       assertEquals( options.isFailOnMissingPom(), Boolean.FALSE );
       assertEquals( options.isFailOnInvalidPom(), Boolean.FALSE );
       assertEquals( options.isEmitDependencyGraph(), Boolean.FALSE );
