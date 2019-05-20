@@ -23,6 +23,8 @@ complete as there is too much un-said.
 
 * Add `update` command that updates the version of a dependency.
 
+* Add `regenerate` command that regenerates the bazel extension file from `dependencies.yml`.
+
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
   all the tests pass.
 
