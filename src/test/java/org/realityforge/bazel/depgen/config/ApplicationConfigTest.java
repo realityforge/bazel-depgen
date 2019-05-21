@@ -344,6 +344,7 @@ public class ApplicationConfigTest
                          "    alias: mighty-gir-core\n" );
       final ApplicationConfig config = parseDependencies();
       final List<ArtifactConfig> artifacts = config.getArtifacts();
+      assertNotNull( artifacts );
 
       assertEquals( artifacts.size(), 1 );
       final ArtifactConfig artifact = artifacts.get( 0 );
@@ -362,6 +363,7 @@ public class ApplicationConfigTest
                          "    nature: Plugin\n" );
       final ApplicationConfig config = parseDependencies();
       final List<ArtifactConfig> artifacts = config.getArtifacts();
+      assertNotNull( artifacts );
 
       assertEquals( artifacts.size(), 1 );
       final ArtifactConfig artifact = artifacts.get( 0 );
@@ -492,6 +494,7 @@ public class ApplicationConfigTest
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
 
+      assertNull( config.getArtifacts() );
       assertNull( config.getReplacements() );
       assertNull( config.getExcludes() );
     } );

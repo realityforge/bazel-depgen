@@ -21,8 +21,8 @@ public final class ApplicationConfig
   private OptionsConfig options = new OptionsConfig();
   @Nonnull
   private Map<String, String> repositories = new HashMap<>();
-  @Nonnull
-  private List<ArtifactConfig> artifacts = new ArrayList<>();
+  @Nullable
+  private List<ArtifactConfig> artifacts;
   @Nullable
   private List<ReplacementConfig> replacements;
   @Nullable
@@ -72,7 +72,7 @@ public final class ApplicationConfig
     this.repositories = Objects.requireNonNull( repositories );
   }
 
-  @Nonnull
+  @Nullable
   public List<ArtifactConfig> getArtifacts()
   {
     return artifacts;

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
+import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.ExcludeConfig;
 import org.realityforge.bazel.depgen.config.ReplacementConfig;
 
@@ -33,8 +34,11 @@ public final class ApplicationModel
   {
     final Path baseDirectory = source.getConfigLocation().toAbsolutePath().normalize().getParent();
     final OptionsModel optionsModel = OptionsModel.parse( baseDirectory, source.getOptions() );
+    final List<ArtifactConfig> artifactsConfig = source.getArtifacts();
     final List<ArtifactModel> artifactModels =
-      source.getArtifacts().stream().flatMap( c -> ArtifactModel.parse( c ).stream() ).collect( Collectors.toList() );
+      null == artifactsConfig ?
+      Collections.emptyList() :
+      artifactsConfig.stream().flatMap( c -> ArtifactModel.parse( c ).stream() ).collect( Collectors.toList() );
     final List<ReplacementConfig> replacementsConfig = source.getReplacements();
     final List<ReplacementModel> replacements =
       null == replacementsConfig ?
