@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -24,8 +25,8 @@ public final class ApplicationConfig
   private List<ArtifactConfig> artifacts = new ArrayList<>();
   @Nonnull
   private List<ReplacementConfig> replacements = new ArrayList<>();
-  @Nonnull
-  private List<ExcludeConfig> excludes = new ArrayList<>();
+  @Nullable
+  private List<ExcludeConfig> excludes;
 
   @Nonnull
   public static ApplicationConfig parse( @Nonnull final Path path )
@@ -93,7 +94,7 @@ public final class ApplicationConfig
     this.replacements = Objects.requireNonNull( replacements );
   }
 
-  @Nonnull
+  @Nullable
   public List<ExcludeConfig> getExcludes()
   {
     return excludes;

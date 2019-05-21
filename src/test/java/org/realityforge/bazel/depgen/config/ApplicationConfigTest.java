@@ -482,6 +482,19 @@ public class ApplicationConfigTest
   }
 
   @Test
+  public void parseNoExcludes()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "" );
+      final ApplicationConfig config = parseDependencies();
+      assertNotNull( config );
+
+      assertNull( config.getExcludes() );
+    } );
+  }
+
+  @Test
   public void parseExcludesDefinedUsingGroupAndId()
     throws Exception
   {
@@ -493,6 +506,7 @@ public class ApplicationConfigTest
       assertNotNull( config );
 
       final List<ExcludeConfig> excludes = config.getExcludes();
+      assertNotNull( excludes );
 
       assertEquals( excludes.size(), 1 );
       final ExcludeConfig exclude = excludes.get( 0 );
@@ -513,6 +527,7 @@ public class ApplicationConfigTest
       assertNotNull( config );
 
       final List<ExcludeConfig> excludes = config.getExcludes();
+      assertNotNull( excludes );
 
       assertEquals( excludes.size(), 1 );
       final ExcludeConfig exclude = excludes.get( 0 );

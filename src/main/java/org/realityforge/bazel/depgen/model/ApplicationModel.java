@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
+import org.realityforge.bazel.depgen.config.ExcludeConfig;
 
 public final class ApplicationModel
 {
@@ -35,8 +36,11 @@ public final class ApplicationModel
       source.getArtifacts().stream().flatMap( c -> ArtifactModel.parse( c ).stream() ).collect( Collectors.toList() );
     final List<ReplacementModel> replacements =
       source.getReplacements().stream().map( ReplacementModel::parse ).collect( Collectors.toList() );
+    final List<ExcludeConfig> excludesConfig = source.getExcludes();
     final List<GlobalExcludeModel> excludes =
-      source.getExcludes().stream().map( GlobalExcludeModel::parse ).collect( Collectors.toList() );
+      null == excludesConfig ?
+      Collections.emptyList() :
+      excludesConfig.stream().map( GlobalExcludeModel::parse ).collect( Collectors.toList() );
     final Map<String, String> sourceRepositories = source.getRepositories();
     final Map<String, String> repositories =
       sourceRepositories.isEmpty() ?
