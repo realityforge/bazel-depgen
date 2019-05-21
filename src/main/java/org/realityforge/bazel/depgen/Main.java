@@ -18,14 +18,11 @@ import org.realityforge.bazel.depgen.gen.BazelGenerator;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.InvalidModelException;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
+import org.realityforge.bazel.depgen.util.YamlUtil;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 import org.realityforge.getopt4j.CLUtil;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.representer.Representer;
 
 /**
  * The entry point in which to run the tool.
@@ -154,12 +151,9 @@ public class Main
       {
         c_logger.log( Level.WARNING, message, ime.getCause() );
       }
-      final Representer representer = new OmitNullRepresenter();
 
       c_logger.log( Level.WARNING,
-                    "--- Invalid Config ---\n" +
-                    new Yaml( representer ).dumpAs( ime.getModel(), Tag.MAP, DumperOptions.FlowStyle.BLOCK ) +
-                    "--- End Config ---" );
+                    "--- Invalid Config ---\n" + YamlUtil.asYamlString( ime.getModel() ) + "--- End Config ---" );
 
       System.exit( ERROR_CONSTRUCTING_MODEL_CODE );
     }

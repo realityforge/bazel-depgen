@@ -1,4 +1,4 @@
-package org.realityforge.bazel.depgen;
+package org.realityforge.bazel.depgen.util;
 
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.NodeTuple;
