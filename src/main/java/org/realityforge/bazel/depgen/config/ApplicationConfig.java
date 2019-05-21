@@ -17,8 +17,8 @@ public final class ApplicationConfig
   public static final String MAVEN_CENTRAL_ID = "central";
   public static final String MAVEN_CENTRAL_URL = "https://repo.maven.apache.org/maven2/";
   private Path _configLocation;
-  @Nonnull
-  private OptionsConfig options = new OptionsConfig();
+  @Nullable
+  private OptionsConfig options;
   @Nullable
   private Map<String, String> repositories;
   @Nullable
@@ -50,7 +50,7 @@ public final class ApplicationConfig
     return _configLocation;
   }
 
-  @Nonnull
+  @Nullable
   public OptionsConfig getOptions()
   {
     return options;

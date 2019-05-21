@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.ExcludeConfig;
+import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.realityforge.bazel.depgen.config.ReplacementConfig;
 
 public final class ApplicationModel
@@ -33,7 +34,9 @@ public final class ApplicationModel
   public static ApplicationModel parse( @Nonnull final ApplicationConfig source )
   {
     final Path baseDirectory = source.getConfigLocation().toAbsolutePath().normalize().getParent();
-    final OptionsModel optionsModel = OptionsModel.parse( baseDirectory, source.getOptions() );
+    final OptionsConfig optionsConfig = source.getOptions();
+    final OptionsModel optionsModel =
+      OptionsModel.parse( baseDirectory, optionsConfig == null ? new OptionsConfig() : optionsConfig );
     final List<ArtifactConfig> artifactsConfig = source.getArtifacts();
     final List<ArtifactModel> artifactModels =
       null == artifactsConfig ?
