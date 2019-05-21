@@ -23,8 +23,8 @@ public final class ApplicationConfig
   private Map<String, String> repositories = new HashMap<>();
   @Nonnull
   private List<ArtifactConfig> artifacts = new ArrayList<>();
-  @Nonnull
-  private List<ReplacementConfig> replacements = new ArrayList<>();
+  @Nullable
+  private List<ReplacementConfig> replacements;
   @Nullable
   private List<ExcludeConfig> excludes;
 
@@ -83,7 +83,7 @@ public final class ApplicationConfig
     this.artifacts = Objects.requireNonNull( artifacts );
   }
 
-  @Nonnull
+  @Nullable
   public List<ReplacementConfig> getReplacements()
   {
     return replacements;

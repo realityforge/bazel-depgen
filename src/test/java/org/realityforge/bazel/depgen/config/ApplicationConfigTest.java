@@ -449,6 +449,7 @@ public class ApplicationConfigTest
       assertNotNull( config );
 
       final List<ReplacementConfig> replacements = config.getReplacements();
+      assertNotNull( replacements );
 
       assertEquals( replacements.size(), 1 );
       final ReplacementConfig replacement = replacements.get( 0 );
@@ -471,6 +472,7 @@ public class ApplicationConfigTest
       assertNotNull( config );
 
       final List<ReplacementConfig> replacements = config.getReplacements();
+      assertNotNull( replacements );
 
       assertEquals( replacements.size(), 1 );
       final ReplacementConfig replacement = replacements.get( 0 );
@@ -482,7 +484,7 @@ public class ApplicationConfigTest
   }
 
   @Test
-  public void parseNoExcludes()
+  public void parseWithNoConfiguration()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -490,6 +492,7 @@ public class ApplicationConfigTest
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
 
+      assertNull( config.getReplacements() );
       assertNull( config.getExcludes() );
     } );
   }

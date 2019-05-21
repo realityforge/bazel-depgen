@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ExcludeConfig;
+import org.realityforge.bazel.depgen.config.ReplacementConfig;
 
 public final class ApplicationModel
 {
@@ -34,8 +35,11 @@ public final class ApplicationModel
     final OptionsModel optionsModel = OptionsModel.parse( baseDirectory, source.getOptions() );
     final List<ArtifactModel> artifactModels =
       source.getArtifacts().stream().flatMap( c -> ArtifactModel.parse( c ).stream() ).collect( Collectors.toList() );
+    final List<ReplacementConfig> replacementsConfig = source.getReplacements();
     final List<ReplacementModel> replacements =
-      source.getReplacements().stream().map( ReplacementModel::parse ).collect( Collectors.toList() );
+      null == replacementsConfig ?
+      Collections.emptyList() :
+      replacementsConfig.stream().map( ReplacementModel::parse ).collect( Collectors.toList() );
     final List<ExcludeConfig> excludesConfig = source.getExcludes();
     final List<GlobalExcludeModel> excludes =
       null == excludesConfig ?
