@@ -494,6 +494,7 @@ public class ApplicationConfigTest
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
 
+      assertNull( config.getRepositories() );
       assertNull( config.getArtifacts() );
       assertNull( config.getReplacements() );
       assertNull( config.getExcludes() );

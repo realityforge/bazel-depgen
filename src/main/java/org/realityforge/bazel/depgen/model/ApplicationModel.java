@@ -49,11 +49,11 @@ public final class ApplicationModel
       null == excludesConfig ?
       Collections.emptyList() :
       excludesConfig.stream().map( GlobalExcludeModel::parse ).collect( Collectors.toList() );
-    final Map<String, String> sourceRepositories = source.getRepositories();
+    final Map<String, String> repositoriesConfig = source.getRepositories();
     final Map<String, String> repositories =
-      sourceRepositories.isEmpty() ?
+      null == repositoriesConfig ?
       Collections.singletonMap( ApplicationConfig.MAVEN_CENTRAL_ID, ApplicationConfig.MAVEN_CENTRAL_URL ) :
-      sourceRepositories;
+      repositoriesConfig;
 
     return new ApplicationModel( source, optionsModel, artifactModels, replacements, excludes, repositories );
   }

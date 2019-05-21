@@ -19,8 +19,8 @@ public final class ApplicationConfig
   private Path _configLocation;
   @Nonnull
   private OptionsConfig options = new OptionsConfig();
-  @Nonnull
-  private Map<String, String> repositories = new HashMap<>();
+  @Nullable
+  private Map<String, String> repositories;
   @Nullable
   private List<ArtifactConfig> artifacts;
   @Nullable
@@ -61,7 +61,7 @@ public final class ApplicationConfig
     this.options = Objects.requireNonNull( options );
   }
 
-  @Nonnull
+  @Nullable
   public Map<String, String> getRepositories()
   {
     return repositories;
