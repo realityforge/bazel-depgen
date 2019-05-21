@@ -416,8 +416,7 @@ public class ApplicationConfigTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      writeDependencies( "options:\n" +
-                         "  exportDeps: true\n" );
+      writeDependencies( "options: {}\n" );
       final ApplicationConfig config = parseDependencies();
       assertNotNull( config );
 
@@ -435,8 +434,7 @@ public class ApplicationConfigTest
       assertNull( options.isFailOnInvalidPom() );
       assertNull( options.isEmitDependencyGraph() );
       assertNull( options.isIncludeSource() );
-      // There needs to be at least one option present otherwise yaml will not parse
-      assertNotNull( options.isExportDeps() );
+      assertNull( options.isExportDeps() );
     } );
   }
 
