@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.List;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
+import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -29,6 +30,7 @@ public class ApplicationModelTest
 
       final ApplicationModel model = ApplicationModel.parse( source );
       assertEquals( model.getSource(), source );
+      assertEquals( model.getConfigSha256(), "5554C636655BB43F8BC8A1E01C985419ABAF8A4102ABEDD28CB1949FA8A7DADA" );
       assertEquals( model.getConfigLocation(), configFile );
       assertEquals( model.getRepositories().get( ApplicationConfig.MAVEN_CENTRAL_ID ),
                     ApplicationConfig.MAVEN_CENTRAL_URL );
@@ -111,5 +113,25 @@ public class ApplicationModelTest
       assertEquals( replacementModel, model.findReplacement( "com.example", "mylib" ) );
       assertNull( model.findArtifact( "com.example", "noexist" ) );
     } );
+  }
+
+  @Test
+  public void calculateConfigSha256()
+  {
+    // ensure sha of two separate instances equal if contents identical
+    assertEquals( ApplicationModel.calculateConfigSha256( new ApplicationConfig() ),
+                  ApplicationModel.calculateConfigSha256( new ApplicationConfig() ) );
+
+    // ensure sha changes as more data added
+    final ApplicationConfig config1 = new ApplicationConfig();
+    final String shaA = ApplicationModel.calculateConfigSha256( config1 );
+    assertEquals( shaA, "CA3D163BAB055381827226140568F3BEF7EAAC187CEBD76878E0B63E9E442356" );
+    final OptionsConfig options = new OptionsConfig();
+    config1.setOptions( options );
+    final String shaB = ApplicationModel.calculateConfigSha256( config1 );
+    assertEquals( shaB, "1473761ABB0E15C32E8D598B873750FAD3B57B737B7FF5C49A846EA921C80801" );
+    options.setDefaultLanguage( Language.Java );
+    final String shaC = ApplicationModel.calculateConfigSha256( config1 );
+    assertEquals( shaC, "EEEABA82F5A2571624A4A9A618FABA203EF655CE4E26FE3247B0650BABC52ADB" );
   }
 }

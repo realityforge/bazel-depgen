@@ -14,11 +14,15 @@ import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.ExcludeConfig;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.realityforge.bazel.depgen.config.ReplacementConfig;
+import org.realityforge.bazel.depgen.util.HashUtil;
+import org.realityforge.bazel.depgen.util.YamlUtil;
 
 public final class ApplicationModel
 {
   @Nonnull
   private final ApplicationConfig _source;
+  @Nonnull
+  private final String _configSha256;
   @Nonnull
   private final OptionsModel _options;
   @Nonnull
@@ -33,6 +37,7 @@ public final class ApplicationModel
   @Nonnull
   public static ApplicationModel parse( @Nonnull final ApplicationConfig source )
   {
+    final String configSha256 = calculateConfigSha256( source );
     final Path baseDirectory = source.getConfigLocation().toAbsolutePath().normalize().getParent();
     final OptionsConfig optionsConfig = source.getOptions();
     final OptionsModel optionsModel =
@@ -58,10 +63,23 @@ public final class ApplicationModel
       Collections.singletonMap( ApplicationConfig.MAVEN_CENTRAL_ID, ApplicationConfig.MAVEN_CENTRAL_URL ) :
       repositoriesConfig;
 
-    return new ApplicationModel( source, optionsModel, artifactModels, replacements, excludes, repositories );
+    return new ApplicationModel( source,
+                                 configSha256,
+                                 optionsModel,
+                                 artifactModels,
+                                 replacements,
+                                 excludes,
+                                 repositories );
+  }
+
+  @Nonnull
+  static String calculateConfigSha256( @Nonnull final ApplicationConfig config )
+  {
+    return HashUtil.sha256( YamlUtil.asYamlString( config ).getBytes() );
   }
 
   private ApplicationModel( @Nonnull final ApplicationConfig source,
+                            @Nonnull final String configSha256,
                             @Nonnull final OptionsModel options,
                             @Nonnull final List<ArtifactModel> artifacts,
                             @Nonnull final List<ReplacementModel> replacements,
@@ -69,6 +87,7 @@ public final class ApplicationModel
                             @Nonnull final Map<String, String> repositories )
   {
     _source = Objects.requireNonNull( source );
+    _configSha256 = Objects.requireNonNull( configSha256 );
     _options = Objects.requireNonNull( options );
     _artifacts = Objects.requireNonNull( artifacts );
     _replacements = Objects.requireNonNull( replacements );
@@ -80,6 +99,12 @@ public final class ApplicationModel
   public ApplicationConfig getSource()
   {
     return _source;
+  }
+
+  @Nonnull
+  public String getConfigSha256()
+  {
+    return _configSha256;
   }
 
   @Nonnull
