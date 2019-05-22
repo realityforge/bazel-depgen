@@ -67,17 +67,6 @@ public class ApplicationConfigTest
       assertEquals( artifact.getVersion(), "0.08" );
       assertEquals( artifact.getClassifier(), "sources" );
       assertEquals( artifact.getType(), "jar" );
-      assertNull( artifact.getAlias() );
-      assertNull( artifact.getNature() );
-      assertNull( artifact.getIncludeOptional() );
-      assertNull( artifact.getIncludeSource() );
-      assertNull( artifact.getExportDeps() );
-      assertNull( artifact.getGeneratesApi() );
-      assertNull( artifact.getIds() );
-      assertNull( artifact.getCoord() );
-      assertNull( artifact.getExcludes() );
-      assertNull( artifact.getVisibility() );
-      assertNull( artifact.getLanguages() );
     } );
   }
 
@@ -99,20 +88,6 @@ public class ApplicationConfigTest
       assertNotNull( artifact );
       assertEquals( artifact.getGroup(), "org.realityforge.gir" );
       assertEquals( artifact.getId(), "gir-core" );
-      assertNull( artifact.getAlias() );
-      assertNull( artifact.getNature() );
-      assertNull( artifact.getIncludeOptional() );
-      assertNull( artifact.getIncludeSource() );
-      assertNull( artifact.getExportDeps() );
-      assertNull( artifact.getGeneratesApi() );
-      assertNull( artifact.getVersion() );
-      assertNull( artifact.getClassifier() );
-      assertNull( artifact.getType() );
-      assertNull( artifact.getIds() );
-      assertNull( artifact.getCoord() );
-      assertNull( artifact.getExcludes() );
-      assertNull( artifact.getVisibility() );
-      assertNull( artifact.getLanguages() );
     } );
   }
 
@@ -132,21 +107,6 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
-      assertNull( artifact.getAlias() );
-      assertNull( artifact.getNature() );
-      assertNull( artifact.getIncludeOptional() );
-      assertNull( artifact.getIncludeSource() );
-      assertNull( artifact.getExportDeps() );
-      assertNull( artifact.getGeneratesApi() );
-      assertNull( artifact.getGroup() );
-      assertNull( artifact.getId() );
-      assertNull( artifact.getVersion() );
-      assertNull( artifact.getClassifier() );
-      assertNull( artifact.getType() );
-      assertNull( artifact.getIds() );
-      assertNull( artifact.getExcludes() );
-      assertNull( artifact.getVisibility() );
-      assertNull( artifact.getLanguages() );
     } );
   }
 
@@ -167,18 +127,6 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
-      assertNull( artifact.getAlias() );
-      assertNull( artifact.getNature() );
-      assertNull( artifact.getIncludeOptional() );
-      assertNull( artifact.getIncludeSource() );
-      assertNull( artifact.getExportDeps() );
-      assertNull( artifact.getGeneratesApi() );
-      assertNull( artifact.getGroup() );
-      assertNull( artifact.getId() );
-      assertNull( artifact.getVersion() );
-      assertNull( artifact.getClassifier() );
-      assertNull( artifact.getType() );
-      assertNull( artifact.getIds() );
       final List<String> excludes = artifact.getExcludes();
       assertNotNull( excludes );
       assertEquals( excludes.size(), 2 );
@@ -205,20 +153,6 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
-      assertNull( artifact.getAlias() );
-      assertNull( artifact.getNature() );
-      assertNull( artifact.getIncludeOptional() );
-      assertNull( artifact.getIncludeSource() );
-      assertNull( artifact.getExportDeps() );
-      assertNull( artifact.getGeneratesApi() );
-      assertNull( artifact.getGroup() );
-      assertNull( artifact.getId() );
-      assertNull( artifact.getVersion() );
-      assertNull( artifact.getClassifier() );
-      assertNull( artifact.getType() );
-      assertNull( artifact.getIds() );
-      assertNull( artifact.getExcludes() );
-      assertNull( artifact.getLanguages() );
       final List<String> visibility = artifact.getVisibility();
       assertNotNull( visibility );
       assertEquals( visibility.size(), 2 );
@@ -258,8 +192,7 @@ public class ApplicationConfigTest
     inIsolatedDirectory( () -> {
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
-                         "    includeOptional: true\n" +
-                         "    includeSource: false\n" );
+                         "    includeOptional: true\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
@@ -269,23 +202,8 @@ public class ApplicationConfigTest
       final ArtifactConfig artifact = artifacts.get( 0 );
       assertNotNull( artifact );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
-      assertNull( artifact.getAlias() );
-      assertNull( artifact.getNature() );
       assertNotNull( artifact.getIncludeOptional() );
       assertTrue( artifact.getIncludeOptional() );
-      assertNotNull( artifact.getIncludeSource() );
-      assertFalse( artifact.getIncludeSource() );
-      assertNull( artifact.getExportDeps() );
-      assertNull( artifact.getGeneratesApi() );
-      assertNull( artifact.getGroup() );
-      assertNull( artifact.getId() );
-      assertNull( artifact.getVersion() );
-      assertNull( artifact.getClassifier() );
-      assertNull( artifact.getType() );
-      assertNull( artifact.getIds() );
-      assertNull( artifact.getExcludes() );
-      assertNull( artifact.getVisibility() );
-      assertNull( artifact.getLanguages() );
     } );
   }
 
