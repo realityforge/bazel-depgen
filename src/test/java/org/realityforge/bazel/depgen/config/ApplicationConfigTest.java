@@ -4,6 +4,7 @@ import gir.io.FileUtil;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -56,12 +57,7 @@ public class ApplicationConfigTest
       final ApplicationConfig config = loadApplicationConfig();
       assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
       assertNotNull( config );
-      final List<ArtifactConfig> artifacts = config.getArtifacts();
-      assertNotNull( artifacts );
-
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactConfig artifact = artifacts.get( 0 );
-      assertNotNull( artifact );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getGroup(), "org.realityforge.gir" );
       assertEquals( artifact.getId(), "gir-core" );
       assertEquals( artifact.getVersion(), "0.08" );
@@ -80,12 +76,7 @@ public class ApplicationConfigTest
                          "    id: gir-core\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
-      final List<ArtifactConfig> artifacts = config.getArtifacts();
-      assertNotNull( artifacts );
-
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactConfig artifact = artifacts.get( 0 );
-      assertNotNull( artifact );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getGroup(), "org.realityforge.gir" );
       assertEquals( artifact.getId(), "gir-core" );
     } );
@@ -100,12 +91,7 @@ public class ApplicationConfigTest
                          "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
-      final List<ArtifactConfig> artifacts = config.getArtifacts();
-      assertNotNull( artifacts );
-
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactConfig artifact = artifacts.get( 0 );
-      assertNotNull( artifact );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
     } );
   }
@@ -120,12 +106,7 @@ public class ApplicationConfigTest
                          "    excludes: ['org.realityforge.javax.annotation:javax.annotation', 'org.realityforge.braincheck']\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
-      final List<ArtifactConfig> artifacts = config.getArtifacts();
-      assertNotNull( artifacts );
-
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactConfig artifact = artifacts.get( 0 );
-      assertNotNull( artifact );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
       final List<String> excludes = artifact.getExcludes();
       assertNotNull( excludes );
@@ -146,12 +127,7 @@ public class ApplicationConfigTest
                          "    visibility: ['//some/package:__pkg__', '//other/package:__subpackages__']\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
-      final List<ArtifactConfig> artifacts = config.getArtifacts();
-      assertNotNull( artifacts );
-
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactConfig artifact = artifacts.get( 0 );
-      assertNotNull( artifact );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
       final List<String> visibility = artifact.getVisibility();
       assertNotNull( visibility );
@@ -172,12 +148,7 @@ public class ApplicationConfigTest
                          "    languages: [J2cl]\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
-      final List<ArtifactConfig> artifacts = config.getArtifacts();
-      assertNotNull( artifacts );
-
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactConfig artifact = artifacts.get( 0 );
-      assertNotNull( artifact );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
       final List<Language> languages = artifact.getLanguages();
       assertNotNull( languages );
@@ -195,12 +166,7 @@ public class ApplicationConfigTest
                          "    includeOptional: true\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
-      final List<ArtifactConfig> artifacts = config.getArtifacts();
-      assertNotNull( artifacts );
-
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactConfig artifact = artifacts.get( 0 );
-      assertNotNull( artifact );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
       assertNotNull( artifact.getIncludeOptional() );
       assertTrue( artifact.getIncludeOptional() );
@@ -217,12 +183,7 @@ public class ApplicationConfigTest
                          "    exportDeps: true\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
-      final List<ArtifactConfig> artifacts = config.getArtifacts();
-      assertNotNull( artifacts );
-
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactConfig artifact = artifacts.get( 0 );
-      assertNotNull( artifact );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
       assertNotNull( artifact.getExportDeps() );
       assertTrue( artifact.getExportDeps() );
@@ -239,12 +200,7 @@ public class ApplicationConfigTest
                          "    generatesApi: true\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
-      final List<ArtifactConfig> artifacts = config.getArtifacts();
-      assertNotNull( artifacts );
-
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactConfig artifact = artifacts.get( 0 );
-      assertNotNull( artifact );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
       assertNotNull( artifact.getGeneratesApi() );
       assertTrue( artifact.getGeneratesApi() );
@@ -460,5 +416,17 @@ public class ApplicationConfigTest
       assertNull( exclude.getGroup() );
       assertNull( exclude.getId() );
     } );
+  }
+
+  @Nonnull
+  private ArtifactConfig ensureSingleArtifact( @Nonnull final ApplicationConfig config )
+  {
+    final List<ArtifactConfig> artifacts = config.getArtifacts();
+    assertNotNull( artifacts );
+
+    assertEquals( artifacts.size(), 1 );
+    final ArtifactConfig artifact = artifacts.get( 0 );
+    assertNotNull( artifact );
+    return artifact;
   }
 }
