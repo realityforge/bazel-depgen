@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
@@ -291,17 +292,16 @@ public final class ArtifactRecord
   {
     if ( null == _depsCache )
     {
-      _depsCache = _node
-        .getChildren()
-        .stream()
-        .filter( c -> !_application.getSource().isExcluded( c.getDependency().getArtifact().getGroupId(),
-                                                            c.getDependency().getArtifact().getArtifactId() ) )
-        .filter( c -> shouldIncludeDependency( Artifact.SCOPE_COMPILE, c ) )
-        .map( c -> _application.getArtifact( c.getDependency().getArtifact().getGroupId(),
-                                             c.getDependency().getArtifact().getArtifactId() ) )
-        .distinct()
-        .sorted( Comparator.comparing( ArtifactRecord::getKey ) )
-        .collect( Collectors.toList() );
+      _depsCache =
+        collectArtifacts( _node
+                            .getChildren()
+                            .stream()
+                            .filter( c -> !_application.getSource()
+                              .isExcluded( c.getDependency().getArtifact().getGroupId(),
+                                           c.getDependency().getArtifact().getArtifactId() ) )
+                            .filter( c -> shouldIncludeDependency( Artifact.SCOPE_COMPILE, c ) )
+                            .map( c -> _application.getArtifact( c.getDependency().getArtifact().getGroupId(),
+                                                                 c.getDependency().getArtifact().getArtifactId() ) ) );
     }
     return _depsCache;
   }
@@ -311,17 +311,16 @@ public final class ArtifactRecord
   {
     if ( null == _runtimeDepsCache )
     {
-      _runtimeDepsCache = _node
-        .getChildren()
-        .stream()
-        .filter( c -> shouldIncludeDependency( Artifact.SCOPE_RUNTIME, c ) )
-        .filter( c -> !_application.getSource().isExcluded( c.getDependency().getArtifact().getGroupId(),
-                                                            c.getDependency().getArtifact().getArtifactId() ) )
-        .map( c -> _application.getArtifact( c.getDependency().getArtifact().getGroupId(),
-                                             c.getDependency().getArtifact().getArtifactId() ) )
-        .distinct()
-        .sorted( Comparator.comparing( ArtifactRecord::getKey ) )
-        .collect( Collectors.toList() );
+      _runtimeDepsCache =
+        collectArtifacts( _node
+                            .getChildren()
+                            .stream()
+                            .filter( c -> shouldIncludeDependency( Artifact.SCOPE_RUNTIME, c ) )
+                            .filter( c -> !_application.getSource()
+                              .isExcluded( c.getDependency().getArtifact().getGroupId(),
+                                           c.getDependency().getArtifact().getArtifactId() ) )
+                            .map( c -> _application.getArtifact( c.getDependency().getArtifact().getGroupId(),
+                                                                 c.getDependency().getArtifact().getArtifactId() ) ) );
     }
     return _runtimeDepsCache;
   }
@@ -329,6 +328,15 @@ public final class ArtifactRecord
   public boolean shouldExportDeps()
   {
     return null != _artifactModel && _artifactModel.exportDeps( _application.getSource().getOptions().exportDeps() );
+  }
+
+  @Nonnull
+  private List<ArtifactRecord> collectArtifacts( @Nonnull final Stream<ArtifactRecord> stream )
+  {
+    return stream
+      .distinct()
+      .sorted( Comparator.comparing( ArtifactRecord::getKey ) )
+      .collect( Collectors.toList() );
   }
 
   private boolean shouldIncludeDependency( @Nonnull final String scope, @Nonnull final DependencyNode c )
