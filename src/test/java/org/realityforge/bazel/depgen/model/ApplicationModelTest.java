@@ -65,9 +65,7 @@ public class ApplicationModelTest
                          "  - coord: com.example:myapp:1.0\n" +
                          "excludes:\n" +
                          "  - coord: com.example:blib\n" );
-      final Path configFile = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
-      final ApplicationConfig source = ApplicationConfig.parse( configFile );
-      final ApplicationModel model = ApplicationModel.parse( source );
+      final ApplicationModel model = loadApplicationModel();
 
       assertFalse( model.isExcluded( "com.example", "alib" ) );
       assertTrue( model.isExcluded( "com.example", "blib" ) );

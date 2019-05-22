@@ -4,7 +4,6 @@ import gir.io.FileUtil;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -18,7 +17,7 @@ public class ApplicationConfigTest
   {
     inIsolatedDirectory( () -> {
       writeDependencies( "" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
     } );
@@ -31,7 +30,7 @@ public class ApplicationConfigTest
     inIsolatedDirectory( () -> {
       writeDependencies(
         "repositories:\n  central: http://repo1.maven.org/maven2\n  example: https://example.com/repo\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
       final Map<String, String> repositories = config.getRepositories();
@@ -54,7 +53,7 @@ public class ApplicationConfigTest
                          "    version: 0.08\n" +
                          "    classifier: sources\n" +
                          "    type: jar\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
@@ -90,7 +89,7 @@ public class ApplicationConfigTest
       writeDependencies( "artifacts:\n" +
                          "  - group: org.realityforge.gir\n" +
                          "    id: gir-core\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
@@ -124,7 +123,7 @@ public class ApplicationConfigTest
     inIsolatedDirectory( () -> {
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
@@ -159,7 +158,7 @@ public class ApplicationConfigTest
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
                          "    excludes: ['org.realityforge.javax.annotation:javax.annotation', 'org.realityforge.braincheck']\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
@@ -197,7 +196,7 @@ public class ApplicationConfigTest
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
                          "    visibility: ['//some/package:__pkg__', '//other/package:__subpackages__']\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
@@ -237,7 +236,7 @@ public class ApplicationConfigTest
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
                          "    languages: [J2cl]\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
@@ -261,7 +260,7 @@ public class ApplicationConfigTest
                          "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
                          "    includeOptional: true\n" +
                          "    includeSource: false\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
@@ -298,7 +297,7 @@ public class ApplicationConfigTest
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
                          "    exportDeps: true\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
@@ -320,7 +319,7 @@ public class ApplicationConfigTest
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
                          "    generatesApi: true\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
@@ -342,7 +341,7 @@ public class ApplicationConfigTest
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir:gir-core:0.08\n" +
                          "    alias: mighty-gir-core\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
 
@@ -361,7 +360,7 @@ public class ApplicationConfigTest
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir:gir-core:0.08\n" +
                          "    nature: Plugin\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       final List<ArtifactConfig> artifacts = config.getArtifacts();
       assertNotNull( artifacts );
 
@@ -390,7 +389,7 @@ public class ApplicationConfigTest
                          "  aliasStrategy: ArtifactId\n" +
                          "  defaultLanguage: J2cl\n" +
                          "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
 
       final OptionsConfig options = config.getOptions();
@@ -417,7 +416,7 @@ public class ApplicationConfigTest
   {
     inIsolatedDirectory( () -> {
       writeDependencies( "options: {}\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
 
       final OptionsConfig options = config.getOptions();
@@ -447,7 +446,7 @@ public class ApplicationConfigTest
                          "  - group: com.example\n" +
                          "    id: myapp\n" +
                          "    target: \"@com_example//:myapp\"\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
 
       final List<ReplacementConfig> replacements = config.getReplacements();
@@ -470,7 +469,7 @@ public class ApplicationConfigTest
       writeDependencies( "replacements:\n" +
                          "  - coord: com.example:myapp\n" +
                          "    target: \"@com_example//:myapp\"\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
 
       final List<ReplacementConfig> replacements = config.getReplacements();
@@ -491,7 +490,7 @@ public class ApplicationConfigTest
   {
     inIsolatedDirectory( () -> {
       writeDependencies( "" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
 
       assertNull( config.getOptions() );
@@ -510,7 +509,7 @@ public class ApplicationConfigTest
       writeDependencies( "excludes:\n" +
                          "  - group: com.example\n" +
                          "    id: myapp\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
 
       final List<ExcludeConfig> excludes = config.getExcludes();
@@ -531,7 +530,7 @@ public class ApplicationConfigTest
     inIsolatedDirectory( () -> {
       writeDependencies( "excludes:\n" +
                          "  - coord: com.example:myapp\n" );
-      final ApplicationConfig config = parseDependencies();
+      final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
 
       final List<ExcludeConfig> excludes = config.getExcludes();
@@ -543,12 +542,5 @@ public class ApplicationConfigTest
       assertNull( exclude.getGroup() );
       assertNull( exclude.getId() );
     } );
-  }
-
-  @Nonnull
-  private ApplicationConfig parseDependencies()
-    throws Exception
-  {
-    return ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
   }
 }

@@ -96,10 +96,14 @@ public abstract class AbstractTest
   protected final ApplicationModel loadApplicationModel()
     throws Exception
   {
-    final ApplicationConfig applicationConfig =
-      ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+    return ApplicationModel.parse( loadApplicationConfig() );
+  }
 
-    return ApplicationModel.parse( applicationConfig );
+  @Nonnull
+  protected final ApplicationConfig loadApplicationConfig()
+    throws Exception
+  {
+    return ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
   }
 
   @Nonnull
