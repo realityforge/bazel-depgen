@@ -41,7 +41,11 @@ public final class ArtifactRecord
   @Nullable
   private List<ArtifactRecord> _depsCache;
   @Nullable
+  private List<ArtifactRecord> _reverseDepsCache;
+  @Nullable
   private List<ArtifactRecord> _runtimeDepsCache;
+  @Nullable
+  private List<ArtifactRecord> _reverseRuntimeDepsCache;
 
   ArtifactRecord( @Nonnull final ApplicationRecord application,
                   @Nonnull final DependencyNode node,
@@ -307,6 +311,20 @@ public final class ArtifactRecord
   }
 
   @Nonnull
+  public List<ArtifactRecord> getReverseDeps()
+  {
+    if ( null == _reverseDepsCache )
+    {
+      _reverseDepsCache =
+        collectArtifacts( _application
+                            .getArtifacts()
+                            .stream()
+                            .filter( a -> a.getDeps().contains( this ) ) );
+    }
+    return _reverseDepsCache;
+  }
+
+  @Nonnull
   public List<ArtifactRecord> getRuntimeDeps()
   {
     if ( null == _runtimeDepsCache )
@@ -323,6 +341,20 @@ public final class ArtifactRecord
                                                                  c.getDependency().getArtifact().getArtifactId() ) ) );
     }
     return _runtimeDepsCache;
+  }
+
+  @Nonnull
+  public List<ArtifactRecord> getReverseRuntimeDeps()
+  {
+    if ( null == _reverseRuntimeDepsCache )
+    {
+      _reverseRuntimeDepsCache =
+        collectArtifacts( _application
+                            .getArtifacts()
+                            .stream()
+                            .filter( a -> a.getRuntimeDeps().contains( this ) ) );
+    }
+    return _reverseRuntimeDepsCache;
   }
 
   public boolean shouldExportDeps()

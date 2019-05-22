@@ -55,7 +55,9 @@ public class ApplicationRecordTest
       assertNull( artifactRecord.getSourceSha256() );
       assertNull( artifactRecord.getSourceUrls() );
       assertEquals( artifactRecord.getDeps().size(), 0 );
+      assertEquals( artifactRecord.getReverseDeps().size(), 0 );
       assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
+      assertEquals( artifactRecord.getReverseRuntimeDeps().size(), 0 );
     } );
   }
 
@@ -97,7 +99,9 @@ public class ApplicationRecordTest
       assertEquals( artifactRecord.getSourceUrls(),
                     Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0-sources.jar" ) );
       assertEquals( artifactRecord.getDeps().size(), 0 );
+      assertEquals( artifactRecord.getReverseDeps().size(), 0 );
       assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
+      assertEquals( artifactRecord.getReverseRuntimeDeps().size(), 0 );
     } );
   }
 
@@ -326,8 +330,10 @@ public class ApplicationRecordTest
                       Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
         assertEquals( artifactRecord.getDeps().size(), 1 );
         assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
+        assertEquals( artifactRecord.getReverseDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 1 );
         assertEquals( artifactRecord.getRuntimeDeps().get( 0 ).getKey(), "com.example:rtA" );
+        assertEquals( artifactRecord.getReverseRuntimeDeps().size(), 0 );
       }
 
       {
@@ -342,8 +348,11 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
         assertNull( artifactRecord.getProcessors() );
         assertEquals( artifactRecord.getDeps().size(), 0 );
+        assertEquals( artifactRecord.getReverseDeps().size(), 1 );
+        assertEquals( artifactRecord.getReverseDeps().get( 0 ).getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 1 );
         assertEquals( artifactRecord.getRuntimeDeps().get( 0 ).getKey(), "com.example:rtB" );
+        assertEquals( artifactRecord.getReverseRuntimeDeps().size(), 0 );
       }
 
       {
@@ -358,7 +367,10 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtA:33.0" );
         assertNull( artifactRecord.getProcessors() );
         assertEquals( artifactRecord.getDeps().size(), 0 );
+        assertEquals( artifactRecord.getReverseDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
+        assertEquals( artifactRecord.getReverseRuntimeDeps().size(), 1 );
+        assertEquals( artifactRecord.getReverseRuntimeDeps().get( 0 ).getKey(), "com.example:myapp" );
       }
 
       {
@@ -373,7 +385,10 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtB:2.0" );
         assertNull( artifactRecord.getProcessors() );
         assertEquals( artifactRecord.getDeps().size(), 0 );
+        assertEquals( artifactRecord.getReverseDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
+        assertEquals( artifactRecord.getReverseRuntimeDeps().size(), 1 );
+        assertEquals( artifactRecord.getReverseRuntimeDeps().get( 0 ).getKey(), "com.example:mylib" );
       }
     } );
   }
