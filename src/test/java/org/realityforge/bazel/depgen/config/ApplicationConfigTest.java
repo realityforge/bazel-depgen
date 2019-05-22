@@ -1,6 +1,7 @@
 package org.realityforge.bazel.depgen.config;
 
 import gir.io.FileUtil;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -153,6 +154,48 @@ public class ApplicationConfigTest
       final List<Language> languages = artifact.getLanguages();
       assertNotNull( languages );
       assertEquals( languages, Collections.singletonList( Language.J2cl ) );
+    } );
+  }
+
+  @Test
+  public void parseWithJ2clConfig()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.arez:arez-core:0.138\n" +
+                         "    languages: [J2cl]\n" +
+                         "    j2cl:\n" +
+                         "      suppress: ['checkDebuggerStatement','other']\n" );
+      final ApplicationConfig config = loadApplicationConfig();
+      assertNotNull( config );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
+      assertEquals( artifact.getCoord(), "org.realityforge.arez:arez-core:0.138" );
+      final List<Language> languages = artifact.getLanguages();
+      assertNotNull( languages );
+      assertEquals( languages, Collections.singletonList( Language.J2cl ) );
+      final ArtifactJ2clConfig j2cl = artifact.getJ2cl();
+      assertNotNull( j2cl );
+      assertEquals( j2cl.getSuppress(), Arrays.asList( "checkDebuggerStatement", "other" ) );
+    } );
+  }
+
+  @Test
+  public void parseWithoutJ2clConfig()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.arez:arez-core:0.138\n" +
+                         "    languages: [J2cl]\n" );
+      final ApplicationConfig config = loadApplicationConfig();
+      assertNotNull( config );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
+      assertEquals( artifact.getCoord(), "org.realityforge.arez:arez-core:0.138" );
+      final List<Language> languages = artifact.getLanguages();
+      assertNotNull( languages );
+      assertEquals( languages, Collections.singletonList( Language.J2cl ) );
+      assertNull( artifact.getJ2cl() );
     } );
   }
 

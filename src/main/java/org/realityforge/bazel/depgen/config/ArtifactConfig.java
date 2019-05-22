@@ -40,6 +40,8 @@ public final class ArtifactConfig
   private List<String> visibility;
   @Nullable
   private List<Language> languages;
+  @Nullable
+  private ArtifactJ2clConfig j2cl;
 
   @Nullable
   public String getCoord()
@@ -215,5 +217,16 @@ public final class ArtifactConfig
   public void setLanguages( @Nonnull final List<Language> languages )
   {
     this.languages = Collections.unmodifiableList( Objects.requireNonNull( languages ) );
+  }
+
+  @Nullable
+  public ArtifactJ2clConfig getJ2cl()
+  {
+    return j2cl;
+  }
+
+  public void setJ2cl( @Nonnull final ArtifactJ2clConfig j2cl )
+  {
+    this.j2cl = Objects.requireNonNull( j2cl );
   }
 }
