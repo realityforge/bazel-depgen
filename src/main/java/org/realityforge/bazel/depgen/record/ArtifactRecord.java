@@ -37,6 +37,10 @@ public final class ArtifactRecord
   private final List<String> _sourceUrls;
   @Nullable
   private final List<String> _processors;
+  @Nullable
+  private List<ArtifactRecord> _depsCache;
+  @Nullable
+  private List<ArtifactRecord> _runtimeDepsCache;
 
   ArtifactRecord( @Nonnull final ApplicationRecord application,
                   @Nonnull final DependencyNode node,
@@ -285,8 +289,9 @@ public final class ArtifactRecord
   @Nonnull
   public List<ArtifactRecord> getDeps()
   {
-    return
-      _node
+    if ( null == _depsCache )
+    {
+      _depsCache = _node
         .getChildren()
         .stream()
         .filter( c -> !_application.getSource().isExcluded( c.getDependency().getArtifact().getGroupId(),
@@ -297,13 +302,16 @@ public final class ArtifactRecord
         .distinct()
         .sorted( Comparator.comparing( ArtifactRecord::getKey ) )
         .collect( Collectors.toList() );
+    }
+    return _depsCache;
   }
 
   @Nonnull
   public List<ArtifactRecord> getRuntimeDeps()
   {
-    return
-      _node
+    if ( null == _runtimeDepsCache )
+    {
+      _runtimeDepsCache = _node
         .getChildren()
         .stream()
         .filter( c -> shouldIncludeDependency( Artifact.SCOPE_RUNTIME, c ) )
@@ -314,6 +322,8 @@ public final class ArtifactRecord
         .distinct()
         .sorted( Comparator.comparing( ArtifactRecord::getKey ) )
         .collect( Collectors.toList() );
+    }
+    return _runtimeDepsCache;
   }
 
   public boolean shouldExportDeps()
