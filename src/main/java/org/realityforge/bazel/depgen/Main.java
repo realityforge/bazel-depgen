@@ -71,9 +71,8 @@ public class Main
     new CLOptionDescriptor( "emit-dependency-graph",
                             CLOptionDescriptor.ARGUMENT_DISALLOWED,
                             EMIT_DEPENDENCY_GRAPH_OPT,
-                            "Emit the computed dependency graph after it is calculated." ),
-
-    };
+                            "Emit the computed dependency graph after it is calculated." )
+  };
   private static final int SUCCESS_EXIT_CODE = 0;
   private static final int ERROR_EXIT_CODE = 1;
   private static final int ERROR_PARSING_ARGS_EXIT_CODE = 2;
