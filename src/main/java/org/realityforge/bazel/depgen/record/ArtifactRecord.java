@@ -365,10 +365,10 @@ public final class ArtifactRecord
   @Nonnull
   private List<ArtifactRecord> collectArtifacts( @Nonnull final Stream<ArtifactRecord> stream )
   {
-    return stream
-      .distinct()
-      .sorted( Comparator.comparing( ArtifactRecord::getKey ) )
-      .collect( Collectors.toList() );
+    return Collections.unmodifiableList( stream
+                                           .distinct()
+                                           .sorted( Comparator.comparing( ArtifactRecord::getKey ) )
+                                           .collect( Collectors.toList() ) );
   }
 
   private boolean shouldIncludeDependency( @Nonnull final String scope, @Nonnull final DependencyNode c )
