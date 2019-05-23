@@ -23,6 +23,7 @@ import org.realityforge.bazel.depgen.util.BazelUtil;
 
 public final class ArtifactRecord
 {
+  private static final String LIBRARY_SUFFIX = "__library";
   @Nonnull
   private final ApplicationRecord _application;
   @Nonnull
@@ -461,7 +462,7 @@ public final class ArtifactRecord
       arguments.put( "generates_api", "True" );
     }
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    arguments.put( "deps", Collections.singletonList( "\":" + getName() + "__library\"" ) );
+    arguments.put( "deps", Collections.singletonList( "\":" + getName() + LIBRARY_SUFFIX + "\"" ) );
     output.writeCall( "native.java_plugin", arguments );
   }
 
