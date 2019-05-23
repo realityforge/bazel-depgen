@@ -1,8 +1,10 @@
 package org.realityforge.bazel.depgen.record;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -14,6 +16,7 @@ import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.Nature;
+import org.realityforge.bazel.depgen.gen.StarlarkFileOutput;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
 import org.realityforge.bazel.depgen.util.BazelUtil;
@@ -382,5 +385,42 @@ public final class ArtifactRecord
     final DependencyNode node = getNode();
     final org.eclipse.aether.artifact.Artifact artifact = node.getDependency().getArtifact();
     return groupId.equals( artifact.getGroupId() ) && artifactId.equals( artifact.getArtifactId() );
+  }
+
+  public void emitJavaImport( @Nonnull final StarlarkFileOutput output, @Nonnull final String nameSuffix )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + getName() + nameSuffix + "\"" );
+    arguments.put( "jars", Collections.singletonList( "\"@" + getName() + "//file\"" ) );
+    arguments.put( "licenses", Collections.singletonList( "\"notice\"" ) );
+    if ( null != getSourceSha256() )
+    {
+      arguments.put( "srcjar", "\"@" + getName() + "__sources//file\"" );
+    }
+    arguments.put( "tags",
+                   Collections.singletonList( "\"maven_coordinates=" + getMavenCoordinatesBazelTag() + "\"" ) );
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    final List<ArtifactRecord> deps = getDeps();
+    if ( !deps.isEmpty() )
+    {
+      arguments.put( "deps",
+                     deps.stream().map( a -> "\":" + a.getLabel() + "\"" ).sorted().collect( Collectors.toList() ) );
+    }
+    final List<ArtifactRecord> runtimeDeps = getRuntimeDeps();
+    if ( !runtimeDeps.isEmpty() )
+    {
+      arguments.put( "runtime_deps",
+                     runtimeDeps.stream()
+                       .map( a -> "\":" + a.getLabel() + "\"" )
+                       .sorted()
+                       .collect( Collectors.toList() ) );
+    }
+    if ( shouldExportDeps() )
+    {
+      arguments.put( "exports",
+                     deps.stream().map( a -> "\":" + a.getLabel() + "\"" ).sorted().collect( Collectors.toList() ) );
+    }
+    output.writeCall( "native.java_import", arguments );
   }
 }

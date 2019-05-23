@@ -163,11 +163,11 @@ public final class BazelGenerator
         final Nature nature = artifact.getNature();
         if ( Nature.Library == nature )
         {
-          emitJavaImport( output, artifact, "" );
+          artifact.emitJavaImport( output, "" );
         }
         else if ( Nature.Plugin == nature || Nature.LibraryAndPlugin == nature )
         {
-          emitJavaImport( output, artifact, "__library" );
+          artifact.emitJavaImport( output, "__library" );
           final List<String> processors = artifact.getProcessors();
           if ( null == processors )
           {
@@ -188,47 +188,6 @@ public final class BazelGenerator
 
       output.decIndent();
     }
-  }
-
-  private void emitJavaImport( @Nonnull final StarlarkFileOutput output,
-                               @Nonnull final ArtifactRecord artifact,
-                               @Nonnull final String nameSuffix )
-    throws IOException
-  {
-    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + artifact.getName() + nameSuffix + "\"" );
-    arguments.put( "jars", Collections.singletonList( "\"@" + artifact.getName() + "//file\"" ) );
-    arguments.put( "licenses", Collections.singletonList( "\"notice\"" ) );
-    if ( null != artifact.getSourceSha256() )
-    {
-      arguments.put( "srcjar", "\"@" + artifact.getName() + "__sources//file\"" );
-    }
-    arguments.put( "tags",
-                   Collections.singletonList( "\"maven_coordinates=" +
-                                              artifact.getMavenCoordinatesBazelTag() +
-                                              "\"" ) );
-    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    final List<ArtifactRecord> deps = artifact.getDeps();
-    if ( !deps.isEmpty() )
-    {
-      arguments.put( "deps",
-                     deps.stream().map( a -> "\":" + a.getLabel() + "\"" ).sorted().collect( Collectors.toList() ) );
-    }
-    final List<ArtifactRecord> runtimeDeps = artifact.getRuntimeDeps();
-    if ( !runtimeDeps.isEmpty() )
-    {
-      arguments.put( "runtime_deps",
-                     runtimeDeps.stream()
-                       .map( a -> "\":" + a.getLabel() + "\"" )
-                       .sorted()
-                       .collect( Collectors.toList() ) );
-    }
-    if ( artifact.shouldExportDeps() )
-    {
-      arguments.put( "exports",
-                     deps.stream().map( a -> "\":" + a.getLabel() + "\"" ).sorted().collect( Collectors.toList() ) );
-    }
-    output.writeCall( "native.java_import", arguments );
   }
 
   private void emitJavaLibrary( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
