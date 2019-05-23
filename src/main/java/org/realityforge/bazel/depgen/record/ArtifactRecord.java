@@ -24,6 +24,7 @@ import org.realityforge.bazel.depgen.util.BazelUtil;
 public final class ArtifactRecord
 {
   private static final String LIBRARY_SUFFIX = "__library";
+  private static final String PLUGIN_SUFFIX = "__plugin";
   @Nonnull
   private final ApplicationRecord _application;
   @Nonnull
@@ -471,6 +472,6 @@ public final class ArtifactRecord
   {
     return getName() +
            ( null == processorClass ? "" : BazelUtil.cleanNamePart( "__" + processorClass ) ) +
-           "__plugin";
+           PLUGIN_SUFFIX;
   }
 }
