@@ -428,7 +428,7 @@ public class ArtifactRecordTest
                     "    name = \"com_example__myapp__1_0__plugin\",\n" +
                     "    generates_api = True,\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
-                    "    deps = [\":com_example__myapp__1_0__library\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                     ")\n" );
     } );
   }
@@ -458,7 +458,7 @@ public class ArtifactRecordTest
                     "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                     "    generates_api = True,\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
-                    "    deps = [\":com_example__myapp__1_0__library\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                     ")\n" );
     } );
   }
@@ -488,7 +488,7 @@ public class ArtifactRecordTest
                     "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
                     "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
-                    "    deps = [\":com_example__myapp__1_0__library\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                     ")\n" );
     } );
   }
