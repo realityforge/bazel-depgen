@@ -10,20 +10,20 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 
-final class StarlarkFileOutput
+public final class StarlarkFileOutput
   implements AutoCloseable
 {
   @Nonnull
   private final FileOutputStream _outputStream;
   private int _indent;
 
-  StarlarkFileOutput( @Nonnull final Path extensionFile )
+  public StarlarkFileOutput( @Nonnull final Path extensionFile )
     throws FileNotFoundException
   {
     _outputStream = new FileOutputStream( extensionFile.toFile() );
   }
 
-  void write( @Nonnull final String line )
+  public void write( @Nonnull final String line )
     throws IOException
   {
     for ( int i = 0; i < _indent; i++ )
@@ -34,13 +34,13 @@ final class StarlarkFileOutput
     newLine();
   }
 
-  void newLine()
+  public void newLine()
     throws IOException
   {
     emit( "\n" );
   }
 
-  void writeMacroStart( @Nonnull final String name, @Nonnull final List<String> arguments )
+  public void writeMacroStart( @Nonnull final String name, @Nonnull final List<String> arguments )
     throws IOException
   {
     final int size = arguments.size();
@@ -68,7 +68,7 @@ final class StarlarkFileOutput
     }
   }
 
-  void writeCall( @Nonnull final String functionName, @Nonnull final LinkedHashMap<String, Object> arguments )
+  public void writeCall( @Nonnull final String functionName, @Nonnull final LinkedHashMap<String, Object> arguments )
     throws IOException
   {
     if ( arguments.isEmpty() )
@@ -120,12 +120,12 @@ final class StarlarkFileOutput
     }
   }
 
-  void incIndent()
+  public void incIndent()
   {
     _indent++;
   }
 
-  void decIndent()
+  public void decIndent()
   {
     _indent--;
     assert _indent >= 0;
