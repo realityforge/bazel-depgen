@@ -511,6 +511,84 @@ public class ArtifactRecordTest
     } );
   }
 
+  @Test
+  public void emitPluginLibrary_withProcessors()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      final Path jarFile =
+        createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                       "arez.processor.ArezProcessor\n" +
+                       "react4j.processor.ReactProcessor\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitPluginLibrary( new StarlarkFileOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "native.java_import(\n" +
+                    "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
+                    "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    licenses = [\"notice\"],\n" +
+                    "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" +
+                    "native.java_plugin(\n" +
+                    "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
+                    "    processor_class = \"arez.processor.ArezProcessor\",\n" +
+                    "    generates_api = True,\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                    ")\n" +
+                    "native.java_plugin(\n" +
+                    "    name = \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
+                    "    processor_class = \"react4j.processor.ReactProcessor\",\n" +
+                    "    generates_api = True,\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+
+  @Test
+  public void emitPluginLibrary_withNoProcessors()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    nature: Plugin\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitPluginLibrary( new StarlarkFileOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "native.java_import(\n" +
+                    "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
+                    "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    licenses = [\"notice\"],\n" +
+                    "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" +
+                    "native.java_plugin(\n" +
+                    "    name = \"com_example__myapp__1_0__plugin\",\n" +
+                    "    generates_api = True,\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                    ")\n" );
+    } );
+  }
+
   @Nonnull
   private String asString( @Nonnull final ByteArrayOutputStream outputStream )
   {

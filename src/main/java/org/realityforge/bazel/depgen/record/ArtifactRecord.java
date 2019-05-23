@@ -449,7 +449,7 @@ public final class ArtifactRecord
     output.writeCall( "native.java_import", arguments );
   }
 
-  public void emitJavaPlugin( @Nonnull final StarlarkFileOutput output, @Nullable final String processorClass )
+  void emitJavaPlugin( @Nonnull final StarlarkFileOutput output, @Nullable final String processorClass )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
@@ -473,5 +473,24 @@ public final class ArtifactRecord
     return getName() +
            ( null == processorClass ? "" : BazelUtil.cleanNamePart( "__" + processorClass ) ) +
            PLUGIN_SUFFIX;
+  }
+
+  public void emitPluginLibrary( @Nonnull final StarlarkFileOutput output )
+    throws IOException
+  {
+    assert Nature.Library != getNature();
+    emitJavaImport( output, PLUGIN_LIBRARY_SUFFIX );
+    final List<String> processors = getProcessors();
+    if ( null == processors )
+    {
+      emitJavaPlugin( output, null );
+    }
+    else
+    {
+      for ( final String processor : processors )
+      {
+        emitJavaPlugin( output, processor );
+      }
+    }
   }
 }

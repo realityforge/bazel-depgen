@@ -183,27 +183,8 @@ public final class BazelGenerator
     }
     else if ( Nature.Plugin == nature || Nature.LibraryAndPlugin == nature )
     {
-      emitPluginLibrary( output, artifact );
+      artifact.emitPluginLibrary( output );
       emitJavaLibrary( output, artifact );
-    }
-  }
-
-  private void emitPluginLibrary( @Nonnull final StarlarkFileOutput output,
-                                  @Nonnull final ArtifactRecord artifact )
-    throws IOException
-  {
-    artifact.emitJavaImport( output, "__library" );
-    final List<String> processors = artifact.getProcessors();
-    if ( null == processors )
-    {
-      artifact.emitJavaPlugin( output, null );
-    }
-    else
-    {
-      for ( final String processor : processors )
-      {
-        artifact.emitJavaPlugin( output, processor );
-      }
     }
   }
 
