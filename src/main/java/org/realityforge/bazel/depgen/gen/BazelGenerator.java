@@ -194,24 +194,22 @@ public final class BazelGenerator
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + artifact.getName() + "\"" );
     final Nature nature = artifact.getNature();
-    if ( Nature.Plugin == nature || Nature.LibraryAndPlugin == nature )
+    assert Nature.Library != nature;
+    final ArrayList<String> plugins = new ArrayList<>();
+    final List<String> processors = artifact.getProcessors();
+    if ( null == processors )
     {
-      final ArrayList<String> plugins = new ArrayList<>();
-      final List<String> processors = artifact.getProcessors();
-      if ( null == processors )
-      {
-        plugins.add( "\"" + artifact.pluginName( null ) + "\"" );
-      }
-      else
-      {
-        for ( final String processor : processors )
-        {
-          plugins.add( "\"" + artifact.pluginName( processor ) + "\"" );
-        }
-      }
-      arguments.put( "exported_plugins", plugins );
+      plugins.add( "\"" + artifact.pluginName( null ) + "\"" );
     }
-    if ( Nature.Library == nature || Nature.LibraryAndPlugin == nature )
+    else
+    {
+      for ( final String processor : processors )
+      {
+        plugins.add( "\"" + artifact.pluginName( processor ) + "\"" );
+      }
+    }
+    arguments.put( "exported_plugins", plugins );
+    if ( Nature.LibraryAndPlugin == nature )
     {
       arguments.put( "exports", Collections.singletonList( "\"" + artifact.getName() + "__library\"" ) );
     }
