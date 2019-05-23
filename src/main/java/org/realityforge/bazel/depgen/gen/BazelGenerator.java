@@ -169,6 +169,14 @@ public final class BazelGenerator
     output.newLine();
     output.write( "if not omit_" + artifact.getAlias() + ":" );
     output.incIndent();
+    emitArtifactTargets( output, artifact );
+    output.decIndent();
+  }
+
+  private void emitArtifactTargets( @Nonnull final StarlarkFileOutput output,
+                                    @Nonnull final ArtifactRecord artifact )
+    throws IOException
+  {
     artifact.emitAlias( output );
     final Nature nature = artifact.getNature();
     if ( Nature.Library == nature )
@@ -192,8 +200,6 @@ public final class BazelGenerator
       }
       emitJavaLibrary( output, artifact );
     }
-
-    output.decIndent();
   }
 
   private void emitJavaLibrary( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
