@@ -3,6 +3,7 @@ package org.realityforge.bazel.depgen.gen;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -181,18 +182,27 @@ public final class BazelGenerator
     {
       artifact.emitJavaImport( output, "" );
     }
-    else if ( Nature.Plugin == nature || Nature.LibraryAndPlugin == nature )
+    else if ( Nature.Plugin == nature )
     {
       artifact.emitPluginLibrary( output );
-      emitJavaLibrary( output, artifact );
+      emitJavaLibrary( output, artifact, "" );
+    }
+    else
+    {
+      assert Nature.LibraryAndPlugin == nature;
+      artifact.emitPluginLibrary( output );
+      emitJavaLibrary( output, artifact, "__plugins" );
+      emitJavaLibraryAndPlugin( output, artifact );
     }
   }
 
-  private void emitJavaLibrary( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
+  private void emitJavaLibrary( @Nonnull final StarlarkFileOutput output,
+                                @Nonnull final ArtifactRecord artifact,
+                                @Nonnull final String suffix )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + artifact.getName() + "\"" );
+    arguments.put( "name", "\"" + artifact.getName() + suffix + "\"" );
     final Nature nature = artifact.getNature();
     assert Nature.Library != nature;
     final ArrayList<String> plugins = new ArrayList<>();
@@ -209,10 +219,22 @@ public final class BazelGenerator
       }
     }
     arguments.put( "exported_plugins", plugins );
-    if ( Nature.LibraryAndPlugin == nature )
-    {
-      arguments.put( "exports", Collections.singletonList( "\"" + artifact.getName() + "__library\"" ) );
-    }
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    output.writeCall( "native.java_library", arguments );
+  }
+
+  private void emitJavaLibraryAndPlugin( @Nonnull final StarlarkFileOutput output,
+                                         @Nonnull final ArtifactRecord artifact )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + artifact.getName() + "\"" );
+    final Nature nature = artifact.getNature();
+    assert Nature.LibraryAndPlugin == nature;
+
+    arguments.put( "exports", Arrays.asList( "\"" + artifact.getName() + "__library\"",
+                                             "\"" + artifact.getName() + "__plugins\"" ) );
+
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     output.writeCall( "native.java_library", arguments );
   }
