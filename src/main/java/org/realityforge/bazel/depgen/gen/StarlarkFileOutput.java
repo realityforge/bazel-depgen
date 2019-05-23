@@ -3,24 +3,31 @@ package org.realityforge.bazel.depgen.gen;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 
 public final class StarlarkFileOutput
   implements AutoCloseable
 {
   @Nonnull
-  private final FileOutputStream _outputStream;
+  private final OutputStream _outputStream;
   private int _indent;
 
   public StarlarkFileOutput( @Nonnull final Path extensionFile )
     throws FileNotFoundException
   {
-    _outputStream = new FileOutputStream( extensionFile.toFile() );
+    this( new FileOutputStream( extensionFile.toFile() ) );
+  }
+
+  public StarlarkFileOutput( @Nonnull final OutputStream outputStream )
+  {
+    _outputStream = Objects.requireNonNull( outputStream );
   }
 
   public void write( @Nonnull final String line )
