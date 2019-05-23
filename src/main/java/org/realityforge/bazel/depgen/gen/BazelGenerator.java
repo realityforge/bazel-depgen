@@ -152,42 +152,48 @@ public final class BazelGenerator
 
       for ( final ArtifactRecord artifact : _record.getArtifacts() )
       {
-        if ( null != artifact.getReplacementModel() )
-        {
-          continue;
-        }
-        output.newLine();
-        output.write( "if not omit_" + artifact.getAlias() + ":" );
-        output.incIndent();
-        emitAlias( output, artifact );
-        final Nature nature = artifact.getNature();
-        if ( Nature.Library == nature )
-        {
-          artifact.emitJavaImport( output, "" );
-        }
-        else if ( Nature.Plugin == nature || Nature.LibraryAndPlugin == nature )
-        {
-          artifact.emitJavaImport( output, "__library" );
-          final List<String> processors = artifact.getProcessors();
-          if ( null == processors )
-          {
-            emitJavaPlugin( output, artifact, null );
-          }
-          else
-          {
-            for ( final String processor : processors )
-            {
-              emitJavaPlugin( output, artifact, processor );
-            }
-          }
-          emitJavaLibrary( output, artifact );
-        }
-
-        output.decIndent();
+        emitArtifact( output, artifact );
       }
 
       output.decIndent();
     }
+  }
+
+  private void emitArtifact( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
+    throws IOException
+  {
+    if ( null != artifact.getReplacementModel() )
+    {
+      return;
+    }
+    output.newLine();
+    output.write( "if not omit_" + artifact.getAlias() + ":" );
+    output.incIndent();
+    emitAlias( output, artifact );
+    final Nature nature = artifact.getNature();
+    if ( Nature.Library == nature )
+    {
+      artifact.emitJavaImport( output, "" );
+    }
+    else if ( Nature.Plugin == nature || Nature.LibraryAndPlugin == nature )
+    {
+      artifact.emitJavaImport( output, "__library" );
+      final List<String> processors = artifact.getProcessors();
+      if ( null == processors )
+      {
+        emitJavaPlugin( output, artifact, null );
+      }
+      else
+      {
+        for ( final String processor : processors )
+        {
+          emitJavaPlugin( output, artifact, processor );
+        }
+      }
+      emitJavaLibrary( output, artifact );
+    }
+
+    output.decIndent();
   }
 
   private void emitJavaLibrary( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
