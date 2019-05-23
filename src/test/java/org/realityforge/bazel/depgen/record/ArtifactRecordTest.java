@@ -307,6 +307,106 @@ public class ArtifactRecordTest
     } );
   }
 
+  @Test
+  public void emitAlias()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitAlias( new StarlarkFileOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "native.alias(\n" +
+                    "    name = \"com_example__myapp\",\n" +
+                    "    actual = \":com_example__myapp__1_0\",\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void emitAlias_VisibilitySpecified()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "    visibility: ['//some/package:__pkg__', '//other/package:__subpackages__']\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitAlias( new StarlarkFileOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "native.alias(\n" +
+                    "    name = \"com_example__myapp\",\n" +
+                    "    actual = \":com_example__myapp__1_0\",\n" +
+                    "    visibility = [\n" +
+                    "        \"//some/package:__pkg__\",\n" +
+                    "        \"//other/package:__subpackages__\",\n" +
+                    "    ],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void emitAlias_AliasSpecified()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "    alias: my_super_dooper_app\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitAlias( new StarlarkFileOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "native.alias(\n" +
+                    "    name = \"my_super_dooper_app\",\n" +
+                    "    actual = \":com_example__myapp__1_0\",\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void emitAlias_forUndeclaredDependency()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 1 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitAlias( new StarlarkFileOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "native.alias(\n" +
+                    "    name = \"com_example__mylib\",\n" +
+                    "    actual = \":com_example__mylib__1_0\",\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
   @Nonnull
   private String asString( @Nonnull final ByteArrayOutputStream outputStream )
   {

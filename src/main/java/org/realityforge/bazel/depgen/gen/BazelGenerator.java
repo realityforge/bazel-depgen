@@ -169,7 +169,7 @@ public final class BazelGenerator
     output.newLine();
     output.write( "if not omit_" + artifact.getAlias() + ":" );
     output.incIndent();
-    emitAlias( output, artifact );
+    artifact.emitAlias( output );
     final Nature nature = artifact.getNature();
     if ( Nature.Library == nature )
     {
@@ -253,28 +253,6 @@ public final class BazelGenerator
     return artifact.getName() +
            ( null == processorClass ? "" : BazelUtil.cleanNamePart( "__" + processorClass ) ) +
            "__plugin";
-  }
-
-  private void emitAlias( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
-    throws IOException
-  {
-    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + artifact.getAlias() + "\"" );
-    arguments.put( "actual", "\":" + artifact.getName() + "\"" );
-    if ( null != artifact.getArtifactModel() )
-    {
-      final List<String> visibility = artifact.getArtifactModel().getVisibility();
-      if ( !visibility.isEmpty() )
-      {
-        arguments.put( "visibility",
-                       visibility.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
-      }
-    }
-    else
-    {
-      arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    }
-    output.writeCall( "native.alias", arguments );
   }
 
   private void emitModuleDocstring( @Nonnull final StarlarkFileOutput output )

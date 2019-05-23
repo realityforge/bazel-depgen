@@ -387,6 +387,29 @@ public final class ArtifactRecord
     return groupId.equals( artifact.getGroupId() ) && artifactId.equals( artifact.getArtifactId() );
   }
 
+  public void emitAlias( @Nonnull final StarlarkFileOutput output )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + getAlias() + "\"" );
+    arguments.put( "actual", "\":" + getName() + "\"" );
+    final ArtifactModel artifactModel = getArtifactModel();
+    if ( null != artifactModel )
+    {
+      final List<String> visibility = artifactModel.getVisibility();
+      if ( !visibility.isEmpty() )
+      {
+        arguments.put( "visibility",
+                       visibility.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
+      }
+    }
+    else
+    {
+      arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    }
+    output.writeCall( "native.alias", arguments );
+  }
+
   public void emitJavaImport( @Nonnull final StarlarkFileOutput output, @Nonnull final String nameSuffix )
     throws IOException
   {
