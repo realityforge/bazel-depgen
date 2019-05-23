@@ -446,4 +446,30 @@ public final class ArtifactRecord
     }
     output.writeCall( "native.java_import", arguments );
   }
+
+  public void emitJavaPlugin( @Nonnull final StarlarkFileOutput output, @Nullable final String processorClass )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + pluginName( processorClass ) + "\"" );
+    if ( null != processorClass )
+    {
+      arguments.put( "processor_class", "\"" + processorClass + "\"" );
+    }
+    if ( generatesApi() )
+    {
+      arguments.put( "generates_api", "True" );
+    }
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    arguments.put( "deps", Collections.singletonList( "\":" + getName() + "__library\"" ) );
+    output.writeCall( "native.java_plugin", arguments );
+  }
+
+  @Nonnull
+  public String pluginName( @Nullable final String processorClass )
+  {
+    return getName() +
+           ( null == processorClass ? "" : BazelUtil.cleanNamePart( "__" + processorClass ) ) +
+           "__plugin";
+  }
 }

@@ -9,13 +9,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.eclipse.aether.artifact.Artifact;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
-import org.realityforge.bazel.depgen.util.BazelUtil;
 
 @SuppressWarnings( { "Duplicates", "StringBufferReplaceableByString" } )
 public final class BazelGenerator
@@ -189,13 +187,13 @@ public final class BazelGenerator
       final List<String> processors = artifact.getProcessors();
       if ( null == processors )
       {
-        emitJavaPlugin( output, artifact, null );
+        artifact.emitJavaPlugin( output, null );
       }
       else
       {
         for ( final String processor : processors )
         {
-          emitJavaPlugin( output, artifact, processor );
+          artifact.emitJavaPlugin( output, processor );
         }
       }
       emitJavaLibrary( output, artifact );
@@ -214,13 +212,13 @@ public final class BazelGenerator
       final List<String> processors = artifact.getProcessors();
       if ( null == processors )
       {
-        plugins.add( "\"" + pluginName( artifact, null ) + "\"" );
+        plugins.add( "\"" + artifact.pluginName( null ) + "\"" );
       }
       else
       {
         for ( final String processor : processors )
         {
-          plugins.add( "\"" + pluginName( artifact, processor ) + "\"" );
+          plugins.add( "\"" + artifact.pluginName( processor ) + "\"" );
         }
       }
       arguments.put( "exported_plugins", plugins );
@@ -231,34 +229,6 @@ public final class BazelGenerator
     }
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     output.writeCall( "native.java_library", arguments );
-  }
-
-  private void emitJavaPlugin( @Nonnull final StarlarkFileOutput output,
-                               @Nonnull final ArtifactRecord artifact,
-                               @Nullable final String processorClass )
-    throws IOException
-  {
-    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + pluginName( artifact, processorClass ) + "\"" );
-    if ( null != processorClass )
-    {
-      arguments.put( "processor_class", "\"" + processorClass + "\"" );
-    }
-    if ( artifact.generatesApi() )
-    {
-      arguments.put( "generates_api", "True" );
-    }
-    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    arguments.put( "deps", Collections.singletonList( "\":" + artifact.getName() + "__library\"" ) );
-    output.writeCall( "native.java_plugin", arguments );
-  }
-
-  @Nonnull
-  private String pluginName( @Nonnull final ArtifactRecord artifact, @Nullable final String processorClass )
-  {
-    return artifact.getName() +
-           ( null == processorClass ? "" : BazelUtil.cleanNamePart( "__" + processorClass ) ) +
-           "__plugin";
   }
 
   private void emitModuleDocstring( @Nonnull final StarlarkFileOutput output )

@@ -407,6 +407,110 @@ public class ArtifactRecordTest
     } );
   }
 
+  @Test
+  public void emitJavaPlugin_nullProcessor()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    nature: Plugin\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitJavaPlugin( new StarlarkFileOutput( outputStream ), null );
+      assertEquals( asString( outputStream ),
+                    "native.java_plugin(\n" +
+                    "    name = \"com_example__myapp__1_0__plugin\",\n" +
+                    "    generates_api = True,\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__library\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void emitJavaPlugin_withProcessor()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    nature: Plugin\n" );
+      final Path jarFile =
+        createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                       "arez.processor.ArezProcessor\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitJavaPlugin( new StarlarkFileOutput( outputStream ), "arez.processor.ArezProcessor" );
+      assertEquals( asString( outputStream ),
+                    "native.java_plugin(\n" +
+                    "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
+                    "    processor_class = \"arez.processor.ArezProcessor\",\n" +
+                    "    generates_api = True,\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__library\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void emitJavaPlugin_withProcessorNoGeneratesApi()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    nature: Plugin\n" +
+                              "    generatesApi: false\n" );
+      final Path jarFile =
+        createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                       "arez.processor.ArezProcessor\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitJavaPlugin( new StarlarkFileOutput( outputStream ), "arez.processor.ArezProcessor" );
+      assertEquals( asString( outputStream ),
+                    "native.java_plugin(\n" +
+                    "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
+                    "    processor_class = \"arez.processor.ArezProcessor\",\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__library\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void pluginName()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      assertEquals( artifactRecord.pluginName( "arez.processor.ArezProcessor" ),
+                    "com_example__myapp__1_0__arez_processor_arezprocessor__plugin" );
+      assertEquals( artifactRecord.pluginName( null ), "com_example__myapp__1_0__plugin" );
+    } );
+  }
+
   @Nonnull
   private String asString( @Nonnull final ByteArrayOutputStream outputStream )
   {
