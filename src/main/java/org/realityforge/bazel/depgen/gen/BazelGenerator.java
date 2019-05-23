@@ -232,7 +232,7 @@ public final class BazelGenerator
     }
     if ( Nature.Library == nature || Nature.LibraryAndPlugin == nature )
     {
-      arguments.put( "exports", Collections.singletonList( "\"" + artifact.getName() + "__Library\"" ) );
+      arguments.put( "exports", Collections.singletonList( "\"" + artifact.getName() + "__library\"" ) );
     }
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     output.writeCall( "native.java_library", arguments );
