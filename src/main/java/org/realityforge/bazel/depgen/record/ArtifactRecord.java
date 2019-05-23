@@ -23,7 +23,13 @@ import org.realityforge.bazel.depgen.util.BazelUtil;
 
 public final class ArtifactRecord
 {
+  /**
+   * The suffix applied to the name of target that imports artifact for use when defining plugins.
+   */
   private static final String PLUGIN_LIBRARY_SUFFIX = "__plugin_library";
+  /**
+   * The suffix applied to every compile plugin.
+   */
   private static final String PLUGIN_SUFFIX = "__plugin";
   @Nonnull
   private final ApplicationRecord _application;
