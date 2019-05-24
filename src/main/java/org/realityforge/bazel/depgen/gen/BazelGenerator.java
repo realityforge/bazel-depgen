@@ -2,17 +2,14 @@ package org.realityforge.bazel.depgen.gen;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import org.eclipse.aether.artifact.Artifact;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
-import org.realityforge.bazel.depgen.util.ArtifactUtil;
 
 @SuppressWarnings( { "Duplicates" } )
 public final class BazelGenerator
@@ -117,7 +114,7 @@ public final class BazelGenerator
                   o.newLine();
                   final List<String> sourceUrls = artifact.getSourceUrls();
                   assert null != sourceUrls && !sourceUrls.isEmpty();
-                  emitArtifactSourcesHttpFileRule( o, artifact );
+                  artifact.emitArtifactSourcesHttpFileRule( o );
                 }
               } );
             }
@@ -188,28 +185,6 @@ public final class BazelGenerator
                _record.getSource().getOptions().getTargetMacroName() +
                "' from a BUILD.bazel file." );
     } );
-  }
-
-  private void emitArtifactSourcesHttpFileRule( @Nonnull final StarlarkOutput output,
-                                                @Nonnull final ArtifactRecord artifact )
-    throws IOException
-  {
-    final String sourceSha256 = artifact.getSourceSha256();
-    assert null != sourceSha256;
-
-    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + artifact.getName() + "__sources\"" );
-    final Artifact a = artifact.getNode().getArtifact();
-    assert null != a;
-
-    final String artifactPath =
-      ArtifactUtil.artifactToPath( a.getGroupId(), a.getArtifactId(), a.getVersion(), "sources", "jar" );
-    arguments.put( "downloaded_file_path", "\"" + artifactPath + "\"" );
-    arguments.put( "sha256", "\"" + sourceSha256.toLowerCase() + "\"" );
-    final List<String> urls = artifact.getSourceUrls();
-    assert null != urls && !urls.isEmpty();
-    arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
-    output.writeCall( "http_file", arguments );
   }
 
   private void emitDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )

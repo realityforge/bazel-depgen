@@ -564,4 +564,25 @@ public final class ArtifactRecord
     arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
     output.writeCall( "http_file", arguments );
   }
+
+  public void emitArtifactSourcesHttpFileRule( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    final String sourceSha256 = getSourceSha256();
+    assert null != sourceSha256;
+
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + getName() + "__sources\"" );
+    final org.eclipse.aether.artifact.Artifact a = getNode().getArtifact();
+    assert null != a;
+
+    final String artifactPath =
+      ArtifactUtil.artifactToPath( a.getGroupId(), a.getArtifactId(), a.getVersion(), "sources", "jar" );
+    arguments.put( "downloaded_file_path", "\"" + artifactPath + "\"" );
+    arguments.put( "sha256", "\"" + sourceSha256.toLowerCase() + "\"" );
+    final List<String> urls = getSourceUrls();
+    assert null != urls && !urls.isEmpty();
+    arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
+    output.writeCall( "http_file", arguments );
+  }
 }
