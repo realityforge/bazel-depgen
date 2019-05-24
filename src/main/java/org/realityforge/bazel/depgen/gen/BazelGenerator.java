@@ -74,11 +74,21 @@ public final class BazelGenerator
   {
     try ( final StarlarkOutput output = new StarlarkOutput( extensionFile ) )
     {
-      emitDoNotEdit( output );
-
+      output.write( "# DO NOT EDIT: File is auto-generated from " +
+                    _record.getPathFromExtensionToConfig() +
+                    " by https://github.com/realityforge/bazel-depgen" );
       output.newLine();
 
-      emitModuleDocstring( output );
+      output.writeMultilineComment( o -> {
+        o.write( "Macro rules to load dependencies defined in '" + _record.getPathFromExtensionToConfig() + "'." );
+        o.newLine();
+        o.write( "Invoke '" +
+                 _record.getSource().getOptions().getWorkspaceMacroName() +
+                 "' from a WORKSPACE file." );
+        o.write( "Invoke '" +
+                 _record.getSource().getOptions().getTargetMacroName() +
+                 "' from a BUILD.bazel file." );
+      } );
 
       emitDependencyGraphIfRequired( output );
 
@@ -155,21 +165,6 @@ public final class BazelGenerator
       } );
   }
 
-  private void emitModuleDocstring( @Nonnull final StarlarkOutput output )
-    throws IOException
-  {
-    output.writeMultilineComment( o -> {
-      o.write( "Macro rules to load dependencies defined in '" + _record.getPathFromExtensionToConfig() + "'." );
-      o.newLine();
-      o.write( "Invoke '" +
-               _record.getSource().getOptions().getWorkspaceMacroName() +
-               "' from a WORKSPACE file." );
-      o.write( "Invoke '" +
-               _record.getSource().getOptions().getTargetMacroName() +
-               "' from a BUILD.bazel file." );
-    } );
-  }
-
   private void emitDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )
     throws IOException
   {
@@ -197,13 +192,5 @@ public final class BazelGenerator
     {
       throw new IllegalStateException( "Failed to create directory " + path.toFile() );
     }
-  }
-
-  private void emitDoNotEdit( @Nonnull final StarlarkOutput output )
-    throws IOException
-  {
-    output.write( "# DO NOT EDIT: File is auto-generated from " +
-                  _record.getPathFromExtensionToConfig() +
-                  " by https://github.com/realityforge/bazel-depgen" );
   }
 }
