@@ -109,7 +109,7 @@ public final class BazelGenerator
             {
               macro.newLine();
               macro.writeIfCondition( "not omit_" + artifact.getAlias(), o -> {
-                emitArtifactHttpFileRule( o, artifact );
+                artifact.emitArtifactHttpFileRule( o );
 
                 final String sourceSha256 = artifact.getSourceSha256();
                 if ( null != sourceSha256 )
@@ -207,24 +207,6 @@ public final class BazelGenerator
     arguments.put( "downloaded_file_path", "\"" + artifactPath + "\"" );
     arguments.put( "sha256", "\"" + sourceSha256.toLowerCase() + "\"" );
     final List<String> urls = artifact.getSourceUrls();
-    assert null != urls && !urls.isEmpty();
-    arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
-    output.writeCall( "http_file", arguments );
-  }
-
-  private void emitArtifactHttpFileRule( @Nonnull final StarlarkOutput output,
-                                         @Nonnull final ArtifactRecord artifact )
-    throws IOException
-  {
-    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + artifact.getName() + "\"" );
-    final Artifact a = artifact.getNode().getArtifact();
-    assert null != a;
-    arguments.put( "downloaded_file_path", "\"" + ArtifactUtil.artifactToPath( a ) + "\"" );
-    final String sha256 = artifact.getSha256();
-    assert null != sha256;
-    arguments.put( "sha256", "\"" + sha256.toLowerCase() + "\"" );
-    final List<String> urls = artifact.getUrls();
     assert null != urls && !urls.isEmpty();
     arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
     output.writeCall( "http_file", arguments );

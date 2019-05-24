@@ -20,6 +20,7 @@ import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.gen.StarlarkOutput;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
+import org.realityforge.bazel.depgen.util.ArtifactUtil;
 import org.realityforge.bazel.depgen.util.BazelUtil;
 
 public final class ArtifactRecord
@@ -545,5 +546,22 @@ public final class ArtifactRecord
 
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     output.writeCall( "native.java_library", arguments );
+  }
+
+  public void emitArtifactHttpFileRule( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + getName() + "\"" );
+    final org.eclipse.aether.artifact.Artifact a = getNode().getArtifact();
+    assert null != a;
+    arguments.put( "downloaded_file_path", "\"" + ArtifactUtil.artifactToPath( a ) + "\"" );
+    final String sha256 = getSha256();
+    assert null != sha256;
+    arguments.put( "sha256", "\"" + sha256.toLowerCase() + "\"" );
+    final List<String> urls = getUrls();
+    assert null != urls && !urls.isEmpty();
+    arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
+    output.writeCall( "http_file", arguments );
   }
 }
