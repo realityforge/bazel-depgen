@@ -186,16 +186,9 @@ public final class BazelGenerator
     else
     {
       assert Nature.LibraryAndPlugin == nature;
-      emitJavaLibraryAndPluginLibrary( output, artifact );
+      artifact.emitPluginLibrary( output, "__plugins" );
+      artifact.emitJavaLibraryAndPlugin( output );
     }
-  }
-
-  private void emitJavaLibraryAndPluginLibrary( @Nonnull final StarlarkFileOutput output,
-                                                @Nonnull final ArtifactRecord artifact )
-    throws IOException
-  {
-    artifact.emitPluginLibrary( output, "__plugins" );
-    artifact.emitJavaLibraryAndPlugin( output );
   }
 
   private void emitModuleDocstring( @Nonnull final StarlarkFileOutput output )
