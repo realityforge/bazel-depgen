@@ -21,29 +21,13 @@ import javax.annotation.Nullable;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.realityforge.bazel.depgen.util.ArtifactUtil;
 import org.realityforge.bazel.depgen.util.HashUtil;
 
 final class RecordUtil
 {
   private RecordUtil()
   {
-  }
-
-  @Nonnull
-  static String artifactToPath( @Nonnull final Artifact artifact )
-  {
-    return artifact.getGroupId().replaceAll( "\\.", "/" ) +
-           "/" +
-           artifact.getArtifactId() +
-           "/" +
-           artifact.getVersion() +
-           "/" +
-           artifact.getArtifactId() +
-           "-" +
-           artifact.getVersion() +
-           ( artifact.getClassifier().isEmpty() ? "" : "-" + artifact.getClassifier() ) +
-           "." +
-           artifact.getExtension();
   }
 
   @Nonnull
@@ -67,7 +51,8 @@ final class RecordUtil
     try
     {
       final String repoUrl = remoteRepository.getUrl();
-      final URI uri = new URI( repoUrl + ( repoUrl.endsWith( "/" ) ? "" : "/" ) + artifactToPath( artifact ) );
+      final URI uri =
+        new URI( repoUrl + ( repoUrl.endsWith( "/" ) ? "" : "/" ) + ArtifactUtil.artifactToPath( artifact ) );
       final URL url = uri.toURL();
       final String protocol = url.getProtocol();
       if ( "http".equals( protocol ) || "https".equals( protocol ) )

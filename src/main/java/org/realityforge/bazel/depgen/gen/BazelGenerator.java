@@ -12,8 +12,9 @@ import org.realityforge.bazel.depgen.DependencyGraphEmitter;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
+import org.realityforge.bazel.depgen.util.ArtifactUtil;
 
-@SuppressWarnings( { "Duplicates", "StringBufferReplaceableByString" } )
+@SuppressWarnings( { "Duplicates" } )
 public final class BazelGenerator
 {
   @Nonnull
@@ -200,21 +201,10 @@ public final class BazelGenerator
     arguments.put( "name", "\"" + artifact.getName() + "__sources\"" );
     final Artifact a = artifact.getNode().getArtifact();
     assert null != a;
-    final StringBuilder sb = new StringBuilder();
-    sb.append( "\"" );
-    sb.append( a.getGroupId().replaceAll( "\\.", "/" ) );
-    sb.append( "/" );
-    sb.append( a.getArtifactId() );
-    sb.append( "/" );
-    sb.append( a.getVersion() );
-    sb.append( "/" );
-    sb.append( a.getArtifactId() );
-    sb.append( "-" );
-    sb.append( a.getVersion() );
-    sb.append( "-sources." );
-    sb.append( a.getExtension() );
-    sb.append( "\"" );
-    arguments.put( "downloaded_file_path", sb.toString() );
+
+    final String artifactPath =
+      ArtifactUtil.artifactToPath( a.getGroupId(), a.getArtifactId(), a.getVersion(), "jar", "sources" );
+    arguments.put( "downloaded_file_path", "\"" + artifactPath + "\"" );
     arguments.put( "sha256", "\"" + sourceSha256.toLowerCase() + "\"" );
     final List<String> urls = artifact.getSourceUrls();
     assert null != urls && !urls.isEmpty();
@@ -230,22 +220,7 @@ public final class BazelGenerator
     arguments.put( "name", "\"" + artifact.getName() + "\"" );
     final Artifact a = artifact.getNode().getArtifact();
     assert null != a;
-    final StringBuilder sb = new StringBuilder();
-    sb.append( "\"" );
-    sb.append( a.getGroupId().replaceAll( "\\.", "/" ) );
-    sb.append( "/" );
-    sb.append( a.getArtifactId() );
-    sb.append( "/" );
-    sb.append( a.getVersion() );
-    sb.append( "/" );
-    sb.append( a.getArtifactId() );
-    sb.append( "-" );
-    sb.append( a.getVersion() );
-    sb.append( a.getClassifier().isEmpty() ? "" : "-" + a.getClassifier() );
-    sb.append( "." );
-    sb.append( a.getExtension() );
-    sb.append( "\"" );
-    arguments.put( "downloaded_file_path", sb.toString() );
+    arguments.put( "downloaded_file_path", "\"" + ArtifactUtil.artifactToPath( a ) + "\"" );
     final String sha256 = artifact.getSha256();
     assert null != sha256;
     arguments.put( "sha256", "\"" + sha256.toLowerCase() + "\"" );
