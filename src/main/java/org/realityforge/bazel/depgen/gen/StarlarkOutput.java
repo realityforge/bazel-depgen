@@ -12,20 +12,20 @@ import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 
-public final class StarlarkFileOutput
+public final class StarlarkOutput
   implements AutoCloseable
 {
   @Nonnull
   private final OutputStream _outputStream;
   private int _indent;
 
-  public StarlarkFileOutput( @Nonnull final Path extensionFile )
+  public StarlarkOutput( @Nonnull final Path extensionFile )
     throws FileNotFoundException
   {
     this( new FileOutputStream( extensionFile.toFile() ) );
   }
 
-  public StarlarkFileOutput( @Nonnull final OutputStream outputStream )
+  public StarlarkOutput( @Nonnull final OutputStream outputStream )
   {
     _outputStream = Objects.requireNonNull( outputStream );
   }

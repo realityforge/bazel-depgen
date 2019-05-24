@@ -12,7 +12,7 @@ import org.realityforge.bazel.depgen.AbstractTest;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
-public class StarlarkFileOutputTest
+public class StarlarkOutputTest
   extends AbstractTest
 {
   @Test
@@ -237,7 +237,7 @@ public class StarlarkFileOutputTest
   @FunctionalInterface
   interface WriterCallback
   {
-    void process( @Nonnull StarlarkFileOutput output )
+    void process( @Nonnull StarlarkOutput output )
       throws Exception;
   }
 
@@ -246,7 +246,7 @@ public class StarlarkFileOutputTest
     throws Exception
   {
     final Path file = FileUtil.createLocalTempDir().resolve( "file.bzl" );
-    final StarlarkFileOutput output = new StarlarkFileOutput( file );
+    final StarlarkOutput output = new StarlarkOutput( file );
     callback.process( output );
     output.close();
     return file;

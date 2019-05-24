@@ -45,7 +45,7 @@ public final class BazelGenerator
     // the tool assumes the user has supplied it or it is an artifact from a previous run.
     if ( !buildfile.toFile().exists() )
     {
-      try ( final StarlarkFileOutput output = new StarlarkFileOutput( buildfile ) )
+      try ( final StarlarkOutput output = new StarlarkOutput( buildfile ) )
       {
         output.write( "# File is auto-generated from " +
                       getRelativePathToDependenciesYaml() +
@@ -75,7 +75,7 @@ public final class BazelGenerator
   private void emitExtensionFile( final Path extensionFile )
     throws Exception
   {
-    try ( final StarlarkFileOutput output = new StarlarkFileOutput( extensionFile ) )
+    try ( final StarlarkOutput output = new StarlarkOutput( extensionFile ) )
     {
       emitDoNotEdit( output );
 
@@ -155,7 +155,7 @@ public final class BazelGenerator
     }
   }
 
-  private void emitArtifact( @Nonnull final StarlarkFileOutput output, @Nonnull final ArtifactRecord artifact )
+  private void emitArtifact( @Nonnull final StarlarkOutput output, @Nonnull final ArtifactRecord artifact )
     throws IOException
   {
     if ( null != artifact.getReplacementModel() )
@@ -169,7 +169,7 @@ public final class BazelGenerator
     output.decIndent();
   }
 
-  private void emitArtifactTargets( @Nonnull final StarlarkFileOutput output,
+  private void emitArtifactTargets( @Nonnull final StarlarkOutput output,
                                     @Nonnull final ArtifactRecord artifact )
     throws IOException
   {
@@ -191,7 +191,7 @@ public final class BazelGenerator
     }
   }
 
-  private void emitModuleDocstring( @Nonnull final StarlarkFileOutput output )
+  private void emitModuleDocstring( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     output.write( "\"\"\"" );
@@ -208,7 +208,7 @@ public final class BazelGenerator
     output.write( "\"\"\"" );
   }
 
-  private void emitArtifactSourcesHttpFileRule( @Nonnull final StarlarkFileOutput output,
+  private void emitArtifactSourcesHttpFileRule( @Nonnull final StarlarkOutput output,
                                                 @Nonnull final ArtifactRecord artifact )
     throws IOException
   {
@@ -241,7 +241,7 @@ public final class BazelGenerator
     output.writeCall( "http_file", arguments );
   }
 
-  private void emitArtifactHttpFileRule( @Nonnull final StarlarkFileOutput output,
+  private void emitArtifactHttpFileRule( @Nonnull final StarlarkOutput output,
                                          @Nonnull final ArtifactRecord artifact )
     throws IOException
   {
@@ -274,7 +274,7 @@ public final class BazelGenerator
     output.writeCall( "http_file", arguments );
   }
 
-  private void emitDependencyGraphIfRequired( @Nonnull final StarlarkFileOutput output )
+  private void emitDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     if ( _record.getSource().getOptions().emitDependencyGraph() )
@@ -303,7 +303,7 @@ public final class BazelGenerator
     }
   }
 
-  private void emitDoNotEdit( @Nonnull final StarlarkFileOutput output )
+  private void emitDoNotEdit( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     output.write( "# DO NOT EDIT: File is auto-generated from " +

@@ -9,7 +9,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.Nature;
-import org.realityforge.bazel.depgen.gen.StarlarkFileOutput;
+import org.realityforge.bazel.depgen.gen.StarlarkOutput;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -62,7 +62,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaImport( new StarlarkFileOutput( outputStream ), "" );
+      artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -91,7 +91,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaImport( new StarlarkFileOutput( outputStream ), "" );
+      artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"zeapp_com_example__myapp__1_0\",\n" +
@@ -116,7 +116,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaImport( new StarlarkFileOutput( outputStream ), "__library" );
+      artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "__library" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__library\",\n" +
@@ -142,7 +142,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaImport( new StarlarkFileOutput( outputStream ), "" );
+      artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -169,7 +169,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaImport( new StarlarkFileOutput( outputStream ), "" );
+      artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -196,7 +196,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaImport( new StarlarkFileOutput( outputStream ), "" );
+      artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -224,7 +224,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaImport( new StarlarkFileOutput( outputStream ), "" );
+      artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -265,7 +265,7 @@ public class ArtifactRecordTest
       {
         final ArtifactRecord artifactRecord = getArtifactAt( record, 0 );
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        artifactRecord.emitJavaImport( new StarlarkFileOutput( outputStream ), "" );
+        artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
         assertEquals( asString( outputStream ),
                       "native.java_import(\n" +
                       "    name = \"com_example__myapp__1_0\",\n" +
@@ -280,7 +280,7 @@ public class ArtifactRecordTest
       {
         final ArtifactRecord artifactRecord = getArtifactAt( record, 1 );
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        artifactRecord.emitJavaImport( new StarlarkFileOutput( outputStream ), "" );
+        artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
         assertEquals( asString( outputStream ),
                       "native.java_import(\n" +
                       "    name = \"com_example__mylib__1_0\",\n" +
@@ -294,7 +294,7 @@ public class ArtifactRecordTest
       {
         final ArtifactRecord artifactRecord = getArtifactAt( record, 2 );
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        artifactRecord.emitJavaImport( new StarlarkFileOutput( outputStream ), "" );
+        artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
         assertEquals( asString( outputStream ),
                       "native.java_import(\n" +
                       "    name = \"com_example__rta__33_0\",\n" +
@@ -320,7 +320,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkFileOutput( outputStream ) );
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__myapp\",\n" +
@@ -345,7 +345,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkFileOutput( outputStream ) );
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__myapp\",\n" +
@@ -374,7 +374,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkFileOutput( outputStream ) );
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"my_super_dooper_app\",\n" +
@@ -397,7 +397,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 1 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkFileOutput( outputStream ) );
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__mylib\",\n" +
@@ -422,7 +422,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaPlugin( new StarlarkFileOutput( outputStream ), null );
+      artifactRecord.emitJavaPlugin( new StarlarkOutput( outputStream ), null );
       assertEquals( asString( outputStream ),
                     "native.java_plugin(\n" +
                     "    name = \"com_example__myapp__1_0__plugin\",\n" +
@@ -451,7 +451,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaPlugin( new StarlarkFileOutput( outputStream ), "arez.processor.ArezProcessor" );
+      artifactRecord.emitJavaPlugin( new StarlarkOutput( outputStream ), "arez.processor.ArezProcessor" );
       assertEquals( asString( outputStream ),
                     "native.java_plugin(\n" +
                     "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
@@ -482,7 +482,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaPlugin( new StarlarkFileOutput( outputStream ), "arez.processor.ArezProcessor" );
+      artifactRecord.emitJavaPlugin( new StarlarkOutput( outputStream ), "arez.processor.ArezProcessor" );
       assertEquals( asString( outputStream ),
                     "native.java_plugin(\n" +
                     "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
@@ -529,7 +529,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitPluginLibrary( new StarlarkFileOutput( outputStream ), "" );
+      artifactRecord.emitPluginLibrary( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
@@ -578,7 +578,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitPluginLibrary( new StarlarkFileOutput( outputStream ), "" );
+      artifactRecord.emitPluginLibrary( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
@@ -616,7 +616,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitPluginLibrary( new StarlarkFileOutput( outputStream ), "__plugins" );
+      artifactRecord.emitPluginLibrary( new StarlarkOutput( outputStream ), "__plugins" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
@@ -657,7 +657,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaPluginLibrary( new StarlarkFileOutput( outputStream ), "" );
+      artifactRecord.emitJavaPluginLibrary( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_library(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -685,7 +685,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaPluginLibrary( new StarlarkFileOutput( outputStream ), "" );
+      artifactRecord.emitJavaPluginLibrary( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_library(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -710,7 +710,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaPluginLibrary( new StarlarkFileOutput( outputStream ), "__plugins" );
+      artifactRecord.emitJavaPluginLibrary( new StarlarkOutput( outputStream ), "__plugins" );
       assertEquals( asString( outputStream ),
                     "native.java_library(\n" +
                     "    name = \"com_example__myapp__1_0__plugins\",\n" +
@@ -735,7 +735,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaLibraryAndPlugin( new StarlarkFileOutput( outputStream ) );
+      artifactRecord.emitJavaLibraryAndPlugin( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.java_library(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +

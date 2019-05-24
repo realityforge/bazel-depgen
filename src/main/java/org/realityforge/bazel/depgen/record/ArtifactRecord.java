@@ -17,7 +17,7 @@ import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.Nature;
-import org.realityforge.bazel.depgen.gen.StarlarkFileOutput;
+import org.realityforge.bazel.depgen.gen.StarlarkOutput;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
 import org.realityforge.bazel.depgen.util.BazelUtil;
@@ -401,7 +401,7 @@ public final class ArtifactRecord
     return groupId.equals( artifact.getGroupId() ) && artifactId.equals( artifact.getArtifactId() );
   }
 
-  public void emitAlias( @Nonnull final StarlarkFileOutput output )
+  public void emitAlias( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
@@ -424,7 +424,7 @@ public final class ArtifactRecord
     output.writeCall( "native.alias", arguments );
   }
 
-  public void emitJavaImport( @Nonnull final StarlarkFileOutput output, @Nonnull final String nameSuffix )
+  public void emitJavaImport( @Nonnull final StarlarkOutput output, @Nonnull final String nameSuffix )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
@@ -461,7 +461,7 @@ public final class ArtifactRecord
     output.writeCall( "native.java_import", arguments );
   }
 
-  void emitJavaPlugin( @Nonnull final StarlarkFileOutput output, @Nullable final String processorClass )
+  void emitJavaPlugin( @Nonnull final StarlarkOutput output, @Nullable final String processorClass )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
@@ -487,7 +487,7 @@ public final class ArtifactRecord
            PLUGIN_SUFFIX;
   }
 
-  public void emitPluginLibrary( @Nonnull final StarlarkFileOutput output, @Nonnull final String suffix )
+  public void emitPluginLibrary( @Nonnull final StarlarkOutput output, @Nonnull final String suffix )
     throws IOException
   {
     assert Nature.Library != getNature();
@@ -507,7 +507,7 @@ public final class ArtifactRecord
     emitJavaPluginLibrary( output, suffix );
   }
 
-  void emitJavaPluginLibrary( @Nonnull final StarlarkFileOutput output, @Nonnull final String suffix )
+  void emitJavaPluginLibrary( @Nonnull final StarlarkOutput output, @Nonnull final String suffix )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
@@ -531,7 +531,7 @@ public final class ArtifactRecord
     output.writeCall( "native.java_library", arguments );
   }
 
-  public void emitJavaLibraryAndPlugin( @Nonnull final StarlarkFileOutput output )
+  public void emitJavaLibraryAndPlugin( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
