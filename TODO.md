@@ -6,6 +6,10 @@ complete as there is too much un-said.
 
 * Start to move the generation of fragments to ArtifactRecord and friends
 
+* Generate an error if `Plugin` nature is used and language is specified.
+
+* Generate an error if `PluginAndLibrary` nature is used when combined with `J2cl` language.
+
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
   online or needed to be rebuilt.
 
