@@ -223,6 +223,23 @@ public class StarlarkOutputTest
   }
 
   @Test
+  public void writeMacro()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file =
+        writeFileContent( output -> output.writeMacro( "myMacro", Collections.singletonList( "foo" ), o -> {
+          o.write( "bar()" );
+          o.write( "baz()" );
+        } ) );
+
+      assertFileContent( file, "def myMacro(foo):\n" +
+                               "    bar()\n" +
+                               "    baz()\n" );
+    } );
+  }
+
+  @Test
   public void writeMacro_singleArg()
     throws Exception
   {

@@ -73,7 +73,16 @@ public final class StarlarkOutput
     decIndent();
   }
 
-  public void writeMacroStart( @Nonnull final String name, @Nonnull final List<String> arguments )
+  public void writeMacro( @Nonnull final String name, @Nonnull final List<String> arguments, @Nonnull final Block body )
+    throws IOException
+  {
+    writeMacroStart( name, arguments );
+    incIndent();
+    body.call( this );
+    decIndent();
+  }
+
+  void writeMacroStart( @Nonnull final String name, @Nonnull final List<String> arguments )
     throws IOException
   {
     final int size = arguments.size();
