@@ -551,6 +551,7 @@ public final class ArtifactRecord
   public void emitArtifactTargets( @Nonnull final StarlarkOutput output )
     throws IOException
   {
+    assert null == getReplacementModel();
     emitAlias( output );
     final Nature nature = getNature();
     if ( Nature.Library == nature )
@@ -572,6 +573,7 @@ public final class ArtifactRecord
   public void emitArtifactHttpFileRule( @Nonnull final StarlarkOutput output )
     throws IOException
   {
+    assert null == getReplacementModel();
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + getName() + "\"" );
     final org.eclipse.aether.artifact.Artifact a = getNode().getArtifact();
@@ -589,6 +591,7 @@ public final class ArtifactRecord
   public void emitArtifactSourcesHttpFileRule( @Nonnull final StarlarkOutput output )
     throws IOException
   {
+    assert null == getReplacementModel();
     final String sourceSha256 = getSourceSha256();
     assert null != sourceSha256;
 
