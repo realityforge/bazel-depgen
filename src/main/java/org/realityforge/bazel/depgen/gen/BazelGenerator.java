@@ -107,24 +107,22 @@ public final class BazelGenerator
 
       for ( final ArtifactRecord artifact : _record.getArtifacts() )
       {
-        if ( null != artifact.getReplacementModel() )
-        {
-          continue;
-        }
-        output.newLine();
-        output.write( "if not omit_" + artifact.getAlias() + ":" );
-        output.incIndent();
-        emitArtifactHttpFileRule( output, artifact );
-
-        final String sourceSha256 = artifact.getSourceSha256();
-        if ( null != sourceSha256 )
+        if ( null == artifact.getReplacementModel() )
         {
           output.newLine();
-          final List<String> sourceUrls = artifact.getSourceUrls();
-          assert null != sourceUrls && !sourceUrls.isEmpty();
-          emitArtifactSourcesHttpFileRule( output, artifact );
+          output.writeIfCondition( "not omit_" + artifact.getAlias(), o -> {
+            emitArtifactHttpFileRule( output, artifact );
+
+            final String sourceSha256 = artifact.getSourceSha256();
+            if ( null != sourceSha256 )
+            {
+              o.newLine();
+              final List<String> sourceUrls = artifact.getSourceUrls();
+              assert null != sourceUrls && !sourceUrls.isEmpty();
+              emitArtifactSourcesHttpFileRule( o, artifact );
+            }
+          } );
         }
-        output.decIndent();
       }
 
       output.decIndent();
@@ -158,15 +156,11 @@ public final class BazelGenerator
   private void emitArtifact( @Nonnull final StarlarkOutput output, @Nonnull final ArtifactRecord artifact )
     throws IOException
   {
-    if ( null != artifact.getReplacementModel() )
+    if ( null == artifact.getReplacementModel() )
     {
-      return;
+      output.newLine();
+      output.writeIfCondition( "not omit_" + artifact.getAlias(), o -> emitArtifactTargets( o, artifact ) );
     }
-    output.newLine();
-    output.write( "if not omit_" + artifact.getAlias() + ":" );
-    output.incIndent();
-    emitArtifactTargets( output, artifact );
-    output.decIndent();
   }
 
   private void emitArtifactTargets( @Nonnull final StarlarkOutput output,
