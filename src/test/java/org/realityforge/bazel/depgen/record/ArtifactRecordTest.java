@@ -555,7 +555,6 @@ public class ArtifactRecordTest
     } );
   }
 
-
   @Test
   public void emitPluginLibrary_withNoProcessors()
     throws Exception
