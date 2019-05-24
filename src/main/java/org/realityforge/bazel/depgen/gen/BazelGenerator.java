@@ -203,7 +203,7 @@ public final class BazelGenerator
     assert null != a;
 
     final String artifactPath =
-      ArtifactUtil.artifactToPath( a.getGroupId(), a.getArtifactId(), a.getVersion(), "jar", "sources" );
+      ArtifactUtil.artifactToPath( a.getGroupId(), a.getArtifactId(), a.getVersion(), "sources", "jar" );
     arguments.put( "downloaded_file_path", "\"" + artifactPath + "\"" );
     arguments.put( "sha256", "\"" + sourceSha256.toLowerCase() + "\"" );
     final List<String> urls = artifact.getSourceUrls();

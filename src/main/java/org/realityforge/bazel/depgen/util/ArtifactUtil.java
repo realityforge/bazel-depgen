@@ -23,8 +23,8 @@ public final class ArtifactUtil
   public static String artifactToPath( @Nonnull final String groupId,
                                        @Nonnull final String artifactId,
                                        @Nonnull final String version,
-                                       @Nonnull final String extension,
-                                       @Nonnull final String classifier )
+                                       @Nonnull final String classifier,
+                                       @Nonnull final String extension )
   {
     return groupId.replaceAll( "\\.", "/" ) +
            "/" +
@@ -36,6 +36,6 @@ public final class ArtifactUtil
            "-" +
            version +
            ( classifier.isEmpty() ? "" : "-" + classifier ) +
-           extension;
+           "." + extension;
   }
 }
