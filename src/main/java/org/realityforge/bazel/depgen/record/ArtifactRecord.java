@@ -402,7 +402,7 @@ public final class ArtifactRecord
     return groupId.equals( artifact.getGroupId() ) && artifactId.equals( artifact.getArtifactId() );
   }
 
-  public void emitAlias( @Nonnull final StarlarkOutput output )
+  void emitAlias( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
@@ -425,7 +425,7 @@ public final class ArtifactRecord
     output.writeCall( "native.alias", arguments );
   }
 
-  public void emitJavaImport( @Nonnull final StarlarkOutput output, @Nonnull final String nameSuffix )
+  void emitJavaImport( @Nonnull final StarlarkOutput output, @Nonnull final String nameSuffix )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
@@ -488,7 +488,7 @@ public final class ArtifactRecord
            PLUGIN_SUFFIX;
   }
 
-  public void emitPluginLibrary( @Nonnull final StarlarkOutput output, @Nonnull final String suffix )
+  void emitPluginLibrary( @Nonnull final StarlarkOutput output, @Nonnull final String suffix )
     throws IOException
   {
     assert Nature.Library != getNature();
@@ -532,7 +532,7 @@ public final class ArtifactRecord
     output.writeCall( "native.java_library", arguments );
   }
 
-  public void emitJavaLibraryAndPlugin( @Nonnull final StarlarkOutput output )
+  void emitJavaLibraryAndPlugin( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
@@ -546,6 +546,27 @@ public final class ArtifactRecord
 
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     output.writeCall( "native.java_library", arguments );
+  }
+
+  public void emitArtifactTargets( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    emitAlias( output );
+    final Nature nature = getNature();
+    if ( Nature.Library == nature )
+    {
+      emitJavaImport( output, "" );
+    }
+    else if ( Nature.Plugin == nature )
+    {
+      emitPluginLibrary( output, "" );
+    }
+    else
+    {
+      assert Nature.LibraryAndPlugin == nature;
+      emitPluginLibrary( output, PLUGINS_LIBRARY_SUFFIX );
+      emitJavaLibraryAndPlugin( output );
+    }
   }
 
   public void emitArtifactHttpFileRule( @Nonnull final StarlarkOutput output )

@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
-import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
 
@@ -146,29 +145,7 @@ public final class BazelGenerator
     if ( null == artifact.getReplacementModel() )
     {
       output.newLine();
-      output.writeIfCondition( "not omit_" + artifact.getAlias(), o -> emitArtifactTargets( o, artifact ) );
-    }
-  }
-
-  private void emitArtifactTargets( @Nonnull final StarlarkOutput output,
-                                    @Nonnull final ArtifactRecord artifact )
-    throws IOException
-  {
-    artifact.emitAlias( output );
-    final Nature nature = artifact.getNature();
-    if ( Nature.Library == nature )
-    {
-      artifact.emitJavaImport( output, "" );
-    }
-    else if ( Nature.Plugin == nature )
-    {
-      artifact.emitPluginLibrary( output, "" );
-    }
-    else
-    {
-      assert Nature.LibraryAndPlugin == nature;
-      artifact.emitPluginLibrary( output, "__plugins" );
-      artifact.emitJavaLibraryAndPlugin( output );
+      output.writeIfCondition( "not omit_" + artifact.getAlias(), artifact::emitArtifactTargets );
     }
   }
 

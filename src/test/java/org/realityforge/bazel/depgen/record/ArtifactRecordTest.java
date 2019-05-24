@@ -802,6 +802,141 @@ public class ArtifactRecordTest
     } );
   }
 
+  @Test
+  public void emitArtifactTargets_Library()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitArtifactTargets( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "native.alias(\n" +
+                    "    name = \"com_example__myapp\",\n" +
+                    "    actual = \":com_example__myapp__1_0\",\n" +
+                    ")\n" +
+                    "native.java_import(\n" +
+                    "    name = \"com_example__myapp__1_0\",\n" +
+                    "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    licenses = [\"notice\"],\n" +
+                    "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void emitArtifactTargets_Plugin()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      final Path jarFile =
+        createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                       "arez.processor.ArezProcessor\n" +
+                       "react4j.processor.ReactProcessor\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitArtifactTargets( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "native.alias(\n" +
+                    "    name = \"com_example__myapp\",\n" +
+                    "    actual = \":com_example__myapp__1_0\",\n" +
+                    ")\n" +
+                    "native.java_import(\n" +
+                    "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
+                    "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    licenses = [\"notice\"],\n" +
+                    "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" +
+                    "native.java_plugin(\n" +
+                    "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
+                    "    processor_class = \"arez.processor.ArezProcessor\",\n" +
+                    "    generates_api = True,\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                    ")\n" +
+                    "native.java_plugin(\n" +
+                    "    name = \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
+                    "    processor_class = \"react4j.processor.ReactProcessor\",\n" +
+                    "    generates_api = True,\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                    ")\n" +
+                    "native.java_library(\n" +
+                    "    name = \"com_example__myapp__1_0\",\n" +
+                    "    exported_plugins = [\n" +
+                    "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
+                    "        \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
+                    "    ],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void emitArtifactTargets_LibraryAndPlugin_noProcessors()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    nature: LibraryAndPlugin\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitArtifactTargets( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "native.alias(\n" +
+                    "    name = \"com_example__myapp\",\n" +
+                    "    actual = \":com_example__myapp__1_0\",\n" +
+                    ")\n" +
+                    "native.java_import(\n" +
+                    "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
+                    "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    licenses = [\"notice\"],\n" +
+                    "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" +
+                    "native.java_plugin(\n" +
+                    "    name = \"com_example__myapp__1_0__plugin\",\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                    ")\n" +
+                    "native.java_library(\n" +
+                    "    name = \"com_example__myapp__1_0__plugins\",\n" +
+                    "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" +
+                    "native.java_library(\n" +
+                    "    name = \"com_example__myapp__1_0\",\n" +
+                    "    exports = [\n" +
+                    "        \"com_example__myapp__1_0__plugin_library\",\n" +
+                    "        \"com_example__myapp__1_0__plugins\",\n" +
+                    "    ],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
   @Nonnull
   private String asString( @Nonnull final ByteArrayOutputStream outputStream )
   {
