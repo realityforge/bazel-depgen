@@ -471,7 +471,7 @@ public final class ArtifactRecord
     {
       arguments.put( "processor_class", "\"" + processorClass + "\"" );
     }
-    if ( generatesApi() )
+    if ( null != processorClass && generatesApi() )
     {
       arguments.put( "generates_api", "True" );
     }

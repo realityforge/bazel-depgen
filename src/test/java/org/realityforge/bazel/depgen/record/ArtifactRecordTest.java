@@ -426,7 +426,6 @@ public class ArtifactRecordTest
       assertEquals( asString( outputStream ),
                     "native.java_plugin(\n" +
                     "    name = \"com_example__myapp__1_0__plugin\",\n" +
-                    "    generates_api = True,\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                     ")\n" );
@@ -589,7 +588,6 @@ public class ArtifactRecordTest
                     ")\n" +
                     "native.java_plugin(\n" +
                     "    name = \"com_example__myapp__1_0__plugin\",\n" +
-                    "    generates_api = True,\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                     ")\n" +
@@ -627,7 +625,6 @@ public class ArtifactRecordTest
                     ")\n" +
                     "native.java_plugin(\n" +
                     "    name = \"com_example__myapp__1_0__plugin\",\n" +
-                    "    generates_api = True,\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                     ")\n" +
