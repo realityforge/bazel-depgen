@@ -15,6 +15,13 @@ import javax.annotation.Nonnull;
 public final class StarlarkOutput
   implements AutoCloseable
 {
+  @FunctionalInterface
+  public interface Block
+  {
+    void call( @Nonnull StarlarkOutput output )
+      throws IOException;
+  }
+
   @Nonnull
   private final OutputStream _outputStream;
   private int _indent;
@@ -45,6 +52,15 @@ public final class StarlarkOutput
     throws IOException
   {
     emit( "\n" );
+  }
+
+  public void writeIfCondition( @Nonnull final String condition, @Nonnull final Block body )
+    throws IOException
+  {
+    write( "if " + condition + ":" );
+    incIndent();
+    body.call( this );
+    decIndent();
   }
 
   public void writeMacroStart( @Nonnull final String name, @Nonnull final List<String> arguments )

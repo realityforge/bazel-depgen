@@ -183,6 +183,18 @@ public class StarlarkOutputTest
   }
 
   @Test
+  public void writeIfCondition()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file =
+        writeFileContent( output -> output.writeIfCondition( "not someCondition", o -> o.write( "someCall()" ) ) );
+
+      assertFileContent( file, "if not someCondition:\n    someCall()\n" );
+    } );
+  }
+
+  @Test
   public void writeMacro_noArgs()
     throws Exception
   {
