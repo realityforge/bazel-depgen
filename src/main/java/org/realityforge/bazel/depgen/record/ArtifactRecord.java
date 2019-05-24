@@ -481,7 +481,7 @@ public final class ArtifactRecord
            PLUGIN_SUFFIX;
   }
 
-  public void emitPluginLibrary( @Nonnull final StarlarkFileOutput output )
+  public void emitPluginLibrary( @Nonnull final StarlarkFileOutput output, @Nonnull final String suffix )
     throws IOException
   {
     assert Nature.Library != getNature();
@@ -498,9 +498,10 @@ public final class ArtifactRecord
         emitJavaPlugin( output, processor );
       }
     }
+    emitJavaPluginLibrary( output, suffix );
   }
 
-  public void emitJavaPluginLibrary( @Nonnull final StarlarkFileOutput output, @Nonnull final String suffix )
+  void emitJavaPluginLibrary( @Nonnull final StarlarkFileOutput output, @Nonnull final String suffix )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();

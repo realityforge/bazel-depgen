@@ -183,14 +183,12 @@ public final class BazelGenerator
     }
     else if ( Nature.Plugin == nature )
     {
-      artifact.emitPluginLibrary( output );
-      artifact.emitJavaPluginLibrary( output, "" );
+      artifact.emitPluginLibrary( output, "" );
     }
     else
     {
       assert Nature.LibraryAndPlugin == nature;
-      artifact.emitPluginLibrary( output );
-      artifact.emitJavaPluginLibrary( output, "__plugins" );
+      artifact.emitPluginLibrary( output, "__plugins" );
       emitJavaLibraryAndPlugin( output, artifact );
     }
   }

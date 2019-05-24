@@ -529,7 +529,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitPluginLibrary( new StarlarkFileOutput( outputStream ) );
+      artifactRecord.emitPluginLibrary( new StarlarkFileOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
@@ -551,6 +551,14 @@ public class ArtifactRecordTest
                     "    generates_api = True,\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                    ")\n" +
+                    "native.java_library(\n" +
+                    "    name = \"com_example__myapp__1_0\",\n" +
+                    "    exported_plugins = [\n" +
+                    "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
+                    "        \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
+                    "    ],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );
     } );
   }
@@ -570,7 +578,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitPluginLibrary( new StarlarkFileOutput( outputStream ) );
+      artifactRecord.emitPluginLibrary( new StarlarkFileOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
@@ -584,6 +592,49 @@ public class ArtifactRecordTest
                     "    generates_api = True,\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                    ")\n" +
+                    "native.java_library(\n" +
+                    "    name = \"com_example__myapp__1_0\",\n" +
+                    "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void emitPluginLibrary_withSuffix()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    nature: Plugin\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitPluginLibrary( new StarlarkFileOutput( outputStream ), "__plugins" );
+      assertEquals( asString( outputStream ),
+                    "native.java_import(\n" +
+                    "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
+                    "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    licenses = [\"notice\"],\n" +
+                    "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" +
+                    "native.java_plugin(\n" +
+                    "    name = \"com_example__myapp__1_0__plugin\",\n" +
+                    "    generates_api = True,\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                    ")\n" +
+                    "native.java_library(\n" +
+                    "    name = \"com_example__myapp__1_0__plugins\",\n" +
+                    "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );
     } );
   }
