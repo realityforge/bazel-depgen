@@ -640,7 +640,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitJavaPluginLibraryLibrary_withProcessors()
+  public void emitJavaPluginLibrary_withProcessors()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -671,7 +671,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitJavaPluginLibraryLibrary_withNoProcessors()
+  public void emitJavaPluginLibrary_withNoProcessors()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -696,7 +696,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitJavaPluginLibraryLibrary_withSuffix()
+  public void emitJavaPluginLibrary_withSuffix()
     throws Exception
   {
     inIsolatedDirectory( () -> {
