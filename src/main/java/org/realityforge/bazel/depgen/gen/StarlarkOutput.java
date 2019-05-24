@@ -54,6 +54,16 @@ public final class StarlarkOutput
     emit( "\n" );
   }
 
+  public void writeMultilineComment( @Nonnull final Block body )
+    throws IOException
+  {
+    write( "\"\"\"" );
+    incIndent();
+    body.call( this );
+    decIndent();
+    write( "\"\"\"" );
+  }
+
   public void writeIfCondition( @Nonnull final String condition, @Nonnull final Block body )
     throws IOException
   {

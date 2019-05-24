@@ -95,15 +95,13 @@ public final class BazelGenerator
                                 .map( a -> "omit_" + a.getAlias() + " = False" )
                                 .collect( Collectors.toList() ) );
       output.incIndent();
-      output.write( "\"\"\"" );
-      output.incIndent();
-      output.write( "Repository rules macro to load dependencies specified by '" +
-                    getRelativePathToDependenciesYaml() +
-                    "'." );
-      output.newLine();
-      output.write( "Must be run from a WORKSPACE file." );
-      output.decIndent();
-      output.write( "\"\"\"" );
+      output.writeMultilineComment( o -> {
+        o.write( "Repository rules macro to load dependencies specified by '" +
+                 getRelativePathToDependenciesYaml() +
+                 "'." );
+        o.newLine();
+        o.write( "Must be run from a WORKSPACE file." );
+      } );
 
       for ( final ArtifactRecord artifact : _record.getArtifacts() )
       {
@@ -188,18 +186,16 @@ public final class BazelGenerator
   private void emitModuleDocstring( @Nonnull final StarlarkOutput output )
     throws IOException
   {
-    output.write( "\"\"\"" );
-    output.incIndent();
-    output.write( "Macro rules to load dependencies defined in '" + getRelativePathToDependenciesYaml() + "'." );
-    output.newLine();
-    output.write( "Invoke '" +
-                  _record.getSource().getOptions().getWorkspaceMacroName() +
-                  "' from a WORKSPACE file." );
-    output.write( "Invoke '" +
-                  _record.getSource().getOptions().getTargetMacroName() +
-                  "' from a BUILD.bazel file." );
-    output.decIndent();
-    output.write( "\"\"\"" );
+    output.writeMultilineComment( o -> {
+      o.write( "Macro rules to load dependencies defined in '" + getRelativePathToDependenciesYaml() + "'." );
+      o.newLine();
+      o.write( "Invoke '" +
+               _record.getSource().getOptions().getWorkspaceMacroName() +
+               "' from a WORKSPACE file." );
+      o.write( "Invoke '" +
+               _record.getSource().getOptions().getTargetMacroName() +
+               "' from a BUILD.bazel file." );
+    } );
   }
 
   private void emitArtifactSourcesHttpFileRule( @Nonnull final StarlarkOutput output,

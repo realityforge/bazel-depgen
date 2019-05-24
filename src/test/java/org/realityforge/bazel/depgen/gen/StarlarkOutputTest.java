@@ -183,6 +183,18 @@ public class StarlarkOutputTest
   }
 
   @Test
+  public void writeMultilineComment()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path file = writeFileContent( output -> output.writeMultilineComment( o -> o.write( "Some comment" ) ) );
+      assertFileContent( file, "\"\"\"\n" +
+                               "    Some comment\n" +
+                               "\"\"\"\n" );
+    } );
+  }
+
+  @Test
   public void writeIfCondition()
     throws Exception
   {
