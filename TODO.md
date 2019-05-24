@@ -10,6 +10,10 @@ complete as there is too much un-said.
 
 * Generate an error if `PluginAndLibrary` nature is used when combined with `J2cl` language.
 
+* extract `if` condition method to `StarlarkFileOutput`.
+
+* Rename `StarlarkFileOutput` to `StarlarkOutput`.
+
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
   online or needed to be rebuilt.
 
