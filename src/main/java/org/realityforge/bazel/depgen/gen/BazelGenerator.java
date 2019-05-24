@@ -69,7 +69,7 @@ public final class BazelGenerator
     }
   }
 
-  private void emitExtensionFile( final Path extensionFile )
+  private void emitExtensionFile( @Nonnull final Path extensionFile )
     throws Exception
   {
     try ( final StarlarkOutput output = new StarlarkOutput( extensionFile ) )
@@ -85,68 +85,74 @@ public final class BazelGenerator
       output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
       output.newLine();
 
-      output.writeMacro( _record.getSource().getOptions().getWorkspaceMacroName(),
-                         _record.getArtifacts()
-                           .stream()
-                           .filter( a -> null == a.getReplacementModel() )
-                           .map( a -> "omit_" + a.getAlias() + " = False" )
-                           .collect( Collectors.toList() ), macro -> {
-          macro.writeMultilineComment( o -> {
-            o.write( "Repository rules macro to load dependencies specified by '" +
-                     _record.getPathFromExtensionToConfig() +
-                     "'." );
-            o.newLine();
-            o.write( "Must be run from a WORKSPACE file." );
-          } );
-
-          for ( final ArtifactRecord artifact : _record.getArtifacts() )
-          {
-            if ( null == artifact.getReplacementModel() )
-            {
-              macro.newLine();
-              macro.writeIfCondition( "not omit_" + artifact.getAlias(), o -> {
-                artifact.emitArtifactHttpFileRule( o );
-
-                final String sourceSha256 = artifact.getSourceSha256();
-                if ( null != sourceSha256 )
-                {
-                  o.newLine();
-                  final List<String> sourceUrls = artifact.getSourceUrls();
-                  assert null != sourceUrls && !sourceUrls.isEmpty();
-                  artifact.emitArtifactSourcesHttpFileRule( o );
-                }
-              } );
-            }
-          }
-        } );
+      writeWorkspaceMacro( output );
 
       output.newLine();
 
-      output.writeMacro( _record.getSource().getOptions().getTargetMacroName(),
-                         _record.getArtifacts()
-                           .stream()
-                           .filter( a -> null == a.getReplacementModel() )
-                           .map( a -> "omit_" + a.getAlias() + " = False" )
-                           .collect( Collectors.toList() ), macro -> {
-          macro.writeMultilineComment( o -> o.write( "Macro to define targets for dependencies specified by '" +
-                                                     _record.getPathFromExtensionToConfig() +
-                                                     "'." ) );
-          for ( final ArtifactRecord artifact : _record.getArtifacts() )
-          {
-            emitArtifact( macro, artifact );
-          }
-        } );
+      writeTargetMacro( output );
     }
   }
 
-  private void emitArtifact( @Nonnull final StarlarkOutput output, @Nonnull final ArtifactRecord artifact )
+  private void writeTargetMacro( @Nonnull final StarlarkOutput output )
     throws IOException
   {
-    if ( null == artifact.getReplacementModel() )
-    {
-      output.newLine();
-      output.writeIfCondition( "not omit_" + artifact.getAlias(), artifact::emitArtifactTargets );
-    }
+    output.writeMacro( _record.getSource().getOptions().getTargetMacroName(),
+                       _record.getArtifacts()
+                         .stream()
+                         .filter( a -> null == a.getReplacementModel() )
+                         .map( a -> "omit_" + a.getAlias() + " = False" )
+                         .collect( Collectors.toList() ), macro -> {
+        macro.writeMultilineComment( o -> o.write( "Macro to define targets for dependencies specified by '" +
+                                                   _record.getPathFromExtensionToConfig() +
+                                                   "'." ) );
+        for ( final ArtifactRecord artifact : _record.getArtifacts() )
+        {
+          if ( null == artifact.getReplacementModel() )
+          {
+            macro.newLine();
+            macro.writeIfCondition( "not omit_" + artifact.getAlias(), artifact::emitArtifactTargets );
+          }
+        }
+      } );
+  }
+
+  private void writeWorkspaceMacro( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    output.writeMacro( _record.getSource().getOptions().getWorkspaceMacroName(),
+                       _record.getArtifacts()
+                         .stream()
+                         .filter( a -> null == a.getReplacementModel() )
+                         .map( a -> "omit_" + a.getAlias() + " = False" )
+                         .collect( Collectors.toList() ), macro -> {
+        macro.writeMultilineComment( o -> {
+          o.write( "Repository rules macro to load dependencies specified by '" +
+                   _record.getPathFromExtensionToConfig() +
+                   "'." );
+          o.newLine();
+          o.write( "Must be run from a WORKSPACE file." );
+        } );
+
+        for ( final ArtifactRecord artifact : _record.getArtifacts() )
+        {
+          if ( null == artifact.getReplacementModel() )
+          {
+            macro.newLine();
+            macro.writeIfCondition( "not omit_" + artifact.getAlias(), o -> {
+              artifact.emitArtifactHttpFileRule( o );
+
+              final String sourceSha256 = artifact.getSourceSha256();
+              if ( null != sourceSha256 )
+              {
+                o.newLine();
+                final List<String> sourceUrls = artifact.getSourceUrls();
+                assert null != sourceUrls && !sourceUrls.isEmpty();
+                artifact.emitArtifactSourcesHttpFileRule( o );
+              }
+            } );
+          }
+        }
+      } );
   }
 
   private void emitModuleDocstring( @Nonnull final StarlarkOutput output )
