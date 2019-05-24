@@ -99,31 +99,8 @@ public final class BazelGenerator
 
       output.newLine();
 
-      writeTargetMacro( output );
+      _record.writeTargetMacro( output );
     }
-  }
-
-  private void writeTargetMacro( @Nonnull final StarlarkOutput output )
-    throws IOException
-  {
-    output.writeMacro( _record.getSource().getOptions().getTargetMacroName(),
-                       _record.getArtifacts()
-                         .stream()
-                         .filter( a -> null == a.getReplacementModel() )
-                         .map( a -> "omit_" + a.getAlias() + " = False" )
-                         .collect( Collectors.toList() ), macro -> {
-        macro.writeMultilineComment( o -> o.write( "Macro to define targets for dependencies specified by '" +
-                                                   _record.getPathFromExtensionToConfig() +
-                                                   "'." ) );
-        for ( final ArtifactRecord artifact : _record.getArtifacts() )
-        {
-          if ( null == artifact.getReplacementModel() )
-          {
-            macro.newLine();
-            macro.writeIfCondition( "not omit_" + artifact.getAlias(), artifact::emitArtifactTargets );
-          }
-        }
-      } );
   }
 
   private void writeWorkspaceMacro( @Nonnull final StarlarkOutput output )

@@ -1,6 +1,7 @@
 package org.realityforge.bazel.depgen.record;
 
 import gir.io.FileUtil;
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,6 +15,7 @@ import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.Nature;
+import org.realityforge.bazel.depgen.gen.StarlarkOutput;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -1641,6 +1643,175 @@ public class ApplicationRecordTest
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getLanguages(), Collections.singletonList( Language.J2cl ) );
+    } );
+  }
+
+  @Test
+  public void writeTargetMacro()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeTargetMacro( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "def generate_targets(omit_com_example__myapp = False):\n" +
+                    "    \"\"\"\n" +
+                    "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    if not omit_com_example__myapp:\n" +
+                    "        native.alias(\n" +
+                    "            name = \"com_example__myapp\",\n" +
+                    "            actual = \":com_example__myapp__1_0\",\n" +
+                    "        )\n" +
+                    "        native.java_import(\n" +
+                    "            name = \"com_example__myapp__1_0\",\n" +
+                    "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "            licenses = [\"notice\"],\n" +
+                    "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "            visibility = [\"//visibility:private\"],\n" +
+                    "        )\n" );
+    } );
+  }
+
+  @Test
+  public void writeTargetMacro_macroNameOverride()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "options:\n" +
+                              "  targetMacroName: generate_myapp_targets\n" +
+                              "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeTargetMacro( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "def generate_myapp_targets(omit_com_example__myapp = False):\n" +
+                    "    \"\"\"\n" +
+                    "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    if not omit_com_example__myapp:\n" +
+                    "        native.alias(\n" +
+                    "            name = \"com_example__myapp\",\n" +
+                    "            actual = \":com_example__myapp__1_0\",\n" +
+                    "        )\n" +
+                    "        native.java_import(\n" +
+                    "            name = \"com_example__myapp__1_0\",\n" +
+                    "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "            licenses = [\"notice\"],\n" +
+                    "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "            visibility = [\"//visibility:private\"],\n" +
+                    "        )\n" );
+    } );
+  }
+
+  @Test
+  public void writeTargetMacro_dependency()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeTargetMacro( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "def generate_targets(\n" +
+                    "        omit_com_example__myapp = False,\n" +
+                    "        omit_com_example__mylib = False):\n" +
+                    "    \"\"\"\n" +
+                    "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    if not omit_com_example__myapp:\n" +
+                    "        native.alias(\n" +
+                    "            name = \"com_example__myapp\",\n" +
+                    "            actual = \":com_example__myapp__1_0\",\n" +
+                    "        )\n" +
+                    "        native.java_import(\n" +
+                    "            name = \"com_example__myapp__1_0\",\n" +
+                    "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "            licenses = [\"notice\"],\n" +
+                    "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "            visibility = [\"//visibility:private\"],\n" +
+                    "            deps = [\":com_example__mylib\"],\n" +
+                    "        )\n" +
+                    "\n" +
+                    "    if not omit_com_example__mylib:\n" +
+                    "        native.alias(\n" +
+                    "            name = \"com_example__mylib\",\n" +
+                    "            actual = \":com_example__mylib__2_0\",\n" +
+                    "            visibility = [\"//visibility:private\"],\n" +
+                    "        )\n" +
+                    "        native.java_import(\n" +
+                    "            name = \"com_example__mylib__2_0\",\n" +
+                    "            jars = [\"@com_example__mylib__2_0//file\"],\n" +
+                    "            licenses = [\"notice\"],\n" +
+                    "            tags = [\"maven_coordinates=com.example:mylib:2.0\"],\n" +
+                    "            visibility = [\"//visibility:private\"],\n" +
+                    "        )\n" );
+    } );
+  }
+
+  @Test
+  public void writeTargetMacro_replacement()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "replacements:\n" +
+                              "  - coord: com.example:mylib\n" +
+                              "    target: \"@com_example//:mylib\"\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeTargetMacro( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "def generate_targets(omit_com_example__myapp = False):\n" +
+                    "    \"\"\"\n" +
+                    "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    if not omit_com_example__myapp:\n" +
+                    "        native.alias(\n" +
+                    "            name = \"com_example__myapp\",\n" +
+                    "            actual = \":com_example__myapp__1_0\",\n" +
+                    "        )\n" +
+                    "        native.java_import(\n" +
+                    "            name = \"com_example__myapp__1_0\",\n" +
+                    "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "            licenses = [\"notice\"],\n" +
+                    "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "            visibility = [\"//visibility:private\"],\n" +
+                    "            deps = [\":@com_example//:mylib\"],\n" +
+                    "        )\n" );
     } );
   }
 }

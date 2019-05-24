@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen.record;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,6 +15,7 @@ import javax.annotation.Nullable;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.config.Nature;
+import org.realityforge.bazel.depgen.gen.StarlarkOutput;
 import org.realityforge.bazel.depgen.metadata.RecordBuildCallback;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
@@ -116,6 +118,29 @@ public final class ApplicationRecord
       .toAbsolutePath()
       .normalize()
       .relativize( configLocation.toAbsolutePath().normalize() );
+  }
+
+  public void writeTargetMacro( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    output.writeMacro( getSource().getOptions().getTargetMacroName(),
+                       getArtifacts()
+                         .stream()
+                         .filter( a -> null == a.getReplacementModel() )
+                         .map( a -> "omit_" + a.getAlias() + " = False" )
+                         .collect( Collectors.toList() ), macro -> {
+        macro.writeMultilineComment( o -> o.write( "Macro to define targets for dependencies specified by '" +
+                                                   getPathFromExtensionToConfig() +
+                                                   "'." ) );
+        for ( final ArtifactRecord artifact : getArtifacts() )
+        {
+          if ( null == artifact.getReplacementModel() )
+          {
+            macro.newLine();
+            macro.writeIfCondition( "not omit_" + artifact.getAlias(), artifact::emitArtifactTargets );
+          }
+        }
+      } );
   }
 
   void replacement( @Nonnull final DependencyNode node )
