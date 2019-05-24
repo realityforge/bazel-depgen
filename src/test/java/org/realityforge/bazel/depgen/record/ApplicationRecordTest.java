@@ -4,6 +4,7 @@ import gir.io.FileUtil;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +21,41 @@ import static org.testng.Assert.*;
 public class ApplicationRecordTest
   extends AbstractTest
 {
+  @Test
+  public void getPathFromExtensionToConfig()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      assertEquals( record.getSource().getConfigLocation(),
+                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getPathFromExtensionToConfig(), Paths.get( "../dependencies.yml" ) );
+    } );
+  }
+
+  @Test
+  public void getPathFromExtensionToConfig_nonStandardExtensionFile()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "options:\n" +
+                              "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      assertEquals( record.getSource().getConfigLocation(),
+                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getPathFromExtensionToConfig(), Paths.get( "../../dependencies.yml" ) );
+    } );
+  }
+
   @Test
   public void build_simple_noDeps()
     throws Exception

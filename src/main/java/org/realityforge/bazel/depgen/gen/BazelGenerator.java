@@ -45,7 +45,7 @@ public final class BazelGenerator
       try ( final StarlarkOutput output = new StarlarkOutput( buildfile ) )
       {
         output.write( "# File is auto-generated from " +
-                      getRelativePathToDependenciesYaml() +
+                      _record.getPathFromExtensionToConfig() +
                       " by https://github.com/realityforge/bazel-depgen" );
         output.write( "# Contents can be edited and will not be overridden." );
 
@@ -93,7 +93,7 @@ public final class BazelGenerator
                            .collect( Collectors.toList() ), macro -> {
           macro.writeMultilineComment( o -> {
             o.write( "Repository rules macro to load dependencies specified by '" +
-                     getRelativePathToDependenciesYaml() +
+                     _record.getPathFromExtensionToConfig() +
                      "'." );
             o.newLine();
             o.write( "Must be run from a WORKSPACE file." );
@@ -129,7 +129,7 @@ public final class BazelGenerator
                            .map( a -> "omit_" + a.getAlias() + " = False" )
                            .collect( Collectors.toList() ), macro -> {
           macro.writeMultilineComment( o -> o.write( "Macro to define targets for dependencies specified by '" +
-                                                     getRelativePathToDependenciesYaml() +
+                                                     _record.getPathFromExtensionToConfig() +
                                                      "'." ) );
           for ( final ArtifactRecord artifact : _record.getArtifacts() )
           {
@@ -153,7 +153,7 @@ public final class BazelGenerator
     throws IOException
   {
     output.writeMultilineComment( o -> {
-      o.write( "Macro rules to load dependencies defined in '" + getRelativePathToDependenciesYaml() + "'." );
+      o.write( "Macro rules to load dependencies defined in '" + _record.getPathFromExtensionToConfig() + "'." );
       o.newLine();
       o.write( "Invoke '" +
                _record.getSource().getOptions().getWorkspaceMacroName() +
@@ -197,18 +197,7 @@ public final class BazelGenerator
     throws IOException
   {
     output.write( "# DO NOT EDIT: File is auto-generated from " +
-                  getRelativePathToDependenciesYaml() +
+                  _record.getPathFromExtensionToConfig() +
                   " by https://github.com/realityforge/bazel-depgen" );
-  }
-
-  @Nonnull
-  private Path getRelativePathToDependenciesYaml()
-  {
-    final Path configLocation = _record.getSource().getConfigLocation();
-    final Path extensionFile = _record.getSource().getOptions().getExtensionFile();
-    return extensionFile.getParent()
-      .toAbsolutePath()
-      .normalize()
-      .relativize( configLocation.toAbsolutePath().normalize() );
   }
 }

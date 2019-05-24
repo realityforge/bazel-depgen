@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen.record;
 
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -99,6 +100,22 @@ public final class ApplicationRecord
       .stream()
       .sorted( Comparator.comparing( ArtifactRecord::getKey ) )
       .collect( Collectors.toList() );
+  }
+
+  /**
+   * Return the relative path from the extension file to the source dependency file.
+   *
+   * @return the relative path from the  extension file to the source dependency file.
+   */
+  @Nonnull
+  public Path getPathFromExtensionToConfig()
+  {
+    final Path configLocation = _source.getConfigLocation();
+    final Path extensionFile = _source.getOptions().getExtensionFile();
+    return extensionFile.getParent()
+      .toAbsolutePath()
+      .normalize()
+      .relativize( configLocation.toAbsolutePath().normalize() );
   }
 
   void replacement( @Nonnull final DependencyNode node )
