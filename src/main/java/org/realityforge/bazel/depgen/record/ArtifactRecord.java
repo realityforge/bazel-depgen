@@ -474,7 +474,7 @@ public final class ArtifactRecord
   }
 
   @Nonnull
-  public String pluginName( @Nullable final String processorClass )
+  String pluginName( @Nullable final String processorClass )
   {
     return getName() +
            ( null == processorClass ? "" : BazelUtil.cleanNamePart( "__" + processorClass ) ) +
@@ -498,5 +498,29 @@ public final class ArtifactRecord
         emitJavaPlugin( output, processor );
       }
     }
+  }
+
+  public void emitJavaPluginLibrary( @Nonnull final StarlarkFileOutput output, @Nonnull final String suffix )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + getName() + suffix + "\"" );
+    assert Nature.Library != getNature();
+    final ArrayList<String> plugins = new ArrayList<>();
+    final List<String> processors = getProcessors();
+    if ( null == processors )
+    {
+      plugins.add( "\"" + pluginName( null ) + "\"" );
+    }
+    else
+    {
+      for ( final String processor : processors )
+      {
+        plugins.add( "\"" + pluginName( processor ) + "\"" );
+      }
+    }
+    arguments.put( "exported_plugins", plugins );
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    output.writeCall( "native.java_library", arguments );
   }
 }

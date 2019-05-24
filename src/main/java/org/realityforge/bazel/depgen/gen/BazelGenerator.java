@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen.gen;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -185,42 +184,15 @@ public final class BazelGenerator
     else if ( Nature.Plugin == nature )
     {
       artifact.emitPluginLibrary( output );
-      emitJavaLibrary( output, artifact, "" );
+      artifact.emitJavaPluginLibrary( output, "" );
     }
     else
     {
       assert Nature.LibraryAndPlugin == nature;
       artifact.emitPluginLibrary( output );
-      emitJavaLibrary( output, artifact, "__plugins" );
+      artifact.emitJavaPluginLibrary( output, "__plugins" );
       emitJavaLibraryAndPlugin( output, artifact );
     }
-  }
-
-  private void emitJavaLibrary( @Nonnull final StarlarkFileOutput output,
-                                @Nonnull final ArtifactRecord artifact,
-                                @Nonnull final String suffix )
-    throws IOException
-  {
-    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + artifact.getName() + suffix + "\"" );
-    final Nature nature = artifact.getNature();
-    assert Nature.Library != nature;
-    final ArrayList<String> plugins = new ArrayList<>();
-    final List<String> processors = artifact.getProcessors();
-    if ( null == processors )
-    {
-      plugins.add( "\"" + artifact.pluginName( null ) + "\"" );
-    }
-    else
-    {
-      for ( final String processor : processors )
-      {
-        plugins.add( "\"" + artifact.pluginName( processor ) + "\"" );
-      }
-    }
-    arguments.put( "exported_plugins", plugins );
-    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    output.writeCall( "native.java_library", arguments );
   }
 
   private void emitJavaLibraryAndPlugin( @Nonnull final StarlarkFileOutput output,

@@ -588,6 +588,87 @@ public class ArtifactRecordTest
     } );
   }
 
+  @Test
+  public void emitJavaPluginLibraryLibrary_withProcessors()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      final Path jarFile =
+        createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                       "arez.processor.ArezProcessor\n" +
+                       "react4j.processor.ReactProcessor\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitJavaPluginLibrary( new StarlarkFileOutput( outputStream ), "" );
+      assertEquals( asString( outputStream ),
+                    "native.java_library(\n" +
+                    "    name = \"com_example__myapp__1_0\",\n" +
+                    "    exported_plugins = [\n" +
+                    "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
+                    "        \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
+                    "    ],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void emitJavaPluginLibraryLibrary_withNoProcessors()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    nature: Plugin\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitJavaPluginLibrary( new StarlarkFileOutput( outputStream ), "" );
+      assertEquals( asString( outputStream ),
+                    "native.java_library(\n" +
+                    "    name = \"com_example__myapp__1_0\",\n" +
+                    "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void emitJavaPluginLibraryLibrary_withSuffix()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    nature: Plugin\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitJavaPluginLibrary( new StarlarkFileOutput( outputStream ), "__plugins" );
+      assertEquals( asString( outputStream ),
+                    "native.java_library(\n" +
+                    "    name = \"com_example__myapp__1_0__plugins\",\n" +
+                    "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
   @Nonnull
   private String asString( @Nonnull final ByteArrayOutputStream outputStream )
   {
