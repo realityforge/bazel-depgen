@@ -4,6 +4,7 @@ import gir.Gir;
 import gir.Task;
 import gir.io.Exec;
 import gir.io.FileUtil;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -314,5 +315,11 @@ public abstract class AbstractTest
     logger.setUseParentHandlers( false );
     logger.addHandler( handler );
     return logger;
+  }
+
+  @Nonnull
+  protected final String asString( @Nonnull final ByteArrayOutputStream outputStream )
+  {
+    return new String( outputStream.toByteArray(), StandardCharsets.US_ASCII );
   }
 }

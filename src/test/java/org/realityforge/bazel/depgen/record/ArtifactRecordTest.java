@@ -938,12 +938,6 @@ public class ArtifactRecordTest
   }
 
   @Nonnull
-  private String asString( @Nonnull final ByteArrayOutputStream outputStream )
-  {
-    return new String( outputStream.toByteArray(), StandardCharsets.US_ASCII );
-  }
-
-  @Nonnull
   private ArtifactRecord getArtifactAt( @Nonnull final ApplicationRecord record, final int index )
   {
     final List<ArtifactRecord> artifacts = record.getArtifacts();
