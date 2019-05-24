@@ -720,6 +720,34 @@ public class ArtifactRecordTest
     } );
   }
 
+  @Test
+  public void emitJavaLibraryAndPlugin()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    nature: LibraryAndPlugin\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitJavaLibraryAndPlugin( new StarlarkFileOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "native.java_library(\n" +
+                    "    name = \"com_example__myapp__1_0\",\n" +
+                    "    exports = [\n" +
+                    "        \"com_example__myapp__1_0__plugin_library\",\n" +
+                    "        \"com_example__myapp__1_0__plugins\",\n" +
+                    "    ],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
   @Nonnull
   private String asString( @Nonnull final ByteArrayOutputStream outputStream )
   {

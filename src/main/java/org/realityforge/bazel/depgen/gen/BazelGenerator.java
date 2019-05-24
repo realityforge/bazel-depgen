@@ -2,8 +2,6 @@ package org.realityforge.bazel.depgen.gen;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
@@ -197,23 +195,7 @@ public final class BazelGenerator
     throws IOException
   {
     artifact.emitPluginLibrary( output, "__plugins" );
-    emitJavaLibraryAndPlugin( output, artifact );
-  }
-
-  private void emitJavaLibraryAndPlugin( @Nonnull final StarlarkFileOutput output,
-                                         @Nonnull final ArtifactRecord artifact )
-    throws IOException
-  {
-    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + artifact.getName() + "\"" );
-    final Nature nature = artifact.getNature();
-    assert Nature.LibraryAndPlugin == nature;
-
-    arguments.put( "exports", Arrays.asList( "\"" + artifact.getName() + "__library\"",
-                                             "\"" + artifact.getName() + "__plugins\"" ) );
-
-    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    output.writeCall( "native.java_library", arguments );
+    artifact.emitJavaLibraryAndPlugin( output );
   }
 
   private void emitModuleDocstring( @Nonnull final StarlarkFileOutput output )

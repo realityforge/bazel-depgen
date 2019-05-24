@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen.record;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -31,6 +32,11 @@ public final class ArtifactRecord
    * The suffix applied to every compile plugin.
    */
   private static final String PLUGIN_SUFFIX = "__plugin";
+  /**
+   * The suffix applied to the library that exports all the plugins.
+   * Note that this is only defined if the {@link Nature#LibraryAndPlugin} nature is used by the artifact.
+   */
+  private static final String PLUGINS_LIBRARY_SUFFIX = "__plugins";
   @Nonnull
   private final ApplicationRecord _application;
   @Nonnull
@@ -521,6 +527,22 @@ public final class ArtifactRecord
       }
     }
     arguments.put( "exported_plugins", plugins );
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    output.writeCall( "native.java_library", arguments );
+  }
+
+  public void emitJavaLibraryAndPlugin( @Nonnull final StarlarkFileOutput output )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    final String name = getName();
+    arguments.put( "name", "\"" + name + "\"" );
+    assert Nature.LibraryAndPlugin == getNature();
+
+    arguments.put( "exports",
+                   Arrays.asList( "\"" + name + PLUGIN_LIBRARY_SUFFIX + "\"",
+                                  "\"" + name + PLUGINS_LIBRARY_SUFFIX + "\"" ) );
+
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     output.writeCall( "native.java_library", arguments );
   }
