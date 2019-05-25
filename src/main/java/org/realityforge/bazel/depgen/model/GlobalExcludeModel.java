@@ -3,7 +3,6 @@ package org.realityforge.bazel.depgen.model;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.config.ExcludeConfig;
-import org.realityforge.bazel.depgen.config.ReplacementConfig;
 
 public final class GlobalExcludeModel
 {

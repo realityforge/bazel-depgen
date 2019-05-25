@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen.record;
 
 import gir.io.FileUtil;
 import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
