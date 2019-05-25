@@ -124,6 +124,7 @@ public class DependencyGraphEmitterTest
                     "   \\- com.example:rtA:jar:33.0 [runtime]\n" );
     } );
   }
+
   @Nonnull
   private String collectOutput( @Nonnull final Resolver resolver )
     throws Exception
