@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
+import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
 
@@ -82,12 +83,9 @@ public final class BazelGenerator
       output.writeMultilineComment( o -> {
         o.write( "Macro rules to load dependencies defined in '" + _record.getPathFromExtensionToConfig() + "'." );
         o.newLine();
-        o.write( "Invoke '" +
-                 _record.getSource().getOptions().getWorkspaceMacroName() +
-                 "' from a WORKSPACE file." );
-        o.write( "Invoke '" +
-                 _record.getSource().getOptions().getTargetMacroName() +
-                 "' from a BUILD.bazel file." );
+        final OptionsModel options = _record.getSource().getOptions();
+        o.write( "Invoke '" + options.getWorkspaceMacroName() + "' from a WORKSPACE file." );
+        o.write( "Invoke '" + options.getTargetMacroName() + "' from a BUILD.bazel file." );
       } );
 
       emitDependencyGraphIfRequired( output );
