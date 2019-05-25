@@ -1,6 +1,5 @@
 package org.realityforge.bazel.depgen.gen;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -35,7 +34,7 @@ public final class BazelGenerator
     {
       try ( final StarlarkOutput output1 = new StarlarkOutput( buildfile ) )
       {
-        writeDefaultBuild( output1 );
+        _record.writeDefaultBuild( output1 );
       }
     }
 
@@ -43,31 +42,5 @@ public final class BazelGenerator
     {
       _record.writeBazelExtension( output );
     }
-  }
-
-  private void writeDefaultBuild( @Nonnull final StarlarkOutput output )
-    throws IOException
-  {
-    output.write( "# File is auto-generated from " +
-                  _record.getPathFromExtensionToConfig() +
-                  " by https://github.com/realityforge/bazel-depgen" );
-    output.write( "# Contents can be edited and will not be overridden." );
-
-    output.write( "package(default_visibility = [\"//visibility:public\"])" );
-    output.newLine();
-
-    final Path extensionFile = _record.getSource().getOptions().getExtensionFile();
-    final Path workspaceDirectory = _record.getSource().getOptions().getWorkspaceDirectory();
-
-    output.write( "load(\"//" +
-                  workspaceDirectory.relativize( extensionFile.getParent() ) +
-                  ":" +
-                  extensionFile.getName( extensionFile.getNameCount() - 1 ) +
-                  "\", \"" +
-                  _record.getSource().getOptions().getTargetMacroName() +
-                  "\")" );
-    output.newLine();
-
-    output.write( _record.getSource().getOptions().getTargetMacroName() + "()" );
   }
 }

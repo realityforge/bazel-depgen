@@ -2086,4 +2086,29 @@ public class ApplicationRecordTest
     } );
   }
 
+  @Test
+  public void writeDefaultBuild()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeDefaultBuild( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "# File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                    "# Contents can be edited and will not be overridden.\n" +
+                    "package(default_visibility = [\"//visibility:public\"])\n" +
+                    "\n" +
+                    "load(\"//thirdparty:dependencies.bzl\", \"generate_targets\")\n" +
+                    "\n" +
+                    "generate_targets()\n" );
+    } );
+  }
 }

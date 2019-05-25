@@ -150,6 +150,29 @@ public final class ApplicationRecord
     writeTargetMacro( output );
   }
 
+  public void writeDefaultBuild( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    output.write( "# File is auto-generated from " + getPathFromExtensionToConfig() +
+                  " by https://github.com/realityforge/bazel-depgen" );
+    output.write( "# Contents can be edited and will not be overridden." );
+
+    output.write( "package(default_visibility = [\"//visibility:public\"])" );
+    output.newLine();
+
+    final OptionsModel options = getSource().getOptions();
+    final Path extensionFile = options.getExtensionFile();
+    final Path workspaceDirectory = options.getWorkspaceDirectory();
+
+    final String targetMacroName = options.getTargetMacroName();
+    output.write( "load(\"//" + workspaceDirectory.relativize( extensionFile.getParent() ) +
+                  ":" + extensionFile.getName( extensionFile.getNameCount() - 1 ) +
+                  "\", \"" + targetMacroName + "\")" );
+    output.newLine();
+
+    output.write( targetMacroName + "()" );
+  }
+
   void replacement( @Nonnull final DependencyNode node )
   {
     final String groupId = node.getArtifact().getGroupId();
