@@ -1975,7 +1975,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void emitDependencyGraphIfRequired()
+  public void writeDependencyGraphIfRequired()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -1989,7 +1989,7 @@ public class ApplicationRecordTest
       final ApplicationRecord record = loadApplicationRecord();
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      record.emitDependencyGraphIfRequired( new StarlarkOutput( outputStream ) );
+      record.writeDependencyGraphIfRequired( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "# Dependency Graph Generated from the input data\n" +
                     "# \\- com.example:myapp:jar:1.0 [compile]\n" +
@@ -1999,7 +1999,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void emitDependencyGraphIfRequired_disabledInConfig()
+  public void writeDependencyGraphIfRequired_disabledInConfig()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -2015,7 +2015,7 @@ public class ApplicationRecordTest
       final ApplicationRecord record = loadApplicationRecord();
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      record.emitDependencyGraphIfRequired( new StarlarkOutput( outputStream ) );
+      record.writeDependencyGraphIfRequired( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ), "" );
     } );
   }

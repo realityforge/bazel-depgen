@@ -138,7 +138,7 @@ public final class ApplicationRecord
       o.write( "Invoke '" + options.getTargetMacroName() + "' from a BUILD.bazel file." );
     } );
 
-    emitDependencyGraphIfRequired( output );
+    writeDependencyGraphIfRequired( output );
 
     output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
     output.newLine();
@@ -283,7 +283,7 @@ public final class ApplicationRecord
       } );
   }
 
-  void emitDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )
+  void writeDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     final ApplicationModel source = getSource();
