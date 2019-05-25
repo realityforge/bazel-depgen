@@ -122,90 +122,6 @@ public final class ApplicationRecord
       .relativize( configLocation.toAbsolutePath().normalize() );
   }
 
-  void writeTargetMacro( @Nonnull final StarlarkOutput output )
-    throws IOException
-  {
-    output.writeMacro( getSource().getOptions().getTargetMacroName(),
-                       getArtifacts()
-                         .stream()
-                         .filter( a -> null == a.getReplacementModel() )
-                         .map( a -> "omit_" + a.getAlias() + " = False" )
-                         .collect( Collectors.toList() ), macro -> {
-        macro.writeMultilineComment( o -> o.write( "Macro to define targets for dependencies specified by '" +
-                                                   getPathFromExtensionToConfig() +
-                                                   "'." ) );
-        for ( final ArtifactRecord artifact : getArtifacts() )
-        {
-          if ( null == artifact.getReplacementModel() )
-          {
-            macro.newLine();
-            macro.writeIfCondition( "not omit_" + artifact.getAlias(), artifact::emitArtifactTargets );
-          }
-        }
-      } );
-  }
-
-  void writeWorkspaceMacro( @Nonnull final StarlarkOutput output )
-    throws IOException
-  {
-    output.writeMacro( getSource().getOptions().getWorkspaceMacroName(),
-                       getArtifacts()
-                         .stream()
-                         .filter( a -> null == a.getReplacementModel() )
-                         .map( a -> "omit_" + a.getAlias() + " = False" )
-                         .collect( Collectors.toList() ), macro -> {
-        macro.writeMultilineComment( o -> {
-          o.write( "Repository rules macro to load dependencies specified by '" +
-                   getPathFromExtensionToConfig() +
-                   "'." );
-          o.newLine();
-          o.write( "Must be run from a WORKSPACE file." );
-        } );
-
-        for ( final ArtifactRecord artifact : getArtifacts() )
-        {
-          if ( null == artifact.getReplacementModel() )
-          {
-            macro.newLine();
-            macro.writeIfCondition( "not omit_" + artifact.getAlias(), o -> {
-              artifact.emitArtifactHttpFileRule( o );
-
-              final String sourceSha256 = artifact.getSourceSha256();
-              if ( null != sourceSha256 )
-              {
-                o.newLine();
-                final List<String> sourceUrls = artifact.getSourceUrls();
-                assert null != sourceUrls && !sourceUrls.isEmpty();
-                artifact.emitArtifactSourcesHttpFileRule( o );
-              }
-            } );
-          }
-        }
-      } );
-  }
-
-  void emitDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )
-    throws IOException
-  {
-    final ApplicationModel source = getSource();
-    if ( source.getOptions().emitDependencyGraph() )
-    {
-      output.write( "# Dependency Graph Generated from the input data" );
-      getNode().accept( new DependencyGraphEmitter( source, line -> {
-
-        try
-        {
-          output.write( "# " + line );
-        }
-        catch ( final IOException ioe )
-        {
-          throw new IllegalStateException( ioe );
-        }
-      } ) );
-      output.newLine();
-    }
-  }
-
   public void writeBazelExtension( @Nonnull final StarlarkOutput output )
     throws IOException
   {
@@ -303,5 +219,89 @@ public final class ApplicationRecord
       .filter( predicate )
       .findAny()
       .orElse( null );
+  }
+
+  void writeTargetMacro( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    output.writeMacro( getSource().getOptions().getTargetMacroName(),
+                       getArtifacts()
+                         .stream()
+                         .filter( a -> null == a.getReplacementModel() )
+                         .map( a -> "omit_" + a.getAlias() + " = False" )
+                         .collect( Collectors.toList() ), macro -> {
+        macro.writeMultilineComment( o -> o.write( "Macro to define targets for dependencies specified by '" +
+                                                   getPathFromExtensionToConfig() +
+                                                   "'." ) );
+        for ( final ArtifactRecord artifact : getArtifacts() )
+        {
+          if ( null == artifact.getReplacementModel() )
+          {
+            macro.newLine();
+            macro.writeIfCondition( "not omit_" + artifact.getAlias(), artifact::emitArtifactTargets );
+          }
+        }
+      } );
+  }
+
+  void writeWorkspaceMacro( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    output.writeMacro( getSource().getOptions().getWorkspaceMacroName(),
+                       getArtifacts()
+                         .stream()
+                         .filter( a -> null == a.getReplacementModel() )
+                         .map( a -> "omit_" + a.getAlias() + " = False" )
+                         .collect( Collectors.toList() ), macro -> {
+        macro.writeMultilineComment( o -> {
+          o.write( "Repository rules macro to load dependencies specified by '" +
+                   getPathFromExtensionToConfig() +
+                   "'." );
+          o.newLine();
+          o.write( "Must be run from a WORKSPACE file." );
+        } );
+
+        for ( final ArtifactRecord artifact : getArtifacts() )
+        {
+          if ( null == artifact.getReplacementModel() )
+          {
+            macro.newLine();
+            macro.writeIfCondition( "not omit_" + artifact.getAlias(), o -> {
+              artifact.emitArtifactHttpFileRule( o );
+
+              final String sourceSha256 = artifact.getSourceSha256();
+              if ( null != sourceSha256 )
+              {
+                o.newLine();
+                final List<String> sourceUrls = artifact.getSourceUrls();
+                assert null != sourceUrls && !sourceUrls.isEmpty();
+                artifact.emitArtifactSourcesHttpFileRule( o );
+              }
+            } );
+          }
+        }
+      } );
+  }
+
+  void emitDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    final ApplicationModel source = getSource();
+    if ( source.getOptions().emitDependencyGraph() )
+    {
+      output.write( "# Dependency Graph Generated from the input data" );
+      getNode().accept( new DependencyGraphEmitter( source, line -> {
+
+        try
+        {
+          output.write( "# " + line );
+        }
+        catch ( final IOException ioe )
+        {
+          throw new IllegalStateException( ioe );
+        }
+      } ) );
+      output.newLine();
+    }
   }
 }
