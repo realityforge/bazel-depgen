@@ -1,4 +1,4 @@
-package org.realityforge.bazel.depgen.gen;
+package org.realityforge.bazel.depgen.util;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

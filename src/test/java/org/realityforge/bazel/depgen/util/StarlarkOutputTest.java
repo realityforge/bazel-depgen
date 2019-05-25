@@ -1,4 +1,4 @@
-package org.realityforge.bazel.depgen.gen;
+package org.realityforge.bazel.depgen.util;
 
 import gir.io.FileUtil;
 import java.nio.charset.StandardCharsets;

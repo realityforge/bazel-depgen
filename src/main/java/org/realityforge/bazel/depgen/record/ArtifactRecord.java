@@ -17,11 +17,11 @@ import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.Nature;
-import org.realityforge.bazel.depgen.gen.StarlarkOutput;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
 import org.realityforge.bazel.depgen.util.ArtifactUtil;
 import org.realityforge.bazel.depgen.util.BazelUtil;
+import org.realityforge.bazel.depgen.util.StarlarkOutput;
 
 public final class ArtifactRecord
 {

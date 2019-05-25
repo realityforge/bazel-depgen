@@ -15,8 +15,8 @@ import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.Nature;
-import org.realityforge.bazel.depgen.gen.StarlarkOutput;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
+import org.realityforge.bazel.depgen.util.StarlarkOutput;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 

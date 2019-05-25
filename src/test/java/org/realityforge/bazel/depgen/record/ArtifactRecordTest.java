@@ -9,7 +9,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.Nature;
-import org.realityforge.bazel.depgen.gen.StarlarkOutput;
+import org.realityforge.bazel.depgen.util.StarlarkOutput;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
