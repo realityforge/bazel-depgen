@@ -14,7 +14,7 @@ import org.eclipse.aether.graph.DependencyCycle;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.resolution.DependencyResult;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
-import org.realityforge.bazel.depgen.gen.BazelGenerator;
+import org.realityforge.bazel.depgen.gen.StarlarkOutput;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.InvalidModelException;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
@@ -141,7 +141,7 @@ public class Main
       final ApplicationRecord record =
         ApplicationRecord.build( model, node, resolver.getAuthenticationContexts(), c_logger::warning );
 
-      new BazelGenerator( record ).generate();
+      generate( record );
     }
     catch ( final InvalidModelException ime )
     {
@@ -184,6 +184,34 @@ public class Main
     }
 
     System.exit( SUCCESS_EXIT_CODE );
+  }
+
+  private static void generate( @Nonnull final ApplicationRecord record )
+    throws Exception
+  {
+    final Path extensionFile = record.getSource().getOptions().getExtensionFile();
+    final Path dir = extensionFile.getParent();
+    final Path buildfile = dir.resolve( "BUILD.bazel" );
+
+    if ( !dir.toFile().exists() && !dir.toFile().mkdirs() )
+    {
+      throw new IllegalStateException( "Failed to create directory " + dir.toFile() );
+    }
+
+    // The tool will only emit the `BUILD.bazel` file if none exist. If one exists then
+    // the tool assumes the user has supplied it or it is an artifact from a previous run.
+    if ( !buildfile.toFile().exists() )
+    {
+      try ( final StarlarkOutput output = new StarlarkOutput( buildfile ) )
+      {
+        record.writeDefaultBuild( output );
+      }
+    }
+
+    try ( final StarlarkOutput output = new StarlarkOutput( extensionFile ) )
+    {
+      record.writeBazelExtension( output );
+    }
   }
 
   @Nonnull
