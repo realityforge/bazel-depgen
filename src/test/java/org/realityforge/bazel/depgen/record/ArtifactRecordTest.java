@@ -511,7 +511,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitPluginLibrary_withProcessors()
+  public void writePluginLibrary_withProcessors()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -528,7 +528,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitPluginLibrary( new StarlarkOutput( outputStream ), "" );
+      artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
@@ -563,7 +563,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitPluginLibrary_withNoProcessors()
+  public void writePluginLibrary_withNoProcessors()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -577,7 +577,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitPluginLibrary( new StarlarkOutput( outputStream ), "" );
+      artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
@@ -600,7 +600,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitPluginLibrary_withSuffix()
+  public void writePluginLibrary_withSuffix()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -614,7 +614,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitPluginLibrary( new StarlarkOutput( outputStream ), "__plugins" );
+      artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ), "__plugins" );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
@@ -637,7 +637,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitJavaPluginLibrary_withProcessors()
+  public void writeJavaPluginLibrary_withProcessors()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -654,7 +654,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaPluginLibrary( new StarlarkOutput( outputStream ), "" );
+      artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_library(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -668,7 +668,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitJavaPluginLibrary_withNoProcessors()
+  public void writeJavaPluginLibrary_withNoProcessors()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -682,7 +682,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaPluginLibrary( new StarlarkOutput( outputStream ), "" );
+      artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.java_library(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -693,7 +693,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitJavaPluginLibrary_withSuffix()
+  public void writeJavaPluginLibrary_withSuffix()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -707,7 +707,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaPluginLibrary( new StarlarkOutput( outputStream ), "__plugins" );
+      artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ), "__plugins" );
       assertEquals( asString( outputStream ),
                     "native.java_library(\n" +
                     "    name = \"com_example__myapp__1_0__plugins\",\n" +
@@ -718,7 +718,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitJavaLibraryAndPlugin()
+  public void writeJavaLibraryAndPlugin()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -732,7 +732,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitJavaLibraryAndPlugin( new StarlarkOutput( outputStream ) );
+      artifactRecord.writeJavaLibraryAndPlugin( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.java_library(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -746,7 +746,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitArtifactHttpFileRule()
+  public void writeArtifactHttpFileRule()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -762,7 +762,7 @@ public class ArtifactRecordTest
       assertNotNull( urls );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitArtifactHttpFileRule( new StarlarkOutput( outputStream ) );
+      artifactRecord.writeArtifactHttpFileRule( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "http_file(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -774,7 +774,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitArtifactSourcesHttpFileRule()
+  public void writeArtifactSourcesHttpFileRule()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -791,7 +791,7 @@ public class ArtifactRecordTest
       assertNotNull( urls );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitArtifactSourcesHttpFileRule( new StarlarkOutput( outputStream ) );
+      artifactRecord.writeArtifactSourcesHttpFileRule( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "http_file(\n" +
                     "    name = \"com_example__myapp__1_0__sources\",\n" +
@@ -803,7 +803,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitArtifactTargets_Library()
+  public void writeArtifactTargets_Library()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -816,7 +816,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitArtifactTargets( new StarlarkOutput( outputStream ) );
+      artifactRecord.writeArtifactTargets( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__myapp\",\n" +
@@ -833,7 +833,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitArtifactTargets_Plugin()
+  public void writeArtifactTargets_Plugin()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -850,7 +850,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitArtifactTargets( new StarlarkOutput( outputStream ) );
+      artifactRecord.writeArtifactTargets( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__myapp\",\n" +
@@ -889,7 +889,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitArtifactTargets_LibraryAndPlugin_noProcessors()
+  public void writeArtifactTargets_LibraryAndPlugin_noProcessors()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -903,7 +903,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitArtifactTargets( new StarlarkOutput( outputStream ) );
+      artifactRecord.writeArtifactTargets( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__myapp\",\n" +

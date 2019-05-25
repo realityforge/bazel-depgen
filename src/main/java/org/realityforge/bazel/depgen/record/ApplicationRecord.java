@@ -238,7 +238,7 @@ public final class ApplicationRecord
           if ( null == artifact.getReplacementModel() )
           {
             macro.newLine();
-            macro.writeIfCondition( "not omit_" + artifact.getAlias(), artifact::emitArtifactTargets );
+            macro.writeIfCondition( "not omit_" + artifact.getAlias(), artifact::writeArtifactTargets );
           }
         }
       } );
@@ -267,7 +267,7 @@ public final class ApplicationRecord
           {
             macro.newLine();
             macro.writeIfCondition( "not omit_" + artifact.getAlias(), o -> {
-              artifact.emitArtifactHttpFileRule( o );
+              artifact.writeArtifactHttpFileRule( o );
 
               final String sourceSha256 = artifact.getSourceSha256();
               if ( null != sourceSha256 )
@@ -275,7 +275,7 @@ public final class ApplicationRecord
                 o.newLine();
                 final List<String> sourceUrls = artifact.getSourceUrls();
                 assert null != sourceUrls && !sourceUrls.isEmpty();
-                artifact.emitArtifactSourcesHttpFileRule( o );
+                artifact.writeArtifactSourcesHttpFileRule( o );
               }
             } );
           }

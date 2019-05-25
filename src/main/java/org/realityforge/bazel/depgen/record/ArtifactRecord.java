@@ -488,7 +488,7 @@ public final class ArtifactRecord
            PLUGIN_SUFFIX;
   }
 
-  void emitPluginLibrary( @Nonnull final StarlarkOutput output, @Nonnull final String suffix )
+  void writePluginLibrary( @Nonnull final StarlarkOutput output, @Nonnull final String suffix )
     throws IOException
   {
     assert Nature.Library != getNature();
@@ -505,10 +505,10 @@ public final class ArtifactRecord
         emitJavaPlugin( output, processor );
       }
     }
-    emitJavaPluginLibrary( output, suffix );
+    writeJavaPluginLibrary( output, suffix );
   }
 
-  void emitJavaPluginLibrary( @Nonnull final StarlarkOutput output, @Nonnull final String suffix )
+  void writeJavaPluginLibrary( @Nonnull final StarlarkOutput output, @Nonnull final String suffix )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
@@ -532,7 +532,7 @@ public final class ArtifactRecord
     output.writeCall( "native.java_library", arguments );
   }
 
-  void emitJavaLibraryAndPlugin( @Nonnull final StarlarkOutput output )
+  void writeJavaLibraryAndPlugin( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
@@ -548,7 +548,7 @@ public final class ArtifactRecord
     output.writeCall( "native.java_library", arguments );
   }
 
-  void emitArtifactTargets( @Nonnull final StarlarkOutput output )
+  void writeArtifactTargets( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     assert null == getReplacementModel();
@@ -560,17 +560,17 @@ public final class ArtifactRecord
     }
     else if ( Nature.Plugin == nature )
     {
-      emitPluginLibrary( output, "" );
+      writePluginLibrary( output, "" );
     }
     else
     {
       assert Nature.LibraryAndPlugin == nature;
-      emitPluginLibrary( output, PLUGINS_LIBRARY_SUFFIX );
-      emitJavaLibraryAndPlugin( output );
+      writePluginLibrary( output, PLUGINS_LIBRARY_SUFFIX );
+      writeJavaLibraryAndPlugin( output );
     }
   }
 
-  void emitArtifactHttpFileRule( @Nonnull final StarlarkOutput output )
+  void writeArtifactHttpFileRule( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     assert null == getReplacementModel();
@@ -588,7 +588,7 @@ public final class ArtifactRecord
     output.writeCall( "http_file", arguments );
   }
 
-  void emitArtifactSourcesHttpFileRule( @Nonnull final StarlarkOutput output )
+  void writeArtifactSourcesHttpFileRule( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     assert null == getReplacementModel();
