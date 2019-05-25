@@ -2,14 +2,11 @@ package org.realityforge.bazel.depgen.gen;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
 import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
-import org.realityforge.bazel.depgen.record.ArtifactRecord;
 
 @SuppressWarnings( { "Duplicates" } )
 public final class BazelGenerator
@@ -93,51 +90,12 @@ public final class BazelGenerator
       output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
       output.newLine();
 
-      writeWorkspaceMacro( output );
+      _record.writeWorkspaceMacro( output );
 
       output.newLine();
 
       _record.writeTargetMacro( output );
     }
-  }
-
-  private void writeWorkspaceMacro( @Nonnull final StarlarkOutput output )
-    throws IOException
-  {
-    output.writeMacro( _record.getSource().getOptions().getWorkspaceMacroName(),
-                       _record.getArtifacts()
-                         .stream()
-                         .filter( a -> null == a.getReplacementModel() )
-                         .map( a -> "omit_" + a.getAlias() + " = False" )
-                         .collect( Collectors.toList() ), macro -> {
-        macro.writeMultilineComment( o -> {
-          o.write( "Repository rules macro to load dependencies specified by '" +
-                   _record.getPathFromExtensionToConfig() +
-                   "'." );
-          o.newLine();
-          o.write( "Must be run from a WORKSPACE file." );
-        } );
-
-        for ( final ArtifactRecord artifact : _record.getArtifacts() )
-        {
-          if ( null == artifact.getReplacementModel() )
-          {
-            macro.newLine();
-            macro.writeIfCondition( "not omit_" + artifact.getAlias(), o -> {
-              artifact.emitArtifactHttpFileRule( o );
-
-              final String sourceSha256 = artifact.getSourceSha256();
-              if ( null != sourceSha256 )
-              {
-                o.newLine();
-                final List<String> sourceUrls = artifact.getSourceUrls();
-                assert null != sourceUrls && !sourceUrls.isEmpty();
-                artifact.emitArtifactSourcesHttpFileRule( o );
-              }
-            } );
-          }
-        }
-      } );
   }
 
   private void emitDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )

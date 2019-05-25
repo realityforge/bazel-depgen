@@ -143,6 +143,45 @@ public final class ApplicationRecord
       } );
   }
 
+  public void writeWorkspaceMacro( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    output.writeMacro( getSource().getOptions().getWorkspaceMacroName(),
+                       getArtifacts()
+                         .stream()
+                         .filter( a -> null == a.getReplacementModel() )
+                         .map( a -> "omit_" + a.getAlias() + " = False" )
+                         .collect( Collectors.toList() ), macro -> {
+        macro.writeMultilineComment( o -> {
+          o.write( "Repository rules macro to load dependencies specified by '" +
+                   getPathFromExtensionToConfig() +
+                   "'." );
+          o.newLine();
+          o.write( "Must be run from a WORKSPACE file." );
+        } );
+
+        for ( final ArtifactRecord artifact : getArtifacts() )
+        {
+          if ( null == artifact.getReplacementModel() )
+          {
+            macro.newLine();
+            macro.writeIfCondition( "not omit_" + artifact.getAlias(), o -> {
+              artifact.emitArtifactHttpFileRule( o );
+
+              final String sourceSha256 = artifact.getSourceSha256();
+              if ( null != sourceSha256 )
+              {
+                o.newLine();
+                final List<String> sourceUrls = artifact.getSourceUrls();
+                assert null != sourceUrls && !sourceUrls.isEmpty();
+                artifact.emitArtifactSourcesHttpFileRule( o );
+              }
+            } );
+          }
+        }
+      } );
+  }
+
   void replacement( @Nonnull final DependencyNode node )
   {
     final String groupId = node.getArtifact().getGroupId();

@@ -1814,4 +1814,163 @@ public class ApplicationRecordTest
                     "        )\n" );
     } );
   }
+
+  @Test
+  public void writeWorkspaceMacro()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
+      assertNotNull( urls );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "def generate_workspace_rules(omit_com_example__myapp = False):\n" +
+                    "    \"\"\"\n" +
+                    "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                    "\n" +
+                    "        Must be run from a WORKSPACE file.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    if not omit_com_example__myapp:\n" +
+                    "        http_file(\n" +
+                    "            name = \"com_example__myapp__1_0\",\n" +
+                    "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                    "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "            urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "        )\n" );
+    } );
+  }
+
+  @Test
+  public void writeWorkspaceMacro_macroNameOverride()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "options:\n" +
+                              "  workspaceMacroName: generate_myapp_workspace_rules\n" +
+                              "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
+      assertNotNull( urls );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "def generate_myapp_workspace_rules(omit_com_example__myapp = False):\n" +
+                    "    \"\"\"\n" +
+                    "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                    "\n" +
+                    "        Must be run from a WORKSPACE file.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    if not omit_com_example__myapp:\n" +
+                    "        http_file(\n" +
+                    "            name = \"com_example__myapp__1_0\",\n" +
+                    "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                    "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "            urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "        )\n" );
+    } );
+  }
+
+  @Test
+  public void writeWorkspaceMacro_dependency()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
+      assertNotNull( urls );
+      final List<String> urls2 = record.getArtifacts().get( 1 ).getUrls();
+      assertNotNull( urls2 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "def generate_workspace_rules(\n" +
+                    "        omit_com_example__myapp = False,\n" +
+                    "        omit_com_example__mylib = False):\n" +
+                    "    \"\"\"\n" +
+                    "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                    "\n" +
+                    "        Must be run from a WORKSPACE file.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    if not omit_com_example__myapp:\n" +
+                    "        http_file(\n" +
+                    "            name = \"com_example__myapp__1_0\",\n" +
+                    "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                    "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "            urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "        )\n" +
+                    "\n" +
+                    "    if not omit_com_example__mylib:\n" +
+                    "        http_file(\n" +
+                    "            name = \"com_example__mylib__2_0\",\n" +
+                    "            downloaded_file_path = \"com/example/mylib/2.0/mylib-2.0.jar\",\n" +
+                    "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "            urls = [\"" + urls2.get( 0 ) + "\"],\n" +
+                    "        )\n" );
+    } );
+  }
+
+  @Test
+  public void writeWorkspaceMacro_replacement()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "replacements:\n" +
+                              "  - coord: com.example:mylib\n" +
+                              "    target: \"@com_example//:mylib\"\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
+      assertNotNull( urls );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "def generate_workspace_rules(omit_com_example__myapp = False):\n" +
+                    "    \"\"\"\n" +
+                    "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                    "\n" +
+                    "        Must be run from a WORKSPACE file.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    if not omit_com_example__myapp:\n" +
+                    "        http_file(\n" +
+                    "            name = \"com_example__myapp__1_0\",\n" +
+                    "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                    "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "            urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "        )\n" );
+    } );
+  }
 }
