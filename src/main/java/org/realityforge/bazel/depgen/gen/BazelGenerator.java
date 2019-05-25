@@ -72,30 +72,36 @@ public final class BazelGenerator
   {
     try ( final StarlarkOutput output = new StarlarkOutput( extensionFile ) )
     {
-      output.write( "# DO NOT EDIT: File is auto-generated from " +
-                    _record.getPathFromExtensionToConfig() +
-                    " by https://github.com/realityforge/bazel-depgen" );
-      output.newLine();
-
-      output.writeMultilineComment( o -> {
-        o.write( "Macro rules to load dependencies defined in '" + _record.getPathFromExtensionToConfig() + "'." );
-        o.newLine();
-        final OptionsModel options = _record.getSource().getOptions();
-        o.write( "Invoke '" + options.getWorkspaceMacroName() + "' from a WORKSPACE file." );
-        o.write( "Invoke '" + options.getTargetMacroName() + "' from a BUILD.bazel file." );
-      } );
-
-      emitDependencyGraphIfRequired( output );
-
-      output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
-      output.newLine();
-
-      _record.writeWorkspaceMacro( output );
-
-      output.newLine();
-
-      _record.writeTargetMacro( output );
+      writeBazelExtension( output );
     }
+  }
+
+  private void writeBazelExtension( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    final Path toConfig = _record.getPathFromExtensionToConfig();
+    output.write( "# DO NOT EDIT: File is auto-generated from " + toConfig +
+                  " by https://github.com/realityforge/bazel-depgen" );
+    output.newLine();
+
+    output.writeMultilineComment( o -> {
+      o.write( "Macro rules to load dependencies defined in '" + toConfig + "'." );
+      o.newLine();
+      final OptionsModel options = _record.getSource().getOptions();
+      o.write( "Invoke '" + options.getWorkspaceMacroName() + "' from a WORKSPACE file." );
+      o.write( "Invoke '" + options.getTargetMacroName() + "' from a BUILD.bazel file." );
+    } );
+
+    emitDependencyGraphIfRequired( output );
+
+    output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
+    output.newLine();
+
+    _record.writeWorkspaceMacro( output );
+
+    output.newLine();
+
+    _record.writeTargetMacro( output );
   }
 
   private void emitDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )
