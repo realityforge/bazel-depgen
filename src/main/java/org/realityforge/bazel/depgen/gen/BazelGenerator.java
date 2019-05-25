@@ -23,11 +23,17 @@ public final class BazelGenerator
     final Path dir = extensionFile.getParent();
     final Path buildfile = dir.resolve( "BUILD.bazel" );
 
-    mkdirs( dir );
+    if ( !dir.toFile().exists() && !dir.toFile().mkdirs() )
+    {
+      throw new IllegalStateException( "Failed to create directory " + dir.toFile() );
+    }
 
     emitBuildFileIfNecessary( buildfile );
 
-    emitExtensionFile( extensionFile );
+    try ( final StarlarkOutput output = new StarlarkOutput( extensionFile ) )
+    {
+      _record.writeBazelExtension( output );
+    }
   }
 
   private void emitBuildFileIfNecessary( @Nonnull final Path buildfile )
@@ -61,23 +67,6 @@ public final class BazelGenerator
 
         output.write( _record.getSource().getOptions().getTargetMacroName() + "()" );
       }
-    }
-  }
-
-  private void emitExtensionFile( @Nonnull final Path extensionFile )
-    throws Exception
-  {
-    try ( final StarlarkOutput output = new StarlarkOutput( extensionFile ) )
-    {
-      _record.writeBazelExtension( output );
-    }
-  }
-
-  private void mkdirs( @Nonnull final Path path )
-  {
-    if ( !path.toFile().exists() && !path.toFile().mkdirs() )
-    {
-      throw new IllegalStateException( "Failed to create directory " + path.toFile() );
     }
   }
 }
