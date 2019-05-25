@@ -548,7 +548,7 @@ public final class ArtifactRecord
     output.writeCall( "native.java_library", arguments );
   }
 
-  public void emitArtifactTargets( @Nonnull final StarlarkOutput output )
+  void emitArtifactTargets( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     assert null == getReplacementModel();
@@ -570,7 +570,7 @@ public final class ArtifactRecord
     }
   }
 
-  public void emitArtifactHttpFileRule( @Nonnull final StarlarkOutput output )
+  void emitArtifactHttpFileRule( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     assert null == getReplacementModel();
@@ -588,7 +588,7 @@ public final class ArtifactRecord
     output.writeCall( "http_file", arguments );
   }
 
-  public void emitArtifactSourcesHttpFileRule( @Nonnull final StarlarkOutput output )
+  void emitArtifactSourcesHttpFileRule( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     assert null == getReplacementModel();
