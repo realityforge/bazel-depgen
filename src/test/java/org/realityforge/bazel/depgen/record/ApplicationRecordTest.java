@@ -1999,7 +1999,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void emitDependencyGraphIfRequired_disabledInCOnfig()
+  public void emitDependencyGraphIfRequired_disabledInConfig()
     throws Exception
   {
     inIsolatedDirectory( () -> {
