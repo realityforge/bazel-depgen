@@ -1973,4 +1973,50 @@ public class ApplicationRecordTest
                     "        )\n" );
     } );
   }
+
+  @Test
+  public void emitDependencyGraphIfRequired()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.emitDependencyGraphIfRequired( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "# Dependency Graph Generated from the input data\n" +
+                    "# \\- com.example:myapp:jar:1.0 [compile]\n" +
+                    "#    \\- com.example:mylib:jar:2.0 [compile]\n" +
+                    "\n" );
+    } );
+  }
+
+  @Test
+  public void emitDependencyGraphIfRequired_disabledInCOnfig()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "options:\n" +
+                              "  emitDependencyGraph: false\n" +
+                              "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.emitDependencyGraphIfRequired( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ), "" );
+    } );
+  }
 }

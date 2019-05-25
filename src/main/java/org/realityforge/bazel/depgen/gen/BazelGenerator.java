@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import org.realityforge.bazel.depgen.DependencyGraphEmitter;
 import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 
@@ -92,7 +91,7 @@ public final class BazelGenerator
       o.write( "Invoke '" + options.getTargetMacroName() + "' from a BUILD.bazel file." );
     } );
 
-    emitDependencyGraphIfRequired( output );
+    _record.emitDependencyGraphIfRequired( output );
 
     output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
     output.newLine();
@@ -102,27 +101,6 @@ public final class BazelGenerator
     output.newLine();
 
     _record.writeTargetMacro( output );
-  }
-
-  private void emitDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )
-    throws IOException
-  {
-    if ( _record.getSource().getOptions().emitDependencyGraph() )
-    {
-      output.write( "# Dependency Graph Generated from the input data" );
-      _record.getNode().accept( new DependencyGraphEmitter( _record.getSource(), line -> {
-
-        try
-        {
-          output.write( "# " + line );
-        }
-        catch ( final IOException ioe )
-        {
-          throw new IllegalStateException( "Failed to write to file", ioe );
-        }
-      } ) );
-      output.newLine();
-    }
   }
 
   private void mkdirs( @Nonnull final Path path )

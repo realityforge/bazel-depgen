@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.AuthenticationContext;
+import org.realityforge.bazel.depgen.DependencyGraphEmitter;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.gen.StarlarkOutput;
 import org.realityforge.bazel.depgen.metadata.RecordBuildCallback;
@@ -180,6 +181,28 @@ public final class ApplicationRecord
           }
         }
       } );
+  }
+
+  public void emitDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    final ApplicationModel source = getSource();
+    if ( source.getOptions().emitDependencyGraph() )
+    {
+      output.write( "# Dependency Graph Generated from the input data" );
+      getNode().accept( new DependencyGraphEmitter( source, line -> {
+
+        try
+        {
+          output.write( "# " + line );
+        }
+        catch ( final IOException ioe )
+        {
+          throw new IllegalStateException( ioe );
+        }
+      } ) );
+      output.newLine();
+    }
   }
 
   void replacement( @Nonnull final DependencyNode node )
