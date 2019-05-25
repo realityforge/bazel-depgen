@@ -20,6 +20,7 @@ import org.realityforge.bazel.depgen.gen.StarlarkOutput;
 import org.realityforge.bazel.depgen.metadata.RecordBuildCallback;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
+import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
 
 public final class ApplicationRecord
@@ -121,7 +122,7 @@ public final class ApplicationRecord
       .relativize( configLocation.toAbsolutePath().normalize() );
   }
 
-  public void writeTargetMacro( @Nonnull final StarlarkOutput output )
+  void writeTargetMacro( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     output.writeMacro( getSource().getOptions().getTargetMacroName(),
@@ -144,7 +145,7 @@ public final class ApplicationRecord
       } );
   }
 
-  public void writeWorkspaceMacro( @Nonnull final StarlarkOutput output )
+  void writeWorkspaceMacro( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     output.writeMacro( getSource().getOptions().getWorkspaceMacroName(),
@@ -183,7 +184,7 @@ public final class ApplicationRecord
       } );
   }
 
-  public void emitDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )
+  void emitDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     final ApplicationModel source = getSource();
@@ -203,6 +204,34 @@ public final class ApplicationRecord
       } ) );
       output.newLine();
     }
+  }
+
+  public void writeBazelExtension( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    final Path toConfig = getPathFromExtensionToConfig();
+    output.write( "# DO NOT EDIT: File is auto-generated from " + toConfig +
+                  " by https://github.com/realityforge/bazel-depgen" );
+    output.newLine();
+
+    output.writeMultilineComment( o -> {
+      o.write( "Macro rules to load dependencies defined in '" + toConfig + "'." );
+      o.newLine();
+      final OptionsModel options = getSource().getOptions();
+      o.write( "Invoke '" + options.getWorkspaceMacroName() + "' from a WORKSPACE file." );
+      o.write( "Invoke '" + options.getTargetMacroName() + "' from a BUILD.bazel file." );
+    } );
+
+    emitDependencyGraphIfRequired( output );
+
+    output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
+    output.newLine();
+
+    writeWorkspaceMacro( output );
+
+    output.newLine();
+
+    writeTargetMacro( output );
   }
 
   void replacement( @Nonnull final DependencyNode node )

@@ -2019,4 +2019,71 @@ public class ApplicationRecordTest
       assertEquals( asString( outputStream ), "" );
     } );
   }
+
+  @Test
+  public void writeBazelExtension()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
+      assertNotNull( urls );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeBazelExtension( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "# DO NOT EDIT: File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                    "\n" +
+                    "\"\"\"\n" +
+                    "    Macro rules to load dependencies defined in '../dependencies.yml'.\n" +
+                    "\n" +
+                    "    Invoke 'generate_workspace_rules' from a WORKSPACE file.\n" +
+                    "    Invoke 'generate_targets' from a BUILD.bazel file.\n" +
+                    "\"\"\"\n" +
+                    "# Dependency Graph Generated from the input data\n" +
+                    "# \\- com.example:myapp:jar:1.0 [compile]\n" +
+                    "\n" +
+                    "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                    "\n" +
+                    "def generate_workspace_rules(omit_com_example__myapp = False):\n" +
+                    "    \"\"\"\n" +
+                    "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                    "\n" +
+                    "        Must be run from a WORKSPACE file.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    if not omit_com_example__myapp:\n" +
+                    "        http_file(\n" +
+                    "            name = \"com_example__myapp__1_0\",\n" +
+                    "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                    "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "            urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "        )\n" +
+                    "\n" +
+                    "def generate_targets(omit_com_example__myapp = False):\n" +
+                    "    \"\"\"\n" +
+                    "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    if not omit_com_example__myapp:\n" +
+                    "        native.alias(\n" +
+                    "            name = \"com_example__myapp\",\n" +
+                    "            actual = \":com_example__myapp__1_0\",\n" +
+                    "        )\n" +
+                    "        native.java_import(\n" +
+                    "            name = \"com_example__myapp__1_0\",\n" +
+                    "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "            licenses = [\"notice\"],\n" +
+                    "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "            visibility = [\"//visibility:private\"],\n" +
+                    "        )\n" );
+    } );
+  }
+
 }

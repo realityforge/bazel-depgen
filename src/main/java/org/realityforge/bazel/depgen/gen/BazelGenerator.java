@@ -1,10 +1,8 @@
 package org.realityforge.bazel.depgen.gen;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 
 @SuppressWarnings( { "Duplicates" } )
@@ -71,36 +69,8 @@ public final class BazelGenerator
   {
     try ( final StarlarkOutput output = new StarlarkOutput( extensionFile ) )
     {
-      writeBazelExtension( output );
+      _record.writeBazelExtension( output );
     }
-  }
-
-  private void writeBazelExtension( @Nonnull final StarlarkOutput output )
-    throws IOException
-  {
-    final Path toConfig = _record.getPathFromExtensionToConfig();
-    output.write( "# DO NOT EDIT: File is auto-generated from " + toConfig +
-                  " by https://github.com/realityforge/bazel-depgen" );
-    output.newLine();
-
-    output.writeMultilineComment( o -> {
-      o.write( "Macro rules to load dependencies defined in '" + toConfig + "'." );
-      o.newLine();
-      final OptionsModel options = _record.getSource().getOptions();
-      o.write( "Invoke '" + options.getWorkspaceMacroName() + "' from a WORKSPACE file." );
-      o.write( "Invoke '" + options.getTargetMacroName() + "' from a BUILD.bazel file." );
-    } );
-
-    _record.emitDependencyGraphIfRequired( output );
-
-    output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
-    output.newLine();
-
-    _record.writeWorkspaceMacro( output );
-
-    output.newLine();
-
-    _record.writeTargetMacro( output );
   }
 
   private void mkdirs( @Nonnull final Path path )
