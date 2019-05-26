@@ -168,7 +168,6 @@ public abstract class AbstractTest
                  "Expected output\n---\n" + output + "\n---\nto not contain text\n---\n" + text + "\n---\n" );
   }
 
-  @SuppressWarnings( "StringConcatenationInLoop" )
   @Nonnull
   private Path createTempPomFile( @Nonnull final String group,
                                   @Nonnull final String id,
@@ -186,9 +185,64 @@ public abstract class AbstractTest
       "  <version>" + version + "</version>\n" +
       "  <packaging>" + type + "</packaging>\n";
 
+    pomContents += buildDependenciesSection( dependencies );
+
+    pomContents += "</project>\n";
+    Files.write( pomFile, pomContents.getBytes() );
+    return pomFile;
+  }
+
+  @SuppressWarnings( "SameParameterValue" )
+  @Nonnull
+  protected final Path createTempPomFile( @Nonnull final String group,
+                                          @Nonnull final String id,
+                                          @Nonnull final String version,
+                                          @Nonnull final String type,
+                                          @Nonnull final String[] dependencies,
+                                          @Nonnull final String[] additionalSections )
+    throws IOException
+  {
+    final Path pomFile = Files.createTempFile( "data", ".pom" );
+    Files.write( pomFile, buildPomContents( group, id, version, type, dependencies, additionalSections ).getBytes() );
+    return pomFile;
+  }
+
+  @SuppressWarnings( "StringConcatenationInLoop" )
+  @Nonnull
+  private String buildPomContents( @Nonnull final String group,
+                                   @Nonnull final String id,
+                                   @Nonnull final String version,
+                                   @Nonnull final String type,
+                                   @Nonnull final String[] dependencies,
+                                   @Nonnull final String[] additionalSections )
+    throws IOException
+  {
+    String pomContents =
+      "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
+      "  <modelVersion>4.0.0</modelVersion>\n" +
+      "  <groupId>" + group + "</groupId>\n" +
+      "  <artifactId>" + id + "</artifactId>\n" +
+      "  <version>" + version + "</version>\n" +
+      "  <packaging>" + type + "</packaging>\n";
+
+    pomContents += buildDependenciesSection( dependencies );
+    for ( final String additionalSection : additionalSections )
+    {
+      pomContents += additionalSection;
+    }
+
+    pomContents += "</project>\n";
+    return pomContents;
+  }
+
+  @SuppressWarnings( "StringConcatenationInLoop" )
+  @Nonnull
+  private String buildDependenciesSection( @Nonnull final String[] dependencies )
+    throws IOException
+  {
     if ( 0 != dependencies.length )
     {
-      pomContents += "  <dependencies>\n";
+      String pomContents = "  <dependencies>\n";
       for ( final String dependency : dependencies )
       {
         final String[] components = dependency.split( ":" );
@@ -229,11 +283,12 @@ public abstract class AbstractTest
         pomContents += "    </dependency>\n";
       }
       pomContents += "  </dependencies>\n";
+      return pomContents;
     }
-
-    pomContents += "</project>\n";
-    Files.write( pomFile, pomContents.getBytes() );
-    return pomFile;
+    else
+    {
+      return "";
+    }
   }
 
   protected final void deployTempArtifactToLocalRepository( @Nonnull final Path localRepository,
