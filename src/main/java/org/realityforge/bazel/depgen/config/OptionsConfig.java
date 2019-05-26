@@ -17,6 +17,7 @@ public final class OptionsConfig
   public static final boolean DEFAULT_EMIT_DEPENDENCY_GRAPH = true;
   public static final boolean DEFAULT_INCLUDE_SOURCE = true;
   public static final boolean DEFAULT_EXPORT_DEPS = false;
+  public static final boolean DEFAULT_SUPPORT_DEPENDENCY_OMIT = false;
   public static final Language DEFAULT_LANGUAGE = Language.Java;
   @Nullable
   private String workspaceDirectory;
@@ -42,6 +43,8 @@ public final class OptionsConfig
   private Boolean includeSource;
   @Nullable
   private Boolean exportDeps;
+  @Nullable
+  private Boolean supportDependencyOmit;
 
   @Nullable
   public String getWorkspaceDirectory()
@@ -173,5 +176,16 @@ public final class OptionsConfig
   public void setExportDeps( @Nonnull final Boolean exportDeps )
   {
     this.exportDeps = Objects.requireNonNull( exportDeps );
+  }
+
+  @Nullable
+  public Boolean getSupportDependencyOmit()
+  {
+    return supportDependencyOmit;
+  }
+
+  public void setSupportDependencyOmit( @Nonnull final Boolean supportDependencyOmit )
+  {
+    this.supportDependencyOmit = Objects.requireNonNull( supportDependencyOmit );
   }
 }

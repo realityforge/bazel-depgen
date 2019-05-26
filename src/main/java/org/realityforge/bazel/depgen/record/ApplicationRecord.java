@@ -248,12 +248,16 @@ public final class ApplicationRecord
   void writeTargetMacro( @Nonnull final StarlarkOutput output )
     throws IOException
   {
-    output.writeMacro( getSource().getOptions().getTargetMacroName(),
+    final OptionsModel options = getSource().getOptions();
+    final boolean supportDependencyOmit = options.supportDependencyOmit();
+    output.writeMacro( options.getTargetMacroName(),
+                       supportDependencyOmit ?
                        getArtifacts()
                          .stream()
                          .filter( a -> null == a.getReplacementModel() )
                          .map( a -> "omit_" + a.getAlias() + " = False" )
-                         .collect( Collectors.toList() ), macro -> {
+                         .collect( Collectors.toList() ) :
+                       Collections.emptyList(), macro -> {
         macro.writeMultilineComment( o -> o.write( "Macro to define targets for dependencies specified by '" +
                                                    getPathFromExtensionToConfig() +
                                                    "'." ) );
@@ -262,7 +266,14 @@ public final class ApplicationRecord
           if ( null == artifact.getReplacementModel() )
           {
             macro.newLine();
-            macro.writeIfCondition( "not omit_" + artifact.getAlias(), artifact::writeArtifactTargets );
+            if ( supportDependencyOmit )
+            {
+              macro.writeIfCondition( "not omit_" + artifact.getAlias(), artifact::writeArtifactTargets );
+            }
+            else
+            {
+              artifact.writeArtifactTargets( macro );
+            }
           }
         }
       } );
@@ -271,12 +282,16 @@ public final class ApplicationRecord
   void writeWorkspaceMacro( @Nonnull final StarlarkOutput output )
     throws IOException
   {
-    output.writeMacro( getSource().getOptions().getWorkspaceMacroName(),
+    final OptionsModel options = getSource().getOptions();
+    final boolean supportDependencyOmit = options.supportDependencyOmit();
+    output.writeMacro( options.getWorkspaceMacroName(),
+                       supportDependencyOmit ?
                        getArtifacts()
                          .stream()
                          .filter( a -> null == a.getReplacementModel() )
                          .map( a -> "omit_" + a.getAlias() + " = False" )
-                         .collect( Collectors.toList() ), macro -> {
+                         .collect( Collectors.toList() ) :
+                       Collections.emptyList(), macro -> {
         macro.writeMultilineComment( o -> {
           o.write( "Repository rules macro to load dependencies specified by '" +
                    getPathFromExtensionToConfig() +
@@ -290,21 +305,32 @@ public final class ApplicationRecord
           if ( null == artifact.getReplacementModel() )
           {
             macro.newLine();
-            macro.writeIfCondition( "not omit_" + artifact.getAlias(), o -> {
-              artifact.writeArtifactHttpFileRule( o );
-
-              final String sourceSha256 = artifact.getSourceSha256();
-              if ( null != sourceSha256 )
-              {
-                o.newLine();
-                final List<String> sourceUrls = artifact.getSourceUrls();
-                assert null != sourceUrls && !sourceUrls.isEmpty();
-                artifact.writeArtifactSourcesHttpFileRule( o );
-              }
-            } );
+            if ( supportDependencyOmit )
+            {
+              macro.writeIfCondition( "not omit_" + artifact.getAlias(), o -> writeArtifactHttpRules( artifact, o ) );
+            }
+            else
+            {
+              writeArtifactHttpRules( artifact, macro );
+            }
           }
         }
       } );
+  }
+
+  private void writeArtifactHttpRules( @Nonnull final ArtifactRecord artifact, @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    artifact.writeArtifactHttpFileRule( output );
+
+    final String sourceSha256 = artifact.getSourceSha256();
+    if ( null != sourceSha256 )
+    {
+      output.newLine();
+      final List<String> sourceUrls = artifact.getSourceUrls();
+      assert null != sourceUrls && !sourceUrls.isEmpty();
+      artifact.writeArtifactSourcesHttpFileRule( output );
+    }
   }
 
   void writeDependencyGraphIfRequired( @Nonnull final StarlarkOutput output )

@@ -144,4 +144,10 @@ public final class OptionsModel
     final Boolean flag = _source.getExportDeps();
     return null == flag ? OptionsConfig.DEFAULT_EXPORT_DEPS : flag;
   }
+
+  public boolean supportDependencyOmit()
+  {
+    final Boolean flag = _source.getSupportDependencyOmit();
+    return null == flag ? OptionsConfig.DEFAULT_SUPPORT_DEPENDENCY_OMIT : flag;
+  }
 }

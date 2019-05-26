@@ -32,6 +32,7 @@ public class OptionsModelTest
     assertTrue( model.emitDependencyGraph() );
     assertTrue( model.includeSource() );
     assertFalse( model.exportDeps() );
+    assertFalse( model.supportDependencyOmit() );
   }
 
   @Test
@@ -67,6 +68,7 @@ public class OptionsModelTest
       source.setEmitDependencyGraph( false );
       source.setIncludeSource( false );
       source.setExportDeps( true );
+      source.setSupportDependencyOmit( true );
 
       final OptionsModel model = OptionsModel.parse( thirdpartyDir, source );
       assertEquals( model.getSource(), source );
@@ -81,6 +83,7 @@ public class OptionsModelTest
       assertFalse( model.failOnInvalidPom() );
       assertFalse( model.includeSource() );
       assertTrue( model.exportDeps() );
+      assertTrue( model.supportDependencyOmit() );
     } );
   }
 }

@@ -1666,6 +1666,42 @@ public class ApplicationRecordTest
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeTargetMacro( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
+                    "def generate_targets():\n" +
+                    "    \"\"\"\n" +
+                    "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    native.alias(\n" +
+                    "        name = \"com_example__myapp\",\n" +
+                    "        actual = \":com_example__myapp__1_0\",\n" +
+                    "    )\n" +
+                    "    native.java_import(\n" +
+                    "        name = \"com_example__myapp__1_0\",\n" +
+                    "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "        visibility = [\"//visibility:private\"],\n" +
+                    "    )\n" );
+    } );
+  }
+
+  @Test
+  public void writeTargetMacro_omitEnabled()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "options:\n" +
+                              "  supportDependencyOmit: true\n" +
+                              "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeTargetMacro( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
                     "def generate_targets(omit_com_example__myapp = False):\n" +
                     "    \"\"\"\n" +
                     "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
@@ -1703,22 +1739,21 @@ public class ApplicationRecordTest
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeTargetMacro( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
-                    "def generate_myapp_targets(omit_com_example__myapp = False):\n" +
+                    "def generate_myapp_targets():\n" +
                     "    \"\"\"\n" +
                     "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
                     "    \"\"\"\n" +
                     "\n" +
-                    "    if not omit_com_example__myapp:\n" +
-                    "        native.alias(\n" +
-                    "            name = \"com_example__myapp\",\n" +
-                    "            actual = \":com_example__myapp__1_0\",\n" +
-                    "        )\n" +
-                    "        native.java_import(\n" +
-                    "            name = \"com_example__myapp__1_0\",\n" +
-                    "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                    "            visibility = [\"//visibility:private\"],\n" +
-                    "        )\n" );
+                    "    native.alias(\n" +
+                    "        name = \"com_example__myapp\",\n" +
+                    "        actual = \":com_example__myapp__1_0\",\n" +
+                    "    )\n" +
+                    "    native.java_import(\n" +
+                    "        name = \"com_example__myapp__1_0\",\n" +
+                    "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "        visibility = [\"//visibility:private\"],\n" +
+                    "    )\n" );
     } );
   }
 
@@ -1739,38 +1774,34 @@ public class ApplicationRecordTest
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeTargetMacro( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
-                    "def generate_targets(\n" +
-                    "        omit_com_example__myapp = False,\n" +
-                    "        omit_com_example__mylib = False):\n" +
+                    "def generate_targets():\n" +
                     "    \"\"\"\n" +
                     "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
                     "    \"\"\"\n" +
                     "\n" +
-                    "    if not omit_com_example__myapp:\n" +
-                    "        native.alias(\n" +
-                    "            name = \"com_example__myapp\",\n" +
-                    "            actual = \":com_example__myapp__1_0\",\n" +
-                    "        )\n" +
-                    "        native.java_import(\n" +
-                    "            name = \"com_example__myapp__1_0\",\n" +
-                    "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                    "            visibility = [\"//visibility:private\"],\n" +
-                    "            deps = [\":com_example__mylib\"],\n" +
-                    "        )\n" +
+                    "    native.alias(\n" +
+                    "        name = \"com_example__myapp\",\n" +
+                    "        actual = \":com_example__myapp__1_0\",\n" +
+                    "    )\n" +
+                    "    native.java_import(\n" +
+                    "        name = \"com_example__myapp__1_0\",\n" +
+                    "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "        visibility = [\"//visibility:private\"],\n" +
+                    "        deps = [\":com_example__mylib\"],\n" +
+                    "    )\n" +
                     "\n" +
-                    "    if not omit_com_example__mylib:\n" +
-                    "        native.alias(\n" +
-                    "            name = \"com_example__mylib\",\n" +
-                    "            actual = \":com_example__mylib__2_0\",\n" +
-                    "            visibility = [\"//visibility:private\"],\n" +
-                    "        )\n" +
-                    "        native.java_import(\n" +
-                    "            name = \"com_example__mylib__2_0\",\n" +
-                    "            jars = [\"@com_example__mylib__2_0//file\"],\n" +
-                    "            tags = [\"maven_coordinates=com.example:mylib:2.0\"],\n" +
-                    "            visibility = [\"//visibility:private\"],\n" +
-                    "        )\n" );
+                    "    native.alias(\n" +
+                    "        name = \"com_example__mylib\",\n" +
+                    "        actual = \":com_example__mylib__2_0\",\n" +
+                    "        visibility = [\"//visibility:private\"],\n" +
+                    "    )\n" +
+                    "    native.java_import(\n" +
+                    "        name = \"com_example__mylib__2_0\",\n" +
+                    "        jars = [\"@com_example__mylib__2_0//file\"],\n" +
+                    "        tags = [\"maven_coordinates=com.example:mylib:2.0\"],\n" +
+                    "        visibility = [\"//visibility:private\"],\n" +
+                    "    )\n" );
     } );
   }
 
@@ -1794,23 +1825,22 @@ public class ApplicationRecordTest
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeTargetMacro( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
-                    "def generate_targets(omit_com_example__myapp = False):\n" +
+                    "def generate_targets():\n" +
                     "    \"\"\"\n" +
                     "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
                     "    \"\"\"\n" +
                     "\n" +
-                    "    if not omit_com_example__myapp:\n" +
-                    "        native.alias(\n" +
-                    "            name = \"com_example__myapp\",\n" +
-                    "            actual = \":com_example__myapp__1_0\",\n" +
-                    "        )\n" +
-                    "        native.java_import(\n" +
-                    "            name = \"com_example__myapp__1_0\",\n" +
-                    "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                    "            visibility = [\"//visibility:private\"],\n" +
-                    "            deps = [\":@com_example//:mylib\"],\n" +
-                    "        )\n" );
+                    "    native.alias(\n" +
+                    "        name = \"com_example__myapp\",\n" +
+                    "        actual = \":com_example__myapp__1_0\",\n" +
+                    "    )\n" +
+                    "    native.java_import(\n" +
+                    "        name = \"com_example__myapp__1_0\",\n" +
+                    "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "        visibility = [\"//visibility:private\"],\n" +
+                    "        deps = [\":@com_example//:mylib\"],\n" +
+                    "    )\n" );
     } );
   }
 
@@ -1822,6 +1852,42 @@ public class ApplicationRecordTest
       final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
+      assertNotNull( urls );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "def generate_workspace_rules():\n" +
+                    "    \"\"\"\n" +
+                    "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                    "\n" +
+                    "        Must be run from a WORKSPACE file.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "    )\n" );
+    } );
+  }
+
+  @Test
+  public void writeWorkspaceMacro_omitEnabled()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "options:\n" +
+                              "  supportDependencyOmit: true\n" +
+                              "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
@@ -1869,20 +1935,19 @@ public class ApplicationRecordTest
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
-                    "def generate_myapp_workspace_rules(omit_com_example__myapp = False):\n" +
+                    "def generate_myapp_workspace_rules():\n" +
                     "    \"\"\"\n" +
                     "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
                     "\n" +
                     "        Must be run from a WORKSPACE file.\n" +
                     "    \"\"\"\n" +
                     "\n" +
-                    "    if not omit_com_example__myapp:\n" +
-                    "        http_file(\n" +
-                    "            name = \"com_example__myapp__1_0\",\n" +
-                    "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
-                    "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "            urls = [\"" + urls.get( 0 ) + "\"],\n" +
-                    "        )\n" );
+                    "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "    )\n" );
     } );
   }
 
@@ -1907,30 +1972,26 @@ public class ApplicationRecordTest
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
-                    "def generate_workspace_rules(\n" +
-                    "        omit_com_example__myapp = False,\n" +
-                    "        omit_com_example__mylib = False):\n" +
+                    "def generate_workspace_rules():\n" +
                     "    \"\"\"\n" +
                     "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
                     "\n" +
                     "        Must be run from a WORKSPACE file.\n" +
                     "    \"\"\"\n" +
                     "\n" +
-                    "    if not omit_com_example__myapp:\n" +
-                    "        http_file(\n" +
-                    "            name = \"com_example__myapp__1_0\",\n" +
-                    "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
-                    "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "            urls = [\"" + urls.get( 0 ) + "\"],\n" +
-                    "        )\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "    )\n" +
                     "\n" +
-                    "    if not omit_com_example__mylib:\n" +
-                    "        http_file(\n" +
-                    "            name = \"com_example__mylib__2_0\",\n" +
-                    "            downloaded_file_path = \"com/example/mylib/2.0/mylib-2.0.jar\",\n" +
-                    "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "            urls = [\"" + urls2.get( 0 ) + "\"],\n" +
-                    "        )\n" );
+                    "    http_file(\n" +
+                    "        name = \"com_example__mylib__2_0\",\n" +
+                    "        downloaded_file_path = \"com/example/mylib/2.0/mylib-2.0.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + urls2.get( 0 ) + "\"],\n" +
+                    "    )\n" );
     } );
   }
 
@@ -1956,20 +2017,19 @@ public class ApplicationRecordTest
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
-                    "def generate_workspace_rules(omit_com_example__myapp = False):\n" +
+                    "def generate_workspace_rules():\n" +
                     "    \"\"\"\n" +
                     "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
                     "\n" +
                     "        Must be run from a WORKSPACE file.\n" +
                     "    \"\"\"\n" +
                     "\n" +
-                    "    if not omit_com_example__myapp:\n" +
-                    "        http_file(\n" +
-                    "            name = \"com_example__myapp__1_0\",\n" +
-                    "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
-                    "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "            urls = [\"" + urls.get( 0 ) + "\"],\n" +
-                    "        )\n" );
+                    "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "    )\n" );
     } );
   }
 
@@ -2050,37 +2110,35 @@ public class ApplicationRecordTest
                     "\n" +
                     "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
                     "\n" +
-                    "def generate_workspace_rules(omit_com_example__myapp = False):\n" +
+                    "def generate_workspace_rules():\n" +
                     "    \"\"\"\n" +
                     "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
                     "\n" +
                     "        Must be run from a WORKSPACE file.\n" +
                     "    \"\"\"\n" +
                     "\n" +
-                    "    if not omit_com_example__myapp:\n" +
-                    "        http_file(\n" +
-                    "            name = \"com_example__myapp__1_0\",\n" +
-                    "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
-                    "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "            urls = [\"" + urls.get( 0 ) + "\"],\n" +
-                    "        )\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "    )\n" +
                     "\n" +
-                    "def generate_targets(omit_com_example__myapp = False):\n" +
+                    "def generate_targets():\n" +
                     "    \"\"\"\n" +
                     "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
                     "    \"\"\"\n" +
                     "\n" +
-                    "    if not omit_com_example__myapp:\n" +
-                    "        native.alias(\n" +
-                    "            name = \"com_example__myapp\",\n" +
-                    "            actual = \":com_example__myapp__1_0\",\n" +
-                    "        )\n" +
-                    "        native.java_import(\n" +
-                    "            name = \"com_example__myapp__1_0\",\n" +
-                    "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                    "            visibility = [\"//visibility:private\"],\n" +
-                    "        )\n" );
+                    "    native.alias(\n" +
+                    "        name = \"com_example__myapp\",\n" +
+                    "        actual = \":com_example__myapp__1_0\",\n" +
+                    "    )\n" +
+                    "    native.java_import(\n" +
+                    "        name = \"com_example__myapp__1_0\",\n" +
+                    "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "        visibility = [\"//visibility:private\"],\n" +
+                    "    )\n" );
     } );
   }
 
