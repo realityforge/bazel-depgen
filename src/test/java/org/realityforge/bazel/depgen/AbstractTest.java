@@ -249,21 +249,31 @@ public abstract class AbstractTest
                                                             @Nonnull final String... dependencies )
     throws Exception
   {
-    final Resolver resolver = createResolver( localRepository );
+    final Artifact artifact = new DefaultArtifact( coords );
+    final Path pomFile =
+      createTempPomFile( artifact.getGroupId(),
+                         artifact.getArtifactId(),
+                         artifact.getVersion(),
+                         artifact.getExtension(),
+                         dependencies );
+    deployTempArtifactToLocalRepository( localRepository, coords, file, pomFile );
+  }
 
-    final Artifact jarArtifact = new DefaultArtifact( coords ).setFile( file.toFile() );
+  protected final void deployTempArtifactToLocalRepository( @Nonnull final Path localRepository,
+                                                            @Nonnull final String coords,
+                                                            @Nonnull final Path file,
+                                                            @Nonnull final Path pomFile )
+    throws Exception
+  {
     final Artifact pomArtifact =
-      new SubArtifact( jarArtifact, "", "pom" )
-        .setFile( createTempPomFile( jarArtifact.getGroupId(),
-                                     jarArtifact.getArtifactId(),
-                                     jarArtifact.getVersion(),
-                                     jarArtifact.getExtension(),
-                                     dependencies ).toFile() );
+      new SubArtifact( new DefaultArtifact( coords ), "", "pom" );
+
+    final Resolver resolver = createResolver( localRepository );
 
     final DeployRequest request =
       new DeployRequest()
-        .addArtifact( jarArtifact )
-        .addArtifact( pomArtifact )
+        .addArtifact( new DefaultArtifact( coords ).setFile( file.toFile() ) )
+        .addArtifact( pomArtifact.setFile( pomFile.toFile() ) )
         .setRepository( new RemoteRepository.Builder( "local",
                                                       "default",
                                                       localRepository.toUri().toString() ).build() );
