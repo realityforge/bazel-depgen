@@ -319,11 +319,11 @@ public class ApplicationConfigTest
       assertEquals( options.getNamePrefix(), "magic_" );
       assertEquals( options.getAliasStrategy(), AliasStrategy.ArtifactId );
       assertEquals( options.getDefaultLanguage(), Language.J2cl );
-      assertEquals( options.isFailOnMissingPom(), Boolean.FALSE );
-      assertEquals( options.isFailOnInvalidPom(), Boolean.FALSE );
-      assertEquals( options.isEmitDependencyGraph(), Boolean.FALSE );
-      assertEquals( options.isIncludeSource(), Boolean.FALSE );
-      assertEquals( options.isExportDeps(), Boolean.TRUE );
+      assertEquals( options.getFailOnMissingPom(), Boolean.FALSE );
+      assertEquals( options.getFailOnInvalidPom(), Boolean.FALSE );
+      assertEquals( options.getEmitDependencyGraph(), Boolean.FALSE );
+      assertEquals( options.getIncludeSource(), Boolean.FALSE );
+      assertEquals( options.getExportDeps(), Boolean.TRUE );
     } );
   }
 
@@ -346,11 +346,11 @@ public class ApplicationConfigTest
       assertNull( options.getNamePrefix() );
       assertNull( options.getAliasStrategy() );
       assertNull( options.getDefaultLanguage() );
-      assertNull( options.isFailOnMissingPom() );
-      assertNull( options.isFailOnInvalidPom() );
-      assertNull( options.isEmitDependencyGraph() );
-      assertNull( options.isIncludeSource() );
-      assertNull( options.isExportDeps() );
+      assertNull( options.getFailOnMissingPom() );
+      assertNull( options.getFailOnInvalidPom() );
+      assertNull( options.getEmitDependencyGraph() );
+      assertNull( options.getIncludeSource() );
+      assertNull( options.getExportDeps() );
     } );
   }
 

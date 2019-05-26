@@ -121,7 +121,7 @@ public final class OptionsConfig
   }
 
   @Nullable
-  public Boolean isFailOnInvalidPom()
+  public Boolean getFailOnInvalidPom()
   {
     return failOnInvalidPom;
   }
@@ -132,7 +132,7 @@ public final class OptionsConfig
   }
 
   @Nullable
-  public Boolean isFailOnMissingPom()
+  public Boolean getFailOnMissingPom()
   {
     return failOnMissingPom;
   }
@@ -143,7 +143,7 @@ public final class OptionsConfig
   }
 
   @Nullable
-  public Boolean isEmitDependencyGraph()
+  public Boolean getEmitDependencyGraph()
   {
     return emitDependencyGraph;
   }
@@ -154,7 +154,7 @@ public final class OptionsConfig
   }
 
   @Nullable
-  public Boolean isIncludeSource()
+  public Boolean getIncludeSource()
   {
     return includeSource;
   }
@@ -165,7 +165,7 @@ public final class OptionsConfig
   }
 
   @Nullable
-  public Boolean isExportDeps()
+  public Boolean getExportDeps()
   {
     return exportDeps;
   }

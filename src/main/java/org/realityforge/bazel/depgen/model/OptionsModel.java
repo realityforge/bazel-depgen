@@ -117,31 +117,31 @@ public final class OptionsModel
 
   public boolean failOnInvalidPom()
   {
-    final Boolean flag = _source.isFailOnInvalidPom();
+    final Boolean flag = _source.getFailOnInvalidPom();
     return null == flag ? OptionsConfig.DEFAULT_FAIL_ON_INVALID_POM : flag;
   }
 
   public boolean failOnMissingPom()
   {
-    final Boolean flag = _source.isFailOnMissingPom();
+    final Boolean flag = _source.getFailOnMissingPom();
     return null == flag ? OptionsConfig.DEFAULT_FAIL_ON_MISSING_POM : flag;
   }
 
   public boolean emitDependencyGraph()
   {
-    final Boolean flag = _source.isEmitDependencyGraph();
+    final Boolean flag = _source.getEmitDependencyGraph();
     return null == flag ? OptionsConfig.DEFAULT_EMIT_DEPENDENCY_GRAPH : flag;
   }
 
   public boolean includeSource()
   {
-    final Boolean flag = _source.isIncludeSource();
+    final Boolean flag = _source.getIncludeSource();
     return null == flag ? OptionsConfig.DEFAULT_INCLUDE_SOURCE : flag;
   }
 
   public boolean exportDeps()
   {
-    final Boolean flag = _source.isExportDeps();
+    final Boolean flag = _source.getExportDeps();
     return null == flag ? OptionsConfig.DEFAULT_EXPORT_DEPS : flag;
   }
 }
