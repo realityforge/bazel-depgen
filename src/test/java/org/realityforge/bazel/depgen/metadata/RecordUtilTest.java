@@ -27,6 +27,91 @@ public class RecordUtilTest
   extends AbstractTest
 {
   @Test
+  public void getLicensesAsString()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path filename = FileUtil.createLocalTempDir().resolve( "file.pom" );
+      Files.write( filename,
+                   ( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
+                     "  <modelVersion>4.0.0</modelVersion>\n" +
+                     "  <groupId>com.example.myapp</groupId>\n" +
+                     "  <artifactId>myapp</artifactId>\n" +
+                     "  <version>1.1.0</version>\n" +
+                     "  <packaging>jar</packaging>\n" +
+                     "  <licenses>\n" +
+                     "    <license>\n" +
+                     "      <name>The Apache Software License, Version 2.0</name>\n" +
+                     "      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>\n" +
+                     "      <distribution>repo</distribution>\n" +
+                     "    </license>\n" +
+                     "  </licenses>\n" +
+                     "</project>\n" ).getBytes( StandardCharsets.US_ASCII ) );
+      assertEquals( RecordUtil.getLicensesAsString( filename.toFile() ),
+                    "notice:The Apache Software License, Version 2.0" );
+    } );
+  }
+
+  @Test
+  public void getLicensesAsString_multipleLicenses()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path filename = FileUtil.createLocalTempDir().resolve( "file.pom" );
+      Files.write( filename,
+                   ( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
+                     "  <modelVersion>4.0.0</modelVersion>\n" +
+                     "  <groupId>com.example.myapp</groupId>\n" +
+                     "  <artifactId>myapp</artifactId>\n" +
+                     "  <version>1.1.0</version>\n" +
+                     "  <packaging>jar</packaging>\n" +
+                     "  <licenses>\n" +
+                     "    <license>\n" +
+                     "      <name>The Apache Software License, Version 2.0</name>\n" +
+                     "      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>\n" +
+                     "      <distribution>repo</distribution>\n" +
+                     "    </license>\n" +
+                     "    <license>\n" +
+                     "      <name>GNU Lesser General Public License</name>\n" +
+                     "      <url>http://www.gnu.org/licenses/lgpl.txt</url>\n" +
+                     "    </license>" +
+                     "  </licenses>\n" +
+                     "</project>\n" ).getBytes( StandardCharsets.US_ASCII ) );
+      assertEquals( RecordUtil.getLicensesAsString( filename.toFile() ),
+                    "notice:The Apache Software License, Version 2.0|restricted:GNU Lesser General Public License" );
+    } );
+  }
+
+  @Test
+  public void getLicensesAsString_noLicense()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path filename = FileUtil.createLocalTempDir().resolve( "file.pom" );
+      Files.write( filename,
+                   ( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
+                     "  <modelVersion>4.0.0</modelVersion>\n" +
+                     "  <groupId>com.example.myapp</groupId>\n" +
+                     "  <artifactId>myapp</artifactId>\n" +
+                     "  <version>1.1.0</version>\n" +
+                     "  <packaging>jar</packaging>\n" +
+                     "</project>\n" ).getBytes( StandardCharsets.US_ASCII ) );
+      assertEquals( RecordUtil.getLicensesAsString( filename.toFile() ),
+                    "" );
+    } );
+  }
+
+  @Test
+  public void getLicensesAsString_noPom()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path filename = FileUtil.createLocalTempDir().resolve( "file.pom" );
+      assertEquals( RecordUtil.getLicensesAsString( filename.toFile() ), "-" );
+    } );
+  }
+
+  @Test
   public void sha256()
     throws Exception
   {
