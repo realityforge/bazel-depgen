@@ -58,10 +58,6 @@ complete as there is too much un-said.
 
 * Add support for `neverlink` on artifacts.
 
-* Figure out how to populate `licenses` arguments in the future (possibly via scanning poms and heuristics or
-  explicit configuration). Alternatively just set if to dummy values as most projects don't have it as a central
-  part of the build process.
-
 * Support alternative to `http_file` that supports basic authentication.
 
 * Add Bazel target/task that will regenerate dependencies. [Mabel](https://github.com/menny/mabel) has a set
