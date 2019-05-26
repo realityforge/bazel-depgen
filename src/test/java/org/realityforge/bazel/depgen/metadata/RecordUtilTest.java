@@ -138,7 +138,7 @@ public class RecordUtilTest
     final LicenseRecord license1 = licenses.get( 0 );
     assertEquals( license1.getType(), LicenseType.notice );
     assertEquals( license1.getName(), "The Apache Software License, Version 2.0" );
-    final LicenseRecord license2 = licenses.get( 0 );
+    final LicenseRecord license2 = licenses.get( 1 );
     assertEquals( license2.getType(), LicenseType.restricted );
     assertEquals( license2.getName(), "GNU Lesser General Public License" );
   }
