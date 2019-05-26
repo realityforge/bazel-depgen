@@ -3,7 +3,7 @@ package org.realityforge.bazel.depgen.config;
 /**
  * Types of licenses. Taken from https://docs.bazel.build/versions/master/be/functions.html#licenses
  */
-public enum License
+public enum LicenseType
 {
   /**
    * Requires mandatory source distribution.
