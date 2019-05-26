@@ -112,7 +112,7 @@ public final class ApplicationRecord
    * @return the relative path from the  extension file to the source dependency file.
    */
   @Nonnull
-  public Path getPathFromExtensionToConfig()
+  Path getPathFromExtensionToConfig()
   {
     final Path configLocation = _source.getConfigLocation();
     final Path extensionFile = _source.getOptions().getExtensionFile();
