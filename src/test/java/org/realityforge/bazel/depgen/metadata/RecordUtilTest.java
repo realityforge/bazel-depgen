@@ -12,12 +12,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Executors;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.config.LicenseType;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
+import org.realityforge.bazel.depgen.record.LicenseRecord;
 import org.realityforge.guiceyloops.server.http.TinyHttpd;
 import org.realityforge.guiceyloops.server.http.TinyHttpdFactory;
 import org.testng.annotations.Test;
@@ -99,6 +102,45 @@ public class RecordUtilTest
       assertEquals( RecordUtil.getLicensesAsString( filename.toFile() ),
                     "" );
     } );
+  }
+
+  @Test
+  public void parseLicenses_noLicenses()
+  {
+    assertEquals( RecordUtil.parseLicenses( "" ), Collections.emptyList() );
+  }
+
+  @Test
+  public void parseLicenses_pomDidNotExist()
+  {
+    assertNull( RecordUtil.parseLicenses( "-" ) );
+  }
+
+  @Test
+  public void parseLicenses_singleLicense()
+  {
+    final List<LicenseRecord> licenses = RecordUtil.parseLicenses( "notice:The Apache Software License, Version 2.0" );
+    assertNotNull( licenses );
+    assertEquals( licenses.size(), 1 );
+    final LicenseRecord license = licenses.get( 0 );
+    assertEquals( license.getType(), LicenseType.notice );
+    assertEquals( license.getName(), "The Apache Software License, Version 2.0" );
+  }
+
+  @Test
+  public void parseLicenses_multipleLicense()
+  {
+    final List<LicenseRecord> licenses =
+      RecordUtil.parseLicenses( "notice:The Apache Software License, Version 2.0|" +
+                                "restricted:GNU Lesser General Public License" );
+    assertNotNull( licenses );
+    assertEquals( licenses.size(), 2 );
+    final LicenseRecord license1 = licenses.get( 0 );
+    assertEquals( license1.getType(), LicenseType.notice );
+    assertEquals( license1.getName(), "The Apache Software License, Version 2.0" );
+    final LicenseRecord license2 = licenses.get( 0 );
+    assertEquals( license2.getType(), LicenseType.restricted );
+    assertEquals( license2.getName(), "GNU Lesser General Public License" );
   }
 
   @Test
