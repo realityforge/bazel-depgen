@@ -65,7 +65,6 @@ final class RecordUtil
   @Nonnull
   static String getLicensesAsString( @Nonnull final File pomFile )
   {
-    final List<LicenseRecord> result;
     try
     {
       final Model model = new MavenXpp3Reader().read( new FileInputStream( pomFile ) );
