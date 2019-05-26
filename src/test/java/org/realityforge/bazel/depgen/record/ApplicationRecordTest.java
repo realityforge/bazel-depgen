@@ -482,6 +482,7 @@ public class ApplicationRecordTest
         assertEquals( loadPropertiesContent( path ),
                       "<default>.local.url=" + urlEncoded + "com/example/myapp/1.0/myapp-1.0.jar\n" +
                       "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" +
+                      "licenses=\n" +
                       "processors=-\n" +
                       "sources.present=false\n" );
       }
@@ -510,6 +511,7 @@ public class ApplicationRecordTest
         assertEquals( loadPropertiesContent( path ),
                       "<default>.local.url=" + urlEncoded + "com/example/mylib/1.0/mylib-1.0.jar\n" +
                       "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" +
+                      "licenses=\n" +
                       "processors=-\n" +
                       "sources.present=false\n" );
       }
@@ -570,6 +572,7 @@ public class ApplicationRecordTest
         assertEquals( loadPropertiesContent( path ),
                       "<default>.local.url=" + urlEncoded + "com/example/myapp/1.0/myapp-1.0.jar\n" +
                       "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" +
+                      "licenses=\n" +
                       "processors=-\n" +
                       "sources.local.url=" + urlEncoded + "com/example/myapp/1.0/myapp-1.0-sources.jar\n" +
                       "sources.present=true\n" +
@@ -602,6 +605,7 @@ public class ApplicationRecordTest
         assertEquals( loadPropertiesContent( path ),
                       "<default>.local.url=" + urlEncoded + "com/example/mylib/1.0/mylib-1.0.jar\n" +
                       "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" +
+                      "licenses=\n" +
                       "processors=-\n" +
                       "sources.local.url=" + urlEncoded + "com/example/mylib/1.0/mylib-1.0-sources.jar\n" +
                       "sources.present=true\n" +
@@ -1675,7 +1679,6 @@ public class ApplicationRecordTest
                     "        native.java_import(\n" +
                     "            name = \"com_example__myapp__1_0\",\n" +
                     "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "            licenses = [\"notice\"],\n" +
                     "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "            visibility = [\"//visibility:private\"],\n" +
                     "        )\n" );
@@ -1713,7 +1716,6 @@ public class ApplicationRecordTest
                     "        native.java_import(\n" +
                     "            name = \"com_example__myapp__1_0\",\n" +
                     "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "            licenses = [\"notice\"],\n" +
                     "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "            visibility = [\"//visibility:private\"],\n" +
                     "        )\n" );
@@ -1752,7 +1754,6 @@ public class ApplicationRecordTest
                     "        native.java_import(\n" +
                     "            name = \"com_example__myapp__1_0\",\n" +
                     "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "            licenses = [\"notice\"],\n" +
                     "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "            visibility = [\"//visibility:private\"],\n" +
                     "            deps = [\":com_example__mylib\"],\n" +
@@ -1767,7 +1768,6 @@ public class ApplicationRecordTest
                     "        native.java_import(\n" +
                     "            name = \"com_example__mylib__2_0\",\n" +
                     "            jars = [\"@com_example__mylib__2_0//file\"],\n" +
-                    "            licenses = [\"notice\"],\n" +
                     "            tags = [\"maven_coordinates=com.example:mylib:2.0\"],\n" +
                     "            visibility = [\"//visibility:private\"],\n" +
                     "        )\n" );
@@ -1807,7 +1807,6 @@ public class ApplicationRecordTest
                     "        native.java_import(\n" +
                     "            name = \"com_example__myapp__1_0\",\n" +
                     "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "            licenses = [\"notice\"],\n" +
                     "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "            visibility = [\"//visibility:private\"],\n" +
                     "            deps = [\":@com_example//:mylib\"],\n" +
@@ -2079,7 +2078,6 @@ public class ApplicationRecordTest
                     "        native.java_import(\n" +
                     "            name = \"com_example__myapp__1_0\",\n" +
                     "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "            licenses = [\"notice\"],\n" +
                     "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "            visibility = [\"//visibility:private\"],\n" +
                     "        )\n" );

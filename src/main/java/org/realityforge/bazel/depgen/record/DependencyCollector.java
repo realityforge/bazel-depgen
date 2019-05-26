@@ -1,6 +1,7 @@
 package org.realityforge.bazel.depgen.record;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -100,9 +101,12 @@ final class DependencyCollector
       sourceUrls = null;
     }
 
+    final Path pomFile =
+      file.toPath().getParent().resolve( artifact.getArtifactId() + "-" + artifact.getVersion() + ".pom" );
+    final List<LicenseRecord> licenses = metadata.getLicenses( pomFile );
     final List<String> processors = metadata.getProcessors( file );
 
-    _record.artifact( node, sha256, urls, sourceSha256, sourceUrls, processors );
+    _record.artifact( node, sha256, urls, sourceSha256, sourceUrls, licenses, processors );
   }
 
   private boolean hasExclude( @Nonnull final Dependency dependency )

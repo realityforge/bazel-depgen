@@ -41,6 +41,9 @@ public class ArtifactRecordTest
                     Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
       assertNull( artifactRecord.getSourceSha256() );
       assertNull( artifactRecord.getSourceUrls() );
+      final List<LicenseRecord> licenses = artifactRecord.getLicenses();
+      assertNotNull( licenses );
+      assertTrue( licenses.isEmpty() );
       assertEquals( artifactRecord.getDeps().size(), 0 );
       assertEquals( artifactRecord.getReverseDeps().size(), 0 );
       assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
@@ -57,6 +60,46 @@ public class ArtifactRecordTest
 
       writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
+      assertEquals( asString( outputStream ),
+                    "native.java_import(\n" +
+                    "    name = \"com_example__myapp__1_0\",\n" +
+                    "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void emitJavaImport_licensePresent()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      final String licenseSection =
+        "  <licenses>\n" +
+        "    <license>\n" +
+        "      <name>The Apache Software License, Version 2.0</name>\n" +
+        "      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>\n" +
+        "      <distribution>repo</distribution>\n" +
+        "    </license>\n" +
+        "  </licenses>\n";
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:myapp:1.0",
+                                           createTempJarFile(),
+                                           createTempPomFile( "com.example",
+                                                              "myapp",
+                                                              "1.0",
+                                                              "jar",
+                                                              new String[ 0 ],
+                                                              new String[]{ licenseSection } ) );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
@@ -95,7 +138,6 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"zeapp_com_example__myapp__1_0\",\n" +
                     "    jars = [\"@zeapp_com_example__myapp__1_0//file\"],\n" +
-                    "    licenses = [\"notice\"],\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );
@@ -120,7 +162,6 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__library\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    licenses = [\"notice\"],\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );
@@ -146,7 +187,6 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    licenses = [\"notice\"],\n" +
                     "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
@@ -173,7 +213,6 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    licenses = [\"notice\"],\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     "    deps = [\":com_example__mylib\"],\n" +
@@ -200,7 +239,6 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    licenses = [\"notice\"],\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     "    deps = [\":com_example__mylib\"],\n" +
@@ -228,7 +266,6 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    licenses = [\"notice\"],\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     "    runtime_deps = [\":com_example__mylib\"],\n" +
@@ -269,7 +306,6 @@ public class ArtifactRecordTest
                       "native.java_import(\n" +
                       "    name = \"com_example__myapp__1_0\",\n" +
                       "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                      "    licenses = [\"notice\"],\n" +
                       "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                       "    visibility = [\"//visibility:private\"],\n" +
                       "    deps = [\":com_example__mylib\"],\n" +
@@ -284,7 +320,6 @@ public class ArtifactRecordTest
                       "native.java_import(\n" +
                       "    name = \"com_example__mylib__1_0\",\n" +
                       "    jars = [\"@com_example__mylib__1_0//file\"],\n" +
-                      "    licenses = [\"notice\"],\n" +
                       "    tags = [\"maven_coordinates=com.example:mylib:1.0\"],\n" +
                       "    visibility = [\"//visibility:private\"],\n" +
                       "    runtime_deps = [\":com_example__rtb\"],\n" +
@@ -298,7 +333,6 @@ public class ArtifactRecordTest
                       "native.java_import(\n" +
                       "    name = \"com_example__rta__33_0\",\n" +
                       "    jars = [\"@com_example__rta__33_0//file\"],\n" +
-                      "    licenses = [\"notice\"],\n" +
                       "    tags = [\"maven_coordinates=com.example:rtA:33.0\"],\n" +
                       "    visibility = [\"//visibility:private\"],\n" +
                       ")\n" );
@@ -532,7 +566,6 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    licenses = [\"notice\"],\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" +
@@ -581,7 +614,6 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    licenses = [\"notice\"],\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" +
@@ -618,7 +650,6 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    licenses = [\"notice\"],\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" +
@@ -824,7 +855,6 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    licenses = [\"notice\"],\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );
@@ -858,7 +888,6 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    licenses = [\"notice\"],\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" +
@@ -911,7 +940,6 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    licenses = [\"notice\"],\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" +
