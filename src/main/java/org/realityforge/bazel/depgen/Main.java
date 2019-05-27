@@ -29,50 +29,34 @@ import org.realityforge.getopt4j.CLUtil;
  */
 public class Main
 {
-  private static final String DEFAULT_DEPENDENCIES_FILE = "dependencies.yml";
-  private static final String DEFAULT_CACHE_DIR = ".repository";
   private static final int HELP_OPT = 'h';
   private static final int QUIET_OPT = 'q';
   private static final int VERBOSE_OPT = 'v';
-  private static final int DEPENDENCIES_FILE_OPT = 'd';
-  private static final int SETTINGS_FILE_OPT = 's';
-  private static final int CACHE_DIR_OPT = 'r';
   private static final int EMIT_DEPENDENCY_GRAPH_OPT = 1;
-  private static final CLOptionDescriptor[] OPTIONS = new CLOptionDescriptor[]{
-    new CLOptionDescriptor( "help",
-                            CLOptionDescriptor.ARGUMENT_DISALLOWED,
-                            HELP_OPT,
-                            "print this message and exit" ),
-    new CLOptionDescriptor( "quiet",
-                            CLOptionDescriptor.ARGUMENT_DISALLOWED,
-                            QUIET_OPT,
-                            "Do not output unless an error occurs, just return 0 on no difference.",
-                            new int[]{ VERBOSE_OPT } ),
-    new CLOptionDescriptor( "verbose",
-                            CLOptionDescriptor.ARGUMENT_DISALLOWED,
-                            VERBOSE_OPT,
-                            "Verbose output of differences.",
-                            new int[]{ QUIET_OPT } ),
-    new CLOptionDescriptor( "dependencies-file",
-                            CLOptionDescriptor.ARGUMENT_REQUIRED,
-                            DEPENDENCIES_FILE_OPT,
-                            "The path to the yaml file containing the dependencies. Defaults to '" +
-                            DEFAULT_DEPENDENCIES_FILE + "' in the workspace directory." ),
-    new CLOptionDescriptor( "settings-file",
-                            CLOptionDescriptor.ARGUMENT_REQUIRED,
-                            SETTINGS_FILE_OPT,
-                            "The path to the settings.xml used by Maven extract repository credentials. " +
-                            "Defaults to '~/.m2/settings.xml'." ),
-    new CLOptionDescriptor( "cache-dir",
-                            CLOptionDescriptor.ARGUMENT_REQUIRED,
-                            CACHE_DIR_OPT,
-                            "The path to the directory in which to cache downloads from remote " +
-                            "repositories. Defaults to '" + DEFAULT_CACHE_DIR + "' in the workspace directory." ),
-    new CLOptionDescriptor( "emit-dependency-graph",
-                            CLOptionDescriptor.ARGUMENT_DISALLOWED,
-                            EMIT_DEPENDENCY_GRAPH_OPT,
-                            "Emit the computed dependency graph after it is calculated." )
-  };
+  private static final CLOptionDescriptor[] OPTIONS = new CLOptionDescriptor[]
+    {
+      new CLOptionDescriptor( "help",
+                              CLOptionDescriptor.ARGUMENT_DISALLOWED,
+                              HELP_OPT,
+                              "print this message and exit" ),
+      new CLOptionDescriptor( "quiet",
+                              CLOptionDescriptor.ARGUMENT_DISALLOWED,
+                              QUIET_OPT,
+                              "Do not output unless an error occurs.",
+                              new int[]{ VERBOSE_OPT } ),
+      new CLOptionDescriptor( "verbose",
+                              CLOptionDescriptor.ARGUMENT_DISALLOWED,
+                              VERBOSE_OPT,
+                              "Verbose output of differences.",
+                              new int[]{ QUIET_OPT } ),
+      Options.DEPENDENCIES_DESCRIPTOR,
+      Options.SETTINGS_DESCRIPTOR,
+      Options.CACHE_DESCRIPTOR,
+      new CLOptionDescriptor( "emit-dependency-graph",
+                              CLOptionDescriptor.ARGUMENT_DISALLOWED,
+                              EMIT_DEPENDENCY_GRAPH_OPT,
+                              "Emit the computed dependency graph after it is calculated." )
+    };
   private static final int SUCCESS_EXIT_CODE = 0;
   private static final int ERROR_EXIT_CODE = 1;
   private static final int ERROR_PARSING_ARGS_EXIT_CODE = 2;
@@ -276,7 +260,7 @@ public class Main
           return false;
         }
 
-        case DEPENDENCIES_FILE_OPT:
+        case Options.DEPENDENCIES_FILE_OPT:
         {
           final String argument = option.getArgument();
           final File file = new File( argument );
@@ -289,7 +273,7 @@ public class Main
           c_dependenciesFile = file.toPath().toAbsolutePath().normalize();
           break;
         }
-        case SETTINGS_FILE_OPT:
+        case Options.SETTINGS_FILE_OPT:
         {
           final String argument = option.getArgument();
           final File file = new File( argument );
@@ -303,7 +287,7 @@ public class Main
           break;
         }
 
-        case CACHE_DIR_OPT:
+        case Options.CACHE_DIR_OPT:
         {
           final String argument = option.getArgument();
           final File dir = new File( argument );
@@ -344,7 +328,7 @@ public class Main
 
     if ( null == c_dependenciesFile )
     {
-      final File file = Paths.get( DEFAULT_DEPENDENCIES_FILE ).toFile();
+      final File file = Paths.get( Options.DEFAULT_DEPENDENCIES_FILE ).toFile();
       if ( !file.exists() )
       {
         c_logger.log( Level.SEVERE, "Error: Default dependencies file does not exist: " + file );
@@ -359,7 +343,7 @@ public class Main
     }
     if ( null == c_cacheDir )
     {
-      final File dir = Paths.get( DEFAULT_CACHE_DIR ).toFile();
+      final File dir = Paths.get( Options.DEFAULT_CACHE_DIR ).toFile();
       if ( dir.exists() && !dir.isDirectory() )
       {
         c_logger.log( Level.SEVERE, "Error: Default cache directory exists but is not a directory: " + dir );
