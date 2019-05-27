@@ -114,6 +114,11 @@ public final class ArtifactModel
         version = components[ 4 ];
       }
     }
+    if ( Nature.Plugin == source.getNature() && null != source.getLanguages() )
+    {
+      throw new InvalidModelException( "The dependency must not specify the 'languages' property if the " +
+                                       "'nature' property is specified as `Plugin`.", source );
+    }
 
     if ( null == ids )
     {

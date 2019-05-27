@@ -1,6 +1,7 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
@@ -574,6 +575,21 @@ public class ArtifactModelTest
       expectThrows( InvalidModelException.class, () -> parseModel( source ) );
     assertEquals( exception.getMessage(),
                   "The dependency must not specify the 'coord' property if other properties are present that define the maven coordinates. .i.e. coord must not be present when any of the following properties are present: group, id, version, classifier, type or ids." );
+    assertEquals( exception.getModel(), source );
+  }
+
+  @Test
+  public void parseArtifactWithPluginNatureSpecifyingLanguages()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setNature( Nature.Plugin );
+    source.setLanguages( Collections.singletonList( Language.Java ) );
+
+    final InvalidModelException exception =
+      expectThrows( InvalidModelException.class, () -> parseModel( source ) );
+    assertEquals( exception.getMessage(),
+                  "The dependency must not specify the 'languages' property if the 'nature' property is specified as `Plugin`." );
     assertEquals( exception.getModel(), source );
   }
 
