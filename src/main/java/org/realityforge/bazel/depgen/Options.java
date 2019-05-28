@@ -18,7 +18,7 @@ final class Options
     new CLOptionDescriptor( "settings-file",
                             CLOptionDescriptor.ARGUMENT_REQUIRED,
                             SETTINGS_FILE_OPT,
-                            "The path to the settings.xml used by Maven extract repository credentials. " +
+                            "The path to the settings.xml used by Maven to extract repository credentials. " +
                             "Defaults to '~/.m2/settings.xml'." );
   static final int CACHE_DIR_OPT = 'r';
   static final CLOptionDescriptor CACHE_DESCRIPTOR =
