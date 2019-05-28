@@ -12,6 +12,7 @@ import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.eclipse.aether.graph.DependencyCycle;
 import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
@@ -75,49 +76,14 @@ public class Main
     final Logger logger = c_environment.logger();
     try
     {
-      final ApplicationModel model = ApplicationModel.parse( loadDependenciesYaml() );
-
-      final Resolver resolver = ResolverUtil.createResolver( c_environment, c_cacheDir, model, loadSettings() );
-
-      final DependencyResult result = resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> {
-        // If we get here then the listener has already emitted a warning message so just need to exit
-        // We can only get here if either failOnMissingPom or failOnInvalidPom is true and an error occurred
-        throw new TerminalStateException( ExitCodes.ERROR_INVALID_POM_CODE );
-      } );
-
-      final List<DependencyCycle> cycles = result.getCycles();
-      if ( !cycles.isEmpty() )
-      {
-        logger.warning( cycles.size() + " dependency cycles detected when collecting dependencies:" );
-        for ( final DependencyCycle cycle : cycles )
-        {
-          logger.warning( cycle.toString() );
-        }
-        throw new TerminalStateException( ExitCodes.ERROR_CYCLES_PRESENT_CODE );
-      }
-      final List<Exception> exceptions = result.getCollectExceptions();
-      if ( !exceptions.isEmpty() )
-      {
-        logger.warning( exceptions.size() + " errors collecting dependencies:" );
-        for ( final Exception exception : exceptions )
-        {
-          logger.log( Level.WARNING, null, exception );
-        }
-        throw new TerminalStateException( ExitCodes.ERROR_COLLECTING_DEPENDENCIES_CODE );
-      }
-
-      final DependencyNode node = result.getRoot();
-
+      final ApplicationRecord record = loadApplicationRecord();
       final Level dependencyGraphLevel = c_emitDependencyGraph ? Level.WARNING : Level.FINE;
       if ( logger.isLoggable( dependencyGraphLevel ) )
       {
         logger.log( dependencyGraphLevel, "Dependency Graph:" );
-        node.accept( new DependencyGraphEmitter( model,
-                                                 line -> logger.log( dependencyGraphLevel, line ) ) );
+        record.getNode()
+          .accept( new DependencyGraphEmitter( record.getSource(), line -> logger.log( dependencyGraphLevel, line ) ) );
       }
-      final ApplicationRecord record =
-        ApplicationRecord.build( model, node, resolver.getAuthenticationContexts(), logger::warning );
-
       generate( record );
     }
     catch ( final InvalidModelException ime )
@@ -163,6 +129,60 @@ public class Main
     }
 
     System.exit( ExitCodes.SUCCESS_EXIT_CODE );
+  }
+
+  @Nonnull
+  private static ApplicationRecord loadApplicationRecord()
+    throws DependencyResolutionException
+  {
+    return loadApplicationRecord( ApplicationModel.parse( loadDependenciesYaml() ) );
+  }
+
+  @Nonnull
+  private static ApplicationRecord loadApplicationRecord( @Nonnull final ApplicationModel model )
+    throws DependencyResolutionException
+  {
+    final Resolver resolver = ResolverUtil.createResolver( c_environment, c_cacheDir, model, loadSettings() );
+    return ApplicationRecord.build( model,
+                                    resolveModel( resolver, model ),
+                                    resolver.getAuthenticationContexts(),
+                                    m -> c_environment.logger().warning( m ) );
+  }
+
+  @Nonnull
+  private static DependencyNode resolveModel( @Nonnull final Resolver resolver,
+                                              @Nonnull final ApplicationModel model )
+    throws DependencyResolutionException
+  {
+    final Logger logger = c_environment.logger();
+    final DependencyResult result = resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> {
+      // If we get here then the listener has already emitted a warning message so just need to exit
+      // We can only get here if either failOnMissingPom or failOnInvalidPom is true and an error occurred
+      throw new TerminalStateException( ExitCodes.ERROR_INVALID_POM_CODE );
+    } );
+
+    final List<DependencyCycle> cycles = result.getCycles();
+    if ( !cycles.isEmpty() )
+    {
+      logger.warning( cycles.size() + " dependency cycles detected when collecting dependencies:" );
+      for ( final DependencyCycle cycle : cycles )
+      {
+        logger.warning( cycle.toString() );
+      }
+      throw new TerminalStateException( ExitCodes.ERROR_CYCLES_PRESENT_CODE );
+    }
+    final List<Exception> exceptions = result.getCollectExceptions();
+    if ( !exceptions.isEmpty() )
+    {
+      logger.warning( exceptions.size() + " errors collecting dependencies:" );
+      for ( final Exception exception : exceptions )
+      {
+        logger.log( Level.WARNING, null, exception );
+      }
+      throw new TerminalStateException( ExitCodes.ERROR_COLLECTING_DEPENDENCIES_CODE );
+    }
+
+    return result.getRoot();
   }
 
   private static void generate( @Nonnull final ApplicationRecord record )
@@ -367,8 +387,8 @@ public class Main
   {
     final String lineSeparator = System.getProperty( "line.separator" );
     c_environment.logger().log( Level.INFO,
-                            "java " + Main.class.getName() + " [options]" + lineSeparator +
-                            "Options: " + lineSeparator +
-                            CLUtil.describeOptions( OPTIONS ) );
+                                "java " + Main.class.getName() + " [options]" + lineSeparator +
+                                "Options: " + lineSeparator +
+                                CLUtil.describeOptions( OPTIONS ) );
   }
 }
