@@ -253,7 +253,7 @@ public class Main
     logger.setLevel( Level.INFO );
   }
 
-  private static boolean processOptions( final String[] args )
+  private static boolean processOptions( @Nonnull final String[] args )
   {
     // Parse the arguments
     final CLArgsParser parser = new CLArgsParser( args, OPTIONS );
