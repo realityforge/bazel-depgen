@@ -60,10 +60,20 @@ public abstract class AbstractTest
     throws Exception
   {
     final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
-    return ResolverUtil.createResolver( createLogger(),
+    return ResolverUtil.createResolver( newEnvironment(),
                                         cacheDir,
                                         model,
                                         SettingsUtil.loadSettings( settingsFile, createLogger() ) );
+  }
+
+  final Environment newEnvironment()
+  {
+    return newEnvironment( createLogger() );
+  }
+
+  final Environment newEnvironment( @Nonnull final Logger logger )
+  {
+    return new Environment( null, logger );
   }
 
   @Nonnull
@@ -72,7 +82,7 @@ public abstract class AbstractTest
   {
     final RemoteRepository remoteRepository =
       new RemoteRepository.Builder( "local", "default", localRepositoryDirectory.toUri().toString() ).build();
-    return ResolverUtil.createResolver( createLogger(),
+    return ResolverUtil.createResolver( newEnvironment( ),
                                         FileUtil.createLocalTempDir(),
                                         Collections.singletonList( remoteRepository ),
                                         true,

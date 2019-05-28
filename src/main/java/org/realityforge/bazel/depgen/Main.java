@@ -66,7 +66,7 @@ public class Main
   private static final int ERROR_INVALID_POM_CODE = 6;
   private static final int ERROR_CYCLES_PRESENT_CODE = 7;
   private static final int ERROR_COLLECTING_DEPENDENCIES_CODE = 8;
-  private static final Logger c_logger = Logger.getGlobal();
+  private static final Environment c_environment = new Environment( System.console(), Logger.getGlobal() );
   private static Path c_dependenciesFile;
   private static Path c_settingsFile;
   private static Path c_cacheDir;
@@ -81,11 +81,12 @@ public class Main
       return;
     }
 
+    final Logger logger = c_environment.logger();
     try
     {
       final ApplicationModel model = ApplicationModel.parse( loadDependenciesYaml() );
 
-      final Resolver resolver = ResolverUtil.createResolver( c_logger, c_cacheDir, model, loadSettings() );
+      final Resolver resolver = ResolverUtil.createResolver( c_environment, c_cacheDir, model, loadSettings() );
 
       final DependencyResult result = resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> {
         // If we get here then the listener has already emitted a warning message so just need to exit
@@ -96,20 +97,20 @@ public class Main
       final List<DependencyCycle> cycles = result.getCycles();
       if ( !cycles.isEmpty() )
       {
-        c_logger.warning( cycles.size() + " dependency cycles detected when collecting dependencies:" );
+        logger.warning( cycles.size() + " dependency cycles detected when collecting dependencies:" );
         for ( final DependencyCycle cycle : cycles )
         {
-          c_logger.warning( cycle.toString() );
+          logger.warning( cycle.toString() );
         }
         System.exit( ERROR_CYCLES_PRESENT_CODE );
       }
       final List<Exception> exceptions = result.getCollectExceptions();
       if ( !exceptions.isEmpty() )
       {
-        c_logger.warning( exceptions.size() + " errors collecting dependencies:" );
+        logger.warning( exceptions.size() + " errors collecting dependencies:" );
         for ( final Exception exception : exceptions )
         {
-          c_logger.log( Level.WARNING, null, exception );
+          logger.log( Level.WARNING, null, exception );
         }
         System.exit( ERROR_COLLECTING_DEPENDENCIES_CODE );
       }
@@ -117,13 +118,14 @@ public class Main
       final DependencyNode node = result.getRoot();
 
       final Level dependencyGraphLevel = c_emitDependencyGraph ? Level.WARNING : Level.FINE;
-      if ( c_logger.isLoggable( dependencyGraphLevel ) )
+      if ( logger.isLoggable( dependencyGraphLevel ) )
       {
-        c_logger.log( dependencyGraphLevel, "Dependency Graph:" );
-        node.accept( new DependencyGraphEmitter( model, line -> c_logger.log( dependencyGraphLevel, line ) ) );
+        logger.log( dependencyGraphLevel, "Dependency Graph:" );
+        node.accept( new DependencyGraphEmitter( model,
+                                                 line -> logger.log( dependencyGraphLevel, line ) ) );
       }
       final ApplicationRecord record =
-        ApplicationRecord.build( model, node, resolver.getAuthenticationContexts(), c_logger::warning );
+        ApplicationRecord.build( model, node, resolver.getAuthenticationContexts(), logger::warning );
 
       generate( record );
     }
@@ -132,11 +134,13 @@ public class Main
       final String message = ime.getMessage();
       if ( null != message )
       {
-        c_logger.log( Level.WARNING, message, ime.getCause() );
+        logger.log( Level.WARNING, message, ime.getCause() );
       }
 
-      c_logger.log( Level.WARNING,
-                    "--- Invalid Config ---\n" + YamlUtil.asYamlString( ime.getModel() ) + "--- End Config ---" );
+      logger.log( Level.WARNING,
+                  "--- Invalid Config ---\n" +
+                  YamlUtil.asYamlString( ime.getModel() ) +
+                  "--- End Config ---" );
 
       System.exit( ERROR_CONSTRUCTING_MODEL_CODE );
     }
@@ -145,14 +149,14 @@ public class Main
       final String message = tse.getMessage();
       if ( null != message )
       {
-        c_logger.log( Level.WARNING, message );
+        logger.log( Level.WARNING, message );
         final Throwable cause = tse.getCause();
         if ( null != cause )
         {
-          if ( c_logger.isLoggable( Level.INFO ) )
+          if ( logger.isLoggable( Level.INFO ) )
           {
-            c_logger.log( Level.INFO, "Cause: " + cause.toString() );
-            if ( c_logger.isLoggable( Level.FINE ) )
+            logger.log( Level.INFO, "Cause: " + cause.toString() );
+            if ( logger.isLoggable( Level.FINE ) )
             {
               cause.printStackTrace();
             }
@@ -163,7 +167,7 @@ public class Main
     }
     catch ( final Throwable t )
     {
-      c_logger.log( Level.WARNING, t.toString(), t );
+      logger.log( Level.WARNING, t.toString(), t );
       System.exit( ERROR_EXIT_CODE );
     }
 
@@ -203,7 +207,7 @@ public class Main
   {
     try
     {
-      return SettingsUtil.loadSettings( c_settingsFile, c_logger );
+      return SettingsUtil.loadSettings( c_settingsFile, c_environment.logger() );
     }
     catch ( final SettingsBuildingException e )
     {
@@ -229,12 +233,13 @@ public class Main
 
   private static void setupLogger()
   {
-    c_logger.setUseParentHandlers( false );
     final ConsoleHandler handler = new ConsoleHandler();
     handler.setFormatter( new RawFormatter() );
     handler.setLevel( Level.ALL );
-    c_logger.addHandler( handler );
-    c_logger.setLevel( Level.INFO );
+    final Logger logger = c_environment.logger();
+    logger.setUseParentHandlers( false );
+    logger.addHandler( handler );
+    logger.setLevel( Level.INFO );
   }
 
   private static boolean processOptions( final String[] args )
@@ -243,9 +248,10 @@ public class Main
     final CLArgsParser parser = new CLArgsParser( args, OPTIONS );
 
     //Make sure that there was no errors parsing arguments
+    final Logger logger = c_environment.logger();
     if ( null != parser.getErrorString() )
     {
-      c_logger.log( Level.SEVERE, "Error: " + parser.getErrorString() );
+      logger.log( Level.SEVERE, "Error: " + parser.getErrorString() );
       return false;
     }
     // Get a list of parsed options
@@ -256,7 +262,7 @@ public class Main
       {
         case CLOption.TEXT_ARGUMENT:
         {
-          c_logger.log( Level.SEVERE, "Error: Unexpected argument: " + option.getArgument() );
+          logger.log( Level.SEVERE, "Error: Unexpected argument: " + option.getArgument() );
           return false;
         }
 
@@ -266,8 +272,8 @@ public class Main
           final File file = new File( argument );
           if ( !file.exists() )
           {
-            c_logger.log( Level.SEVERE,
-                          "Error: Specified dependencies file does not exist. Specified value: " + argument );
+            logger.log( Level.SEVERE,
+                        "Error: Specified dependencies file does not exist. Specified value: " + argument );
             return false;
           }
           c_dependenciesFile = file.toPath().toAbsolutePath().normalize();
@@ -279,8 +285,8 @@ public class Main
           final File file = new File( argument );
           if ( !file.exists() )
           {
-            c_logger.log( Level.SEVERE,
-                          "Error: Specified settings file does not exist. Specified value: " + argument );
+            logger.log( Level.SEVERE,
+                        "Error: Specified settings file does not exist. Specified value: " + argument );
             return false;
           }
           c_settingsFile = file.toPath().toAbsolutePath().normalize();
@@ -293,9 +299,9 @@ public class Main
           final File dir = new File( argument );
           if ( dir.exists() && !dir.isDirectory() )
           {
-            c_logger.log( Level.SEVERE,
-                          "Error: Specified cache directory exists but is not a directory. Specified value: " +
-                          argument );
+            logger.log( Level.SEVERE,
+                        "Error: Specified cache directory exists but is not a directory. Specified value: " +
+                        argument );
             return false;
           }
           c_cacheDir = dir.toPath();
@@ -310,12 +316,12 @@ public class Main
 
         case VERBOSE_OPT:
         {
-          c_logger.setLevel( Level.ALL );
+          logger.setLevel( Level.ALL );
           break;
         }
         case QUIET_OPT:
         {
-          c_logger.setLevel( Level.WARNING );
+          logger.setLevel( Level.WARNING );
           break;
         }
         case HELP_OPT:
@@ -331,7 +337,7 @@ public class Main
       final File file = Paths.get( Options.DEFAULT_DEPENDENCIES_FILE ).toFile();
       if ( !file.exists() )
       {
-        c_logger.log( Level.SEVERE, "Error: Default dependencies file does not exist: " + file );
+        logger.log( Level.SEVERE, "Error: Default dependencies file does not exist: " + file );
         return false;
       }
       c_dependenciesFile = file.toPath();
@@ -346,18 +352,18 @@ public class Main
       final File dir = Paths.get( Options.DEFAULT_CACHE_DIR ).toFile();
       if ( dir.exists() && !dir.isDirectory() )
       {
-        c_logger.log( Level.SEVERE, "Error: Default cache directory exists but is not a directory: " + dir );
+        logger.log( Level.SEVERE, "Error: Default cache directory exists but is not a directory: " + dir );
         return false;
       }
       c_cacheDir = dir.toPath();
     }
 
-    if ( c_logger.isLoggable( Level.FINE ) )
+    if ( logger.isLoggable( Level.FINE ) )
     {
-      c_logger.log( Level.FINE, "Bazel DepGen Starting..." );
-      c_logger.log( Level.FINE, "  Dependencies file: " + c_dependenciesFile );
-      c_logger.log( Level.FINE, "  Settings file: " + c_settingsFile );
-      c_logger.log( Level.FINE, "  Local Cache directory: " + c_cacheDir );
+      logger.log( Level.FINE, "Bazel DepGen Starting..." );
+      logger.log( Level.FINE, "  Dependencies file: " + c_dependenciesFile );
+      logger.log( Level.FINE, "  Settings file: " + c_settingsFile );
+      logger.log( Level.FINE, "  Local Cache directory: " + c_cacheDir );
     }
 
     return true;
@@ -369,8 +375,9 @@ public class Main
   private static void printUsage()
   {
     final String lineSeparator = System.getProperty( "line.separator" );
-    c_logger.log( Level.INFO,
-                  "java " + Main.class.getName() + " [options]" + lineSeparator + "Options: " + lineSeparator +
-                  CLUtil.describeOptions( OPTIONS ) );
+    c_environment.logger().log( Level.INFO,
+                            "java " + Main.class.getName() + " [options]" + lineSeparator +
+                            "Options: " + lineSeparator +
+                            CLUtil.describeOptions( OPTIONS ) );
   }
 }

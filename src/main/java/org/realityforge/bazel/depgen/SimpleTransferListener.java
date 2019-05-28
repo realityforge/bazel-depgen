@@ -22,19 +22,19 @@ final class SimpleTransferListener
   @Nonnull
   private final Map<TransferResource, Long> _downloads = new ConcurrentHashMap<>();
   @Nonnull
-  private final Logger _logger;
+  private final Environment _environment;
   private int lastLength;
 
-  SimpleTransferListener( @Nonnull final Logger logger )
+  SimpleTransferListener( @Nonnull final Environment environment )
   {
-    _logger = Objects.requireNonNull( logger );
+    _environment = Objects.requireNonNull( environment );
   }
 
   @Override
   public void transferInitiated( @Nonnull final TransferEvent event )
   {
-    final Console console = System.console();
-    if ( null != console && _logger.isLoggable( Level.INFO ) )
+    final Console console = _environment.console();
+    if ( null != console && _environment.logger().isLoggable( Level.INFO ) )
     {
       final String label = TransferEvent.RequestType.PUT == event.getRequestType() ? "Uploading" : "Downloading";
       console.writer().println( label + ": " + path( event.getResource() ) );
@@ -44,8 +44,8 @@ final class SimpleTransferListener
   @Override
   public void transferProgressed( @Nonnull final TransferEvent event )
   {
-    final Console console = System.console();
-    if ( null != console && _logger.isLoggable( Level.INFO ) )
+    final Console console = _environment.console();
+    if ( null != console && _environment.logger().isLoggable( Level.INFO ) )
     {
       final TransferResource resource = event.getResource();
       _downloads.put( resource, event.getTransferredBytes() );
@@ -74,8 +74,8 @@ final class SimpleTransferListener
   {
     transferCompleted( event );
 
-    final Console console = System.console();
-    if ( null != console && _logger.isLoggable( Level.INFO ) )
+    final Console console = _environment.console();
+    if ( null != console && _environment.logger().isLoggable( Level.INFO ) )
     {
       final TransferResource resource = event.getResource();
       final long contentLength = event.getTransferredBytes();
@@ -117,11 +117,10 @@ final class SimpleTransferListener
     final Exception exception = event.getException();
     if ( !( exception instanceof MetadataNotFoundException ) && !( exception instanceof ArtifactNotFoundException ) )
     {
-      if ( _logger.isLoggable( Level.INFO ) )
+      final Logger logger = _environment.logger();
+      if ( logger.isLoggable( Level.INFO ) )
       {
-        _logger.log( Level.INFO,
-                     "Transfer Failed: " + event.getResource().getResourceName(),
-                     exception );
+        logger.log( Level.INFO, "Transfer Failed: " + event.getResource().getResourceName(), exception );
       }
     }
   }
@@ -130,8 +129,8 @@ final class SimpleTransferListener
   {
     _downloads.remove( event.getResource() );
 
-    final Console console = System.console();
-    if ( null != console && _logger.isLoggable( Level.INFO ) )
+    final Console console = _environment.console();
+    if ( null != console && _environment.logger().isLoggable( Level.INFO ) )
     {
       final StringBuilder buffer = new StringBuilder( 64 );
       pad( buffer, lastLength );
@@ -143,11 +142,10 @@ final class SimpleTransferListener
   @Override
   public void transferCorrupted( @Nonnull final TransferEvent event )
   {
-    if ( _logger.isLoggable( Level.WARNING ) )
+    final Logger logger = _environment.logger();
+    if ( logger.isLoggable( Level.WARNING ) )
     {
-      _logger.log( Level.WARNING,
-                   "Transfer Corrupted: " + event.getResource().getResourceName(),
-                   event.getException() );
+      logger.log( Level.WARNING, "Transfer Corrupted: " + event.getResource().getResourceName(), event.getException() );
     }
   }
 

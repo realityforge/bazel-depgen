@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.apache.maven.artifact.Artifact;
@@ -39,7 +38,7 @@ import org.realityforge.bazel.depgen.model.ArtifactModel;
 final class Resolver
 {
   @Nonnull
-  private final Logger _logger;
+  private final Environment _environment;
   @Nonnull
   private final RepositorySystem _system;
   @Nonnull
@@ -47,12 +46,12 @@ final class Resolver
   @Nonnull
   private final List<RemoteRepository> _repositories;
 
-  Resolver( @Nonnull final Logger logger,
+  Resolver( @Nonnull final Environment environment,
             @Nonnull final RepositorySystem system,
             @Nonnull final RepositorySystemSession session,
             @Nonnull final List<RemoteRepository> repositories )
   {
-    _logger = Objects.requireNonNull( logger );
+    _environment = Objects.requireNonNull( environment );
     _system = Objects.requireNonNull( system );
     _session = Objects.requireNonNull( session );
     _repositories = Objects.requireNonNull( repositories );
@@ -167,7 +166,7 @@ final class Resolver
     catch ( final ArtifactResolutionException are )
     {
       final String message = are.getMessage();
-      _logger.warning( null != message ? message : are.toString() );
+      _environment.logger().warning( null != message ? message : are.toString() );
       onInvalidPomFn.accept( Collections.singletonList( are ) );
       return artifact;
     }

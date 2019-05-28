@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 import org.apache.maven.settings.Settings;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Exclusion;
@@ -68,7 +67,6 @@ public class ResolverUtilTest
   {
     inIsolatedDirectory( () -> {
 
-      final Logger logger = createLogger();
       final Path localRepository = FileUtil.getCurrentDirectory().resolve( "repository" );
       assertTrue( localRepository.toFile().mkdirs() );
 
@@ -87,7 +85,7 @@ public class ResolverUtilTest
         final Path cacheDir = FileUtil.getCurrentDirectory().resolve( "cacheDir" );
 
         final Resolver resolver =
-          ResolverUtil.createResolver( logger, cacheDir, Collections.emptyList(), true, true );
+          ResolverUtil.createResolver( newEnvironment(), cacheDir, Collections.emptyList(), true, true );
 
         final RemoteRepository remoteRepository =
           new RemoteRepository.Builder( "local", "default", localRepository.toUri().toString() ).build();

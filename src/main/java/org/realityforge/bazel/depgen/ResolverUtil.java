@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.settings.Server;
@@ -40,13 +39,13 @@ final class ResolverUtil
   }
 
   @Nonnull
-  static Resolver createResolver( @Nonnull final Logger logger,
+  static Resolver createResolver( @Nonnull final Environment environment,
                                   @Nonnull final Path cacheDir,
                                   @Nonnull final ApplicationModel model,
                                   @Nonnull final Settings settings )
   {
     final OptionsModel options = model.getOptions();
-    return createResolver( logger,
+    return createResolver( environment,
                            cacheDir,
                            ResolverUtil.getRemoteRepositories( model.getRepositories(), settings ),
                            options.failOnMissingPom(),
@@ -54,20 +53,20 @@ final class ResolverUtil
   }
 
   @Nonnull
-  static Resolver createResolver( @Nonnull final Logger logger,
+  static Resolver createResolver( @Nonnull final Environment environment,
                                   @Nonnull final Path cacheDir,
                                   @Nonnull final List<RemoteRepository> repositories,
                                   final boolean failOnMissingPom,
                                   final boolean failOnInvalidPom )
   {
-    final RepositorySystem system = newRepositorySystem( logger );
+    final RepositorySystem system = newRepositorySystem( environment );
     final RepositorySystemSession session =
-      newRepositorySystemSession( system, cacheDir, logger, failOnMissingPom, failOnInvalidPom );
-    return new Resolver( logger, system, session, repositories );
+      newRepositorySystemSession( system, cacheDir, environment, failOnMissingPom, failOnInvalidPom );
+    return new Resolver( environment, system, session, repositories );
   }
 
   @Nonnull
-  private static RepositorySystem newRepositorySystem( @Nonnull final Logger logger )
+  private static RepositorySystem newRepositorySystem( @Nonnull final Environment environment )
   {
     // Use the pre-populated DefaultServiceLocator rather than explicitly registering components
     final DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
@@ -82,9 +81,9 @@ final class ResolverUtil
                                          @Nonnull final Class<?> impl,
                                          @Nonnull final Throwable exception )
       {
-        logger.log( Level.SEVERE,
-                    "Service creation failed for " + type + " implementation " + impl + ": " + exception.getMessage(),
-                    exception );
+        environment.logger().log( Level.SEVERE,
+                              "Service creation failed for " + type + " implementation " + impl +
+                              ": " + exception.getMessage(), exception );
       }
     } );
 
@@ -99,7 +98,7 @@ final class ResolverUtil
   @Nonnull
   private static RepositorySystemSession newRepositorySystemSession( @Nonnull final RepositorySystem system,
                                                                      @Nonnull final Path cacheDir,
-                                                                     @Nonnull final Logger logger,
+                                                                     @Nonnull final Environment environment,
                                                                      final boolean failOnMissingPom,
                                                                      final boolean failOnInvalidPom )
   {
@@ -115,8 +114,8 @@ final class ResolverUtil
     session.setConfigProperty( ConflictResolver.CONFIG_PROP_VERBOSE, true );
     session.setConfigProperty( DependencyManagerUtils.CONFIG_PROP_VERBOSE, true );
 
-    session.setTransferListener( new SimpleTransferListener( logger ) );
-    session.setRepositoryListener( new SimpleRepositoryListener( logger ) );
+    session.setTransferListener( new SimpleTransferListener( environment ) );
+    session.setRepositoryListener( new SimpleRepositoryListener( environment ) );
     session.setArtifactDescriptorPolicy( new SimpleArtifactDescriptorPolicy( !failOnMissingPom, !failOnInvalidPom ) );
 
     return session;
