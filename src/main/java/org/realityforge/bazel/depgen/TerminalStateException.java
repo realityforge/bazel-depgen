@@ -7,6 +7,11 @@ public class TerminalStateException
 {
   private final int _exitCode;
 
+  public TerminalStateException( final int exitCode )
+  {
+    this( null, exitCode );
+  }
+
   public TerminalStateException( @Nullable final String message, final int exitCode )
   {
     this( message, null, exitCode );
