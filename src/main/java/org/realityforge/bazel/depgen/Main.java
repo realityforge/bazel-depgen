@@ -57,15 +57,6 @@ public class Main
                               EMIT_DEPENDENCY_GRAPH_OPT,
                               "Emit the computed dependency graph after it is calculated." )
     };
-  private static final int SUCCESS_EXIT_CODE = 0;
-  private static final int ERROR_EXIT_CODE = 1;
-  private static final int ERROR_PARSING_ARGS_EXIT_CODE = 2;
-  private static final int ERROR_PARSING_DEPENDENCIES_CODE = 3;
-  private static final int ERROR_LOADING_SETTINGS_CODE = 4;
-  private static final int ERROR_CONSTRUCTING_MODEL_CODE = 5;
-  private static final int ERROR_INVALID_POM_CODE = 6;
-  private static final int ERROR_CYCLES_PRESENT_CODE = 7;
-  private static final int ERROR_COLLECTING_DEPENDENCIES_CODE = 8;
   private static final Environment c_environment = new Environment( System.console(), Logger.getGlobal() );
   private static Path c_dependenciesFile;
   private static Path c_settingsFile;
@@ -77,7 +68,7 @@ public class Main
     setupLogger();
     if ( !processOptions( args ) )
     {
-      System.exit( ERROR_PARSING_ARGS_EXIT_CODE );
+      System.exit( ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE );
       return;
     }
 
@@ -91,7 +82,7 @@ public class Main
       final DependencyResult result = resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> {
         // If we get here then the listener has already emitted a warning message so just need to exit
         // We can only get here if either failOnMissingPom or failOnInvalidPom is true and an error occurred
-        throw new TerminalStateException( ERROR_INVALID_POM_CODE );
+        throw new TerminalStateException( ExitCodes.ERROR_INVALID_POM_CODE );
       } );
 
       final List<DependencyCycle> cycles = result.getCycles();
@@ -102,7 +93,7 @@ public class Main
         {
           logger.warning( cycle.toString() );
         }
-        throw new TerminalStateException( ERROR_CYCLES_PRESENT_CODE );
+        throw new TerminalStateException( ExitCodes.ERROR_CYCLES_PRESENT_CODE );
       }
       final List<Exception> exceptions = result.getCollectExceptions();
       if ( !exceptions.isEmpty() )
@@ -112,7 +103,7 @@ public class Main
         {
           logger.log( Level.WARNING, null, exception );
         }
-        throw new TerminalStateException( ERROR_COLLECTING_DEPENDENCIES_CODE );
+        throw new TerminalStateException( ExitCodes.ERROR_COLLECTING_DEPENDENCIES_CODE );
       }
 
       final DependencyNode node = result.getRoot();
@@ -142,7 +133,7 @@ public class Main
                   YamlUtil.asYamlString( ime.getModel() ) +
                   "--- End Config ---" );
 
-      System.exit( ERROR_CONSTRUCTING_MODEL_CODE );
+      System.exit( ExitCodes.ERROR_CONSTRUCTING_MODEL_CODE );
     }
     catch ( final TerminalStateException tse )
     {
@@ -168,10 +159,10 @@ public class Main
     catch ( final Throwable t )
     {
       logger.log( Level.WARNING, t.toString(), t );
-      System.exit( ERROR_EXIT_CODE );
+      System.exit( ExitCodes.ERROR_EXIT_CODE );
     }
 
-    System.exit( SUCCESS_EXIT_CODE );
+    System.exit( ExitCodes.SUCCESS_EXIT_CODE );
   }
 
   private static void generate( @Nonnull final ApplicationRecord record )
@@ -212,7 +203,7 @@ public class Main
     catch ( final SettingsBuildingException e )
     {
       throw new TerminalStateException( "Error: Problem loading settings from " + c_settingsFile,
-                                        ERROR_LOADING_SETTINGS_CODE );
+                                        ExitCodes.ERROR_LOADING_SETTINGS_CODE );
     }
   }
 
@@ -227,7 +218,7 @@ public class Main
     {
       throw new TerminalStateException( "Error: Failed to read dependencies file " + c_dependenciesFile,
                                         t,
-                                        ERROR_PARSING_DEPENDENCIES_CODE );
+                                        ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE );
     }
   }
 
