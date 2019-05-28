@@ -91,7 +91,7 @@ public class Main
       final DependencyResult result = resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> {
         // If we get here then the listener has already emitted a warning message so just need to exit
         // We can only get here if either failOnMissingPom or failOnInvalidPom is true and an error occurred
-        System.exit( ERROR_INVALID_POM_CODE );
+        throw new TerminalStateException( ERROR_INVALID_POM_CODE );
       } );
 
       final List<DependencyCycle> cycles = result.getCycles();
@@ -102,7 +102,7 @@ public class Main
         {
           logger.warning( cycle.toString() );
         }
-        System.exit( ERROR_CYCLES_PRESENT_CODE );
+        throw new TerminalStateException( ERROR_CYCLES_PRESENT_CODE );
       }
       final List<Exception> exceptions = result.getCollectExceptions();
       if ( !exceptions.isEmpty() )
@@ -112,7 +112,7 @@ public class Main
         {
           logger.log( Level.WARNING, null, exception );
         }
-        System.exit( ERROR_COLLECTING_DEPENDENCIES_CODE );
+        throw new TerminalStateException( ERROR_COLLECTING_DEPENDENCIES_CODE );
       }
 
       final DependencyNode node = result.getRoot();
