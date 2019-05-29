@@ -39,7 +39,8 @@ complete as there is too much un-said.
 * Consider converting to commandline tool named `bzt`
 
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
-  all the tests pass.
+  all the tests pass. It may be possible to enhance [dependabot](https://dependabot.com/) to do this now that it
+  is owned by Github.
 
 * Add language types for `kotlin`, `scala`, `java`, `aar`, `j2cl` that control how artifacts defined. Some
   artifacts may support multiple languages. Support non-jar dependencies and expose them as files/filegroups
@@ -62,5 +63,8 @@ complete as there is too much un-said.
 * Add Bazel target/task that will regenerate dependencies. [Mabel](https://github.com/menny/mabel) has a set
   of `//resolver/..` tasks that may act as inspiration. Ultimately they will just invoke the CLI tool.
 
-* Look to [bazel-tools](https://github.com/spotify/bazel-tools) from spotify to see if there is other tools that
-  can be incoporated.
+* Look to [bazel-tools](https://github.com/spotify/bazel-tools) and [awesome-bazel](https://github.com/jin/awesome-bazel)
+  to see if there is other tools that can be incoporated.
+  - Most likely we will want to support a tool like [BUILD_file_generator](https://github.com/bazelbuild/BUILD_file_generator)
+    or [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps), both of which scan java files and
+    automagically creates `BUILD` files (somehow?) so that there is fine grain dependencies without the heartache.
