@@ -73,7 +73,6 @@ public class Main
       return;
     }
 
-    final Logger logger = c_environment.logger();
     try
     {
       final ApplicationRecord record = loadApplicationRecord();
@@ -90,6 +89,7 @@ public class Main
     }
     catch ( final InvalidModelException ime )
     {
+      final Logger logger = c_environment.logger();
       final String message = ime.getMessage();
       if ( null != message )
       {
@@ -108,6 +108,7 @@ public class Main
       final String message = tse.getMessage();
       if ( null != message )
       {
+        final Logger logger = c_environment.logger();
         logger.log( Level.WARNING, message );
         final Throwable cause = tse.getCause();
         if ( null != cause )
@@ -126,7 +127,7 @@ public class Main
     }
     catch ( final Throwable t )
     {
-      logger.log( Level.WARNING, t.toString(), t );
+      c_environment.logger().log( Level.WARNING, t.toString(), t );
       System.exit( ExitCodes.ERROR_EXIT_CODE );
     }
 
