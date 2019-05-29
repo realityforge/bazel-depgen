@@ -35,6 +35,8 @@ complete as there is too much un-said.
   if one of the dependencies is actually referenced. This would require adding it as a dependency of all root
   level targets?. This would allow tasks (i.e. `regenerate`) to run that did not reference dependencies.
 
+* Consider converting to commandline tool named `bzt`
+
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
   all the tests pass.
 
