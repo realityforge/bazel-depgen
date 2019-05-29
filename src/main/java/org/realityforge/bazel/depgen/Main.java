@@ -80,13 +80,7 @@ public class Main
       final String command = c_environment.getCommand();
       if ( PRINT_GRAPH_COMMAND.equals( command ) )
       {
-        if ( logger.isLoggable( Level.WARNING ) )
-        {
-          logger.log( Level.WARNING, "Dependency Graph:" );
-          record.getNode()
-            .accept( new DependencyGraphEmitter( record.getSource(),
-                                                 line -> logger.log( Level.WARNING, line ) ) );
-        }
+        printGraph( record );
       }
       else
       {
@@ -137,6 +131,18 @@ public class Main
     }
 
     System.exit( ExitCodes.SUCCESS_EXIT_CODE );
+  }
+
+  private static void printGraph( @Nonnull final ApplicationRecord record )
+  {
+    final Logger logger = c_environment.logger();
+    if ( logger.isLoggable( Level.WARNING ) )
+    {
+      logger.log( Level.WARNING, "Dependency Graph:" );
+      record.getNode()
+        .accept( new DependencyGraphEmitter( record.getSource(),
+                                             line -> logger.log( Level.WARNING, line ) ) );
+    }
   }
 
   @Nonnull
