@@ -146,10 +146,16 @@ public class Main
   }
 
   @Nonnull
+  private static ApplicationModel loadApplicationModel()
+  {
+    return ApplicationModel.parse( loadDependenciesYaml() );
+  }
+
+  @Nonnull
   private static ApplicationRecord loadApplicationRecord()
     throws DependencyResolutionException
   {
-    return loadApplicationRecord( ApplicationModel.parse( loadDependenciesYaml() ) );
+    return loadApplicationRecord( loadApplicationModel() );
   }
 
   @Nonnull
