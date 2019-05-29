@@ -15,7 +15,7 @@ public class MainTest
   {
     final TestHandler handler = new TestHandler();
     Main.printUsage( newEnvironment( createLogger( handler ) ) );
-    assertEquals( handler.getRecords().stream().map( LogRecord::getMessage ).collect( Collectors.joining( "\n" ) ),
+    assertEquals( handler.toString(),
                   "java org.realityforge.bazel.depgen.Main [options] [command]\n" +
                   "\tPossible Commands:\n" +
                   "\t\tgenerate: Generate the bazel extension from the dependency configuration.\n" +
@@ -166,6 +166,6 @@ public class MainTest
   {
     final TestHandler handler = new TestHandler();
     Main.processOptions( newEnvironment( createLogger( handler ) ), args );
-    return handler.getRecords().stream().map( LogRecord::getMessage ).collect( Collectors.joining( "\n" ) );
+    return handler.toString();
   }
 }

@@ -3,6 +3,7 @@ package org.realityforge.bazel.depgen;
 import java.util.ArrayList;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
+import java.util.stream.Collectors;
 
 class TestHandler
   extends Handler
@@ -29,5 +30,11 @@ class TestHandler
   public void close()
     throws SecurityException
   {
+  }
+
+  @Override
+  public String toString()
+  {
+    return getRecords().stream().map( LogRecord::getMessage ).collect( Collectors.joining( "\n" ) );
   }
 }
