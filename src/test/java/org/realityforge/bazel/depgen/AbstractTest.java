@@ -255,10 +255,10 @@ public abstract class AbstractTest
     deployTempArtifactToLocalRepository( localRepository, coords, file, pomFile );
   }
 
-  protected final void deployTempArtifactToLocalRepository( @Nonnull final Path localRepository,
-                                                            @Nonnull final String coords,
-                                                            @Nonnull final Path file,
-                                                            @Nonnull final Path pomFile )
+  private void deployTempArtifactToLocalRepository( @Nonnull final Path localRepository,
+                                                    @Nonnull final String coords,
+                                                    @Nonnull final Path file,
+                                                    @Nonnull final Path pomFile )
     throws Exception
   {
     final Artifact pomArtifact =
