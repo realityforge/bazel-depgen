@@ -25,8 +25,6 @@ complete as there is too much un-said.
 
 * Add `update` command that updates the version of a dependency.
 
-* Add `generate` command that regenerates the bazel extension file from `dependencies.yml`.
-
 * Add `hash` command that checks that configuration matches a particular hash and/or generates and reports
   a hash. To get this working we will most likely need to be able to get the `*Config` objects remove all
   non-null values if they don't appear in the config and then generate the `YAML` and/or 'json' representation
