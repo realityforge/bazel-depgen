@@ -380,7 +380,6 @@ public abstract class AbstractTest
   @Nonnull
   final Logger createLogger()
   {
-    // Don't capture the logs so we get some idea when issues occur
     return Logger.getAnonymousLogger();
   }
 
