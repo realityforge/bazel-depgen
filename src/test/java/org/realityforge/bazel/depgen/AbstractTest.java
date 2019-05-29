@@ -175,49 +175,6 @@ public abstract class AbstractTest
     return pomFile;
   }
 
-  @SuppressWarnings( "SameParameterValue" )
-  @Nonnull
-  protected final Path createTempPomFile( @Nonnull final String group,
-                                          @Nonnull final String id,
-                                          @Nonnull final String version,
-                                          @Nonnull final String type,
-                                          @Nonnull final String[] dependencies,
-                                          @Nonnull final String[] additionalSections )
-    throws IOException
-  {
-    final Path pomFile = Files.createTempFile( "data", ".pom" );
-    Files.write( pomFile, buildPomContents( group, id, version, type, dependencies, additionalSections ).getBytes() );
-    return pomFile;
-  }
-
-  @SuppressWarnings( "StringConcatenationInLoop" )
-  @Nonnull
-  private String buildPomContents( @Nonnull final String group,
-                                   @Nonnull final String id,
-                                   @Nonnull final String version,
-                                   @Nonnull final String type,
-                                   @Nonnull final String[] dependencies,
-                                   @Nonnull final String[] additionalSections )
-    throws IOException
-  {
-    String pomContents =
-      "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
-      "  <modelVersion>4.0.0</modelVersion>\n" +
-      "  <groupId>" + group + "</groupId>\n" +
-      "  <artifactId>" + id + "</artifactId>\n" +
-      "  <version>" + version + "</version>\n" +
-      "  <packaging>" + type + "</packaging>\n";
-
-    pomContents += buildDependenciesSection( dependencies );
-    for ( final String additionalSection : additionalSections )
-    {
-      pomContents += additionalSection;
-    }
-
-    pomContents += "</project>\n";
-    return pomContents;
-  }
-
   @SuppressWarnings( "StringConcatenationInLoop" )
   @Nonnull
   private String buildDependenciesSection( @Nonnull final String[] dependencies )
