@@ -11,8 +11,6 @@ import java.util.List;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.AbstractTest;
-import org.realityforge.bazel.depgen.config.LicenseType;
-import org.realityforge.bazel.depgen.record.LicenseRecord;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -413,94 +411,6 @@ public class DepgenMetadataTest
 
       assertEquals( loadPropertiesContent( file ),
                     "processors=react4j.processor.ReactProcessor,arez.processor.ArezProcessor\n" );
-    } );
-  }
-
-  @Test
-  public void getLicenses_notCached()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
-
-      final DepgenMetadata metadata = new DepgenMetadata( file );
-
-      final Path pomFile = file.getParent().resolve( "file.pom" );
-      Files.write( pomFile,
-                   ( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
-                     "  <modelVersion>4.0.0</modelVersion>\n" +
-                     "  <groupId>com.example.myapp</groupId>\n" +
-                     "  <artifactId>myapp</artifactId>\n" +
-                     "  <version>1.1.0</version>\n" +
-                     "  <packaging>jar</packaging>\n" +
-                     "  <licenses>\n" +
-                     "    <license>\n" +
-                     "      <name>The Apache Software License, Version 2.0</name>\n" +
-                     "      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>\n" +
-                     "      <distribution>repo</distribution>\n" +
-                     "    </license>\n" +
-                     "  </licenses>\n" +
-                     "</project>\n" ).getBytes( StandardCharsets.US_ASCII ) );
-
-      final List<LicenseRecord> licenses = metadata.getLicenses( pomFile );
-      assertNotNull( licenses );
-
-      assertEquals( licenses.size(), 1 );
-      final LicenseRecord license1 = licenses.get( 0 );
-      assertEquals( license1.getType(), LicenseType.notice );
-      assertEquals( license1.getName(), "The Apache Software License, Version 2.0" );
-
-      assertEquals( loadPropertiesContent( file ), "licenses=notice\\:The Apache Software License, Version 2.0\n" );
-    } );
-  }
-
-  @Test
-  public void getLicenses_cachedProperties()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
-
-      final String content =
-        "licenses=notice\\:The Apache Software License, Version 2.0|" +
-        "restricted\\:GNU Lesser General Public License\n";
-      Files.write( file, content.getBytes( StandardCharsets.ISO_8859_1 ) );
-
-      final DepgenMetadata metadata = new DepgenMetadata( file );
-
-      final Path pomFile = file.getParent().resolve( "file.pom" );
-      final List<LicenseRecord> licenses = metadata.getLicenses( pomFile );
-      assertNotNull( licenses );
-
-      assertEquals( licenses.size(), 2 );
-      final LicenseRecord license1 = licenses.get( 0 );
-      assertEquals( license1.getType(), LicenseType.notice );
-      assertEquals( license1.getName(), "The Apache Software License, Version 2.0" );
-      final LicenseRecord license2 = licenses.get( 1 );
-      assertEquals( license2.getType(), LicenseType.restricted );
-      assertEquals( license2.getName(), "GNU Lesser General Public License" );
-
-      assertEquals( loadPropertiesContent( file ), content );
-    } );
-  }
-
-  @Test
-  public void getLicenses_cachedProperties_nullValue()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
-
-      final String content = "licenses=-\n";
-      Files.write( file, content.getBytes( StandardCharsets.ISO_8859_1 ) );
-
-      final DepgenMetadata metadata = new DepgenMetadata( file );
-
-      final Path pomFile = file.getParent().resolve( "file.pom" );
-      final List<LicenseRecord> licenses = metadata.getLicenses( pomFile );
-      assertNull( licenses );
-
-      assertEquals( loadPropertiesContent( file ), content );
     } );
   }
 }

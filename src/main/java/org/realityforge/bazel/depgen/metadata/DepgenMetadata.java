@@ -19,7 +19,6 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
-import org.realityforge.bazel.depgen.record.LicenseRecord;
 import org.realityforge.bazel.depgen.util.OrderedProperties;
 
 /**
@@ -125,13 +124,6 @@ public final class DepgenMetadata
       throw new IllegalStateException( "Unable to locate artifact " + artifact + " in any repository." );
     }
     return urls;
-  }
-
-  @Nullable
-  public List<LicenseRecord> getLicenses( @Nonnull final Path pomFile )
-  {
-    final String licenses = getOrCompute( "licenses", () -> RecordUtil.getLicensesAsString( pomFile.toFile() ) );
-    return RecordUtil.parseLicenses( licenses );
   }
 
   @Nullable

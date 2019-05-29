@@ -55,8 +55,6 @@ public final class ArtifactRecord
   @Nullable
   private final List<String> _sourceUrls;
   @Nullable
-  private final List<LicenseRecord> _licenses;
-  @Nullable
   private final List<String> _processors;
   @Nullable
   private List<ArtifactRecord> _depsCache;
@@ -73,7 +71,6 @@ public final class ArtifactRecord
                   @Nullable final List<String> urls,
                   @Nullable final String sourceSha256,
                   @Nullable final List<String> sourceUrls,
-                  @Nullable final List<LicenseRecord> licenses,
                   @Nullable final List<String> processors,
                   @Nullable final ArtifactModel artifactModel,
                   @Nullable final ReplacementModel replacementModel )
@@ -92,7 +89,6 @@ public final class ArtifactRecord
       _artifactModel = artifactModel;
       _sourceSha256 = sourceSha256;
       _sourceUrls = null != sourceUrls ? Collections.unmodifiableList( new ArrayList<>( sourceUrls ) ) : null;
-      _licenses = null != licenses ? Collections.unmodifiableList( new ArrayList<>( licenses ) ) : null;
       _processors = null != processors ? Collections.unmodifiableList( new ArrayList<>( processors ) ) : null;
     }
     else
@@ -104,7 +100,6 @@ public final class ArtifactRecord
       _urls = null;
       _sourceSha256 = null;
       _sourceUrls = null;
-      _licenses = null;
       _processors = null;
       _replacementModel = replacementModel;
       _artifactModel = null;
@@ -200,12 +195,6 @@ public final class ArtifactRecord
       final Boolean generatesApi = _artifactModel.getSource().getGeneratesApi();
       return null == generatesApi ? true : generatesApi;
     }
-  }
-
-  @Nullable
-  public List<LicenseRecord> getLicenses()
-  {
-    return _licenses;
   }
 
   @Nonnull
@@ -442,16 +431,6 @@ public final class ArtifactRecord
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + getName() + nameSuffix + "\"" );
     arguments.put( "jars", Collections.singletonList( "\"@" + getName() + "//file\"" ) );
-    final List<LicenseRecord> licenses = getLicenses();
-    if ( null != licenses && !licenses.isEmpty() )
-    {
-      arguments.put( "licenses",
-                     licenses
-                       .stream()
-                       .filter( l -> null != l.getType() )
-                       .map( l -> "\"" + l.getType() + "\"" )
-                       .collect( Collectors.toList() ) );
-    }
     if ( null != getSourceSha256() )
     {
       arguments.put( "srcjar", "\"@" + getName() + "__sources//file\"" );

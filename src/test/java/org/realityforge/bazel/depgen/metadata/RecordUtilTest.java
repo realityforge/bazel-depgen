@@ -12,15 +12,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.Executors;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.AbstractTest;
-import org.realityforge.bazel.depgen.config.LicenseType;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
-import org.realityforge.bazel.depgen.record.LicenseRecord;
 import org.realityforge.guiceyloops.server.http.TinyHttpd;
 import org.realityforge.guiceyloops.server.http.TinyHttpdFactory;
 import org.testng.annotations.Test;
@@ -29,130 +26,6 @@ import static org.testng.Assert.*;
 public class RecordUtilTest
   extends AbstractTest
 {
-  @Test
-  public void getLicensesAsString()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path filename = FileUtil.createLocalTempDir().resolve( "file.pom" );
-      Files.write( filename,
-                   ( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
-                     "  <modelVersion>4.0.0</modelVersion>\n" +
-                     "  <groupId>com.example.myapp</groupId>\n" +
-                     "  <artifactId>myapp</artifactId>\n" +
-                     "  <version>1.1.0</version>\n" +
-                     "  <packaging>jar</packaging>\n" +
-                     "  <licenses>\n" +
-                     "    <license>\n" +
-                     "      <name>The Apache Software License, Version 2.0</name>\n" +
-                     "      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>\n" +
-                     "      <distribution>repo</distribution>\n" +
-                     "    </license>\n" +
-                     "  </licenses>\n" +
-                     "</project>\n" ).getBytes( StandardCharsets.US_ASCII ) );
-      assertEquals( RecordUtil.getLicensesAsString( filename.toFile() ),
-                    "notice:The Apache Software License, Version 2.0" );
-    } );
-  }
-
-  @Test
-  public void getLicensesAsString_multipleLicenses()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path filename = FileUtil.createLocalTempDir().resolve( "file.pom" );
-      Files.write( filename,
-                   ( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
-                     "  <modelVersion>4.0.0</modelVersion>\n" +
-                     "  <groupId>com.example.myapp</groupId>\n" +
-                     "  <artifactId>myapp</artifactId>\n" +
-                     "  <version>1.1.0</version>\n" +
-                     "  <packaging>jar</packaging>\n" +
-                     "  <licenses>\n" +
-                     "    <license>\n" +
-                     "      <name>The Apache Software License, Version 2.0</name>\n" +
-                     "      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>\n" +
-                     "      <distribution>repo</distribution>\n" +
-                     "    </license>\n" +
-                     "    <license>\n" +
-                     "      <name>GNU Lesser General Public License</name>\n" +
-                     "      <url>http://www.gnu.org/licenses/lgpl.txt</url>\n" +
-                     "    </license>" +
-                     "  </licenses>\n" +
-                     "</project>\n" ).getBytes( StandardCharsets.US_ASCII ) );
-      assertEquals( RecordUtil.getLicensesAsString( filename.toFile() ),
-                    "notice:The Apache Software License, Version 2.0|restricted:GNU Lesser General Public License" );
-    } );
-  }
-
-  @Test
-  public void getLicensesAsString_noLicense()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path filename = FileUtil.createLocalTempDir().resolve( "file.pom" );
-      Files.write( filename,
-                   ( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
-                     "  <modelVersion>4.0.0</modelVersion>\n" +
-                     "  <groupId>com.example.myapp</groupId>\n" +
-                     "  <artifactId>myapp</artifactId>\n" +
-                     "  <version>1.1.0</version>\n" +
-                     "  <packaging>jar</packaging>\n" +
-                     "</project>\n" ).getBytes( StandardCharsets.US_ASCII ) );
-      assertEquals( RecordUtil.getLicensesAsString( filename.toFile() ),
-                    "" );
-    } );
-  }
-
-  @Test
-  public void parseLicenses_noLicenses()
-  {
-    assertEquals( RecordUtil.parseLicenses( "" ), Collections.emptyList() );
-  }
-
-  @Test
-  public void parseLicenses_pomDidNotExist()
-  {
-    assertNull( RecordUtil.parseLicenses( "-" ) );
-  }
-
-  @Test
-  public void parseLicenses_singleLicense()
-  {
-    final List<LicenseRecord> licenses = RecordUtil.parseLicenses( "notice:The Apache Software License, Version 2.0" );
-    assertNotNull( licenses );
-    assertEquals( licenses.size(), 1 );
-    final LicenseRecord license = licenses.get( 0 );
-    assertEquals( license.getType(), LicenseType.notice );
-    assertEquals( license.getName(), "The Apache Software License, Version 2.0" );
-  }
-
-  @Test
-  public void parseLicenses_multipleLicense()
-  {
-    final List<LicenseRecord> licenses =
-      RecordUtil.parseLicenses( "notice:The Apache Software License, Version 2.0|" +
-                                "restricted:GNU Lesser General Public License" );
-    assertNotNull( licenses );
-    assertEquals( licenses.size(), 2 );
-    final LicenseRecord license1 = licenses.get( 0 );
-    assertEquals( license1.getType(), LicenseType.notice );
-    assertEquals( license1.getName(), "The Apache Software License, Version 2.0" );
-    final LicenseRecord license2 = licenses.get( 1 );
-    assertEquals( license2.getType(), LicenseType.restricted );
-    assertEquals( license2.getName(), "GNU Lesser General Public License" );
-  }
-
-  @Test
-  public void getLicensesAsString_noPom()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path filename = FileUtil.createLocalTempDir().resolve( "file.pom" );
-      assertEquals( RecordUtil.getLicensesAsString( filename.toFile() ), "-" );
-    } );
-  }
-
   @Test
   public void sha256()
     throws Exception

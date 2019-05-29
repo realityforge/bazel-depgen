@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen.metadata;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -13,24 +12,15 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.JarFile;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.realityforge.bazel.depgen.config.LicenseType;
-import org.realityforge.bazel.depgen.record.LicenseRecord;
 import org.realityforge.bazel.depgen.util.ArtifactUtil;
 import org.realityforge.bazel.depgen.util.HashUtil;
 
@@ -38,46 +28,6 @@ final class RecordUtil
 {
   private RecordUtil()
   {
-  }
-
-  @Nullable
-  static List<LicenseRecord> parseLicenses( @Nonnull final String licenses )
-  {
-    return DepgenMetadata.SENTINEL.equals( licenses ) ?
-           null :
-           licenses.isEmpty() ?
-           Collections.emptyList() :
-           Collections.unmodifiableList( Arrays.stream( licenses.split( "\\|" ) )
-                                           .map( RecordUtil::parseLicense )
-                                           .collect( Collectors.toList() ) );
-  }
-
-  @Nonnull
-  private static LicenseRecord parseLicense( @Nonnull final String license )
-  {
-    final int index = license.indexOf( ":" );
-    assert -1 != index;
-    return 0 == index ?
-           new LicenseRecord( null, license ) :
-           new LicenseRecord( LicenseType.valueOf( license.substring( 0, index ) ), license.substring( index + 1 ) );
-  }
-
-  @Nonnull
-  static String getLicensesAsString( @Nonnull final File pomFile )
-  {
-    try
-    {
-      final Model model = new MavenXpp3Reader().read( new FileInputStream( pomFile ) );
-      return model.getLicenses()
-        .stream()
-        .map( l1 -> new LicenseRecord( LicenseUtil.classifyLicense( l1.getName() ), l1.getName() ) )
-        .map( l -> ( null == l.getType() ? "" : l.getType() ) + ":" + l.getName() )
-        .collect( Collectors.joining( "|" ) );
-    }
-    catch ( final IOException | XmlPullParserException e )
-    {
-      return DepgenMetadata.SENTINEL;
-    }
   }
 
   @Nonnull
