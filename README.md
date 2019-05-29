@@ -41,10 +41,6 @@ The project is licensed under [Apache License, Version 2.0](LICENSE).
   class is a reasonably direct translation of a file from the `aether examples` project. While no other code was
   directly copied from these earlier projects, this project is a spiritual successor of these projects.
 
-* The [License.java](https://github.com/menny/mabel/blob/7835f224788d6a9c62046da2a5c9c1c95f736949/resolver/src/main/java/net/evendanan/bazel/mvn/api/License.java)
-  file from the [Mabel](https://github.com/menny/mabel) project was used to create the `LicenseUtil` class
-  and the corresponding test class.
-
 * The project also took ideas from other similar projects:
   - [rules_jvm_external](https://github.com/bazelbuild/rules_jvm_external)
   - [Mabel](https://github.com/menny/mabel)
