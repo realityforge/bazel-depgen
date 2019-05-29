@@ -177,7 +177,8 @@ public class MainTest
   private String processOptions( final boolean expectedResult, @Nonnull final String... args )
   {
     final TestHandler handler = new TestHandler();
-    final boolean result = Main.processOptions( newEnvironment( createLogger( handler ) ), args );
+    final Environment environment = newEnvironment( createLogger( handler ) );
+    final boolean result = Main.processOptions( environment, args );
     assertEquals( expectedResult, result, "Return value for Main.processOptions" );
     return handler.toString();
   }
