@@ -26,7 +26,7 @@ public class IntegrationTest
                          "    type: jar\n" +
                          "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n" );
       final String output = runCommand( "generate" );
-      assertOutputContains( output, "" );
+      assertEquals( output, "" );
     } );
   }
 
