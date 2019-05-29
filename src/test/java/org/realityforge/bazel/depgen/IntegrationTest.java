@@ -1,7 +1,12 @@
 package org.realityforge.bazel.depgen;
 
+import gir.io.Exec;
 import gir.io.FileUtil;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import javax.annotation.Nonnull;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -225,5 +230,29 @@ public class IntegrationTest
       final String output = runCommand( "--settings-file", "some_settings.xml", "generate" );
       assertOutputContains( output, "" );
     } );
+  }
+
+  @Nonnull
+  private String runCommand( @Nonnull final String... additionalArgs )
+  {
+    return runCommand( 0, additionalArgs );
+  }
+
+  @Nonnull
+  private String runCommand( final int expectedExitCode, @Nonnull final String... additionalArgs )
+  {
+    final ArrayList<String> args = new ArrayList<>();
+    args.add( "java" );
+    args.add( "-Duser.home=" + FileUtil.getCurrentDirectory() );
+    args.add( "-jar" );
+    args.add( getApplicationJar().toString() );
+    Collections.addAll( args, additionalArgs );
+    return Exec.capture( b -> Exec.cmd( b, args.toArray( new String[ 0 ] ) ), expectedExitCode );
+  }
+
+  @Nonnull
+  private Path getApplicationJar()
+  {
+    return Paths.get( System.getProperty( "depgen.jar" ) ).toAbsolutePath().normalize();
   }
 }

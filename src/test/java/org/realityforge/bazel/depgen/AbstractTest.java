@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen;
 
 import gir.Gir;
 import gir.Task;
-import gir.io.Exec;
 import gir.io.FileUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -10,9 +9,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -117,34 +114,10 @@ public abstract class AbstractTest
     return ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
   }
 
-  @Nonnull
-  final String runCommand( @Nonnull final String... additionalArgs )
-  {
-    return runCommand( 0, additionalArgs );
-  }
-
-  @Nonnull
-  final String runCommand( final int expectedExitCode, @Nonnull final String... additionalArgs )
-  {
-    final ArrayList<String> args = new ArrayList<>();
-    args.add( "java" );
-    args.add( "-Duser.home=" + FileUtil.getCurrentDirectory() );
-    args.add( "-jar" );
-    args.add( getApplicationJar().toString() );
-    Collections.addAll( args, additionalArgs );
-    return Exec.capture( b -> Exec.cmd( b, args.toArray( new String[ 0 ] ) ), expectedExitCode );
-  }
-
   protected final void inIsolatedDirectory( @Nonnull final Task task )
     throws Exception
   {
     Gir.go( () -> FileUtil.inTempDir( task ) );
-  }
-
-  @Nonnull
-  private Path getApplicationJar()
-  {
-    return Paths.get( System.getProperty( "depgen.jar" ) ).toAbsolutePath().normalize();
   }
 
   final void writeWorkspace()
