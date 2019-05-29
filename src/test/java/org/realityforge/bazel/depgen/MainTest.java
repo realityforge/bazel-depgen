@@ -18,6 +18,7 @@ public class MainTest
                   "\tPossible Commands:\n" +
                   "\t\tgenerate: Generate the bazel extension from the dependency configuration.\n" +
                   "\t\tprint-graph: Compute and print the dependency graph for the dependency configuration.\n" +
+                  "\t\thash: Generate a hash of the content of the dependency configuration.\n" +
                   "\tOptions:\n" +
                   "\t-h, --help\n" +
                   "\t\tprint this message and exit\n" +

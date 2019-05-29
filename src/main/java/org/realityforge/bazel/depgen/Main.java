@@ -59,8 +59,11 @@ public class Main
     };
   private static final String GENERATE_COMMAND = "generate";
   private static final String PRINT_GRAPH_COMMAND = "print-graph";
+  private static final String HASH_COMMAND = "hash";
   private static final Set<String> VALID_COMMANDS =
-    Collections.unmodifiableSet( new HashSet<>( Arrays.asList( GENERATE_COMMAND, PRINT_GRAPH_COMMAND ) ) );
+    Collections.unmodifiableSet( new HashSet<>( Arrays.asList( GENERATE_COMMAND,
+                                                               PRINT_GRAPH_COMMAND,
+                                                               HASH_COMMAND ) ) );
   private static final Environment c_environment =
     new Environment( System.console(), Paths.get( "" ).toAbsolutePath(), Logger.getGlobal() );
 
@@ -79,6 +82,10 @@ public class Main
       if ( PRINT_GRAPH_COMMAND.equals( command ) )
       {
         printGraph( loadApplicationRecord() );
+      }
+      else if ( HASH_COMMAND.equals( command ) )
+      {
+        hash( loadApplicationModel() );
       }
       else
       {
@@ -131,6 +138,16 @@ public class Main
     }
 
     System.exit( ExitCodes.SUCCESS_EXIT_CODE );
+  }
+
+  private static void hash( @Nonnull final ApplicationModel model )
+  {
+    final String configSha256 = model.getConfigSha256();
+    final Logger logger = c_environment.logger();
+    if ( logger.isLoggable( Level.WARNING ) )
+    {
+      logger.log( Level.WARNING, "Content SHA256: " + configSha256 );
+    }
   }
 
   private static void printGraph( @Nonnull final ApplicationRecord record )
@@ -430,6 +447,7 @@ public class Main
     logger.info( "\t\t" + GENERATE_COMMAND + ": Generate the bazel extension from the dependency configuration." );
     logger.info( "\t\t" + PRINT_GRAPH_COMMAND + ": Compute and print the dependency graph " +
                  "for the dependency configuration." );
+    logger.info( "\t\t" + HASH_COMMAND + ": Generate a hash of the content of the dependency configuration." );
     logger.info( "\tOptions:" );
     final String[] options =
       CLUtil.describeOptions( OPTIONS ).toString().split( System.getProperty( "line.separator" ) );

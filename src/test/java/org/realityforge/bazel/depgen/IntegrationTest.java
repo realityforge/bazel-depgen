@@ -31,6 +31,20 @@ public class IntegrationTest
   }
 
   @Test
+  public void hash()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n" );
+      final String output = runCommand( "hash" );
+      assertEquals( output, "Content SHA256: A8060A486659CC1397477EFE6C28F83F65DC9CBB19182978AFB69746EC3D99F2\n" );
+    } );
+  }
+
+  @Test
   public void invalidDependencySpec()
     throws Exception
   {

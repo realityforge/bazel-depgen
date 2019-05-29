@@ -28,13 +28,10 @@ complete as there is too much un-said.
 
 * Add `update` command that updates the version of a dependency.
 
-* Add `hash` command that checks that configuration matches a particular hash and/or generates and reports
-  a hash. To get this working we will most likely need to be able to get the `*Config` objects remove all
-  non-null values if they don't appear in the config and then generate the `YAML` and/or 'json' representation
-  of the config and hash the config contents. Add assertion to workspace or target macro to verify
-  `dependencies.yml` file has hash that matches hash of file that generated macro. This task should only be run
-  if one of the dependencies is actually referenced. This would require adding it as a dependency of all root
-  level targets?. This would allow tasks (i.e. `regenerate`) to run that did not reference dependencies.
+* Change `hash` command so that it checks an optionally supplied hash matches actual hash. If it does not then
+  the command exits with a non-zero exit code. Generate a target that verifies that the actual hash matches the
+  hash of the `dependencies.yml` that was used to generate the extension. The target is a dependency of the
+  `http_file` (if possible) or the leaf targets so that it is only run if a dependency requires it.
 
 * Consider converting to commandline tool named `bzt`
 
