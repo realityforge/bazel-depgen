@@ -1,8 +1,6 @@
 package org.realityforge.bazel.depgen;
 
 import gir.io.FileUtil;
-import java.util.logging.LogRecord;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
