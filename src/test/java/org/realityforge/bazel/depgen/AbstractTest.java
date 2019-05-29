@@ -73,7 +73,7 @@ public abstract class AbstractTest
 
   final Environment newEnvironment( @Nonnull final Logger logger )
   {
-    return new Environment( null, logger );
+    return new Environment( null, FileUtil.getCurrentDirectory(), logger );
   }
 
   @Nonnull
@@ -82,7 +82,7 @@ public abstract class AbstractTest
   {
     final RemoteRepository remoteRepository =
       new RemoteRepository.Builder( "local", "default", localRepositoryDirectory.toUri().toString() ).build();
-    return ResolverUtil.createResolver( newEnvironment( ),
+    return ResolverUtil.createResolver( newEnvironment(),
                                         FileUtil.createLocalTempDir(),
                                         Collections.singletonList( remoteRepository ),
                                         true,
@@ -135,10 +135,10 @@ public abstract class AbstractTest
     return Exec.capture( b -> Exec.cmd( b, args.toArray( new String[ 0 ] ) ), expectedExitCode );
   }
 
-  protected final void inIsolatedDirectory( @Nonnull final Task java )
+  protected final void inIsolatedDirectory( @Nonnull final Task task )
     throws Exception
   {
-    Gir.go( () -> FileUtil.inTempDir( java ) );
+    Gir.go( () -> FileUtil.inTempDir( task ) );
   }
 
   @Nonnull

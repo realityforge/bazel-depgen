@@ -3,7 +3,11 @@ package org.realityforge.bazel.depgen;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +37,6 @@ public class Main
   private static final int HELP_OPT = 'h';
   private static final int QUIET_OPT = 'q';
   private static final int VERBOSE_OPT = 'v';
-  private static final int EMIT_DEPENDENCY_GRAPH_OPT = 1;
   private static final CLOptionDescriptor[] OPTIONS = new CLOptionDescriptor[]
     {
       new CLOptionDescriptor( "help",
@@ -52,22 +55,19 @@ public class Main
                               new int[]{ QUIET_OPT } ),
       Options.DEPENDENCIES_DESCRIPTOR,
       Options.SETTINGS_DESCRIPTOR,
-      Options.CACHE_DESCRIPTOR,
-      new CLOptionDescriptor( "emit-dependency-graph",
-                              CLOptionDescriptor.ARGUMENT_DISALLOWED,
-                              EMIT_DEPENDENCY_GRAPH_OPT,
-                              "Emit the computed dependency graph after it is calculated." )
+      Options.CACHE_DESCRIPTOR
     };
-  private static final Environment c_environment = new Environment( System.console(), Logger.getGlobal() );
-  private static Path c_dependenciesFile;
-  private static Path c_settingsFile;
-  private static Path c_cacheDir;
-  private static boolean c_emitDependencyGraph;
+  private static final String GENERATE_COMMAND = "generate";
+  private static final String PRINT_GRAPH_COMMAND = "print-graph";
+  private static final Set<String> VALID_COMMANDS =
+    Collections.unmodifiableSet( new HashSet<>( Arrays.asList( GENERATE_COMMAND, PRINT_GRAPH_COMMAND ) ) );
+  private static final Environment c_environment =
+    new Environment( System.console(), Paths.get( "" ).toAbsolutePath(), Logger.getGlobal() );
 
   public static void main( final String[] args )
   {
     setupLogger();
-    if ( !processOptions( args ) )
+    if ( !processOptions( c_environment, args ) )
     {
       System.exit( ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE );
       return;
@@ -77,14 +77,22 @@ public class Main
     try
     {
       final ApplicationRecord record = loadApplicationRecord();
-      final Level dependencyGraphLevel = c_emitDependencyGraph ? Level.WARNING : Level.FINE;
-      if ( logger.isLoggable( dependencyGraphLevel ) )
+      final String command = c_environment.getCommand();
+      if ( PRINT_GRAPH_COMMAND.equals( command ) )
       {
-        logger.log( dependencyGraphLevel, "Dependency Graph:" );
-        record.getNode()
-          .accept( new DependencyGraphEmitter( record.getSource(), line -> logger.log( dependencyGraphLevel, line ) ) );
+        if ( logger.isLoggable( Level.WARNING ) )
+        {
+          logger.log( Level.WARNING, "Dependency Graph:" );
+          record.getNode()
+            .accept( new DependencyGraphEmitter( record.getSource(),
+                                                 line -> logger.log( Level.WARNING, line ) ) );
+        }
       }
-      generate( record );
+      else
+      {
+        assert GENERATE_COMMAND.equals( command );
+        generate( record );
+      }
     }
     catch ( final InvalidModelException ime )
     {
@@ -142,7 +150,8 @@ public class Main
   private static ApplicationRecord loadApplicationRecord( @Nonnull final ApplicationModel model )
     throws DependencyResolutionException
   {
-    final Resolver resolver = ResolverUtil.createResolver( c_environment, c_cacheDir, model, loadSettings() );
+    final Resolver resolver =
+      ResolverUtil.createResolver( c_environment, c_environment.getCacheDir(), model, loadSettings() );
     return ApplicationRecord.build( model,
                                     resolveModel( resolver, model ),
                                     resolver.getAuthenticationContexts(),
@@ -216,13 +225,14 @@ public class Main
   @Nonnull
   private static Settings loadSettings()
   {
+    final Path settingsFile = c_environment.getSettingsFile();
     try
     {
-      return SettingsUtil.loadSettings( c_settingsFile, c_environment.logger() );
+      return SettingsUtil.loadSettings( settingsFile, c_environment.logger() );
     }
     catch ( final SettingsBuildingException e )
     {
-      throw new TerminalStateException( "Error: Problem loading settings from " + c_settingsFile,
+      throw new TerminalStateException( "Error: Problem loading settings from " + settingsFile,
                                         ExitCodes.ERROR_LOADING_SETTINGS_CODE );
     }
   }
@@ -230,13 +240,14 @@ public class Main
   @Nonnull
   private static ApplicationConfig loadDependenciesYaml()
   {
+    final Path dependenciesFile = c_environment.getDependenciesFile();
     try
     {
-      return ApplicationConfig.parse( c_dependenciesFile );
+      return ApplicationConfig.parse( dependenciesFile );
     }
     catch ( final Throwable t )
     {
-      throw new TerminalStateException( "Error: Failed to read dependencies file " + c_dependenciesFile,
+      throw new TerminalStateException( "Error: Failed to read dependencies file " + dependenciesFile,
                                         t,
                                         ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE );
     }
@@ -253,13 +264,13 @@ public class Main
     logger.setLevel( Level.INFO );
   }
 
-  private static boolean processOptions( @Nonnull final String[] args )
+  static boolean processOptions( @Nonnull final Environment environment, @Nonnull final String[] args )
   {
     // Parse the arguments
     final CLArgsParser parser = new CLArgsParser( args, OPTIONS );
 
     //Make sure that there was no errors parsing arguments
-    final Logger logger = c_environment.logger();
+    final Logger logger = environment.logger();
     if ( null != parser.getErrorString() )
     {
       logger.log( Level.SEVERE, "Error: " + parser.getErrorString() );
@@ -273,41 +284,52 @@ public class Main
       {
         case CLOption.TEXT_ARGUMENT:
         {
-          logger.log( Level.SEVERE, "Error: Unexpected argument: " + option.getArgument() );
-          return false;
+          final String command = option.getArgument();
+          if ( !VALID_COMMANDS.contains( command ) )
+          {
+            logger.log( Level.SEVERE, "Error: Unknown command: " + command );
+            return false;
+          }
+          else if ( environment.hasCommand() )
+          {
+            logger.log( Level.SEVERE, "Error: Duplicate command specified: " + command );
+            return false;
+          }
+          environment.setCommand( command );
+          break;
         }
-
         case Options.DEPENDENCIES_FILE_OPT:
         {
           final String argument = option.getArgument();
-          final File file = new File( argument );
-          if ( !file.exists() )
+          final Path dependenciesFile = environment.currentDirectory().resolve( argument ).toAbsolutePath().normalize();
+          if ( !dependenciesFile.toFile().exists() )
           {
             logger.log( Level.SEVERE,
                         "Error: Specified dependencies file does not exist. Specified value: " + argument );
             return false;
           }
-          c_dependenciesFile = file.toPath().toAbsolutePath().normalize();
+          environment.setDependenciesFile( dependenciesFile );
           break;
         }
         case Options.SETTINGS_FILE_OPT:
         {
           final String argument = option.getArgument();
-          final File file = new File( argument );
-          if ( !file.exists() )
+          final Path settingsFile = environment.currentDirectory().resolve( argument ).toAbsolutePath().normalize();
+          if ( !settingsFile.toFile().exists() )
           {
             logger.log( Level.SEVERE,
                         "Error: Specified settings file does not exist. Specified value: " + argument );
             return false;
           }
-          c_settingsFile = file.toPath().toAbsolutePath().normalize();
+          environment.setSettingsFile( settingsFile );
           break;
         }
 
         case Options.CACHE_DIR_OPT:
         {
           final String argument = option.getArgument();
-          final File dir = new File( argument );
+          final Path cacheDir = environment.currentDirectory().resolve( argument ).toAbsolutePath().normalize();
+          final File dir = cacheDir.toFile();
           if ( dir.exists() && !dir.isDirectory() )
           {
             logger.log( Level.SEVERE,
@@ -315,13 +337,7 @@ public class Main
                         argument );
             return false;
           }
-          c_cacheDir = dir.toPath();
-          break;
-        }
-
-        case EMIT_DEPENDENCY_GRAPH_OPT:
-        {
-          c_emitDependencyGraph = true;
+          environment.setCacheDir( cacheDir );
           break;
         }
 
@@ -337,44 +353,55 @@ public class Main
         }
         case HELP_OPT:
         {
-          printUsage();
+          printUsage( environment );
           return false;
         }
       }
     }
 
-    if ( null == c_dependenciesFile )
+    if ( !environment.hasCommand() )
     {
-      final File file = Paths.get( Options.DEFAULT_DEPENDENCIES_FILE ).toFile();
-      if ( !file.exists() )
-      {
-        logger.log( Level.SEVERE, "Error: Default dependencies file does not exist: " + file );
-        return false;
-      }
-      c_dependenciesFile = file.toPath();
+      logger.log( Level.SEVERE, "Error: No command specified. Please specify a command." );
+      return false;
     }
-    if ( null == c_settingsFile )
+
+    if ( !environment.hasCacheDir() )
     {
-      c_settingsFile =
-        Paths.get( System.getProperty( "user.home" ), ".m2", "settings.xml" ).toAbsolutePath().normalize();
-    }
-    if ( null == c_cacheDir )
-    {
-      final File dir = Paths.get( Options.DEFAULT_CACHE_DIR ).toFile();
+      final File dir = environment.currentDirectory().resolve( Options.DEFAULT_CACHE_DIR ).toFile();
       if ( dir.exists() && !dir.isDirectory() )
       {
         logger.log( Level.SEVERE, "Error: Default cache directory exists but is not a directory: " + dir );
         return false;
       }
-      c_cacheDir = dir.toPath();
+      environment.setCacheDir( dir.toPath().toAbsolutePath().normalize() );
+    }
+
+    if ( !environment.hasDependenciesFile() )
+    {
+      final Path dependenciesFile =
+        environment.currentDirectory().resolve( Options.DEFAULT_DEPENDENCIES_FILE ).toAbsolutePath().normalize();
+      if ( !dependenciesFile.toFile().exists() )
+      {
+        logger.log( Level.SEVERE,
+                    "Error: Default dependencies file does not exist: " + Options.DEFAULT_DEPENDENCIES_FILE );
+        return false;
+      }
+      environment.setDependenciesFile( dependenciesFile );
+    }
+
+    if ( !environment.hasSettingsFile() )
+    {
+      final Path settingsFile =
+        Paths.get( System.getProperty( "user.home" ), ".m2", "settings.xml" ).toAbsolutePath().normalize();
+      environment.setSettingsFile( settingsFile );
     }
 
     if ( logger.isLoggable( Level.FINE ) )
     {
       logger.log( Level.FINE, "Bazel DepGen Starting..." );
-      logger.log( Level.FINE, "  Dependencies file: " + c_dependenciesFile );
-      logger.log( Level.FINE, "  Settings file: " + c_settingsFile );
-      logger.log( Level.FINE, "  Local Cache directory: " + c_cacheDir );
+      logger.log( Level.FINE, "  Dependencies file: " + environment.getDependenciesFile() );
+      logger.log( Level.FINE, "  Settings file: " + environment.getSettingsFile() );
+      logger.log( Level.FINE, "  Local Cache directory: " + environment.getCacheDir() );
     }
 
     return true;
@@ -383,12 +410,20 @@ public class Main
   /**
    * Print out a usage statement
    */
-  private static void printUsage()
+  static void printUsage( @Nonnull final Environment environment )
   {
-    final String lineSeparator = System.getProperty( "line.separator" );
-    c_environment.logger().log( Level.INFO,
-                                "java " + Main.class.getName() + " [options]" + lineSeparator +
-                                "Options: " + lineSeparator +
-                                CLUtil.describeOptions( OPTIONS ) );
+    final Logger logger = environment.logger();
+    logger.info( "java " + Main.class.getName() + " [options] [command]" );
+    logger.info( "\tPossible Commands:" );
+    logger.info( "\t\t" + GENERATE_COMMAND + ": Generate the bazel extension from the dependency configuration." );
+    logger.info( "\t\t" + PRINT_GRAPH_COMMAND + ": Compute and print the dependency graph " +
+                 "for the dependency configuration." );
+    logger.info( "\tOptions:" );
+    final String[] options =
+      CLUtil.describeOptions( OPTIONS ).toString().split( System.getProperty( "line.separator" ) );
+    for ( final String line : options )
+    {
+      logger.info( line );
+    }
   }
 }
