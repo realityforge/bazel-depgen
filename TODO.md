@@ -20,7 +20,8 @@ complete as there is too much un-said.
 
 * Add `init` command that initializes `dependencies.bzl` from template that includes all the options and
   documentation for each option. Note that the `exportDeps` configuration potentially limits scalability of
-  builds as it results in deep dependency trees.
+  builds as it results in deep dependency trees. Consider also generating initial `WORKSPACE` if a walk through
+  parent directories does not locate one.
 
 * Add `add` command that adds a dependency.
 
