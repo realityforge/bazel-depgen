@@ -145,6 +145,19 @@ public class MainTest
   }
 
   @Test
+  public void processOptions_error()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final String output = processOptions( false, "--some-command-no-exist" );
+      assertEquals( output, "Error: Unknown option --some-command-no-exist" );
+    } );
+  }
+
+  @Test
   public void processOptions_outputInVerbose()
     throws Exception
   {
