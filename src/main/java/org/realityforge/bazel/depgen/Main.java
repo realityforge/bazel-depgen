@@ -75,16 +75,15 @@ public class Main
 
     try
     {
-      final ApplicationRecord record = loadApplicationRecord();
       final String command = c_environment.getCommand();
       if ( PRINT_GRAPH_COMMAND.equals( command ) )
       {
-        printGraph( record );
+        printGraph( loadApplicationRecord() );
       }
       else
       {
         assert GENERATE_COMMAND.equals( command );
-        generate( record );
+        generate( loadApplicationRecord() );
       }
     }
     catch ( final InvalidModelException ime )
