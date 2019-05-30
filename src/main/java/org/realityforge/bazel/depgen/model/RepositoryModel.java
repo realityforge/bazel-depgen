@@ -9,7 +9,7 @@ public final class RepositoryModel
 {
   @Nullable
   private final RepositoryConfig _source;
-  @Nullable
+  @Nonnull
   private final String _name;
   @Nonnull
   private final String _url;
@@ -22,21 +22,26 @@ public final class RepositoryModel
     {
       throw new InvalidModelException( "The repository must specify the 'url' property.", source );
     }
-    return new RepositoryModel( source, source.getName(), url );
+    final String name = source.getName();
+    final String actualName =
+      null != name ?
+      name :
+      url.replaceAll( "[^a-zA-Z0-9]", "_" ).replaceAll( "_+$", "" ).replaceAll( "_+", "_" );
+    return new RepositoryModel( source, actualName, url );
   }
 
   @Nonnull
-  public static RepositoryModel create( @Nullable final String name, @Nonnull final String url )
+  public static RepositoryModel create( @Nonnull final String name, @Nonnull final String url )
   {
     return new RepositoryModel( null, name, url );
   }
 
   private RepositoryModel( @Nullable final RepositoryConfig source,
-                           @Nullable final String name,
+                           @Nonnull final String name,
                            @Nonnull final String url )
   {
     _source = source;
-    _name = name;
+    _name = Objects.requireNonNull( name );
     _url = Objects.requireNonNull( url );
   }
 
@@ -46,7 +51,7 @@ public final class RepositoryModel
     return _source;
   }
 
-  @Nullable
+  @Nonnull
   public String getName()
   {
     return _name;
