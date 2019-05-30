@@ -66,3 +66,4 @@ complete as there is too much un-said.
   - Most likely we will want to support a tool like [BUILD_file_generator](https://github.com/bazelbuild/BUILD_file_generator)
     or [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps), both of which scan java files and
     automagically creates `BUILD` files (somehow?) so that there is fine grain dependencies without the heartache.
+  - Another option is [exodus](https://wix-incubator.github.io/exodus)
