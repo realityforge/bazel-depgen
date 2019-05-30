@@ -25,10 +25,7 @@ public class IntegrationTest
       writeWorkspace();
       writeDependencies( dir,
                          "artifacts:\n" +
-                         "  - group: com.example\n" +
-                         "    version: 1.0\n" +
-                         "    ids: ['myapp']\n" +
-                         "    type: jar\n" +
+                         "  - coord: com.example:myapp:jar:1.0\n" +
                          "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n" );
       final String output = runCommand( "generate" );
       assertEquals( output, "" );
@@ -59,13 +56,14 @@ public class IntegrationTest
       writeDependencies( "repositories:\n" +
                          "  central: http://repo1.maven.org/maven2\n" +
                          "artifacts:\n" +
-                         "  - group: org.realityforge.gir\n" );
+                         "  - coord: org.realityforge.gir\n" );
 
       final String output = runCommand( 5, "generate" );
-      assertOutputContains( output, "The dependency must specify either the 'id' property or the 'ids' property.\n" +
-                                    "--- Invalid Config ---\n" +
-                                    "group: org.realityforge.gir\n" +
-                                    "--- End Config ---" );
+      assertOutputContains( output,
+                            "The 'coord' property on the dependency must specify 2-5 components separated by the ':' character. The 'coords' must be in one of the forms; 'group:id', 'group:id:version', 'group:id:type:version' or 'group:id:type:classifier:version'.\n" +
+                            "--- Invalid Config ---\n" +
+                            "coord: org.realityforge.gir\n" +
+                            "--- End Config ---" );
     } );
   }
 

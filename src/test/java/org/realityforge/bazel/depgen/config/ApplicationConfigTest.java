@@ -45,45 +45,6 @@ public class ApplicationConfigTest
   }
 
   @Test
-  public void parseExpandedDependencyWithAllComponents()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "artifacts:\n" +
-                         "  - group: org.realityforge.gir\n" +
-                         "    id: gir-core\n" +
-                         "    version: 0.08\n" +
-                         "    classifier: sources\n" +
-                         "    type: jar\n" );
-      final ApplicationConfig config = loadApplicationConfig();
-      assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
-      assertNotNull( config );
-      final ArtifactConfig artifact = ensureSingleArtifact( config );
-      assertEquals( artifact.getGroup(), "org.realityforge.gir" );
-      assertEquals( artifact.getId(), "gir-core" );
-      assertEquals( artifact.getVersion(), "0.08" );
-      assertEquals( artifact.getClassifier(), "sources" );
-      assertEquals( artifact.getType(), "jar" );
-    } );
-  }
-
-  @Test
-  public void parseExpandedDependencyWithMinimalComponents()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "artifacts:\n" +
-                         "  - group: org.realityforge.gir\n" +
-                         "    id: gir-core\n" );
-      final ApplicationConfig config = loadApplicationConfig();
-      assertNotNull( config );
-      final ArtifactConfig artifact = ensureSingleArtifact( config );
-      assertEquals( artifact.getGroup(), "org.realityforge.gir" );
-      assertEquals( artifact.getId(), "gir-core" );
-    } );
-  }
-
-  @Test
   public void parseDependencyWithCoords()
     throws Exception
   {

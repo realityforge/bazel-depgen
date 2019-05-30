@@ -11,18 +11,6 @@ public final class ArtifactConfig
   @Nullable
   private String coord;
   @Nullable
-  private String group;
-  @Nullable
-  private String id;
-  @Nullable
-  private List<String> ids;
-  @Nullable
-  private String type;
-  @Nullable
-  private String classifier;
-  @Nullable
-  private String version;
-  @Nullable
   private String alias;
   @Nullable
   private Nature nature;
@@ -52,72 +40,6 @@ public final class ArtifactConfig
   public void setCoord( @Nonnull final String coord )
   {
     this.coord = Objects.requireNonNull( coord );
-  }
-
-  @Nullable
-  public String getGroup()
-  {
-    return group;
-  }
-
-  public void setGroup( @Nonnull final String group )
-  {
-    this.group = Objects.requireNonNull( group );
-  }
-
-  @Nullable
-  public String getId()
-  {
-    return id;
-  }
-
-  public void setId( @Nonnull final String id )
-  {
-    this.id = Objects.requireNonNull( id );
-  }
-
-  @Nullable
-  public List<String> getIds()
-  {
-    return ids;
-  }
-
-  public void setIds( @Nonnull final List<String> ids )
-  {
-    this.ids = Objects.requireNonNull( ids );
-  }
-
-  @Nullable
-  public String getType()
-  {
-    return type;
-  }
-
-  public void setType( @Nonnull final String type )
-  {
-    this.type = Objects.requireNonNull( type );
-  }
-
-  @Nullable
-  public String getClassifier()
-  {
-    return classifier;
-  }
-
-  public void setClassifier( @Nonnull final String classifier )
-  {
-    this.classifier = Objects.requireNonNull( classifier );
-  }
-
-  @Nullable
-  public String getVersion()
-  {
-    return version;
-  }
-
-  public void setVersion( final String version )
-  {
-    this.version = Objects.requireNonNull( version );
   }
 
   @Nullable
