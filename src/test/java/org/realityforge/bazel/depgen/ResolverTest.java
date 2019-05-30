@@ -166,7 +166,11 @@ public class ResolverTest
       final TestHandler handler = new TestHandler();
 
       final Resolver resolver =
-        ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ), dir, Collections.emptyList(), true, true );
+        ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+                                     dir,
+                                     Collections.emptyList(),
+                                     true,
+                                     true );
 
       final ArtifactModel model =
         new ArtifactModel( new ArtifactConfig(),
@@ -314,7 +318,11 @@ public class ResolverTest
       final TestHandler handler = new TestHandler();
 
       final Resolver resolver =
-        ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ), dir, Collections.emptyList(), true, true );
+        ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+                                     dir,
+                                     Collections.emptyList(),
+                                     true,
+                                     true );
 
       final ArtifactModel model =
         new ArtifactModel( new ArtifactConfig(),
@@ -351,7 +359,11 @@ public class ResolverTest
       final TestHandler handler = new TestHandler();
 
       final Resolver resolver =
-        ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ), dir, Collections.emptyList(), true, true );
+        ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+                                     dir,
+                                     Collections.emptyList(),
+                                     true,
+                                     true );
 
       writeDependencies( dir,
                          "artifacts:\n" +
@@ -403,7 +415,11 @@ public class ResolverTest
       final TestHandler handler = new TestHandler();
 
       final Resolver resolver =
-        ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ), dir, Collections.emptyList(), true, true );
+        ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+                                     dir,
+                                     Collections.emptyList(),
+                                     true,
+                                     true );
 
       writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
       final ApplicationModel model = loadApplicationModel();

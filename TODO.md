@@ -9,8 +9,7 @@ complete as there is too much un-said.
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
   online or needed to be rebuilt.
 
-* Configure repositories so that url checks against it can not be cached. This will require changes to the way we
-  represent repositories.
+* Configure repositories so that url checks against it can not be cached.
 
 * repositories should be able to specify whether they are searched by default or not and artifacts should be able
   to specify which artifacts are searched for artifact.

@@ -118,7 +118,9 @@ public class MainTest
     inIsolatedDirectory( () -> {
       writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
-      writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
+      writeDependencies( "repositories:\n" +
+                         "  - name: central" +
+                         "    url: http://repo1.maven.org/maven2\n" );
 
       final String output = processOptions( false, "--settings-file", "some_settings.xml", "generate" );
       assertOutputContains( output,

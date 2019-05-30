@@ -301,8 +301,8 @@ public class ApplicationRecordTest
 
       writeDependencies( dir,
                          "repositories:\n" +
-                         "  central: http://repo1.maven.org/maven2\n" +
-                         "  my-repo: http://my-repo.example.com/maven2\n" );
+                         "  - name: my-repo\n" +
+                         "    url: http://my-repo.example.com/maven2\n" );
       final ApplicationRecord record = loadApplicationRecord();
 
       final Map<String, AuthenticationContext> contexts = record.getAuthenticationContexts();

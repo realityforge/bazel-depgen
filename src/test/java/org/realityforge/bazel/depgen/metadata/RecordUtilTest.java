@@ -230,7 +230,9 @@ public class RecordUtilTest
       {
         final String repositoryUrl = toUrl( server );
 
-        writeDependencies( dir, "repositories:\n  my-repo: " + repositoryUrl + "\n" );
+        writeDependencies( dir, "repositories:\n" +
+                                "  - name: my-repo\n" +
+                                "    url: " + repositoryUrl + "\n" );
         final ApplicationRecord record = loadApplicationRecord();
 
         final String url =
@@ -266,7 +268,9 @@ public class RecordUtilTest
       {
         final String repositoryUrl = toUrl( server );
 
-        writeDependencies( dir, "repositories:\n  my-repo: " + repositoryUrl + "\n" );
+        writeDependencies( dir, "repositories:\n" +
+                                "  - name: my-repo\n" +
+                                "    url: " + repositoryUrl + "\n" );
         final ApplicationRecord record = loadApplicationRecord();
 
         final String url =

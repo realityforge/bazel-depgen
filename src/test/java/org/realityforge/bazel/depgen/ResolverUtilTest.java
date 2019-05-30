@@ -3,8 +3,8 @@ package org.realityforge.bazel.depgen;
 import gir.io.FileUtil;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import org.apache.maven.settings.Settings;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -16,6 +16,7 @@ import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ExcludeModel;
+import org.realityforge.bazel.depgen.model.RepositoryModel;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -27,9 +28,9 @@ public class ResolverUtilTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final HashMap<String, String> repositories = new HashMap<>();
-      repositories.put( "central", "https://repo1.maven.org/maven2" );
-      repositories.put( "example", "https://example.com/maven2" );
+      final List<RepositoryModel> repositories =
+        Arrays.asList( RepositoryModel.create( "central", "https://repo1.maven.org/maven2" ),
+                       RepositoryModel.create( "example", "https://example.com/maven2" ) );
 
       FileUtil.write( "settings.xml",
                       "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +

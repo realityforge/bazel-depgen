@@ -32,8 +32,11 @@ public class ApplicationModelTest
       assertEquals( model.getSource(), source );
       assertEquals( model.getConfigSha256(), "5554C636655BB43F8BC8A1E01C985419ABAF8A4102ABEDD28CB1949FA8A7DADA" );
       assertEquals( model.getConfigLocation(), configFile );
-      assertEquals( model.getRepositories().get( ApplicationConfig.MAVEN_CENTRAL_ID ),
-                    ApplicationConfig.MAVEN_CENTRAL_URL );
+      final List<RepositoryModel> repositories = model.getRepositories();
+      assertEquals( repositories.size(), 1 );
+      final RepositoryModel repository = repositories.get( 0 );
+      assertEquals( repository.getName(), ApplicationConfig.MAVEN_CENTRAL_NAME );
+      assertEquals( repository.getUrl(), ApplicationConfig.MAVEN_CENTRAL_URL );
       assertEquals( model.getOptions().getWorkspaceDirectory(), FileUtil.getCurrentDirectory() );
       assertEquals( model.getOptions().getExtensionFile(),
                     FileUtil.getCurrentDirectory().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );

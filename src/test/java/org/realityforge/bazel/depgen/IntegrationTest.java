@@ -52,10 +52,7 @@ public class IntegrationTest
   {
     inIsolatedDirectory( () -> {
       writeWorkspace();
-      // Need to declare repositories otherwise we never even try to load settings
-      writeDependencies( "repositories:\n" +
-                         "  central: http://repo1.maven.org/maven2\n" +
-                         "artifacts:\n" +
+      writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir\n" );
 
       final String output = runCommand( 5, "generate" );
@@ -142,7 +139,9 @@ public class IntegrationTest
     inIsolatedDirectory( () -> {
       writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
-      writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
+      writeDependencies( "repositories:\n" +
+                         "  - name: central\n" +
+                         "    url: http://repo1.maven.org/maven2\n" );
 
       runCommand( "generate" );
     } );
@@ -155,7 +154,9 @@ public class IntegrationTest
     inIsolatedDirectory( () -> {
       writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
-      writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
+      writeDependencies( "repositories:\n" +
+                         "  - name: central\n" +
+                         "    url: http://repo1.maven.org/maven2\n" );
       assertTrue( FileUtil.getCurrentDirectory().resolve( ".m2" ).toFile().mkdir() );
       FileUtil.write( ".m2/settings.xml", "JHSGDJHDS()*&(&Y*&" );
 
@@ -171,7 +172,9 @@ public class IntegrationTest
     inIsolatedDirectory( () -> {
       writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
-      writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
+      writeDependencies( "repositories:\n" +
+                         "  - name: central\n" +
+                         "    url: http://repo1.maven.org/maven2\n" );
       assertTrue( FileUtil.getCurrentDirectory().resolve( ".m2/settings.xml" ).toFile().mkdirs() );
 
       final String output = runCommand( 4, "generate" );
@@ -186,7 +189,9 @@ public class IntegrationTest
     inIsolatedDirectory( () -> {
       writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
-      writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
+      writeDependencies( "repositories:\n" +
+                         "  - name: central\n" +
+                         "    url: http://repo1.maven.org/maven2\n" );
 
       assertTrue( FileUtil.getCurrentDirectory().resolve( ".m2" ).toFile().mkdir() );
       FileUtil.write( ".m2/settings.xml",
@@ -212,7 +217,9 @@ public class IntegrationTest
     inIsolatedDirectory( () -> {
       writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
-      writeDependencies( "repositories:\n  central: http://repo1.maven.org/maven2\n" );
+      writeDependencies( "repositories:\n" +
+                         "  - name: central\n" +
+                         "    url: http://repo1.maven.org/maven2\n" );
 
       FileUtil.write( "some_settings.xml",
                       "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +

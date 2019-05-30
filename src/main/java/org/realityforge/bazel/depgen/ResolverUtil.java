@@ -3,7 +3,6 @@ package org.realityforge.bazel.depgen;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
@@ -31,6 +30,7 @@ import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ExcludeModel;
 import org.realityforge.bazel.depgen.model.GlobalExcludeModel;
 import org.realityforge.bazel.depgen.model.OptionsModel;
+import org.realityforge.bazel.depgen.model.RepositoryModel;
 
 final class ResolverUtil
 {
@@ -82,8 +82,8 @@ final class ResolverUtil
                                          @Nonnull final Throwable exception )
       {
         environment.logger().log( Level.SEVERE,
-                              "Service creation failed for " + type + " implementation " + impl +
-                              ": " + exception.getMessage(), exception );
+                                  "Service creation failed for " + type + " implementation " + impl +
+                                  ": " + exception.getMessage(), exception );
       }
     } );
 
@@ -122,16 +122,17 @@ final class ResolverUtil
   }
 
   @Nonnull
-  static List<RemoteRepository> getRemoteRepositories( @Nonnull final Map<String, String> servers,
+  static List<RemoteRepository> getRemoteRepositories( @Nonnull final List<RepositoryModel> servers,
                                                        @Nonnull final Settings settings )
   {
     final List<RemoteRepository> repositories = new ArrayList<>();
 
-    for ( final Map.Entry<String, String> server : servers.entrySet() )
+    for ( final RepositoryModel repository : servers )
     {
+      final String name = repository.getName();
       final RemoteRepository.Builder builder =
-        new RemoteRepository.Builder( server.getKey(), "default", server.getValue() );
-      final Server serverSetting = settings.getServer( server.getKey() );
+        new RemoteRepository.Builder( name, "default", repository.getUrl() );
+      final Server serverSetting = null != name ? settings.getServer( name ) : null;
       if ( null != serverSetting )
       {
         final Authentication authentication =

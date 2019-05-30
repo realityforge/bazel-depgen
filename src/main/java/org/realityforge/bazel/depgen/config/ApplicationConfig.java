@@ -3,7 +3,6 @@ package org.realityforge.bazel.depgen.config;
 import java.io.FileReader;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,13 +11,13 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 public final class ApplicationConfig
 {
-  public static final String MAVEN_CENTRAL_ID = "central";
+  public static final String MAVEN_CENTRAL_NAME = "central";
   public static final String MAVEN_CENTRAL_URL = "https://repo.maven.apache.org/maven2/";
   private Path _configLocation;
   @Nullable
   private OptionsConfig options;
   @Nullable
-  private Map<String, String> repositories;
+  private List<RepositoryConfig> repositories;
   @Nullable
   private List<ArtifactConfig> artifacts;
   @Nullable
@@ -60,12 +59,12 @@ public final class ApplicationConfig
   }
 
   @Nullable
-  public Map<String, String> getRepositories()
+  public List<RepositoryConfig> getRepositories()
   {
     return repositories;
   }
 
-  public void setRepositories( @Nonnull final Map<String, String> repositories )
+  public void setRepositories( @Nonnull final List<RepositoryConfig> repositories )
   {
     this.repositories = Objects.requireNonNull( repositories );
   }

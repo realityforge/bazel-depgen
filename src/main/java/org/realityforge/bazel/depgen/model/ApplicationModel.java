@@ -3,7 +3,6 @@ package org.realityforge.bazel.depgen.model;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -14,6 +13,7 @@ import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.ExcludeConfig;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.realityforge.bazel.depgen.config.ReplacementConfig;
+import org.realityforge.bazel.depgen.config.RepositoryConfig;
 import org.realityforge.bazel.depgen.util.HashUtil;
 import org.realityforge.bazel.depgen.util.YamlUtil;
 
@@ -32,7 +32,7 @@ public final class ApplicationModel
   @Nonnull
   private final List<GlobalExcludeModel> _excludes;
   @Nonnull
-  private final Map<String, String> _repositories;
+  private final List<RepositoryModel> _repositories;
 
   @Nonnull
   public static ApplicationModel parse( @Nonnull final ApplicationConfig source )
@@ -57,11 +57,12 @@ public final class ApplicationModel
       null == excludesConfig ?
       Collections.emptyList() :
       excludesConfig.stream().map( GlobalExcludeModel::parse ).collect( Collectors.toList() );
-    final Map<String, String> repositoriesConfig = source.getRepositories();
-    final Map<String, String> repositories =
+    final List<RepositoryConfig> repositoriesConfig = source.getRepositories();
+    final List<RepositoryModel> repositories =
       null == repositoriesConfig ?
-      Collections.singletonMap( ApplicationConfig.MAVEN_CENTRAL_ID, ApplicationConfig.MAVEN_CENTRAL_URL ) :
-      repositoriesConfig;
+      Collections.singletonList( RepositoryModel.create( ApplicationConfig.MAVEN_CENTRAL_NAME,
+                                                         ApplicationConfig.MAVEN_CENTRAL_URL ) ) :
+      repositoriesConfig.stream().map( RepositoryModel::parse ).collect( Collectors.toList() );
 
     return new ApplicationModel( source,
                                  configSha256,
@@ -84,7 +85,7 @@ public final class ApplicationModel
                             @Nonnull final List<ArtifactModel> artifacts,
                             @Nonnull final List<ReplacementModel> replacements,
                             @Nonnull final List<GlobalExcludeModel> excludes,
-                            @Nonnull final Map<String, String> repositories )
+                            @Nonnull final List<RepositoryModel> repositories )
   {
     _source = Objects.requireNonNull( source );
     _configSha256 = Objects.requireNonNull( configSha256 );
@@ -92,7 +93,7 @@ public final class ApplicationModel
     _artifacts = Objects.requireNonNull( artifacts );
     _replacements = Objects.requireNonNull( replacements );
     _excludes = Objects.requireNonNull( excludes );
-    _repositories = Collections.unmodifiableMap( Objects.requireNonNull( repositories ) );
+    _repositories = Collections.unmodifiableList( Objects.requireNonNull( repositories ) );
   }
 
   @Nonnull
@@ -120,7 +121,7 @@ public final class ApplicationModel
   }
 
   @Nonnull
-  public Map<String, String> getRepositories()
+  public List<RepositoryModel> getRepositories()
   {
     return _repositories;
   }

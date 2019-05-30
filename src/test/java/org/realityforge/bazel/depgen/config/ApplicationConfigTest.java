@@ -4,7 +4,6 @@ import gir.io.FileUtil;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.testng.annotations.Test;
@@ -31,16 +30,21 @@ public class ApplicationConfigTest
   {
     inIsolatedDirectory( () -> {
       writeDependencies(
-        "repositories:\n  central: http://repo1.maven.org/maven2\n  example: https://example.com/repo\n" );
+        "repositories:\n" +
+        "  - name: central\n" +
+        "    url: http://repo1.maven.org/maven2\n" +
+        "  - url: https://example.com/repo\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
-      final Map<String, String> repositories = config.getRepositories();
+      final List<RepositoryConfig> repositories = config.getRepositories();
       assertNotNull( repositories );
 
       assertEquals( repositories.size(), 2 );
-      assertEquals( repositories.get( "example" ), "https://example.com/repo" );
-      assertEquals( repositories.get( "central" ), "http://repo1.maven.org/maven2" );
+      assertEquals( repositories.get( 0 ).getName(), "central" );
+      assertEquals( repositories.get( 0 ).getUrl(), "http://repo1.maven.org/maven2" );
+      assertNull( repositories.get( 1 ).getName() );
+      assertEquals( repositories.get( 1 ).getUrl(), "https://example.com/repo" );
     } );
   }
 

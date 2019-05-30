@@ -129,7 +129,10 @@ public abstract class AbstractTest
   protected final void writeDependencies( @Nonnull final Path dir, @Nonnull final String content )
     throws IOException
   {
-    writeDependencies( "repositories:\n  local: " + dir.toUri() + "\n" + content );
+    writeDependencies( "repositories:\n" +
+                       "  - name: local\n" +
+                       "    url: " + dir.toUri() + "\n" +
+                       content );
   }
 
   protected final void writeDependencies( @Nonnull final String content )
