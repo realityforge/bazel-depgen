@@ -17,28 +17,9 @@ public final class GlobalExcludeModel
   public static GlobalExcludeModel parse( @Nonnull final ExcludeConfig source )
   {
     final String coord = source.getCoord();
-    String group = source.getGroup();
-    String id = source.getId();
-
-    if ( null != coord && ( null != group || null != id ) )
-    {
-      throw new InvalidModelException( "The global exclude must not specify the 'coord' property if other properties " +
-                                       "are present that define the maven coordinates. .i.e. coord must not " +
-                                       "be present when any of the following properties are present: group or id.",
-                                       source );
-    }
     if ( null == coord )
     {
-      if ( null == group )
-      {
-        throw new InvalidModelException( "The global exclude must specify the 'group' property unless the 'coord' " +
-                                         "shorthand property is used.", source );
-      }
-      else if ( null == id )
-      {
-        throw new InvalidModelException( "The global exclude must specify the 'id' property unless the 'coord' " +
-                                         "shorthand property is used", source );
-      }
+      throw new InvalidModelException( "The global exclude must specify the 'coord' property.", source );
     }
     else
     {
@@ -51,12 +32,9 @@ public final class GlobalExcludeModel
       }
       else
       {
-        group = components[ 0 ];
-        id = components[ 1 ];
+        return new GlobalExcludeModel( source, components[ 0 ], components[ 1 ] );
       }
     }
-
-    return new GlobalExcludeModel( source, group, id );
   }
 
   private GlobalExcludeModel( @Nonnull final ExcludeConfig source,

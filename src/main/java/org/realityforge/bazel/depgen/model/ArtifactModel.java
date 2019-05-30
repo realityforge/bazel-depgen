@@ -31,51 +31,18 @@ public final class ArtifactModel
   private final List<String> _visibility;
 
   @Nonnull
-  public static List<ArtifactModel> parse( @Nonnull final ArtifactConfig source )
+  public static ArtifactModel parse( @Nonnull final ArtifactConfig source )
   {
     final String coord = source.getCoord();
-    String group = source.getGroup();
-    String id = source.getId();
-    String version = source.getVersion();
-    String classifier = source.getClassifier();
-    String type = source.getType();
-    List<String> ids = source.getIds();
+    final String group;
+    final String id;
+    String version = null;
+    String classifier = null;
+    String type = null;
     final List<String> excludes = source.getExcludes();
-    if ( null != coord &&
-         ( null != group || null != id || null != version || null != classifier || null != type || null != ids ) )
-    {
-      throw new InvalidModelException( "The dependency must not specify the 'coord' property if other properties " +
-                                       "are present that define the maven coordinates. .i.e. coord must not " +
-                                       "be present when any of the following properties are present: group, " +
-                                       "id, version, classifier, type or ids.", source );
-    }
-    else if ( null != id && null != ids )
-    {
-      throw new InvalidModelException( "The dependency must not specify both the 'id' property and the " +
-                                       "'ids' property.", source );
-    }
     if ( null == coord )
     {
-      if ( null == group )
-      {
-        throw new InvalidModelException( "The dependency must specify the 'group' property unless the 'coord' " +
-                                         "shorthand property is used.", source );
-      }
-      else if ( null == id && null == ids )
-      {
-        throw new InvalidModelException( "The dependency must specify either the 'id' property or the " +
-                                         "'ids' property.", source );
-      }
-      else if ( null == version && null != type )
-      {
-        throw new InvalidModelException( "The dependency must specify either the 'version' property if the " +
-                                         "'type' property is specified.", source );
-      }
-      else if ( null == version && null != classifier )
-      {
-        throw new InvalidModelException( "The dependency must specify either the 'version' property if the " +
-                                         "'classifier' property is specified.", source );
-      }
+      throw new InvalidModelException( "The dependency must specify the 'coord' property.", source );
     }
     else
     {
@@ -120,15 +87,6 @@ public final class ArtifactModel
                                        "'nature' property is specified as `Plugin`.", source );
     }
 
-    if ( null == ids )
-    {
-      ids = Collections.singletonList( id );
-    }
-
-    final String agroup = group;
-    final String aversion = version;
-    final String aclassifier = classifier;
-    final String atype = type;
     final List<ExcludeModel> aexcludes =
       null == excludes ?
       Collections.emptyList() :
@@ -142,11 +100,7 @@ public final class ArtifactModel
       Collections.emptyList() :
       Collections.unmodifiableList( new ArrayList<>( visibility ) );
 
-    return
-      ids
-        .stream()
-        .map( aid -> new ArtifactModel( source, agroup, aid, atype, aclassifier, aversion, aexcludes, avisibility ) )
-        .collect( Collectors.toList() );
+    return new ArtifactModel( source, group, id, type, classifier, version, aexcludes, avisibility );
   }
 
   public ArtifactModel( @Nonnull final ArtifactConfig source,

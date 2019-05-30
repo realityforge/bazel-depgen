@@ -46,7 +46,7 @@ public final class ApplicationModel
     final List<ArtifactModel> artifactModels =
       null == artifactsConfig ?
       Collections.emptyList() :
-      artifactsConfig.stream().flatMap( c -> ArtifactModel.parse( c ).stream() ).collect( Collectors.toList() );
+      artifactsConfig.stream().map( ArtifactModel::parse ).collect( Collectors.toList() );
     final List<ReplacementConfig> replacementsConfig = source.getReplacements();
     final List<ReplacementModel> replacements =
       null == replacementsConfig ?

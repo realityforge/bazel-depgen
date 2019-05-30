@@ -19,32 +19,14 @@ public final class ReplacementModel
   public static ReplacementModel parse( @Nonnull final ReplacementConfig source )
   {
     final String coord = source.getCoord();
-    String group = source.getGroup();
-    String id = source.getId();
     final String target = source.getTarget();
     if ( null == target )
     {
       throw new InvalidModelException( "The replacement must specify the 'target' property.", source );
     }
-    else if ( null != coord && ( null != group || null != id ) )
+    else if ( null == coord )
     {
-      throw new InvalidModelException( "The replacement must not specify the 'coord' property if other properties " +
-                                       "are present that define the maven coordinates. .i.e. coord must not " +
-                                       "be present when any of the following properties are present: group or id.",
-                                       source );
-    }
-    if ( null == coord )
-    {
-      if ( null == group )
-      {
-        throw new InvalidModelException( "The replacement must specify the 'group' property unless the 'coord' " +
-                                         "shorthand property is used.", source );
-      }
-      else if ( null == id )
-      {
-        throw new InvalidModelException( "The replacement must specify the 'id' property unless the 'coord' " +
-                                         "shorthand property is used", source );
-      }
+      throw new InvalidModelException( "The replacement must specify the 'coord' property.", source );
     }
     else
     {
@@ -57,12 +39,9 @@ public final class ReplacementModel
       }
       else
       {
-        group = components[ 0 ];
-        id = components[ 1 ];
+        return new ReplacementModel( source, components[ 0 ], components[ 1 ], target );
       }
     }
-
-    return new ReplacementModel( source, group, id, target );
   }
 
   private ReplacementModel( @Nonnull final ReplacementConfig source,

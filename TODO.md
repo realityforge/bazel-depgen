@@ -15,9 +15,6 @@ complete as there is too much un-said.
 * repositories should be able to specify whether they are searched by default or not and artifacts should be able
   to specify which artifacts are searched for artifact.
 
-* Consider removing support for non-coord based configuration options for artifacts. This would make the
-  modification of dependency files much easier.
-
 * Add `init` command that initializes `dependencies.bzl` from template that includes all the options and
   documentation for each option. Note that the `exportDeps` configuration potentially limits scalability of
   builds as it results in deep dependency trees. Consider also generating initial `WORKSPACE` if a walk through

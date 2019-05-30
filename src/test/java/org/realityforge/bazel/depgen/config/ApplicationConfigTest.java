@@ -45,45 +45,6 @@ public class ApplicationConfigTest
   }
 
   @Test
-  public void parseExpandedDependencyWithAllComponents()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "artifacts:\n" +
-                         "  - group: org.realityforge.gir\n" +
-                         "    id: gir-core\n" +
-                         "    version: 0.08\n" +
-                         "    classifier: sources\n" +
-                         "    type: jar\n" );
-      final ApplicationConfig config = loadApplicationConfig();
-      assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
-      assertNotNull( config );
-      final ArtifactConfig artifact = ensureSingleArtifact( config );
-      assertEquals( artifact.getGroup(), "org.realityforge.gir" );
-      assertEquals( artifact.getId(), "gir-core" );
-      assertEquals( artifact.getVersion(), "0.08" );
-      assertEquals( artifact.getClassifier(), "sources" );
-      assertEquals( artifact.getType(), "jar" );
-    } );
-  }
-
-  @Test
-  public void parseExpandedDependencyWithMinimalComponents()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "artifacts:\n" +
-                         "  - group: org.realityforge.gir\n" +
-                         "    id: gir-core\n" );
-      final ApplicationConfig config = loadApplicationConfig();
-      assertNotNull( config );
-      final ArtifactConfig artifact = ensureSingleArtifact( config );
-      assertEquals( artifact.getGroup(), "org.realityforge.gir" );
-      assertEquals( artifact.getId(), "gir-core" );
-    } );
-  }
-
-  @Test
   public void parseDependencyWithCoords()
     throws Exception
   {
@@ -358,30 +319,6 @@ public class ApplicationConfigTest
   }
 
   @Test
-  public void parseReplacementsDefinedUsingGroupAndId()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "replacements:\n" +
-                         "  - group: com.example\n" +
-                         "    id: myapp\n" +
-                         "    target: \"@com_example//:myapp\"\n" );
-      final ApplicationConfig config = loadApplicationConfig();
-      assertNotNull( config );
-
-      final List<ReplacementConfig> replacements = config.getReplacements();
-      assertNotNull( replacements );
-
-      assertEquals( replacements.size(), 1 );
-      final ReplacementConfig replacement = replacements.get( 0 );
-      assertEquals( replacement.getTarget(), "@com_example//:myapp" );
-      assertEquals( replacement.getGroup(), "com.example" );
-      assertEquals( replacement.getId(), "myapp" );
-      assertNull( replacement.getCoord() );
-    } );
-  }
-
-  @Test
   public void parseReplacementsDefinedUsingCoord()
     throws Exception
   {
@@ -399,8 +336,6 @@ public class ApplicationConfigTest
       final ReplacementConfig replacement = replacements.get( 0 );
       assertEquals( replacement.getTarget(), "@com_example//:myapp" );
       assertEquals( replacement.getCoord(), "com.example:myapp" );
-      assertNull( replacement.getGroup() );
-      assertNull( replacement.getId() );
     } );
   }
 
@@ -422,28 +357,6 @@ public class ApplicationConfigTest
   }
 
   @Test
-  public void parseExcludesDefinedUsingGroupAndId()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "excludes:\n" +
-                         "  - group: com.example\n" +
-                         "    id: myapp\n" );
-      final ApplicationConfig config = loadApplicationConfig();
-      assertNotNull( config );
-
-      final List<ExcludeConfig> excludes = config.getExcludes();
-      assertNotNull( excludes );
-
-      assertEquals( excludes.size(), 1 );
-      final ExcludeConfig exclude = excludes.get( 0 );
-      assertEquals( exclude.getGroup(), "com.example" );
-      assertEquals( exclude.getId(), "myapp" );
-      assertNull( exclude.getCoord() );
-    } );
-  }
-
-  @Test
   public void parseExcludesDefinedUsingCoord()
     throws Exception
   {
@@ -459,8 +372,6 @@ public class ApplicationConfigTest
       assertEquals( excludes.size(), 1 );
       final ExcludeConfig exclude = excludes.get( 0 );
       assertEquals( exclude.getCoord(), "com.example:myapp" );
-      assertNull( exclude.getGroup() );
-      assertNull( exclude.getId() );
     } );
   }
 
