@@ -10,6 +10,8 @@ public final class RepositoryConfig
   private String name;
   @Nullable
   private String url;
+  @Nullable
+  private Boolean cacheLookups;
 
   @Nullable
   public String getName()
@@ -31,5 +33,16 @@ public final class RepositoryConfig
   public void setUrl( @Nonnull final String url )
   {
     this.url = Objects.requireNonNull( url );
+  }
+
+  @Nullable
+  public Boolean getCacheLookups()
+  {
+    return cacheLookups;
+  }
+
+  public void setCacheLookups( @Nonnull final Boolean cacheLookups )
+  {
+    this.cacheLookups = Objects.requireNonNull( cacheLookups );
   }
 }

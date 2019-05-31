@@ -37,6 +37,7 @@ public class ApplicationModelTest
       final RepositoryModel repository = repositories.get( 0 );
       assertEquals( repository.getName(), ApplicationConfig.MAVEN_CENTRAL_NAME );
       assertEquals( repository.getUrl(), ApplicationConfig.MAVEN_CENTRAL_URL );
+      assertTrue( repository.cacheLookups() );
       assertEquals( model.getOptions().getWorkspaceDirectory(), FileUtil.getCurrentDirectory() );
       assertEquals( model.getOptions().getExtensionFile(),
                     FileUtil.getCurrentDirectory().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );

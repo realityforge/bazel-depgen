@@ -33,7 +33,8 @@ public class ApplicationConfigTest
         "repositories:\n" +
         "  - name: central\n" +
         "    url: http://repo1.maven.org/maven2\n" +
-        "  - url: https://example.com/repo\n" );
+        "  - url: https://example.com/repo\n" +
+        "    cacheLookups: false\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
@@ -41,10 +42,14 @@ public class ApplicationConfigTest
       assertNotNull( repositories );
 
       assertEquals( repositories.size(), 2 );
-      assertEquals( repositories.get( 0 ).getName(), "central" );
-      assertEquals( repositories.get( 0 ).getUrl(), "http://repo1.maven.org/maven2" );
-      assertNull( repositories.get( 1 ).getName() );
-      assertEquals( repositories.get( 1 ).getUrl(), "https://example.com/repo" );
+      final RepositoryConfig repository1 = repositories.get( 0 );
+      assertEquals( repository1.getName(), "central" );
+      assertEquals( repository1.getUrl(), "http://repo1.maven.org/maven2" );
+      assertNull( repository1.getCacheLookups() );
+      final RepositoryConfig repository2 = repositories.get( 1 );
+      assertNull( repository2.getName() );
+      assertEquals( repository2.getUrl(), "https://example.com/repo" );
+      assertEquals( repository2.getCacheLookups(), Boolean.FALSE );
     } );
   }
 

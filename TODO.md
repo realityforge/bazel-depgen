@@ -9,8 +9,6 @@ complete as there is too much un-said.
 * Add command line parameter that regenerates depgen cache files. This is useful if repositories have come back
   online or needed to be rebuilt.
 
-* Configure repositories so that url checks against it can not be cached.
-
 * Add `init` command that initializes `dependencies.bzl` from template that includes all the options and
   documentation for each option. Note that the `exportDeps` configuration potentially limits scalability of
   builds as it results in deep dependency trees. Consider also generating initial `WORKSPACE` if a walk through

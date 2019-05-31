@@ -62,7 +62,7 @@ final class SourceDownloaderVisitor
       // artifact is a conflict and has not downloaded it
       return artifact;
     }
-    final DepgenMetadata metadata = DepgenMetadata.fromDirectory( file.getParentFile().toPath() );
+    final DepgenMetadata metadata = DepgenMetadata.fromDirectory( _model, file.getParentFile().toPath() );
     final String sourcesPresent = metadata.getProperty( SOURCES_PRESENT_PROPERTY );
     if ( "false".equals( sourcesPresent ) )
     {

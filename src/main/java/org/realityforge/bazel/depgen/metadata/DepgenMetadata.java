@@ -18,6 +18,8 @@ import javax.annotation.Nullable;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
+import org.realityforge.bazel.depgen.model.RepositoryModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.util.OrderedProperties;
 
@@ -35,18 +37,21 @@ public final class DepgenMetadata
   public static final String FILENAME = "_depgen.properties";
   static final String SENTINEL = "-";
   @Nonnull
+  private final ApplicationModel _model;
+  @Nonnull
   private final Path _file;
   @Nullable
   private Properties _properties;
 
   @Nonnull
-  public static DepgenMetadata fromDirectory( @Nonnull final Path dir )
+  public static DepgenMetadata fromDirectory( @Nonnull final ApplicationModel model, @Nonnull final Path dir )
   {
-    return new DepgenMetadata( dir.resolve( FILENAME ) );
+    return new DepgenMetadata( model, dir.resolve( FILENAME ) );
   }
 
-  private DepgenMetadata( @Nonnull final Path file )
+  private DepgenMetadata( @Nonnull final ApplicationModel model, @Nonnull final Path file )
   {
+    _model = Objects.requireNonNull( model );
     _file = Objects.requireNonNull( file );
   }
 
@@ -99,10 +104,20 @@ public final class DepgenMetadata
     final ArrayList<String> urls = new ArrayList<>();
     for ( final RemoteRepository remoteRepository : repositories )
     {
-      final String key = classifierAsKey( artifact.getClassifier() ) + "." + remoteRepository.getId() + ".url";
+      final String name = remoteRepository.getId();
+      final RepositoryModel repository = _model.findRepository( name );
+      assert null != repository;
+      final String key = classifierAsKey( artifact.getClassifier() ) + "." + name + ".url";
       final Properties properties = getCachedProperties();
       final String existing = properties.getProperty( key );
-      if ( null != existing && !SENTINEL.equals( existing ) && !existing.startsWith( remoteRepository.getUrl() ) )
+      if ( null != existing && !repository.cacheLookups() )
+      {
+        callback.onWarning( "Cache entry '" + key + "' for artifact '" + artifact + "' contains a url '" +
+                            existing + "' for a repository where cacheLookups is false. Removing cache entry." );
+        properties.remove( key );
+        saveCachedProperties();
+      }
+      else if ( null != existing && !SENTINEL.equals( existing ) && !existing.startsWith( remoteRepository.getUrl() ) )
       {
         callback.onWarning( "Cache entry '" + key + "' for artifact '" + artifact + "' contains a url '" +
                             existing + "' that does not match the repository url '" + remoteRepository.getUrl() +
@@ -112,7 +127,9 @@ public final class DepgenMetadata
       }
 
       final String url =
-        getOrCompute( key, () -> lookupArtifact( artifact, remoteRepository, authenticationContexts ) );
+        repository.cacheLookups() ?
+        getOrCompute( key, () -> lookupArtifact( artifact, remoteRepository, authenticationContexts ) ) :
+        lookupArtifact( artifact, remoteRepository, authenticationContexts );
       if ( !SENTINEL.equals( url ) )
       {
         urls.add( url );

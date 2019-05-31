@@ -75,7 +75,7 @@ final class DependencyCollector
     final File file = artifact.getFile();
     assert null != file;
 
-    final DepgenMetadata metadata = DepgenMetadata.fromDirectory( file.getParentFile().toPath() );
+    final DepgenMetadata metadata = DepgenMetadata.fromDirectory( _record.getSource(), file.getParentFile().toPath() );
 
     final String sha256 = metadata.getSha256( artifact.getClassifier(), artifact.getFile() );
     final List<String> urls =
