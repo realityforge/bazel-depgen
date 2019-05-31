@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen.model;
 
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
-import org.realityforge.bazel.depgen.config.ReplacementConfig;
 import org.realityforge.bazel.depgen.config.RepositoryConfig;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
