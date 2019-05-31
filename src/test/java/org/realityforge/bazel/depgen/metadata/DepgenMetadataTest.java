@@ -23,9 +23,10 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       // Create random file
       final Path artifact = FileUtil.createLocalTempDir().resolve( "file.dat" );
@@ -48,10 +49,11 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
       Files.write( file, new byte[ 0 ] );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       // Create random file
       final Path artifact = FileUtil.createLocalTempDir().resolve( "file.dat" );
@@ -74,10 +76,11 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
       Files.write( file, "<default>.sha256=ABCD\n".getBytes( StandardCharsets.ISO_8859_1 ) );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       final Path artifact = FileUtil.createLocalTempDir().resolve( "file.dat" );
 
@@ -101,10 +104,11 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
       Files.write( file, "<default>.sha256=ABCD\n".getBytes( StandardCharsets.ISO_8859_1 ) );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       final Path artifact = FileUtil.createLocalTempDir().resolve( "file.dat" );
 
@@ -130,9 +134,10 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       // Create random file
       final Path artifact = FileUtil.createLocalTempDir().resolve( "file.dat" );
@@ -155,9 +160,10 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       final Path dir1 = FileUtil.createLocalTempDir();
       final Path dir2 = FileUtil.createLocalTempDir();
@@ -201,13 +207,14 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
 
       Files.write( file, ( "<default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar\n" +
                            "<default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar\n" +
                            "<default>.dir3.url=-\n" ).getBytes( StandardCharsets.ISO_8859_1 ) );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       final RemoteRepository repo1 = new RemoteRepository.Builder( "dir1", "default", "http://a.com" ).build();
       final RemoteRepository repo2 = new RemoteRepository.Builder( "dir2", "default", "http://b.com" ).build();
@@ -229,13 +236,14 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
 
       Files.write( file, ( "<default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar\n" +
                            "<default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar\n" +
                            "<default>.dir3.url=-\n" ).getBytes( StandardCharsets.ISO_8859_1 ) );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       final RemoteRepository repo1 = new RemoteRepository.Builder( "dir1", "default", "http://a.com" ).build();
       final RemoteRepository repo2 = new RemoteRepository.Builder( "dir2", "default", "http://b.com" ).build();
@@ -257,7 +265,8 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
 
       final Path dir1 = FileUtil.createLocalTempDir();
 
@@ -271,7 +280,7 @@ public class DepgenMetadataTest
 
       deployTempArtifactToLocalRepository( dir1, "com.example:myapp:1.0" );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       final RemoteRepository repo1 = new RemoteRepository.Builder( "dir1", "default", uri.toString() ).build();
       final RemoteRepository repo2 = new RemoteRepository.Builder( "dir2", "default", "http://b.com" ).build();
@@ -306,11 +315,12 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
 
       assertFalse( file.toFile().exists() );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       final Path path = createTempJarFile();
       final List<String> processors = metadata.getProcessors( path.toFile() );
@@ -327,9 +337,10 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                                        "react4j.processor.ReactProcessor\n" );
@@ -348,9 +359,10 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                                        "react4j.processor.ReactProcessor\n" +
@@ -371,11 +383,12 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
 
       Files.write( file, "processors=-\n".getBytes( StandardCharsets.ISO_8859_1 ) );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       final Path path = createTempJarFile();
       final List<String> processors = metadata.getProcessors( path.toFile() );
@@ -392,13 +405,14 @@ public class DepgenMetadataTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path file = FileUtil.createLocalTempDir().resolve( "file.properties" );
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
 
       Files.write( file,
                    "processors=react4j.processor.ReactProcessor,arez.processor.ArezProcessor\n".getBytes(
                      StandardCharsets.ISO_8859_1 ) );
 
-      final DepgenMetadata metadata = new DepgenMetadata( file );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( dir );
 
       final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                                        "react4j.processor.ReactProcessor\n" +

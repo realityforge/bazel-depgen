@@ -45,7 +45,7 @@ public final class DepgenMetadata
     return new DepgenMetadata( dir.resolve( FILENAME ) );
   }
 
-  DepgenMetadata( @Nonnull final Path file )
+  private DepgenMetadata( @Nonnull final Path file )
   {
     _file = Objects.requireNonNull( file );
   }
