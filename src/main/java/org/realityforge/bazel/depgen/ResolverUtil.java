@@ -122,29 +122,25 @@ final class ResolverUtil
   }
 
   @Nonnull
-  static List<RemoteRepository> getRemoteRepositories( @Nonnull final List<RepositoryModel> servers,
+  static List<RemoteRepository> getRemoteRepositories( @Nonnull final List<RepositoryModel> repositories,
                                                        @Nonnull final Settings settings )
   {
-    final List<RemoteRepository> repositories = new ArrayList<>();
+    final List<RemoteRepository> remoteRepositories = new ArrayList<>();
 
-    for ( final RepositoryModel repository : servers )
+    for ( final RepositoryModel repository : repositories )
     {
       final String name = repository.getName();
-      final RemoteRepository.Builder builder =
-        new RemoteRepository.Builder( name, "default", repository.getUrl() );
-      final Server serverSetting = null != name ? settings.getServer( name ) : null;
-      if ( null != serverSetting )
+      final RemoteRepository.Builder builder = new RemoteRepository.Builder( name, "default", repository.getUrl() );
+      final Server server = settings.getServer( name );
+      if ( null != server )
       {
         final Authentication authentication =
-          new AuthenticationBuilder()
-            .addUsername( serverSetting.getUsername() )
-            .addPassword( serverSetting.getPassword() )
-            .build();
+          new AuthenticationBuilder().addUsername( server.getUsername() ).addPassword( server.getPassword() ).build();
         builder.setAuthentication( authentication );
       }
-      repositories.add( builder.build() );
+      remoteRepositories.add( builder.build() );
     }
-    return repositories;
+    return remoteRepositories;
   }
 
   @Nonnull
