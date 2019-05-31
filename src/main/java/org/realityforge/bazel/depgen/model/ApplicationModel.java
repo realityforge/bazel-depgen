@@ -126,6 +126,12 @@ public final class ApplicationModel
     return _repositories;
   }
 
+  @Nullable
+  public RepositoryModel findRepository( @Nonnull final String name )
+  {
+    return _repositories.stream().filter( r -> r.getName().equals( name ) ).findAny().orElse( null );
+  }
+
   @Nonnull
   public List<ArtifactModel> getArtifacts()
   {

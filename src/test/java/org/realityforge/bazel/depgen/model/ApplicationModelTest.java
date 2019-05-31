@@ -119,6 +119,23 @@ public class ApplicationModelTest
   }
 
   @Test
+  public void findRepository()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+
+      final ApplicationModel model = loadApplicationModel();
+      final List<RepositoryModel> repositories = model.getRepositories();
+      assertEquals( repositories.size(), 1 );
+
+      assertEquals( model.findRepository( ApplicationConfig.MAVEN_CENTRAL_NAME ), repositories.get( 0 ) );
+      assertNull( model.findRepository( "other" ) );
+    } );
+  }
+
+  @Test
   public void calculateConfigSha256()
   {
     // ensure sha of two separate instances equal if contents identical
