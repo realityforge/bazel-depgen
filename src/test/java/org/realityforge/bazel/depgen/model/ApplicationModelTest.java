@@ -28,8 +28,9 @@ public class ApplicationModelTest
       final Path configFile = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
       final ApplicationConfig source = ApplicationConfig.parse( configFile );
 
-      final ApplicationModel model = ApplicationModel.parse( source );
+      final ApplicationModel model = ApplicationModel.parse( source, false );
       assertEquals( model.getSource(), source );
+      assertFalse( model.shouldResetCachedMetadata() );
       assertEquals( model.getConfigSha256(), "5554C636655BB43F8BC8A1E01C985419ABAF8A4102ABEDD28CB1949FA8A7DADA" );
       assertEquals( model.getConfigLocation(), configFile );
       final List<RepositoryModel> repositories = model.getRepositories();

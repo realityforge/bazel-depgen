@@ -21,6 +21,7 @@ public final class ApplicationModel
 {
   @Nonnull
   private final ApplicationConfig _source;
+  private final boolean _resetCachedMetadata;
   @Nonnull
   private final String _configSha256;
   @Nonnull
@@ -35,7 +36,7 @@ public final class ApplicationModel
   private final List<RepositoryModel> _repositories;
 
   @Nonnull
-  public static ApplicationModel parse( @Nonnull final ApplicationConfig source )
+  public static ApplicationModel parse( @Nonnull final ApplicationConfig source, final boolean resetCachedMetadata )
   {
     final String configSha256 = calculateConfigSha256( source );
     final Path baseDirectory = source.getConfigLocation().toAbsolutePath().normalize().getParent();
@@ -65,6 +66,7 @@ public final class ApplicationModel
       repositoriesConfig.stream().map( RepositoryModel::parse ).collect( Collectors.toList() );
 
     return new ApplicationModel( source,
+                                 resetCachedMetadata,
                                  configSha256,
                                  optionsModel,
                                  artifactModels,
@@ -80,6 +82,7 @@ public final class ApplicationModel
   }
 
   private ApplicationModel( @Nonnull final ApplicationConfig source,
+                            final boolean resetCachedMetadata,
                             @Nonnull final String configSha256,
                             @Nonnull final OptionsModel options,
                             @Nonnull final List<ArtifactModel> artifacts,
@@ -88,6 +91,7 @@ public final class ApplicationModel
                             @Nonnull final List<RepositoryModel> repositories )
   {
     _source = Objects.requireNonNull( source );
+    _resetCachedMetadata = resetCachedMetadata;
     _configSha256 = Objects.requireNonNull( configSha256 );
     _options = Objects.requireNonNull( options );
     _artifacts = Objects.requireNonNull( artifacts );
@@ -100,6 +104,11 @@ public final class ApplicationModel
   public ApplicationConfig getSource()
   {
     return _source;
+  }
+
+  public boolean shouldResetCachedMetadata()
+  {
+    return _resetCachedMetadata;
   }
 
   @Nonnull

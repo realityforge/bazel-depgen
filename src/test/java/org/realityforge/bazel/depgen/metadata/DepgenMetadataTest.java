@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -97,6 +98,38 @@ public class DepgenMetadataTest
 
       assertEquals( loadPropertiesContent( file ),
                     "<default>.sha256=ABCD\n" );
+    } );
+  }
+
+  @Test
+  public void getSha256_fileExists_resetCachedMetadata()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
+      Files.write( file, "<default>.sha256=ABCD\n".getBytes( StandardCharsets.ISO_8859_1 ) );
+
+      writeDependencies( FileUtil.getCurrentDirectory(), "" );
+      final ApplicationModel model = ApplicationModel.parse( loadApplicationConfig(), true );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( model, dir );
+
+      final Path artifact = FileUtil.createLocalTempDir().resolve( "file.dat" );
+
+      Files.write( artifact, new byte[]{ 1, 2, 3, 4, 5, 6 } );
+
+      assertTrue( artifact.toFile().exists() );
+
+      assertTrue( file.toFile().exists() );
+
+      final String sha256 = metadata.getSha256( "", artifact.toFile() );
+      assertEquals( sha256, "7192385C3C0605DE55BB9476CE1D90748190ECB32A8EED7F5207B30CF6A1FE89" );
+
+      assertTrue( file.toFile().exists() );
+
+      // The cache has been updated with the correct value.
+      assertEquals( loadPropertiesContent( file ),
+                    "<default>.sha256=7192385C3C0605DE55BB9476CE1D90748190ECB32A8EED7F5207B30CF6A1FE89\n" );
     } );
   }
 
@@ -394,6 +427,50 @@ public class DepgenMetadataTest
                     repo1.getUrl().replaceAll( ":", "\\\\:" ) + "com/example/myapp/1.0/myapp-1.0.jar\n" +
                     "<default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar\n" +
                     "<default>.dir3.url=-\n" );
+    } );
+  }
+
+  @Test
+  public void getUrls_cached_resetCachedMetadata()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
+
+      final Path dir1 = FileUtil.createLocalTempDir();
+
+      final URI uri = dir1.toUri();
+
+      // dir1 has a http protocol in cache but our configuration uses file protocol so we should end up
+      // searching remote repository and updating cache.
+      Files.write( file,
+                   "<default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar\n".getBytes( StandardCharsets.ISO_8859_1 ) );
+
+      deployTempArtifactToLocalRepository( dir1, "com.example:myapp:1.0" );
+
+      writeDependencies( FileUtil.getCurrentDirectory(),
+                         "repositories:\n" +
+                         "  - name: dir1\n" +
+                         "    url: " + uri.toString() + "\n" );
+      final ApplicationModel model = ApplicationModel.parse( loadApplicationConfig(), true );
+      final DepgenMetadata metadata = DepgenMetadata.fromDirectory( model, dir );
+
+      final RemoteRepository repo1 = new RemoteRepository.Builder( "dir1", "default", uri.toString() ).build();
+      final List<String> urls =
+        metadata.getUrls( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                          Collections.singletonList( repo1 ),
+                          Collections.emptyMap(),
+                          Assert::fail );
+      assertEquals( urls.size(), 1 );
+      assertTrue( urls.get( 0 ).startsWith( repo1.getUrl() ) );
+      assertTrue( urls.get( 0 ).endsWith( "com/example/myapp/1.0/myapp-1.0.jar" ) );
+
+      assertTrue( file.toFile().exists() );
+
+      assertEquals( loadPropertiesContent( file ),
+                    "<default>.dir1.url=" +
+                    repo1.getUrl().replaceAll( ":", "\\\\:" ) + "com/example/myapp/1.0/myapp-1.0.jar\n" );
     } );
   }
 

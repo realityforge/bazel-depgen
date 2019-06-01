@@ -117,7 +117,10 @@ public final class DepgenMetadata
         properties.remove( key );
         saveCachedProperties();
       }
-      else if ( null != existing && !SENTINEL.equals( existing ) && !existing.startsWith( remoteRepository.getUrl() ) )
+      else if ( !shouldResetCachedProperties() &&
+                null != existing &&
+                !SENTINEL.equals( existing ) &&
+                !existing.startsWith( remoteRepository.getUrl() ) )
       {
         callback.onWarning( "Cache entry '" + key + "' for artifact '" + artifact + "' contains a url '" +
                             existing + "' that does not match the repository url '" + remoteRepository.getUrl() +
@@ -172,7 +175,13 @@ public final class DepgenMetadata
   @Nonnull
   private String getOrCompute( @Nonnull final String key, @Nonnull final Supplier<String> action )
   {
-    final String existingValue = getProperty( key );
+    String existingValue = getProperty( key );
+    if ( null != existingValue && shouldResetCachedProperties())
+    {
+      getCachedProperties().remove( key );
+      saveCachedProperties();
+      existingValue = null;
+    }
     if ( null != existingValue )
     {
       return existingValue;
@@ -227,5 +236,10 @@ public final class DepgenMetadata
       _properties = properties;
     }
     return _properties;
+  }
+
+  private boolean shouldResetCachedProperties()
+  {
+    return _model.shouldResetCachedMetadata();
   }
 }

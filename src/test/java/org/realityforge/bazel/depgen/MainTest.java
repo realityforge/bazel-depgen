@@ -35,7 +35,9 @@ public class MainTest
                   "\t-r, --cache-dir <argument>\n" +
                   "\t\tThe path to the directory in which to cache downloads from r\n" +
                   "\t\temote repositories. Defaults to '.repository' in the workspa\n" +
-                  "\t\tce directory." );
+                  "\t\tce directory.\n" +
+                  "\t--reset-cached-metadata\n" +
+                  "\t\tRecalculate metadata about an artifact." );
   }
 
   @Test
@@ -143,6 +145,7 @@ public class MainTest
       assertOutputContains( output, "-d, --dependencies-file <argument>\n" );
       assertOutputContains( output, "-s, --settings-file <argument>\n" );
       assertOutputContains( output, "-r, --cache-dir <argument>\n" );
+      assertOutputContains( output, "--reset-cached-metadata\n" );
     } );
   }
 

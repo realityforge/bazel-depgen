@@ -27,6 +27,12 @@ final class Options
                             CACHE_DIR_OPT,
                             "The path to the directory in which to cache downloads from remote " +
                             "repositories. Defaults to '" + DEFAULT_CACHE_DIR + "' in the workspace directory." );
+  static final int RESET_CACHED_METADATA_OPT = 1;
+  static final CLOptionDescriptor RESET_CACHED_METADATA_DESCRIPTOR =
+    new CLOptionDescriptor( "reset-cached-metadata",
+                            CLOptionDescriptor.ARGUMENT_DISALLOWED,
+                            RESET_CACHED_METADATA_OPT,
+                            "Recalculate metadata about an artifact." );
 
   private Options()
   {

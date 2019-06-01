@@ -55,7 +55,8 @@ public class Main
                               new int[]{ QUIET_OPT } ),
       Options.DEPENDENCIES_DESCRIPTOR,
       Options.SETTINGS_DESCRIPTOR,
-      Options.CACHE_DESCRIPTOR
+      Options.CACHE_DESCRIPTOR,
+      Options.RESET_CACHED_METADATA_DESCRIPTOR
     };
   private static final String GENERATE_COMMAND = "generate";
   private static final String PRINT_GRAPH_COMMAND = "print-graph";
@@ -66,6 +67,7 @@ public class Main
                                                                HASH_COMMAND ) ) );
   private static final Environment c_environment =
     new Environment( System.console(), Paths.get( "" ).toAbsolutePath(), Logger.getGlobal() );
+  private static boolean c_resetCachedMetadata = false;
 
   public static void main( final String[] args )
   {
@@ -165,7 +167,7 @@ public class Main
   @Nonnull
   private static ApplicationModel loadApplicationModel()
   {
-    return ApplicationModel.parse( loadDependenciesYaml() );
+    return ApplicationModel.parse( loadDependenciesYaml(), c_resetCachedMetadata );
   }
 
   @Nonnull
@@ -367,6 +369,11 @@ public class Main
             return false;
           }
           environment.setCacheDir( cacheDir );
+          break;
+        }
+        case Options.RESET_CACHED_METADATA_OPT:
+        {
+          c_resetCachedMetadata = true;
           break;
         }
 

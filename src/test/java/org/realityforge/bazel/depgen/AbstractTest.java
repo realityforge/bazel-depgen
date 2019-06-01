@@ -104,7 +104,7 @@ public abstract class AbstractTest
   protected final ApplicationModel loadApplicationModel()
     throws Exception
   {
-    return ApplicationModel.parse( loadApplicationConfig() );
+    return ApplicationModel.parse( loadApplicationConfig(), false );
   }
 
   @Nonnull
