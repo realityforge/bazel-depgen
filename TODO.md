@@ -4,8 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Generate an error if `PluginAndLibrary` nature is used when combined with `J2cl` language.
-
 * Update default cache directory from `.repository` to be somewhere either global (i.e. `~/.depgen/repository`)
   or workspace local such as `$(bazel info output_base)/.repository`
 
@@ -41,6 +39,13 @@ complete as there is too much un-said.
   - Configuration per language can probably be achieved by having a global default language plus a per-artifact
     list of languages. Non-default languages generate artifacts with suffixes such as `-j2cl`. Configuration for
     per-artifact level happens as object below artifact or below config (i.e. `j2cl: {suppress: 'debuggerStatement'}`)
+  - Consider merging `Nature` into `Language` in which the `Plugin` and `J2cl` are just different natures. There
+    would still be rules on how different natures are combined but that is to be expected.
+  - Different languages will have different rules regarding propagation. i.e. `J2cl` forces all dependencies to
+    be `j2cl` as well and if we reach a declared artifact as a dependency that does not have the `j2cl` nature
+    then we generate an error. Other `Natures` then we generate an error.
+
+* Generate an error if `PluginAndLibrary` nature is used when combined with `J2cl` language.
 
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
 
