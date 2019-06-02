@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 import org.apache.maven.settings.Settings;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Exclusion;
@@ -45,7 +46,7 @@ public class ResolverUtilTest
 
       final Settings settings =
         SettingsUtil.loadSettings( FileUtil.getCurrentDirectory().resolve( "settings.xml" ),
-                                   createLogger() );
+                                   Logger.getAnonymousLogger() );
 
       final List<RemoteRepository> remoteRepositories = ResolverUtil.getRemoteRepositories( repositories, settings );
 

@@ -60,12 +60,12 @@ public abstract class AbstractTest
     return ResolverUtil.createResolver( newEnvironment(),
                                         cacheDir,
                                         model,
-                                        SettingsUtil.loadSettings( settingsFile, createLogger() ) );
+                                        SettingsUtil.loadSettings( settingsFile, Logger.getAnonymousLogger() ) );
   }
 
   final Environment newEnvironment()
   {
-    return newEnvironment( createLogger() );
+    return newEnvironment( Logger.getAnonymousLogger() );
   }
 
   final Environment newEnvironment( @Nonnull final Logger logger )
@@ -308,12 +308,6 @@ public abstract class AbstractTest
     outputStream.closeEntry();
     outputStream.close();
     return jarFile;
-  }
-
-  @Nonnull
-  final Logger createLogger()
-  {
-    return Logger.getAnonymousLogger();
   }
 
   @Nonnull
