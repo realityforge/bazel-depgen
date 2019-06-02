@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen.util;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
