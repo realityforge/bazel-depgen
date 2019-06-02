@@ -51,7 +51,7 @@ public class BazelUtilTest
   }
 
   @Test
-  public void getRepositoryCache_WROKSPACE_notPresent()
+  public void getRepositoryCache_WORKSPACE_notPresent()
     throws Exception
   {
     // These tests assume that there is no WORKSPACE in parent directory from isolated directory
