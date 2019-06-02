@@ -19,7 +19,7 @@ public final class BazelUtil
   }
 
   @Nullable
-  public static File getRepositoryCache( @Nonnull final Logger logger, @Nonnull final File cwd )
+  public static File getRepositoryCache( @Nonnull final File cwd )
   {
     try
     {
@@ -29,14 +29,13 @@ public final class BazelUtil
     }
     catch ( final Exception e )
     {
-      logger.info( "WARNING: Unable to locate bazel repository cache. Using default bazel repository cache." );
-      return getDefaultRepositoryCache( logger );
+      return getDefaultRepositoryCache();
     }
   }
 
   @SuppressWarnings( "ResultOfMethodCallIgnored" )
   @Nullable
-  static File getDefaultRepositoryCache( @Nonnull final Logger logger )
+  static File getDefaultRepositoryCache()
   {
     try
     {
@@ -53,7 +52,6 @@ public final class BazelUtil
     }
     catch ( final Throwable ignored )
     {
-      logger.severe( "Error: Failed to determine default bazel repository cache." );
       return null;
     }
   }

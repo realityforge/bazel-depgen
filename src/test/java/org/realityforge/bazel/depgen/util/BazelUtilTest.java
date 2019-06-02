@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.realityforge.bazel.depgen.AbstractTest;
-import org.realityforge.bazel.depgen.TestHandler;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -27,11 +26,9 @@ public class BazelUtilTest
     // These tests assume that there is no WORKSPACE in parent directory from isolated directory
     // They also assume that bazel is present on build machine
     inIsolatedDirectory( () -> {
-      final TestHandler handler = new TestHandler();
-      final File repositoryCache = BazelUtil.getDefaultRepositoryCache( createLogger( handler ) );
+      final File repositoryCache = BazelUtil.getDefaultRepositoryCache();
       assertNotNull( repositoryCache );
       assertTrue( repositoryCache.getAbsolutePath().endsWith( "/cache/repos/v1" ) );
-      assertEquals( handler.toString(), "" );
     } );
   }
 
@@ -47,10 +44,7 @@ public class BazelUtilTest
       Files.write( cwd.resolve( "WORKSPACE" ), new byte[ 0 ] );
       Files.write( cwd.resolve( ".bazelrc" ),
                    ( "build --repository_cache " + dir ).getBytes( StandardCharsets.US_ASCII ) );
-      final TestHandler handler = new TestHandler();
-      final File repositoryCache = BazelUtil.getRepositoryCache( createLogger( handler ), cwd
-        .toFile() );
-      assertEquals( handler.toString(), "" );
+      final File repositoryCache = BazelUtil.getRepositoryCache( cwd.toFile() );
       assertNotNull( repositoryCache );
       assertEquals( repositoryCache.toPath().toAbsolutePath().normalize(), dir );
     } );
@@ -63,11 +57,7 @@ public class BazelUtilTest
     // These tests assume that there is no WORKSPACE in parent directory from isolated directory
     // They also assume that bazel is present on build machine
     inIsolatedDirectory( () -> {
-      final TestHandler handler = new TestHandler();
-      final File repositoryCache =
-        BazelUtil.getRepositoryCache( createLogger( handler ), FileUtil.getCurrentDirectory().toFile() );
-      assertEquals( handler.toString(),
-                    "WARNING: Unable to locate bazel repository cache. Using default bazel repository cache." );
+      final File repositoryCache = BazelUtil.getRepositoryCache( FileUtil.getCurrentDirectory().toFile() );
       assertNotNull( repositoryCache );
       assertTrue( repositoryCache.getAbsolutePath().endsWith( "/cache/repos/v1" ) );
     } );
