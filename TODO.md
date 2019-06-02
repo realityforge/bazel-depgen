@@ -15,6 +15,13 @@ complete as there is too much un-said.
   builds as it results in deep dependency trees. Consider also generating initial `WORKSPACE` if a walk through
   parent directories does not locate one.
 
+* Add `info` command that displays all the parameters passed into tool. This includes the
+  - dependency file
+  - settings file
+  - cache directory
+  - reset-cached-metadata flag
+  - bazel's repository cache directory
+
 * Add `add` command that adds a dependency.
 
 * Add `remove` command that removes a dependency.
