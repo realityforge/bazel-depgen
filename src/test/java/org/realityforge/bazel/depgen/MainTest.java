@@ -1,6 +1,8 @@
 package org.realityforge.bazel.depgen;
 
 import gir.io.FileUtil;
+import java.nio.file.Path;
+import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -34,8 +36,8 @@ public class MainTest
                   "\t\ttory credentials. Defaults to '~/.m2/settings.xml'.\n" +
                   "\t-r, --cache-directory <argument>\n" +
                   "\t\tThe path to the directory in which to cache downloads from r\n" +
-                  "\t\temote repositories. Defaults to '.repository' in the workspa\n" +
-                  "\t\tce directory.\n" +
+                  "\t\temote repositories. Defaults to \"$(bazel info output_base)/.\n" +
+                  "\t\tdepgen-cache\".\n" +
                   "\t--reset-cached-metadata\n" +
                   "\t\tRecalculate metadata about an artifact." );
   }
@@ -55,20 +57,6 @@ public class MainTest
 
       final String output = processOptions( false, "generate" );
       assertOutputContains( output, "Error: Default dependencies file does not exist: " );
-    } );
-  }
-
-  @Test
-  public void processOptions_defaultCacheDirectoryNotDirectory()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      writeWorkspace();
-      writeDependencies( "" );
-      FileUtil.write( ".repository", "NotADir" );
-
-      final String output = processOptions( false, "generate" );
-      assertOutputContains( output, "Error: Default cache directory exists but is not a directory: " );
     } );
   }
 
@@ -209,6 +197,50 @@ public class MainTest
       assertOutputContains( output, "\n  Dependencies file: " + dependenciesFile );
       assertOutputContains( output, "\n  Settings file: " + settingsFile );
       assertOutputDoesNotContain( output, "\n  Cache directory: " );
+    } );
+  }
+
+  @Test
+  public void getCacheDirectory_default()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final Path cacheDirectory = Main.getCacheDirectory( newEnvironment(), loadApplicationModel() );
+      assertNotNull( cacheDirectory );
+    } );
+  }
+
+  @Test
+  public void getCacheDirectory_explicitlySpecified()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final Environment environment = newEnvironment();
+      final Path cacheDir = FileUtil.createLocalTempDir();
+      environment.setCacheDir( cacheDir );
+      final Path cacheDirectory = Main.getCacheDirectory( environment, loadApplicationModel() );
+      assertEquals( cacheDirectory, cacheDir );
+    } );
+  }
+
+  @Test
+  public void getCacheDirectory_outsideWorkspace()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "" );
+      final TerminalStateException exception =
+        expectThrows( TerminalStateException.class,
+                      () -> Main.getCacheDirectory( newEnvironment(), loadApplicationModel() ) );
+      assertEquals( exception.getMessage(),
+                    "Error: Cache directory not specified and unable to derive default directory (Is the bazel command on the path?). Explicitly pass the cache directory as an option." );
+      assertEquals( exception.getExitCode(), ExitCodes.ERROR_INVALID_DEFAULT_CACHE_DIR_CODE );
     } );
   }
 

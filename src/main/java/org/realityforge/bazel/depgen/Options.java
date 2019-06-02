@@ -5,7 +5,6 @@ import org.realityforge.getopt4j.CLOptionDescriptor;
 final class Options
 {
   static final String DEFAULT_DEPENDENCIES_FILE = "dependencies.yml";
-  static final String DEFAULT_CACHE_DIR = ".repository";
   static final int DEPENDENCIES_FILE_OPT = 'd';
   static final CLOptionDescriptor DEPENDENCIES_DESCRIPTOR =
     new CLOptionDescriptor( "dependencies-file",
@@ -26,7 +25,7 @@ final class Options
                             CLOptionDescriptor.ARGUMENT_REQUIRED,
                             CACHE_DIR_OPT,
                             "The path to the directory in which to cache downloads from remote " +
-                            "repositories. Defaults to '" + DEFAULT_CACHE_DIR + "' in the workspace directory." );
+                            "repositories. Defaults to \"$(bazel info output_base)/.depgen-cache\"." );
   static final int RESET_CACHED_METADATA_OPT = 1;
   static final CLOptionDescriptor RESET_CACHED_METADATA_DESCRIPTOR =
     new CLOptionDescriptor( "reset-cached-metadata",

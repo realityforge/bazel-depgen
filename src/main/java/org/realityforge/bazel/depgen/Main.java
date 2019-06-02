@@ -22,6 +22,7 @@ import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.InvalidModelException;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
+import org.realityforge.bazel.depgen.util.BazelUtil;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 import org.realityforge.bazel.depgen.util.YamlUtil;
 import org.realityforge.getopt4j.CLArgsParser;
@@ -182,11 +183,35 @@ public class Main
     throws DependencyResolutionException
   {
     final Resolver resolver =
-      ResolverUtil.createResolver( c_environment, c_environment.getCacheDir(), model, loadSettings() );
+      ResolverUtil.createResolver( c_environment, getCacheDirectory( c_environment, model ), model, loadSettings() );
     return ApplicationRecord.build( model,
                                     resolveModel( resolver, model ),
                                     resolver.getAuthenticationContexts(),
                                     m -> c_environment.logger().warning( m ) );
+  }
+
+  @Nonnull
+  static Path getCacheDirectory( @Nonnull final Environment environment, @Nonnull final ApplicationModel model )
+  {
+    if ( environment.hasCacheDir() )
+    {
+      return environment.getCacheDir();
+    }
+    else
+    {
+      final File repositoryCache = BazelUtil.getOutputBase( model.getOptions().getWorkspaceDirectory().toFile() );
+      if ( null == repositoryCache )
+      {
+        throw new TerminalStateException( "Error: Cache directory not specified and unable to derive default " +
+                                          "directory (Is the bazel command on the path?). Explicitly pass the " +
+                                          "cache directory as an option.",
+                                          ExitCodes.ERROR_INVALID_DEFAULT_CACHE_DIR_CODE );
+      }
+      else
+      {
+        return repositoryCache.toPath().resolve( ".depgen-cache" );
+      }
+    }
   }
 
   @Nonnull
@@ -399,17 +424,6 @@ public class Main
     {
       logger.log( Level.SEVERE, "Error: No command specified. Please specify a command." );
       return false;
-    }
-
-    if ( !environment.hasCacheDir() )
-    {
-      final File dir = environment.currentDirectory().resolve( Options.DEFAULT_CACHE_DIR ).toFile();
-      if ( dir.exists() && !dir.isDirectory() )
-      {
-        logger.log( Level.SEVERE, "Error: Default cache directory exists but is not a directory: " + dir );
-        return false;
-      }
-      environment.setCacheDir( dir.toPath().toAbsolutePath().normalize() );
     }
 
     if ( !environment.hasDependenciesFile() )

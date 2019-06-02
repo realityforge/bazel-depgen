@@ -4,9 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Update default cache directory from `.repository` to be somewhere either global (i.e. `~/.depgen/repository`)
-  or workspace local such as `$(bazel info output_base)/.repository`
-
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
   directory to some central place (i.e. `~/.depgen/repository`)
 
