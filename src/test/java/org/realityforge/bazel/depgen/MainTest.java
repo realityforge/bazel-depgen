@@ -32,7 +32,7 @@ public class MainTest
                   "\t-s, --settings-file <argument>\n" +
                   "\t\tThe path to the settings.xml used by Maven to extract reposi\n" +
                   "\t\ttory credentials. Defaults to '~/.m2/settings.xml'.\n" +
-                  "\t-r, --cache-dir <argument>\n" +
+                  "\t-r, --cache-directory <argument>\n" +
                   "\t\tThe path to the directory in which to cache downloads from r\n" +
                   "\t\temote repositories. Defaults to '.repository' in the workspa\n" +
                   "\t\tce directory.\n" +
@@ -106,7 +106,7 @@ public class MainTest
       writeDependencies( "" );
       FileUtil.write( "StoreMeHere", "NotADir" );
 
-      final String output = processOptions( false, "--cache-dir", "StoreMeHere", "generate" );
+      final String output = processOptions( false, "--cache-directory", "StoreMeHere", "generate" );
       assertOutputContains( output,
                             "Error: Specified cache directory exists but is not a directory. Specified value: StoreMeHere" );
     } );
@@ -144,7 +144,7 @@ public class MainTest
       assertOutputContains( output, "-v, --verbose\n" );
       assertOutputContains( output, "-d, --dependencies-file <argument>\n" );
       assertOutputContains( output, "-s, --settings-file <argument>\n" );
-      assertOutputContains( output, "-r, --cache-dir <argument>\n" );
+      assertOutputContains( output, "-r, --cache-directory <argument>\n" );
       assertOutputContains( output, "--reset-cached-metadata\n" );
     } );
   }

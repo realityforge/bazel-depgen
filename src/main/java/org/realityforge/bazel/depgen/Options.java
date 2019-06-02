@@ -22,7 +22,7 @@ final class Options
                             "Defaults to '~/.m2/settings.xml'." );
   static final int CACHE_DIR_OPT = 'r';
   static final CLOptionDescriptor CACHE_DESCRIPTOR =
-    new CLOptionDescriptor( "cache-dir",
+    new CLOptionDescriptor( "cache-directory",
                             CLOptionDescriptor.ARGUMENT_REQUIRED,
                             CACHE_DIR_OPT,
                             "The path to the directory in which to cache downloads from remote " +
