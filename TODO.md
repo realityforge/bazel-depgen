@@ -7,6 +7,9 @@ complete as there is too much un-said.
 * Update default cache directory from `.repository` to be somewhere either global (i.e. `~/.depgen/repository`)
   or workspace local such as `$(bazel info output_base)/.repository`
 
+* Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
+  directory to some central place (i.e. `~/.depgen/repository`)
+
 * When the artifact has been downloaded then also put it in bazel content addressable cache. i.e. Copy the file
   to `$(bazel info repository_cache)/content_addressable/sha256/$(SHA256)/file`
 
