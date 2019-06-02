@@ -5,7 +5,7 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.stream.Collectors;
 
-class TestHandler
+public final class TestHandler
   extends Handler
 {
   private ArrayList<LogRecord> _records = new ArrayList<>();

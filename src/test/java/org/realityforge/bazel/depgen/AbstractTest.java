@@ -317,7 +317,7 @@ public abstract class AbstractTest
   }
 
   @Nonnull
-  final Logger createLogger( @Nonnull final TestHandler handler )
+  protected final Logger createLogger( @Nonnull final TestHandler handler )
   {
     final Logger logger = Logger.getAnonymousLogger();
     logger.setUseParentHandlers( false );
