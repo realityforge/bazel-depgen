@@ -13,6 +13,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.Collections;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
@@ -315,6 +316,7 @@ public abstract class AbstractTest
     final Logger logger = Logger.getAnonymousLogger();
     logger.setUseParentHandlers( false );
     logger.addHandler( handler );
+    logger.setLevel( Level.ALL );
     return logger;
   }
 

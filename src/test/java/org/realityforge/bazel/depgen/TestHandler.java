@@ -13,7 +13,10 @@ final class TestHandler
   @Override
   public void publish( final LogRecord record )
   {
-    _records.add( record );
+    if ( isLoggable( record ) )
+    {
+      _records.add( record );
+    }
   }
 
   ArrayList<LogRecord> getRecords()

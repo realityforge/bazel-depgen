@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
@@ -27,7 +29,7 @@ public class ResolverTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final TestHandler handler = new TestHandler();
+      final TestHandler handler = newHandler();
 
       final Path dir = FileUtil.createLocalTempDir();
 
@@ -68,7 +70,7 @@ public class ResolverTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final TestHandler handler = new TestHandler();
+      final TestHandler handler = newHandler();
 
       final Path dir = FileUtil.createLocalTempDir();
       final Path artifactDir = dir.resolve( "com/example/myapp/1.0" );
@@ -112,7 +114,7 @@ public class ResolverTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final TestHandler handler = new TestHandler();
+      final TestHandler handler = newHandler();
 
       final Path dir = FileUtil.createLocalTempDir();
       final Path artifactDir = dir.resolve( "com/example/myapp/1.0" );
@@ -163,7 +165,7 @@ public class ResolverTest
       Files.write( artifactDir.resolve( "myapp-1.0.jar" ), new byte[ 0 ] );
       Files.write( artifactDir.resolve( "myapp-1.0.pom" ), "".getBytes() );
 
-      final TestHandler handler = new TestHandler();
+      final TestHandler handler = newHandler();
 
       final Resolver resolver =
         ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
@@ -210,7 +212,7 @@ public class ResolverTest
       Files.write( artifactFile, new byte[ 0 ] );
       Files.write( artifactDir.resolve( "myapp-1.0.pom" ), "".getBytes() );
 
-      final TestHandler handler = new TestHandler();
+      final TestHandler handler = newHandler();
 
       final Resolver resolver =
         ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
@@ -265,7 +267,7 @@ public class ResolverTest
       assertFalse( dir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
       assertFalse( dir.resolve( "com/example/myapp/1.0/myapp-1.0.jar" ).toFile().exists() );
 
-      final TestHandler handler = new TestHandler();
+      final TestHandler handler = newHandler();
 
       final RemoteRepository remoteRepository =
         new RemoteRepository.Builder( "local", "default", remoteDir.toUri().toString() ).build();
@@ -315,7 +317,7 @@ public class ResolverTest
       assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
       assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.jar" ).toFile().exists() );
 
-      final TestHandler handler = new TestHandler();
+      final TestHandler handler = newHandler();
 
       final Resolver resolver =
         ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
@@ -356,7 +358,7 @@ public class ResolverTest
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.5" );
 
-      final TestHandler handler = new TestHandler();
+      final TestHandler handler = newHandler();
 
       final Resolver resolver =
         ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
@@ -412,7 +414,7 @@ public class ResolverTest
                                            // System collected but should be ignored at later stage
                                            "com.example:kernel:jar::4.0:system" );
 
-      final TestHandler handler = new TestHandler();
+      final TestHandler handler = newHandler();
 
       final Resolver resolver =
         ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
@@ -485,5 +487,13 @@ public class ResolverTest
       assertTrue( result.getCollectExceptions().isEmpty() );
       assertNotNull( result.getRoot() );
     } );
+  }
+
+  @Nonnull
+  private TestHandler newHandler()
+  {
+    final TestHandler handler = new TestHandler();
+    handler.setLevel( Level.INFO );
+    return handler;
   }
 }
