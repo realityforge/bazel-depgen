@@ -212,6 +212,7 @@ public class MainTest
     } );
   }
 
+  @SuppressWarnings( "SameParameterValue" )
   @Nonnull
   private String processOptions( final boolean expectedResult, @Nonnull final String... args )
   {
