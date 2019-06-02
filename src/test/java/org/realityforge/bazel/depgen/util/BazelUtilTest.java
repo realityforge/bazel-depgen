@@ -62,4 +62,26 @@ public class BazelUtilTest
       assertTrue( repositoryCache.getAbsolutePath().endsWith( "/cache/repos/v1" ) );
     } );
   }
+
+  @Test
+  public void getOutputBase()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path cwd = FileUtil.getCurrentDirectory();
+      Files.write( cwd.resolve( "WORKSPACE" ), new byte[ 0 ] );
+      final File repositoryCache = BazelUtil.getOutputBase( cwd.toFile() );
+      assertNotNull( repositoryCache );
+    } );
+  }
+
+  @Test
+  public void getOutputBase_WORKSPACE_notPresent()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final File repositoryCache = BazelUtil.getOutputBase( FileUtil.getCurrentDirectory().toFile() );
+      assertNull( repositoryCache );
+    } );
+  }
 }

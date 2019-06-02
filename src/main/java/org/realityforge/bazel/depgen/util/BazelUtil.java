@@ -18,6 +18,21 @@ public final class BazelUtil
   }
 
   @Nullable
+  public static File getOutputBase( @Nonnull final File cwd )
+  {
+    try
+    {
+      final String repositoryCache =
+        Exec.capture( p -> p.command( "bazel", "info", "output_base" ).directory( cwd ), 0 );
+      return new File( repositoryCache.trim() );
+    }
+    catch ( final Exception e )
+    {
+      return null;
+    }
+  }
+
+  @Nullable
   public static File getRepositoryCache( @Nonnull final File cwd )
   {
     try
