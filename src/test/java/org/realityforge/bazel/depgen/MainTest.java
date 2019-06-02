@@ -163,18 +163,52 @@ public class MainTest
   }
 
   @Test
-  public void processOptions_outputInVerbose()
+  public void printBanner_cacheExplicitlySpecified()
     throws Exception
   {
     inIsolatedDirectory( () -> {
       writeWorkspace();
       writeDependencies( "" );
 
-      final String output = processOptions( true, "--verbose", "generate" );
+      final TestHandler handler = new TestHandler();
+      final Logger logger = createLogger( handler );
+      final Environment environment = newEnvironment( logger );
+      final Path dependenciesFile = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      environment.setDependenciesFile( dependenciesFile );
+      final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
+      environment.setSettingsFile( settingsFile );
+      final Path cacheDir = FileUtil.getCurrentDirectory().resolve( ".depgen-cache" );
+      environment.setCacheDir( cacheDir );
+      Main.printBanner( environment );
+      final String output = handler.toString();
       assertOutputContains( output, "Bazel DepGen Starting...\n" );
-      assertOutputContains( output, "\n  Dependencies file: " );
-      assertOutputContains( output, "\n  Settings file: " );
-      assertOutputContains( output, "\n  Local Cache directory: " );
+      assertOutputContains( output, "\n  Dependencies file: " + dependenciesFile );
+      assertOutputContains( output, "\n  Settings file: " + settingsFile );
+      assertOutputContains( output, "\n  Cache directory: " + cacheDir );
+    } );
+  }
+
+  @Test
+  public void printBanner()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final TestHandler handler = new TestHandler();
+      final Logger logger = createLogger( handler );
+      final Environment environment = newEnvironment( logger );
+      final Path dependenciesFile = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      environment.setDependenciesFile( dependenciesFile );
+      final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
+      environment.setSettingsFile( settingsFile );
+      Main.printBanner( environment );
+      final String output = handler.toString();
+      assertOutputContains( output, "Bazel DepGen Starting...\n" );
+      assertOutputContains( output, "\n  Dependencies file: " + dependenciesFile );
+      assertOutputContains( output, "\n  Settings file: " + settingsFile );
+      assertOutputDoesNotContain( output, "\n  Cache directory: " );
     } );
   }
 

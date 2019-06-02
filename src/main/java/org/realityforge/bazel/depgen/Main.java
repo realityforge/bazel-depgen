@@ -432,15 +432,24 @@ public class Main
       environment.setSettingsFile( settingsFile );
     }
 
+    printBanner( environment );
+
+    return true;
+  }
+
+  static void printBanner( @Nonnull final Environment environment )
+  {
+    final Logger logger = environment.logger();
     if ( logger.isLoggable( Level.FINE ) )
     {
       logger.log( Level.FINE, "Bazel DepGen Starting..." );
       logger.log( Level.FINE, "  Dependencies file: " + environment.getDependenciesFile() );
       logger.log( Level.FINE, "  Settings file: " + environment.getSettingsFile() );
-      logger.log( Level.FINE, "  Local Cache directory: " + environment.getCacheDir() );
+      if ( environment.hasCacheDir() )
+      {
+        logger.log( Level.FINE, "  Cache directory: " + environment.getCacheDir() );
+      }
     }
-
-    return true;
   }
 
   /**
