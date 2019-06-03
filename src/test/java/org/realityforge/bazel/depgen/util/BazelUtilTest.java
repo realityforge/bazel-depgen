@@ -26,9 +26,9 @@ public class BazelUtilTest
     // These tests assume that there is no WORKSPACE in parent directory from isolated directory
     // They also assume that bazel is present on build machine
     inIsolatedDirectory( () -> {
-      final File repositoryCache = BazelUtil.getDefaultRepositoryCache();
+      final Path repositoryCache = BazelUtil.getDefaultRepositoryCache();
       assertNotNull( repositoryCache );
-      assertTrue( repositoryCache.getAbsolutePath().endsWith( "/cache/repos/v1" ) );
+      assertTrue( repositoryCache.toAbsolutePath().toString().endsWith( "/cache/repos/v1" ) );
     } );
   }
 
@@ -44,9 +44,9 @@ public class BazelUtilTest
       Files.write( cwd.resolve( "WORKSPACE" ), new byte[ 0 ] );
       Files.write( cwd.resolve( ".bazelrc" ),
                    ( "build --repository_cache " + dir ).getBytes( StandardCharsets.US_ASCII ) );
-      final File repositoryCache = BazelUtil.getRepositoryCache( cwd.toFile() );
+      final Path repositoryCache = BazelUtil.getRepositoryCache( cwd.toFile() );
       assertNotNull( repositoryCache );
-      assertEquals( repositoryCache.toPath().toAbsolutePath().normalize(), dir );
+      assertEquals( repositoryCache.toAbsolutePath().normalize(), dir );
     } );
   }
 
@@ -57,9 +57,9 @@ public class BazelUtilTest
     // These tests assume that there is no WORKSPACE in parent directory from isolated directory
     // They also assume that bazel is present on build machine
     inIsolatedDirectory( () -> {
-      final File repositoryCache = BazelUtil.getRepositoryCache( FileUtil.getCurrentDirectory().toFile() );
+      final Path repositoryCache = BazelUtil.getRepositoryCache( FileUtil.getCurrentDirectory().toFile() );
       assertNotNull( repositoryCache );
-      assertTrue( repositoryCache.getAbsolutePath().endsWith( "/cache/repos/v1" ) );
+      assertTrue( repositoryCache.toAbsolutePath().toString().endsWith( "/cache/repos/v1" ) );
     } );
   }
 

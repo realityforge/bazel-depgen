@@ -2,6 +2,8 @@ package org.realityforge.bazel.depgen.util;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -33,13 +35,13 @@ public final class BazelUtil
   }
 
   @Nullable
-  public static File getRepositoryCache( @Nonnull final File cwd )
+  public static Path getRepositoryCache( @Nonnull final File cwd )
   {
     try
     {
       final String repositoryCache =
         Exec.capture( p -> p.command( "bazel", "info", "repository_cache" ).directory( cwd ), 0 );
-      return new File( repositoryCache.trim() );
+      return Paths.get( repositoryCache.trim() );
     }
     catch ( final Exception e )
     {
@@ -49,7 +51,7 @@ public final class BazelUtil
 
   @SuppressWarnings( "ResultOfMethodCallIgnored" )
   @Nullable
-  static File getDefaultRepositoryCache()
+  static Path getDefaultRepositoryCache()
   {
     try
     {
@@ -62,7 +64,7 @@ public final class BazelUtil
         Exec.capture( p -> p.command( "bazel", "info", "repository_cache" ).directory( dir ), 0 );
       file.delete();
       dir.delete();
-      return new File( repositoryCache.trim() );
+      return Paths.get( repositoryCache.trim() );
     }
     catch ( final Throwable ignored )
     {
