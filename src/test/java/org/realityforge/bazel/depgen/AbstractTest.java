@@ -121,7 +121,7 @@ public abstract class AbstractTest
     Gir.go( () -> FileUtil.inTempDir( task ) );
   }
 
-  private final void writeBazelrc()
+  private void writeBazelrc()
     throws IOException
   {
     writeBazelrc( FileUtil.createLocalTempDir() );
