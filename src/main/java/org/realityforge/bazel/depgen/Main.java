@@ -215,8 +215,7 @@ public class Main
   }
 
   @Nonnull
-  private static DependencyNode resolveModel( @Nonnull final Resolver resolver,
-                                              @Nonnull final ApplicationModel model )
+  private static DependencyNode resolveModel( @Nonnull final Resolver resolver, @Nonnull final ApplicationModel model )
     throws DependencyResolutionException
   {
     final Logger logger = c_environment.logger();
