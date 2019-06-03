@@ -32,10 +32,24 @@ public final class ArtifactUtil
            "/" +
            version +
            "/" +
-           artifactId +
-           "-" +
-           version +
-           ( classifier.isEmpty() ? "" : "-" + classifier ) +
-           "." + extension;
+           artifactToLocalFilename( artifactId, version, classifier, extension );
+  }
+
+  @Nonnull
+  public static String artifactToLocalFilename( @Nonnull final Artifact artifact )
+  {
+    return artifactToLocalFilename( artifact.getArtifactId(),
+                                    artifact.getVersion(),
+                                    artifact.getClassifier(),
+                                    artifact.getExtension() );
+  }
+
+  @Nonnull
+  public static String artifactToLocalFilename( @Nonnull final String artifactId,
+                                                @Nonnull final String version,
+                                                @Nonnull final String classifier,
+                                                @Nonnull final String extension )
+  {
+    return artifactId + "-" + version + ( classifier.isEmpty() ? "" : "-" + classifier ) + "." + extension;
   }
 }

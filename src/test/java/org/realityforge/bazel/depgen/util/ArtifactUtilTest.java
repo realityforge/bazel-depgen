@@ -16,4 +16,13 @@ public class ArtifactUtilTest
     assertEquals( ArtifactUtil.artifactToPath( new DefaultArtifact( "com.example:mylib:jar:javadocs:0.98" ) ),
                   "com/example/mylib/0.98/mylib-0.98-javadocs.jar" );
   }
+
+  @Test
+  public void artifactToLocalFilename()
+  {
+    assertEquals( ArtifactUtil.artifactToLocalFilename( new DefaultArtifact( "com.example:mylib:jar:0.98" ) ),
+                  "mylib-0.98.jar" );
+    assertEquals( ArtifactUtil.artifactToLocalFilename( new DefaultArtifact( "com.example:mylib:jar:javadocs:0.98" ) ),
+                  "mylib-0.98-javadocs.jar" );
+  }
 }
