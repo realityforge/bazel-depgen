@@ -41,7 +41,7 @@ public class BazelUtilTest
     inIsolatedDirectory( () -> {
       final Path cwd = FileUtil.getCurrentDirectory();
       final Path dir = FileUtil.createLocalTempDir();
-      Files.write( cwd.resolve( "WORKSPACE" ), new byte[ 0 ] );
+      writeWorkspace();
       Files.write( cwd.resolve( ".bazelrc" ),
                    ( "build --repository_cache " + dir ).getBytes( StandardCharsets.US_ASCII ) );
       final Path repositoryCache = BazelUtil.getRepositoryCache( cwd.toFile() );

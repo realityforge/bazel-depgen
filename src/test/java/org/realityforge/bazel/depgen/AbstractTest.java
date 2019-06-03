@@ -121,7 +121,7 @@ public abstract class AbstractTest
     Gir.go( () -> FileUtil.inTempDir( task ) );
   }
 
-  final void writeWorkspace()
+  protected final void writeWorkspace()
     throws IOException
   {
     FileUtil.write( "WORKSPACE", "" );
