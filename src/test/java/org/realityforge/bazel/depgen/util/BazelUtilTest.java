@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen.util;
 
 import gir.io.FileUtil;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.realityforge.bazel.depgen.AbstractTest;
@@ -41,9 +40,8 @@ public class BazelUtilTest
     inIsolatedDirectory( () -> {
       final Path cwd = FileUtil.getCurrentDirectory();
       final Path dir = FileUtil.createLocalTempDir();
-      writeWorkspace();
-      Files.write( cwd.resolve( ".bazelrc" ),
-                   ( "build --repository_cache " + dir ).getBytes( StandardCharsets.US_ASCII ) );
+      FileUtil.write( "WORKSPACE", "" );
+      writeBazelrc( dir );
       final Path repositoryCache = BazelUtil.getRepositoryCache( cwd.toFile() );
       assertNotNull( repositoryCache );
       assertEquals( repositoryCache.toAbsolutePath().normalize(), dir );

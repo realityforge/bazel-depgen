@@ -121,9 +121,22 @@ public abstract class AbstractTest
     Gir.go( () -> FileUtil.inTempDir( task ) );
   }
 
-  protected final void writeWorkspace()
+  private final void writeBazelrc()
     throws IOException
   {
+    writeBazelrc( FileUtil.createLocalTempDir() );
+  }
+
+  protected final void writeBazelrc( @Nonnull final Path repositoryCache )
+    throws IOException
+  {
+    FileUtil.write( ".bazelrc", "build --repository_cache " + repositoryCache + "\n" );
+  }
+
+  final void writeWorkspace()
+    throws IOException
+  {
+    writeBazelrc();
     FileUtil.write( "WORKSPACE", "" );
   }
 
