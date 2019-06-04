@@ -7,9 +7,6 @@ complete as there is too much un-said.
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
   directory to some central place (i.e. `~/.depgen/repository`)
 
-* When the artifact has been downloaded then also put it in bazel content addressable cache. i.e. Copy the file
-  to `$(bazel info repository_cache)/content_addressable/sha256/$(SHA256)/file`
-
 * Add `init` command that initializes `dependencies.bzl` from template that includes all the options and
   documentation for each option. Note that the `exportDeps` configuration potentially limits scalability of
   builds as it results in deep dependency trees. Consider also generating initial `WORKSPACE` if a walk through

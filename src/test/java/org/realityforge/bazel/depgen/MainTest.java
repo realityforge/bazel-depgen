@@ -4,8 +4,12 @@ import gir.io.FileUtil;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import org.realityforge.bazel.depgen.record.ApplicationRecord;
+import org.realityforge.bazel.depgen.record.ArtifactRecord;
+import org.realityforge.guiceyloops.shared.ValueUtil;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -341,6 +345,137 @@ public class MainTest
       assertEquals( handler.toString(), "Failed to cache artifact 'myartifact' in repository cache." );
 
       assertFalse( Files.exists( targetFile ) );
+    } );
+  }
+
+  @Test
+  public void cacheArtifactsInRepositoryCache()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path repositoryCacheDir = FileUtil.createLocalTempDir();
+      writeBazelrc( repositoryCacheDir );
+      FileUtil.write( "WORKSPACE", "" );
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      final Path jarFile1 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
+      final Path jarFile2 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0", jarFile1 );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile2 );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final ArtifactRecord artifactRecord = record.getArtifacts().get( 0 );
+      final String sha256 = artifactRecord.getSha256();
+      assertNotNull( sha256 );
+      final String sourceSha256 = artifactRecord.getSourceSha256();
+      assertNotNull( sourceSha256 );
+
+      final Path cacheBase = repositoryCacheDir.resolve( "content_addressable" ).resolve( "sha256" );
+      final Path targetFile = cacheBase.resolve( sha256 ).resolve( "file" );
+      final Path sourceTargetFile = cacheBase.resolve( sourceSha256 ).resolve( "file" );
+
+      final TestHandler handler = new TestHandler();
+
+      assertFalse( Files.exists( targetFile ) );
+      assertFalse( Files.exists( sourceTargetFile ) );
+
+      final Environment environment = newEnvironment( createLogger( handler ) );
+      Main.cacheArtifactsInRepositoryCache( environment, record );
+      assertEquals( handler.toString(),
+                    "Installed artifact 'com.example:myapp:jar:1.0' into repository cache.\n" +
+                    "Installed artifact 'com.example:myapp:jar:sources:1.0' into repository cache." );
+
+      assertTrue( Files.exists( targetFile ) );
+      assertTrue( Files.exists( sourceTargetFile ) );
+    } );
+  }
+
+  @Test
+  public void cacheArtifactsInRepositoryCache_minusSourcesClassifier()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path repositoryCacheDir = FileUtil.createLocalTempDir();
+      writeBazelrc( repositoryCacheDir );
+      FileUtil.write( "WORKSPACE", "" );
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      final Path jarFile2 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile2 );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final ArtifactRecord artifactRecord = record.getArtifacts().get( 0 );
+      final String sha256 = artifactRecord.getSha256();
+      assertNotNull( sha256 );
+      assertNull( artifactRecord.getSourceSha256() );
+
+      final Path cacheBase = repositoryCacheDir.resolve( "content_addressable" ).resolve( "sha256" );
+      final Path targetFile = cacheBase.resolve( sha256 ).resolve( "file" );
+
+      final TestHandler handler = new TestHandler();
+
+      assertFalse( Files.exists( targetFile ) );
+
+      final Environment environment = newEnvironment( createLogger( handler ) );
+      Main.cacheArtifactsInRepositoryCache( environment, record );
+      assertEquals( handler.toString(),
+                    "Installed artifact 'com.example:myapp:jar:1.0' into repository cache." );
+
+      assertTrue( Files.exists( targetFile ) );
+    } );
+  }
+
+  @Test
+  public void cacheArtifactsInRepositoryCache_multipleArtifacts()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path repositoryCacheDir = FileUtil.createLocalTempDir();
+      writeBazelrc( repositoryCacheDir );
+      FileUtil.write( "WORKSPACE", "" );
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      final Path jarFile1 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
+      final Path jarFile2 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", jarFile1 );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile2, "com.example:mylib:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      final String file1Sha256 = artifacts.get( 0 ).getSha256();
+      final String file2Sha256 = artifacts.get( 1 ).getSha256();
+      assertNotNull( file1Sha256 );
+      assertNotNull( file2Sha256 );
+
+      final Path cacheBase = repositoryCacheDir.resolve( "content_addressable" ).resolve( "sha256" );
+      final Path targetFile1 = cacheBase.resolve( file1Sha256 ).resolve( "file" );
+      final Path targetFile2 = cacheBase.resolve( file2Sha256 ).resolve( "file" );
+
+      final TestHandler handler = new TestHandler();
+
+      assertFalse( Files.exists( targetFile1 ) );
+      assertFalse( Files.exists( targetFile2 ) );
+
+      final Environment environment = newEnvironment( createLogger( handler ) );
+      Main.cacheArtifactsInRepositoryCache( environment, record );
+      assertEquals( handler.toString(),
+                    "Installed artifact 'com.example:myapp:jar:1.0' into repository cache.\n" +
+                    "Installed artifact 'com.example:mylib:jar:1.0' into repository cache." );
+
+      assertTrue( Files.exists( targetFile1 ) );
+      assertTrue( Files.exists( targetFile2 ) );
     } );
   }
 

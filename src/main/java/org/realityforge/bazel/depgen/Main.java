@@ -16,14 +16,18 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingException;
+import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyCycle;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
+import org.eclipse.aether.util.artifact.SubArtifact;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.InvalidModelException;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
+import org.realityforge.bazel.depgen.record.ArtifactRecord;
+import org.realityforge.bazel.depgen.util.ArtifactUtil;
 import org.realityforge.bazel.depgen.util.BazelUtil;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 import org.realityforge.bazel.depgen.util.YamlUtil;
@@ -186,10 +190,49 @@ public class Main
   {
     final Resolver resolver =
       ResolverUtil.createResolver( c_environment, getCacheDirectory( c_environment, model ), model, loadSettings() );
-    return ApplicationRecord.build( model,
-                                    resolveModel( resolver, model ),
-                                    resolver.getAuthenticationContexts(),
-                                    m -> c_environment.logger().warning( m ) );
+    final ApplicationRecord record =
+      ApplicationRecord.build( model,
+                               resolveModel( resolver, model ),
+                               resolver.getAuthenticationContexts(),
+                               m -> c_environment.logger().warning( m ) );
+    cacheArtifactsInRepositoryCache( c_environment, record );
+    return record;
+  }
+
+  static void cacheArtifactsInRepositoryCache( @Nonnull final Environment environment,
+                                               @Nonnull final ApplicationRecord record )
+  {
+    final Path repositoryCache = BazelUtil.getRepositoryCache( environment.currentDirectory().toFile() );
+    if ( null != repositoryCache )
+    {
+      // We only attempt to copy into repositoryCache if there is one ... which there
+      // always is if there is a local WORKSPACE
+      for ( final ArtifactRecord artifact : record.getArtifacts() )
+      {
+        if ( null == artifact.getReplacementModel() )
+        {
+          final Artifact a = artifact.getArtifact();
+          final File file = a.getFile();
+          assert null != file;
+          final String sha256 = artifact.getSha256();
+          assert null != sha256;
+          cacheRepositoryFile( environment.logger(), repositoryCache, a.toString(), file, sha256 );
+          final String sourceSha256 = artifact.getSourceSha256();
+          if ( null != sourceSha256 )
+          {
+            final SubArtifact sourcesArtifact = new SubArtifact( a, "sources", "jar" );
+            final String localFilename = ArtifactUtil.artifactToLocalFilename( sourcesArtifact );
+            final File sourcesFile = file.toPath().getParent().resolve( localFilename ).toFile();
+
+            cacheRepositoryFile( environment.logger(),
+                                 repositoryCache,
+                                 sourcesArtifact.toString(),
+                                 sourcesFile,
+                                 sourceSha256 );
+          }
+        }
+      }
+    }
   }
 
   static void cacheRepositoryFile( @Nonnull final Logger logger,
