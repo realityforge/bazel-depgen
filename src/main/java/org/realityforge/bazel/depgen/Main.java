@@ -1,6 +1,8 @@
 package org.realityforge.bazel.depgen;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -188,6 +190,30 @@ public class Main
                                     resolveModel( resolver, model ),
                                     resolver.getAuthenticationContexts(),
                                     m -> c_environment.logger().warning( m ) );
+  }
+
+  static void cacheRepositoryFile( @Nonnull final Logger logger,
+                                   @Nonnull final Path repositoryCache,
+                                   @Nonnull final String label,
+                                   @Nonnull final File file,
+                                   @Nonnull final String sha256 )
+  {
+    final Path targetPath =
+      repositoryCache.resolve( "content_addressable" ).resolve( "sha256" ).resolve( sha256 ).resolve( "file" );
+    if ( !Files.exists( targetPath ) )
+    {
+      try
+      {
+        Files.createDirectories( targetPath.getParent() );
+        Files.copy( file.toPath(), targetPath );
+        logger.log( Level.FINE, "Installed artifact '" + label + "' into repository cache." );
+      }
+      catch ( final IOException ioe )
+      {
+        final String message = "Failed to cache artifact '" + label + "' in repository cache.";
+        logger.log( Level.WARNING, message, ioe );
+      }
+    }
   }
 
   @Nonnull

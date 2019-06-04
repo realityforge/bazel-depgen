@@ -1,6 +1,8 @@
 package org.realityforge.bazel.depgen;
 
 import gir.io.FileUtil;
+import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
@@ -241,6 +243,104 @@ public class MainTest
       assertEquals( exception.getMessage(),
                     "Error: Cache directory not specified and unable to derive default directory (Is the bazel command on the path?). Explicitly pass the cache directory as an option." );
       assertEquals( exception.getExitCode(), ExitCodes.ERROR_INVALID_DEFAULT_CACHE_DIR_CODE );
+    } );
+  }
+
+  @Test
+  public void cacheRepositoryFile()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final Path cacheDir = FileUtil.createLocalTempDir();
+      final Path file = FileUtil.createLocalTempDir().resolve( "somefile.txt" );
+      final byte[] content = { 1, 2, 3, 4 };
+      Files.write( file, content );
+
+      final String sha256 = "9F64A747E1B97F131FABB6B447296C9B6F0201E79FB3C5356E6C77E89B6A806A";
+
+      final Path targetFile =
+        cacheDir.resolve( "content_addressable" ).resolve( "sha256" ).resolve( sha256 ).resolve( "file" );
+
+      final TestHandler handler = new TestHandler();
+
+      assertFalse( Files.exists( targetFile ) );
+
+      Main.cacheRepositoryFile( createLogger( handler ), cacheDir, "myartifact", file.toFile(), sha256 );
+      assertEquals( handler.toString(), "Installed artifact 'myartifact' into repository cache." );
+
+      assertTrue( Files.exists( targetFile ) );
+      assertEquals( Files.readAllBytes( targetFile ), content );
+    } );
+  }
+
+  @Test
+  public void cacheRepositoryFile_alreadyExists()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final Path cacheDir = FileUtil.createLocalTempDir();
+      final Path file = FileUtil.createLocalTempDir().resolve( "somefile.txt" );
+
+      Files.write( file, new byte[]{ 1, 2, 3, 4 } );
+
+      final String sha256 = "9F64A747E1B97F131FABB6B447296C9B6F0201E79FB3C5356E6C77E89B6A806A";
+
+      final Path targetFile =
+        cacheDir.resolve( "content_addressable" ).resolve( "sha256" ).resolve( sha256 ).resolve( "file" );
+
+      // Writing cacheContent into cache that differs from actual content so we can tell if it has been updated
+      final byte[] cacheContent = { 1, 2, 3, 4, 0 };
+      Files.createDirectories( targetFile.getParent() );
+      Files.write( targetFile, cacheContent );
+
+      final TestHandler handler = new TestHandler();
+
+      assertTrue( Files.exists( targetFile ) );
+
+      Main.cacheRepositoryFile( createLogger( handler ), cacheDir, "myartifact", file.toFile(), sha256 );
+      assertEquals( handler.toString(), "" );
+
+      assertTrue( Files.exists( targetFile ) );
+      assertEquals( Files.readAllBytes( targetFile ), cacheContent );
+    } );
+  }
+
+  @Test
+  public void cacheRepositoryFile_FailedToWrite()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final Path cacheDir = FileUtil.createLocalTempDir();
+      final Path file = FileUtil.createLocalTempDir().resolve( "somefile.txt" );
+      final byte[] content = { 1, 2, 3, 4 };
+      Files.write( file, content );
+
+      final String sha256 = "9F64A747E1B97F131FABB6B447296C9B6F0201E79FB3C5356E6C77E89B6A806A";
+
+      final Path targetFile =
+        cacheDir.resolve( "content_addressable" ).resolve( "sha256" ).resolve( sha256 ).resolve( "file" );
+
+      final File dir = targetFile.getParent().toFile();
+      assertTrue( dir.mkdirs() );
+      assertTrue( dir.setWritable( false ) );
+
+      final TestHandler handler = new TestHandler();
+
+      assertFalse( Files.exists( targetFile ) );
+
+      Main.cacheRepositoryFile( createLogger( handler ), cacheDir, "myartifact", file.toFile(), sha256 );
+      assertEquals( handler.toString(), "Failed to cache artifact 'myartifact' in repository cache." );
+
+      assertFalse( Files.exists( targetFile ) );
     } );
   }
 
