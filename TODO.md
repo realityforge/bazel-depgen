@@ -11,6 +11,8 @@ complete as there is too much un-said.
   documentation for each option. Note that the `exportDeps` configuration potentially limits scalability of
   builds as it results in deep dependency trees. Consider also generating initial `WORKSPACE` if a walk through
   parent directories does not locate one.
+  
+  `init --no-create-workspace`
 
 * Add `info` command that displays all the parameters passed into tool. This includes the
   - dependency file
@@ -19,16 +21,26 @@ complete as there is too much un-said.
   - reset-cached-metadata flag
   - bazel's repository cache directory
 
+  `init [info key]`
+
 * Add `add` command that adds a dependency.
+
+  `add [coord] --alias foo --nature java --nature plugin --include-optional --include-source --export-deps --generates-api --excludes com.example:base --excludes com.example:base --visibility //blah  --visibility //blee --j2cl-suppress blah`
 
 * Add `remove` command that removes a dependency.
 
+  `remove [coord]`
+
 * Add `update` command that updates the version of a dependency.
+
+  `remove [2-part coord] version`
 
 * Change `hash` command so that it checks an optionally supplied hash matches actual hash. If it does not then
   the command exits with a non-zero exit code. Generate a target that verifies that the actual hash matches the
   hash of the `dependencies.yml` that was used to generate the extension. The target is a dependency of the
   `http_file` (if possible) or the leaf targets so that it is only run if a dependency requires it.
+
+  `hash [sha256?]`
 
 * Consider converting to commandline tool named `bzt`
 
