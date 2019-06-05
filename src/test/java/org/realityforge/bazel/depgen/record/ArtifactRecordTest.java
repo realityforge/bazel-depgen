@@ -503,6 +503,126 @@ public class ArtifactRecordTest
   }
 
   @Test
+  public void writeJ2clLibrary()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ), "-j2cl" );
+      assertEquals( asString( outputStream ),
+                    "j2cl_library(\n" +
+                    "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                    "    srcs = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void writeJ2clLibrary_suppressPresent()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl]\n" +
+                              "    j2cl:\n" +
+                              "      suppress: [\"checkDebuggerStatement\"]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ), "-j2cl" );
+      assertEquals( asString( outputStream ),
+                    "j2cl_library(\n" +
+                    "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                    "    srcs = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    js_suppress = [checkDebuggerStatement],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void writeJ2clLibrary_singleDepsPresent()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl]\n" +
+                              "  - coord: com.example:mylib:1.0\n" +
+                              "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ), "-j2cl" );
+      assertEquals( asString( outputStream ),
+                    "j2cl_library(\n" +
+                    "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                    "    srcs = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    "    deps = [\":com_example__mylib-j2cl\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void writeJ2clLibrary_multipleDepsPresent()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl]\n" +
+                              "  - coord: com.example:mylib:1.0\n" +
+                              "    natures: [J2cl]\n" +
+                              "  - coord: com.example:mylib2:1.0\n" +
+                              "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:myapp:1.0",
+                                           "com.example:mylib:1.0",
+                                           "com.example:mylib2:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib2:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ), "-j2cl" );
+      assertEquals( asString( outputStream ),
+                    "j2cl_library(\n" +
+                    "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                    "    srcs = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    "    deps = [\n" +
+                    "        \":com_example__mylib-j2cl\",\n" +
+                    "        \":com_example__mylib2-j2cl\",\n" +
+                    "    ],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
   public void pluginName()
     throws Exception
   {
