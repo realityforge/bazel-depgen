@@ -156,16 +156,20 @@ public final class ArtifactRecord
   @Nonnull
   public List<Nature> getNatures()
   {
-    final Nature defaultNature =
-      null != getProcessors() ? Nature.Plugin : _application.getSource().getOptions().getDefaultNature();
     if ( null == _artifactModel )
     {
-      return Collections.singletonList( defaultNature );
+      return Collections.singletonList( getDefaultNature() );
     }
     else
     {
-      return _artifactModel.getNatures( defaultNature );
+      return _artifactModel.getNatures( getDefaultNature() );
     }
+  }
+
+  @Nonnull
+  private Nature getDefaultNature()
+  {
+    return null != getProcessors() ? Nature.Plugin : _application.getSource().getOptions().getDefaultNature();
   }
 
   public boolean generatesApi()
