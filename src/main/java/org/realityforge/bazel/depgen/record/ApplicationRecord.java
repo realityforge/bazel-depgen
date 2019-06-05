@@ -257,9 +257,9 @@ public final class ApplicationRecord
                          .map( a -> "omit_" + a.getAlias() + " = False" )
                          .collect( Collectors.toList() ) :
                        Collections.emptyList(), macro -> {
-        macro.writeMultilineComment( o -> o.write( "Macro to define targets for dependencies specified by '" +
-                                                   getPathFromExtensionToConfig() +
-                                                   "'." ) );
+        final String comment =
+          "Macro to define targets for dependencies specified by '" + getPathFromExtensionToConfig() + "'.";
+        macro.writeMultilineComment( o -> o.write( comment ) );
         for ( final ArtifactRecord artifact : getArtifacts() )
         {
           if ( null == artifact.getReplacementModel() )
