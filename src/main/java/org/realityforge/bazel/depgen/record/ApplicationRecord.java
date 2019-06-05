@@ -140,8 +140,16 @@ public final class ApplicationRecord
 
     writeDependencyGraphIfRequired( output );
 
-    output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
-    output.newLine();
+    boolean emittedLoad = false;
+    if ( !getArtifacts().isEmpty() )
+    {
+      emittedLoad = true;
+      output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
+    }
+    if ( emittedLoad )
+    {
+      output.newLine();
+    }
 
     writeWorkspaceMacro( output );
 
