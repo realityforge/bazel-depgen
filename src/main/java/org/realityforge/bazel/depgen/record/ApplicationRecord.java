@@ -146,6 +146,11 @@ public final class ApplicationRecord
       emittedLoad = true;
       output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
     }
+    if ( getArtifacts().stream().anyMatch( a -> a.getNatures().contains( Nature.J2cl ) ) )
+    {
+      emittedLoad = true;
+      output.write( "load(\"@com_google_j2cl//build_defs:rules.bzl\", \"j2cl_library\")" );
+    }
     if ( emittedLoad )
     {
       output.newLine();
