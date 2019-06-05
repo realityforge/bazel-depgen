@@ -13,8 +13,6 @@ public final class ArtifactConfig
   @Nullable
   private String alias;
   @Nullable
-  private Nature nature;
-  @Nullable
   private Boolean includeOptional;
   @Nullable
   private Boolean includeSource;
@@ -27,7 +25,7 @@ public final class ArtifactConfig
   @Nullable
   private List<String> visibility;
   @Nullable
-  private List<Language> languages;
+  private List<Nature> natures;
   @Nullable
   private ArtifactJ2clConfig j2cl;
 
@@ -51,17 +49,6 @@ public final class ArtifactConfig
   public void setAlias( @Nonnull final String alias )
   {
     this.alias = Objects.requireNonNull( alias );
-  }
-
-  @Nullable
-  public Nature getNature()
-  {
-    return nature;
-  }
-
-  public void setNature( @Nonnull final Nature nature )
-  {
-    this.nature = Objects.requireNonNull( nature );
   }
 
   @Nullable
@@ -131,14 +118,14 @@ public final class ArtifactConfig
   }
 
   @Nullable
-  public List<Language> getLanguages()
+  public List<Nature> getNatures()
   {
-    return languages;
+    return natures;
   }
 
-  public void setLanguages( @Nonnull final List<Language> languages )
+  public void setNatures( @Nonnull final List<Nature> natures )
   {
-    this.languages = Collections.unmodifiableList( Objects.requireNonNull( languages ) );
+    this.natures = Collections.unmodifiableList( Objects.requireNonNull( natures ) );
   }
 
   @Nullable

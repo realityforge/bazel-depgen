@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
-import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -28,7 +27,6 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertNull( model.getAlias() );
-    assertEquals( model.getNature(), Nature.Auto );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -52,7 +50,6 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertNull( model.getAlias() );
-    assertEquals( model.getNature(), Nature.Auto );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -76,7 +73,6 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jszip" );
     assertNull( model.getClassifier() );
     assertNull( model.getAlias() );
-    assertEquals( model.getNature(), Nature.Auto );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -100,7 +96,6 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jszip" );
     assertEquals( model.getClassifier(), "sources" );
     assertNull( model.getAlias() );
-    assertEquals( model.getNature(), Nature.Auto );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -151,7 +146,6 @@ public class ArtifactModelTest
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
     assertNull( model.getAlias() );
-    assertEquals( model.getNature(), Nature.Auto );
     assertTrue( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -201,7 +195,6 @@ public class ArtifactModelTest
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
     assertEquals( model.getAlias(), "my-app" );
-    assertEquals( model.getNature(), Nature.Auto );
   }
 
   @Test
@@ -209,13 +202,13 @@ public class ArtifactModelTest
   {
     final ArtifactConfig source = new ArtifactConfig();
     source.setCoord( "com.example:myapp" );
-    source.setNature( Nature.LibraryAndPlugin );
+    source.setNatures( Collections.singletonList( Nature.Plugin ) );
 
     final ArtifactModel model = ArtifactModel.parse( source );
     assertEquals( model.getSource(), source );
     assertEquals( model.getGroup(), "com.example" );
     assertEquals( model.getId(), "myapp" );
-    assertEquals( model.getNature(), Nature.LibraryAndPlugin );
+    assertEquals( model.getNatures( Nature.Java ), Collections.singletonList( Nature.Plugin ) );
   }
 
   @Test
@@ -294,25 +287,23 @@ public class ArtifactModelTest
   }
 
   @Test
-  public void parseArtifactWithLanguagesSpecified()
+  public void parseArtifactWithNaturesSpecified()
   {
     final ArtifactConfig source = new ArtifactConfig();
     source.setCoord( "com.example:myapp" );
-    source.setLanguages( Arrays.asList( Language.Java, Language.J2cl ) );
+    source.setNatures( Arrays.asList( Nature.Java, Nature.J2cl ) );
 
-    assertEquals( ArtifactModel.parse( source ).getLanguages( Language.Java ),
-                  Arrays.asList( Language.Java, Language.J2cl ) );
+    assertEquals( ArtifactModel.parse( source ).getNatures( Nature.Java ),
+                  Arrays.asList( Nature.Java, Nature.J2cl ) );
   }
 
   @Test
-  public void parseArtifactWithLanguagesNotSpecified()
+  public void parseArtifactWithNaturesNotSpecified()
   {
     final ArtifactConfig source = new ArtifactConfig();
     source.setCoord( "com.example:myapp" );
-    source.setLanguages( Arrays.asList( Language.Java, Language.J2cl ) );
 
-    assertEquals( ArtifactModel.parse( source ).getLanguages( Language.Java ),
-                  Arrays.asList( Language.Java, Language.J2cl ) );
+    assertEquals( ArtifactModel.parse( source ).getNatures( Nature.Java ), Collections.singletonList( Nature.Java ) );
   }
 
   @Test
@@ -419,21 +410,6 @@ public class ArtifactModelTest
     final InvalidModelException exception =
       expectThrows( InvalidModelException.class, () -> ArtifactModel.parse( source ) );
     assertEquals( exception.getMessage(), "The dependency must specify the 'coord' property." );
-    assertEquals( exception.getModel(), source );
-  }
-
-  @Test
-  public void parseArtifactWithPluginNatureSpecifyingLanguages()
-  {
-    final ArtifactConfig source = new ArtifactConfig();
-    source.setCoord( "com.example:myapp" );
-    source.setNature( Nature.Plugin );
-    source.setLanguages( Collections.singletonList( Language.Java ) );
-
-    final InvalidModelException exception =
-      expectThrows( InvalidModelException.class, () -> ArtifactModel.parse( source ) );
-    assertEquals( exception.getMessage(),
-                  "The dependency must not specify the 'languages' property if the 'nature' property is specified as `Plugin`." );
     assertEquals( exception.getModel(), source );
   }
 }

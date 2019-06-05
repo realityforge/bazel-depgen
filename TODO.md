@@ -48,20 +48,15 @@ complete as there is too much un-said.
   all the tests pass. It may be possible to enhance [dependabot](https://dependabot.com/) to do this now that it
   is owned by Github.
 
-* Add language types for `kotlin`, `scala`, `java`, `aar`, `j2cl` that control how artifacts defined. Some
-  artifacts may support multiple languages. Support non-jar dependencies and expose them as files/filegroups
+* Add nature types for `kotlin`, `raw` (modelled as `files`/`filegroups`), `scala`, `aar`, `j2cl` etc. that
+  control how artifacts are defined. Artifacts may support multiple natures.
   - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
   - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
-  - Configuration per language can probably be achieved by having a global default language plus a per-artifact
-    list of languages. Non-default languages generate artifacts with suffixes such as `-j2cl`. Configuration for
-    per-artifact level happens as object below artifact or below config (i.e. `j2cl: {suppress: 'debuggerStatement'}`)
-  - Consider merging `Nature` into `Language` in which the `Plugin` and `J2cl` are just different natures. There
-    would still be rules on how different natures are combined but that is to be expected.
-  - Different languages will have different rules regarding propagation. i.e. `J2cl` forces all dependencies to
+  - Per-nature can appear globally or per-artifact. (i.e. `j2cl: {suppress: 'debuggerStatement'}`)
+  - Move `generatesApi` configuration as a key below plugin.
+  - Different natures will have different rules regarding propagation. i.e. `J2cl` forces all dependencies to
     be `j2cl` as well and if we reach a declared artifact as a dependency that does not have the `j2cl` nature
-    then we generate an error. Other `Natures` then we generate an error.
-
-* Generate an error if `PluginAndLibrary` nature is used when combined with `J2cl` language.
+    then we generate an error.
 
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
 

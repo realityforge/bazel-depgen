@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
-import org.realityforge.bazel.depgen.config.Language;
+import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 
 public final class OptionsModel
@@ -109,10 +109,10 @@ public final class OptionsModel
   }
 
   @Nonnull
-  public Language getDefaultLanguage()
+  public Nature getDefaultNature()
   {
-    final Language language = _source.getDefaultLanguage();
-    return null == language ? OptionsConfig.DEFAULT_LANGUAGE : language;
+    final Nature nature = _source.getDefaultNature();
+    return null == nature ? OptionsConfig.DEFAULT_NATURE : nature;
   }
 
   public boolean failOnInvalidPom()

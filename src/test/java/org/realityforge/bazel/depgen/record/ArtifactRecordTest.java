@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
-import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -33,7 +32,6 @@ public class ArtifactRecordTest
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
       assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
       assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
-      assertEquals( artifactRecord.getNature(), Nature.Library );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
@@ -309,11 +307,33 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkOutput( outputStream ) );
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__myapp\",\n" +
                     "    actual = \":com_example__myapp__1_0\",\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
+  public void emitAlias_suffixSupplied()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), "-j2cl" );
+      assertEquals( asString( outputStream ),
+                    "native.alias(\n" +
+                    "    name = \"com_example__myapp-j2cl\",\n" +
+                    "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
                     ")\n" );
     } );
   }
@@ -334,7 +354,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkOutput( outputStream ) );
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__myapp\",\n" +
@@ -363,7 +383,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkOutput( outputStream ) );
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"my_super_dooper_app\",\n" +
@@ -386,7 +406,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 1 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkOutput( outputStream ) );
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__mylib\",\n" +
@@ -405,7 +425,7 @@ public class ArtifactRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
-                              "    nature: Plugin\n" );
+                              "    natures: [Plugin]\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -430,7 +450,7 @@ public class ArtifactRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
-                              "    nature: Plugin\n" );
+                              "    natures: [Plugin]\n" );
       final Path jarFile =
         createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                        "arez.processor.ArezProcessor\n" );
@@ -460,7 +480,7 @@ public class ArtifactRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
-                              "    nature: Plugin\n" +
+                              "    natures: [Plugin]\n" +
                               "    generatesApi: false\n" );
       final Path jarFile =
         createJarFile( "META-INF/services/javax.annotation.processing.Processor",
@@ -559,7 +579,7 @@ public class ArtifactRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
-                              "    nature: Plugin\n" );
+                              "    natures: [Plugin]\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -595,7 +615,7 @@ public class ArtifactRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
-                              "    nature: Plugin\n" );
+                              "    natures: [Plugin]\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -662,7 +682,7 @@ public class ArtifactRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
-                              "    nature: Plugin\n" );
+                              "    natures: [Plugin]\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -687,7 +707,7 @@ public class ArtifactRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
-                              "    nature: Plugin\n" );
+                              "    natures: [Plugin]\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -698,34 +718,6 @@ public class ArtifactRecordTest
                     "native.java_library(\n" +
                     "    name = \"com_example__myapp__1_0__plugins\",\n" +
                     "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
-                    "    visibility = [\"//visibility:private\"],\n" +
-                    ")\n" );
-    } );
-  }
-
-  @Test
-  public void writeJavaLibraryAndPlugin()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createLocalTempDir();
-
-      writeDependencies( dir, "artifacts:\n" +
-                              "  - coord: com.example:myapp:1.0\n" +
-                              "    nature: LibraryAndPlugin\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
-
-      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
-
-      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.writeJavaLibraryAndPlugin( new StarlarkOutput( outputStream ) );
-      assertEquals( asString( outputStream ),
-                    "native.java_library(\n" +
-                    "    name = \"com_example__myapp__1_0\",\n" +
-                    "    exports = [\n" +
-                    "        \"com_example__myapp__1_0__plugin_library\",\n" +
-                    "        \"com_example__myapp__1_0__plugins\",\n" +
-                    "    ],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );
     } );
@@ -866,54 +858,6 @@ public class ArtifactRecordTest
                     "    exported_plugins = [\n" +
                     "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
                     "        \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
-                    "    ],\n" +
-                    "    visibility = [\"//visibility:private\"],\n" +
-                    ")\n" );
-    } );
-  }
-
-  @Test
-  public void writeArtifactTargets_LibraryAndPlugin_noProcessors()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createLocalTempDir();
-
-      writeDependencies( dir, "artifacts:\n" +
-                              "  - coord: com.example:myapp:1.0\n" +
-                              "    nature: LibraryAndPlugin\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
-
-      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
-
-      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.writeArtifactTargets( new StarlarkOutput( outputStream ) );
-      assertEquals( asString( outputStream ),
-                    "native.alias(\n" +
-                    "    name = \"com_example__myapp\",\n" +
-                    "    actual = \":com_example__myapp__1_0\",\n" +
-                    ")\n" +
-                    "native.java_import(\n" +
-                    "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
-                    "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                    "    visibility = [\"//visibility:private\"],\n" +
-                    ")\n" +
-                    "native.java_plugin(\n" +
-                    "    name = \"com_example__myapp__1_0__plugin\",\n" +
-                    "    visibility = [\"//visibility:private\"],\n" +
-                    "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
-                    ")\n" +
-                    "native.java_library(\n" +
-                    "    name = \"com_example__myapp__1_0__plugins\",\n" +
-                    "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
-                    "    visibility = [\"//visibility:private\"],\n" +
-                    ")\n" +
-                    "native.java_library(\n" +
-                    "    name = \"com_example__myapp__1_0\",\n" +
-                    "    exports = [\n" +
-                    "        \"com_example__myapp__1_0__plugin_library\",\n" +
-                    "        \"com_example__myapp__1_0__plugins\",\n" +
                     "    ],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );

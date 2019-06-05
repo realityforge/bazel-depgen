@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen.record;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -15,7 +14,6 @@ import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
-import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
@@ -33,11 +31,6 @@ public final class ArtifactRecord
    * The suffix applied to every compile plugin.
    */
   private static final String PLUGIN_SUFFIX = "__plugin";
-  /**
-   * The suffix applied to the library that exports all the plugins.
-   * Note that this is only defined if the {@link Nature#LibraryAndPlugin} nature is used by the artifact.
-   */
-  private static final String PLUGINS_LIBRARY_SUFFIX = "__plugins";
   @Nonnull
   private final ApplicationRecord _application;
   @Nonnull
@@ -159,28 +152,17 @@ public final class ArtifactRecord
   }
 
   @Nonnull
-  public Nature getNature()
+  public List<Nature> getNatures()
   {
-    if ( null == _artifactModel || Nature.Auto == _artifactModel.getNature() )
-    {
-      return null == getProcessors() ? Nature.Library : Nature.Plugin;
-    }
-    else
-    {
-      return _artifactModel.getNature();
-    }
-  }
-
-  @Nonnull
-  public List<Language> getLanguages()
-  {
+    final Nature defaultNature =
+      null != getProcessors() ? Nature.Plugin : _application.getSource().getOptions().getDefaultNature();
     if ( null == _artifactModel )
     {
-      return Collections.singletonList( _application.getSource().getOptions().getDefaultLanguage() );
+      return Collections.singletonList( defaultNature );
     }
     else
     {
-      return _artifactModel.getLanguages( _application.getSource().getOptions().getDefaultLanguage() );
+      return _artifactModel.getNatures( defaultNature );
     }
   }
 
@@ -402,12 +384,12 @@ public final class ArtifactRecord
     return groupId.equals( artifact.getGroupId() ) && artifactId.equals( artifact.getArtifactId() );
   }
 
-  void emitAlias( @Nonnull final StarlarkOutput output )
+  void emitAlias( @Nonnull final StarlarkOutput output, @Nonnull final String suffix )
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + getAlias() + "\"" );
-    arguments.put( "actual", "\":" + getName() + "\"" );
+    arguments.put( "name", "\"" + getAlias() + suffix + "\"" );
+    arguments.put( "actual", "\":" + getName() + suffix + "\"" );
     final ArtifactModel artifactModel = getArtifactModel();
     if ( null != artifactModel )
     {
@@ -490,7 +472,6 @@ public final class ArtifactRecord
   void writePluginLibrary( @Nonnull final StarlarkOutput output, @Nonnull final String suffix )
     throws IOException
   {
-    assert Nature.Library != getNature();
     emitJavaImport( output, PLUGIN_LIBRARY_SUFFIX );
     final List<String> processors = getProcessors();
     if ( null == processors )
@@ -512,7 +493,6 @@ public final class ArtifactRecord
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + getName() + suffix + "\"" );
-    assert Nature.Library != getNature();
     final ArrayList<String> plugins = new ArrayList<>();
     final List<String> processors = getProcessors();
     if ( null == processors )
@@ -531,41 +511,25 @@ public final class ArtifactRecord
     output.writeCall( "native.java_library", arguments );
   }
 
-  void writeJavaLibraryAndPlugin( @Nonnull final StarlarkOutput output )
-    throws IOException
-  {
-    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    final String name = getName();
-    arguments.put( "name", "\"" + name + "\"" );
-    assert Nature.LibraryAndPlugin == getNature();
-
-    arguments.put( "exports",
-                   Arrays.asList( "\"" + name + PLUGIN_LIBRARY_SUFFIX + "\"",
-                                  "\"" + name + PLUGINS_LIBRARY_SUFFIX + "\"" ) );
-
-    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    output.writeCall( "native.java_library", arguments );
-  }
-
   void writeArtifactTargets( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     assert null == getReplacementModel();
-    emitAlias( output );
-    final Nature nature = getNature();
-    if ( Nature.Library == nature )
+    final Nature defaultNature = _application.getSource().getOptions().getDefaultNature();
+    for ( final Nature nature : getNatures() )
     {
-      emitJavaImport( output, "" );
-    }
-    else if ( Nature.Plugin == nature )
-    {
-      writePluginLibrary( output, "" );
-    }
-    else
-    {
-      assert Nature.LibraryAndPlugin == nature;
-      writePluginLibrary( output, PLUGINS_LIBRARY_SUFFIX );
-      writeJavaLibraryAndPlugin( output );
+      final String suffix = nature.suffix( getNatures().size() > 1, defaultNature );
+      if ( Nature.Java == nature )
+      {
+        emitAlias( output, suffix );
+        emitJavaImport( output, suffix );
+      }
+      else //if ( Nature.Plugin == nature )
+      {
+        assert Nature.Plugin == nature;
+        emitAlias( output, suffix );
+        writePluginLibrary( output, suffix );
+      }
     }
   }
 

@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
-import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.Nature;
 
 public final class ArtifactModel
@@ -80,11 +79,6 @@ public final class ArtifactModel
         classifier = components[ 3 ];
         version = components[ 4 ];
       }
-    }
-    if ( Nature.Plugin == source.getNature() && null != source.getLanguages() )
-    {
-      throw new InvalidModelException( "The dependency must not specify the 'languages' property if the " +
-                                       "'nature' property is specified as `Plugin`.", source );
     }
 
     final List<ExcludeModel> aexcludes =
@@ -170,17 +164,10 @@ public final class ArtifactModel
   }
 
   @Nonnull
-  public Nature getNature()
+  public List<Nature> getNatures( @Nonnull final Nature defaultNature )
   {
-    final Nature nature = _source.getNature();
-    return null == nature ? Nature.Auto : nature;
-  }
-
-  @Nonnull
-  public List<Language> getLanguages( @Nonnull final Language defaultLanguage )
-  {
-    final List<Language> languages = _source.getLanguages();
-    return null == languages ? Collections.singletonList( defaultLanguage ) : languages;
+    final List<Nature> natures = _source.getNatures();
+    return null == natures ? Collections.singletonList( defaultNature ) : natures;
   }
 
   public boolean includeOptional()

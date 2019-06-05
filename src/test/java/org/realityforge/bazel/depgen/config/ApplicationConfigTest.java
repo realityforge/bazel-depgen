@@ -110,20 +110,20 @@ public class ApplicationConfigTest
   }
 
   @Test
-  public void parseDependencyWithLanguages()
+  public void parseDependencyWithNatures()
     throws Exception
   {
     inIsolatedDirectory( () -> {
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
-                         "    languages: [J2cl]\n" );
+                         "    natures: [J2cl]\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
-      final List<Language> languages = artifact.getLanguages();
-      assertNotNull( languages );
-      assertEquals( languages, Collections.singletonList( Language.J2cl ) );
+      final List<Nature> natures = artifact.getNatures();
+      assertNotNull( natures );
+      assertEquals( natures, Collections.singletonList( Nature.J2cl ) );
     } );
   }
 
@@ -134,16 +134,16 @@ public class ApplicationConfigTest
     inIsolatedDirectory( () -> {
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.arez:arez-core:0.138\n" +
-                         "    languages: [J2cl]\n" +
+                         "    natures: [J2cl]\n" +
                          "    j2cl:\n" +
                          "      suppress: ['checkDebuggerStatement','other']\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getCoord(), "org.realityforge.arez:arez-core:0.138" );
-      final List<Language> languages = artifact.getLanguages();
-      assertNotNull( languages );
-      assertEquals( languages, Collections.singletonList( Language.J2cl ) );
+      final List<Nature> natures = artifact.getNatures();
+      assertNotNull( natures );
+      assertEquals( natures, Collections.singletonList( Nature.J2cl ) );
       final ArtifactJ2clConfig j2cl = artifact.getJ2cl();
       assertNotNull( j2cl );
       assertEquals( j2cl.getSuppress(), Arrays.asList( "checkDebuggerStatement", "other" ) );
@@ -157,14 +157,14 @@ public class ApplicationConfigTest
     inIsolatedDirectory( () -> {
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.arez:arez-core:0.138\n" +
-                         "    languages: [J2cl]\n" );
+                         "    natures: [J2cl]\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getCoord(), "org.realityforge.arez:arez-core:0.138" );
-      final List<Language> languages = artifact.getLanguages();
-      assertNotNull( languages );
-      assertEquals( languages, Collections.singletonList( Language.J2cl ) );
+      final List<Nature> natures = artifact.getNatures();
+      assertNotNull( natures );
+      assertEquals( natures, Collections.singletonList( Nature.J2cl ) );
       assertNull( artifact.getJ2cl() );
     } );
   }
@@ -240,25 +240,6 @@ public class ApplicationConfigTest
   }
 
   @Test
-  public void parseDependencyWithNature()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "artifacts:\n" +
-                         "  - coord: org.realityforge.gir:gir-core:0.08\n" +
-                         "    nature: Plugin\n" );
-      final ApplicationConfig config = loadApplicationConfig();
-      final List<ArtifactConfig> artifacts = config.getArtifacts();
-      assertNotNull( artifacts );
-
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactConfig artifact = artifacts.get( 0 );
-      assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:0.08" );
-      assertEquals( artifact.getNature(), Nature.Plugin );
-    } );
-  }
-
-  @Test
   public void parseOptions()
     throws Exception
   {
@@ -275,7 +256,7 @@ public class ApplicationConfigTest
                          "  targetMacroName: gen_targets\n" +
                          "  namePrefix: magic_\n" +
                          "  aliasStrategy: ArtifactId\n" +
-                         "  defaultLanguage: J2cl\n" +
+                         "  defaultNature: J2cl\n" +
                          "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
@@ -289,7 +270,7 @@ public class ApplicationConfigTest
       assertEquals( options.getTargetMacroName(), "gen_targets" );
       assertEquals( options.getNamePrefix(), "magic_" );
       assertEquals( options.getAliasStrategy(), AliasStrategy.ArtifactId );
-      assertEquals( options.getDefaultLanguage(), Language.J2cl );
+      assertEquals( options.getDefaultNature(), Nature.J2cl );
       assertEquals( options.getFailOnMissingPom(), Boolean.FALSE );
       assertEquals( options.getFailOnInvalidPom(), Boolean.FALSE );
       assertEquals( options.getEmitDependencyGraph(), Boolean.FALSE );
@@ -317,7 +298,7 @@ public class ApplicationConfigTest
       assertNull( options.getTargetMacroName() );
       assertNull( options.getNamePrefix() );
       assertNull( options.getAliasStrategy() );
-      assertNull( options.getDefaultLanguage() );
+      assertNull( options.getDefaultNature() );
       assertNull( options.getFailOnMissingPom() );
       assertNull( options.getFailOnInvalidPom() );
       assertNull( options.getEmitDependencyGraph() );

@@ -4,7 +4,7 @@ import gir.io.FileUtil;
 import java.nio.file.Path;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
-import org.realityforge.bazel.depgen.config.Language;
+import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -26,7 +26,7 @@ public class OptionsModelTest
     assertEquals( model.getTargetMacroName(), OptionsConfig.DEFAULT_TARGET_MACRO_NAME );
     assertEquals( model.getNamePrefix(), OptionsConfig.DEFAULT_NAME_PREFIX );
     assertEquals( model.getAliasStrategy(), OptionsConfig.DEFAULT_ALIAS_STRATEGY );
-    assertEquals( model.getDefaultLanguage(), OptionsConfig.DEFAULT_LANGUAGE );
+    assertEquals( model.getDefaultNature(), OptionsConfig.DEFAULT_NATURE );
     assertTrue( model.failOnMissingPom() );
     assertTrue( model.failOnInvalidPom() );
     assertTrue( model.emitDependencyGraph() );
@@ -62,7 +62,7 @@ public class OptionsModelTest
       source.setTargetMacroName( "gen_myprj_targets" );
       source.setNamePrefix( "myprj_" );
       source.setAliasStrategy( AliasStrategy.ArtifactId );
-      source.setDefaultLanguage( Language.J2cl );
+      source.setDefaultNature( Nature.J2cl );
       source.setFailOnMissingPom( false );
       source.setFailOnInvalidPom( false );
       source.setEmitDependencyGraph( false );
@@ -78,7 +78,7 @@ public class OptionsModelTest
       assertEquals( model.getTargetMacroName(), "gen_myprj_targets" );
       assertEquals( model.getNamePrefix(), "myprj_" );
       assertEquals( model.getAliasStrategy(), AliasStrategy.ArtifactId );
-      assertEquals( model.getDefaultLanguage(), Language.J2cl );
+      assertEquals( model.getDefaultNature(), Nature.J2cl );
       assertFalse( model.failOnMissingPom() );
       assertFalse( model.failOnInvalidPom() );
       assertFalse( model.includeSource() );

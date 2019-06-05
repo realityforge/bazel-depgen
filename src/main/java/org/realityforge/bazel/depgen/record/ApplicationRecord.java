@@ -199,11 +199,11 @@ public final class ApplicationRecord
       new ArtifactRecord( this, node, sha256, urls, sourceSha256, sourceUrls, processors, model, null );
     if ( null != model &&
          null != model.getSource().getGeneratesApi() &&
-         ( null == processors || Nature.Library == record.getNature() ) )
+         ( null == processors || !record.getNatures().contains( Nature.Plugin ) ) )
     {
       final String message =
         "Artifact '" + node.getArtifact() + "' has specified the 'generatesApi' configuration " +
-        "setting but is not a plugin or contains no annotation processors.";
+        "setting but does not specify the Plugin nature nor does it contain any annotation processors.";
       throw new IllegalStateException( message );
     }
     final String key = record.getKey();

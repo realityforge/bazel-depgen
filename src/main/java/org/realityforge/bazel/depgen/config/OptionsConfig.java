@@ -18,7 +18,7 @@ public final class OptionsConfig
   public static final boolean DEFAULT_INCLUDE_SOURCE = true;
   public static final boolean DEFAULT_EXPORT_DEPS = false;
   public static final boolean DEFAULT_SUPPORT_DEPENDENCY_OMIT = false;
-  public static final Language DEFAULT_LANGUAGE = Language.Java;
+  public static final Nature DEFAULT_NATURE = Nature.Java;
   @Nullable
   private String workspaceDirectory;
   @Nullable
@@ -32,7 +32,7 @@ public final class OptionsConfig
   @Nullable
   private AliasStrategy aliasStrategy;
   @Nullable
-  private Language defaultLanguage;
+  private Nature defaultNature;
   @Nullable
   private Boolean failOnInvalidPom;
   @Nullable
@@ -113,14 +113,14 @@ public final class OptionsConfig
   }
 
   @Nullable
-  public Language getDefaultLanguage()
+  public Nature getDefaultNature()
   {
-    return defaultLanguage;
+    return defaultNature;
   }
 
-  public void setDefaultLanguage( @Nonnull final Language defaultLanguage )
+  public void setDefaultNature( @Nonnull final Nature defaultNature )
   {
-    this.defaultLanguage = Objects.requireNonNull( defaultLanguage );
+    this.defaultNature = Objects.requireNonNull( defaultNature );
   }
 
   @Nullable

@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
-import org.realityforge.bazel.depgen.config.Language;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
@@ -84,7 +83,6 @@ public class ApplicationRecordTest
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
       assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
       assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
-      assertEquals( artifactRecord.getNature(), Nature.Library );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
@@ -126,7 +124,6 @@ public class ApplicationRecordTest
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
       assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
       assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
-      assertEquals( artifactRecord.getNature(), Nature.Library );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
@@ -246,7 +243,6 @@ public class ApplicationRecordTest
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getName(), "myapp_com_example__myapp__1_0" );
       assertEquals( artifactRecord.getAlias(), "myapp_com_example__myapp" );
-      assertEquals( artifactRecord.getNature(), Nature.Library );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
     } );
@@ -273,7 +269,6 @@ public class ApplicationRecordTest
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getName(), "myapp_com_example__myapp__1_0" );
       assertEquals( artifactRecord.getAlias(), "myapp_com_example__myapp" );
-      assertEquals( artifactRecord.getNature(), Nature.Library );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
     } );
@@ -359,7 +354,6 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
-        assertEquals( artifactRecord.getNature(), Nature.Library );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -381,7 +375,6 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
-        assertEquals( artifactRecord.getNature(), Nature.Library );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -400,7 +393,6 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:rtA" );
         assertEquals( artifactRecord.getName(), "com_example__rta__33_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__rta" );
-        assertEquals( artifactRecord.getNature(), Nature.Library );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtA:33.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -418,7 +410,6 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:rtB" );
         assertEquals( artifactRecord.getName(), "com_example__rtb__2_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__rtb" );
-        assertEquals( artifactRecord.getNature(), Nature.Library );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtB:2.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -464,7 +455,6 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
-        assertEquals( artifactRecord.getNature(), Nature.Library );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -493,7 +483,6 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
-        assertEquals( artifactRecord.getNature(), Nature.Library );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -550,7 +539,6 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
-        assertEquals( artifactRecord.getNature(), Nature.Library );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -583,7 +571,6 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
-        assertEquals( artifactRecord.getNature(), Nature.Library );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -790,7 +777,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
         assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
-        assertEquals( artifactRecord.getNature(), Nature.Library );
+        assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
@@ -805,7 +792,7 @@ public class ApplicationRecordTest
         assertEquals( artifactRecord.getKey(), "com.example:rtA" );
         assertEquals( artifactRecord.getName(), "com_example__rta__33_0" );
         assertEquals( artifactRecord.getAlias(), "com_example__rta" );
-        assertEquals( artifactRecord.getNature(), Nature.Library );
+        assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtA:33.0" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
@@ -1132,7 +1119,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void getNature_withDefaultLibraryNature()
+  public void getNature_withDefaultJavaNature()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -1148,7 +1135,7 @@ public class ApplicationRecordTest
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getNature(), Nature.Library );
+      assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
     } );
   }
 
@@ -1173,7 +1160,7 @@ public class ApplicationRecordTest
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getNature(), Nature.Plugin );
+      assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Plugin ) );
       assertTrue( artifactRecord.generatesApi() );
     } );
   }
@@ -1188,7 +1175,7 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
-                         "    nature: LibraryAndPlugin\n" );
+                         "    natures: [Plugin]\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -1196,7 +1183,7 @@ public class ApplicationRecordTest
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getNature(), Nature.LibraryAndPlugin );
+      assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Plugin ) );
       assertTrue( artifactRecord.generatesApi() );
     } );
   }
@@ -1225,13 +1212,13 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = artifacts.get( 0 );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-        assertEquals( artifactRecord.getNature(), Nature.Library );
+        assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
         assertTrue( artifactRecord.generatesApi() );
       }
       {
         final ArtifactRecord artifactRecord = artifacts.get( 1 );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
-        assertEquals( artifactRecord.getNature(), Nature.Plugin );
+        assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Plugin ) );
         assertTrue( artifactRecord.generatesApi() );
       }
     } );
@@ -1258,7 +1245,7 @@ public class ApplicationRecordTest
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getNature(), Nature.Plugin );
+      assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Plugin ) );
       assertTrue( artifactRecord.generatesApi() );
     } );
   }
@@ -1285,7 +1272,7 @@ public class ApplicationRecordTest
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getNature(), Nature.Plugin );
+      assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Plugin ) );
       assertTrue( artifactRecord.generatesApi() );
     } );
   }
@@ -1306,7 +1293,7 @@ public class ApplicationRecordTest
       final IllegalStateException exception =
         expectThrows( IllegalStateException.class, this::loadApplicationRecord );
       assertEquals( exception.getMessage(),
-                    "Artifact 'com.example:myapp:jar:1.0' has specified the 'generatesApi' configuration setting but is not a plugin or contains no annotation processors." );
+                    "Artifact 'com.example:myapp:jar:1.0' has specified the 'generatesApi' configuration setting but does not specify the Plugin nature nor does it contain any annotation processors." );
     } );
   }
 
@@ -1320,14 +1307,14 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
-                         "    nature: Plugin\n" +
+                         "    natures: [Plugin]\n" +
                          "    generatesApi: false\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final IllegalStateException exception =
         expectThrows( IllegalStateException.class, this::loadApplicationRecord );
       assertEquals( exception.getMessage(),
-                    "Artifact 'com.example:myapp:jar:1.0' has specified the 'generatesApi' configuration setting but is not a plugin or contains no annotation processors." );
+                    "Artifact 'com.example:myapp:jar:1.0' has specified the 'generatesApi' configuration setting but does not specify the Plugin nature nor does it contain any annotation processors." );
     } );
   }
 
@@ -1353,7 +1340,7 @@ public class ApplicationRecordTest
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getNature(), Nature.Plugin );
+      assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Plugin ) );
       assertFalse( artifactRecord.generatesApi() );
     } );
   }
@@ -1584,7 +1571,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void artifactWithDefaultLanguage()
+  public void artifactWithDefaultNature()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -1599,12 +1586,12 @@ public class ApplicationRecordTest
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
-      assertEquals( artifactRecord.getLanguages(), Collections.singletonList( Language.Java ) );
+      assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
     } );
   }
 
   @Test
-  public void artifactWithSpecifiedDefaultLanguage()
+  public void artifactWithSpecifiedDefaultNature()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -1612,7 +1599,7 @@ public class ApplicationRecordTest
 
       writeDependencies( dir,
                          "options:\n" +
-                         "  defaultLanguage: J2cl\n" +
+                         "  defaultNature: J2cl\n" +
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
@@ -1621,12 +1608,12 @@ public class ApplicationRecordTest
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
-      assertEquals( artifactRecord.getLanguages(), Collections.singletonList( Language.J2cl ) );
+      assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.J2cl ) );
     } );
   }
 
   @Test
-  public void artifactWithSpecifiedLanguage()
+  public void artifactWithSpecifiedNature()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -1635,14 +1622,14 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
-                         "    languages: [J2cl]\n" );
+                         "    natures: [J2cl]\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
-      assertEquals( artifactRecord.getLanguages(), Collections.singletonList( Language.J2cl ) );
+      assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.J2cl ) );
     } );
   }
 

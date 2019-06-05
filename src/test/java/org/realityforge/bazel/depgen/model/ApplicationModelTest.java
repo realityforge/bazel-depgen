@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.util.List;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
-import org.realityforge.bazel.depgen.config.Language;
+import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -152,8 +152,8 @@ public class ApplicationModelTest
     config1.setOptions( options );
     final String shaB = ApplicationModel.calculateConfigSha256( config1 );
     assertEquals( shaB, "1473761ABB0E15C32E8D598B873750FAD3B57B737B7FF5C49A846EA921C80801" );
-    options.setDefaultLanguage( Language.Java );
+    options.setDefaultNature( Nature.Java );
     final String shaC = ApplicationModel.calculateConfigSha256( config1 );
-    assertEquals( shaC, "EEEABA82F5A2571624A4A9A618FABA203EF655CE4E26FE3247B0650BABC52ADB" );
+    assertEquals( shaC, "C60262623878C465934DD29FBEF0EA8C7C0FD4CA29ED6F87177D2672BE75AC59" );
   }
 }
