@@ -556,6 +556,11 @@ public final class ArtifactRecord
         emitAlias( output, suffix );
         emitJavaImport( output, suffix );
       }
+      else if ( Nature.J2cl == nature )
+      {
+        emitAlias( output, suffix );
+        writeJ2clLibrary( output, suffix );
+      }
       else //if ( Nature.Plugin == nature )
       {
         assert Nature.Plugin == nature;
