@@ -548,8 +548,13 @@ public final class ArtifactRecord
   {
     assert null == getReplacementModel();
     final Nature defaultNature = _application.getSource().getOptions().getDefaultNature();
+    int round = 0;
     for ( final Nature nature : getNatures() )
     {
+      if ( round++ > 0 )
+      {
+        output.newLine();
+      }
       final String suffix = nature.suffix( getNatures().size() > 1, defaultNature );
       if ( Nature.Java == nature )
       {

@@ -1014,6 +1014,46 @@ public class ArtifactRecordTest
     } );
   }
 
+  @Test
+  public void writeArtifactTargets_multipleNatures()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl, Java]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.writeArtifactTargets( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "native.alias(\n" +
+                    "    name = \"com_example__myapp-j2cl\",\n" +
+                    "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
+                    ")\n" +
+                    "j2cl_library(\n" +
+                    "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                    "    srcs = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" +
+                    "\n" +
+                    "native.alias(\n" +
+                    "    name = \"com_example__myapp\",\n" +
+                    "    actual = \":com_example__myapp__1_0\",\n" +
+                    ")\n" +
+                    "native.java_import(\n" +
+                    "    name = \"com_example__myapp__1_0\",\n" +
+                    "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
   @Nonnull
   private ArtifactRecord getArtifactAt( @Nonnull final ApplicationRecord record, final int index )
   {
