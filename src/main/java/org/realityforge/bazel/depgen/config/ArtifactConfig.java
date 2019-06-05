@@ -27,7 +27,7 @@ public final class ArtifactConfig
   @Nullable
   private List<Nature> natures;
   @Nullable
-  private ArtifactJ2clConfig j2cl;
+  private J2clConfig j2cl;
 
   @Nullable
   public String getCoord()
@@ -129,12 +129,12 @@ public final class ArtifactConfig
   }
 
   @Nullable
-  public ArtifactJ2clConfig getJ2cl()
+  public J2clConfig getJ2cl()
   {
     return j2cl;
   }
 
-  public void setJ2cl( @Nonnull final ArtifactJ2clConfig j2cl )
+  public void setJ2cl( @Nonnull final J2clConfig j2cl )
   {
     this.j2cl = Objects.requireNonNull( j2cl );
   }

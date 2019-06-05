@@ -3,7 +3,7 @@ package org.realityforge.bazel.depgen.config;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public final class ArtifactJ2clConfig
+public final class J2clConfig
 {
   @Nullable
   private List<String> suppress;

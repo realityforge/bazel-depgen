@@ -144,7 +144,7 @@ public class ApplicationConfigTest
       final List<Nature> natures = artifact.getNatures();
       assertNotNull( natures );
       assertEquals( natures, Collections.singletonList( Nature.J2cl ) );
-      final ArtifactJ2clConfig j2cl = artifact.getJ2cl();
+      final J2clConfig j2cl = artifact.getJ2cl();
       assertNotNull( j2cl );
       assertEquals( j2cl.getSuppress(), Arrays.asList( "checkDebuggerStatement", "other" ) );
     } );
