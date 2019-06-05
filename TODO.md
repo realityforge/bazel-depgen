@@ -52,7 +52,6 @@ complete as there is too much un-said.
   control how artifacts are defined. Artifacts may support multiple natures.
   - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
   - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
-  - Per-nature can appear globally or per-artifact. (i.e. `j2cl: {suppress: 'debuggerStatement'}`)
   - Different natures will have different rules regarding propagation. i.e. `J2cl` forces all dependencies to
     be `j2cl` as well and if we reach a declared artifact as a dependency that does not have the `j2cl` nature
     then we generate an error.
