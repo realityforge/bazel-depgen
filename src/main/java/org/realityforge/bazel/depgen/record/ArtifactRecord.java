@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
+import org.realityforge.bazel.depgen.config.J2clConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.PluginConfig;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
@@ -443,6 +444,35 @@ public final class ArtifactRecord
                      deps.stream().map( a -> "\":" + a.getLabel() + "\"" ).sorted().collect( Collectors.toList() ) );
     }
     output.writeCall( "native.java_import", arguments );
+  }
+
+  void writeJ2clLibrary( @Nonnull final StarlarkOutput output, @Nonnull final String nameSuffix )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + getName() + nameSuffix + "\"" );
+    arguments.put( "srcs", Collections.singletonList( "\"@" + getName() + "//file\"" ) );
+    //TODO: Add native_srcs that includes the native.js extracted from the artifact?
+    final J2clConfig j2clConfig = null != _artifactModel ? _artifactModel.getSource().getJ2cl() : null;
+    if ( null != j2clConfig )
+    {
+      final List<String> suppress = j2clConfig.getSuppress();
+      if ( null != suppress )
+      {
+        arguments.put( "js_suppress", suppress );
+      }
+    }
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    final List<ArtifactRecord> deps = getDeps();
+    if ( !deps.isEmpty() )
+    {
+      arguments.put( "deps",
+                     deps.stream()
+                       .map( a -> "\":" + a.getLabel() + nameSuffix + "\"" )
+                       .sorted()
+                       .collect( Collectors.toList() ) );
+    }
+    output.writeCall( "j2cl_library", arguments );
   }
 
   void emitJavaPlugin( @Nonnull final StarlarkOutput output, @Nullable final String processorClass )
