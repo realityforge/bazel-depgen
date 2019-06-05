@@ -564,8 +564,6 @@ public class ArtifactRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
-                              "    natures: [J2cl]\n" +
-                              "  - coord: com.example:mylib:1.0\n" +
                               "    natures: [J2cl]\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
@@ -593,10 +591,6 @@ public class ArtifactRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
-                              "    natures: [J2cl]\n" +
-                              "  - coord: com.example:mylib:1.0\n" +
-                              "    natures: [J2cl]\n" +
-                              "  - coord: com.example:mylib2:1.0\n" +
                               "    natures: [J2cl]\n" );
       deployTempArtifactToLocalRepository( dir,
                                            "com.example:myapp:1.0",
