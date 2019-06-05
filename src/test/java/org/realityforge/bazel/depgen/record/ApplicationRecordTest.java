@@ -1260,7 +1260,8 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
-                         "    generatesApi: true\n" );
+                         "    plugin:\n" +
+                         "      generatesApi: true\n" );
       final Path jarFile =
         createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                        "react4j.processor.ReactProcessor\n" +
@@ -1287,13 +1288,14 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
-                         "    generatesApi: false\n" );
+                         "    plugin:\n" +
+                         "      generatesApi: false\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final IllegalStateException exception =
         expectThrows( IllegalStateException.class, this::loadApplicationRecord );
       assertEquals( exception.getMessage(),
-                    "Artifact 'com.example:myapp:jar:1.0' has specified the 'generatesApi' configuration setting but does not specify the Plugin nature nor does it contain any annotation processors." );
+                    "Artifact 'com.example:myapp:jar:1.0' has specified 'plugin' configuration but does not specify the Plugin nature nor does it contain any annotation processors." );
     } );
   }
 
@@ -1308,13 +1310,14 @@ public class ApplicationRecordTest
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
                          "    natures: [Plugin]\n" +
-                         "    generatesApi: false\n" );
+                         "    plugin:\n" +
+                         "      generatesApi: false\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final IllegalStateException exception =
         expectThrows( IllegalStateException.class, this::loadApplicationRecord );
       assertEquals( exception.getMessage(),
-                    "Artifact 'com.example:myapp:jar:1.0' has specified the 'generatesApi' configuration setting but does not specify the Plugin nature nor does it contain any annotation processors." );
+                    "Artifact 'com.example:myapp:jar:1.0' has specified 'plugin' configuration but does not specify the Plugin nature nor does it contain any annotation processors." );
     } );
   }
 
@@ -1328,7 +1331,8 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
-                         "    generatesApi: false\n" );
+                         "    plugin:\n" +
+                         "      generatesApi: false\n" );
       final Path jarFile =
         createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                        "react4j.processor.ReactProcessor\n" +

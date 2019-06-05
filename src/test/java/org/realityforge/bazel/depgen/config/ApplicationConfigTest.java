@@ -210,13 +210,17 @@ public class ApplicationConfigTest
     inIsolatedDirectory( () -> {
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
-                         "    generatesApi: true\n" );
+                         "    plugin:\n" +
+                         "      generatesApi: false\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final ArtifactConfig artifact = ensureSingleArtifact( config );
       assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
-      assertNotNull( artifact.getGeneratesApi() );
-      assertTrue( artifact.getGeneratesApi() );
+      final PluginConfig plugin = artifact.getPlugin();
+      assertNotNull( plugin );
+      final Boolean generatesApi = plugin.getGeneratesApi();
+      assertNotNull( generatesApi );
+      assertFalse( generatesApi );
     } );
   }
 

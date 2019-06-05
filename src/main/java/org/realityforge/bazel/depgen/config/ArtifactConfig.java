@@ -19,8 +19,6 @@ public final class ArtifactConfig
   @Nullable
   private Boolean exportDeps;
   @Nullable
-  private Boolean generatesApi;
-  @Nullable
   private List<String> excludes;
   @Nullable
   private List<String> visibility;
@@ -28,6 +26,8 @@ public final class ArtifactConfig
   private List<Nature> natures;
   @Nullable
   private J2clConfig j2cl;
+  @Nullable
+  private PluginConfig plugin;
 
   @Nullable
   public String getCoord()
@@ -85,17 +85,6 @@ public final class ArtifactConfig
   }
 
   @Nullable
-  public Boolean getGeneratesApi()
-  {
-    return generatesApi;
-  }
-
-  public void setGeneratesApi( @Nonnull final Boolean generatesApi )
-  {
-    this.generatesApi = Objects.requireNonNull( generatesApi );
-  }
-
-  @Nullable
   public List<String> getExcludes()
   {
     return excludes;
@@ -137,5 +126,16 @@ public final class ArtifactConfig
   public void setJ2cl( @Nonnull final J2clConfig j2cl )
   {
     this.j2cl = Objects.requireNonNull( j2cl );
+  }
+
+  @Nullable
+  public PluginConfig getPlugin()
+  {
+    return plugin;
+  }
+
+  public void setPlugin( @Nonnull final PluginConfig plugin )
+  {
+    this.plugin = Objects.requireNonNull( plugin );
   }
 }

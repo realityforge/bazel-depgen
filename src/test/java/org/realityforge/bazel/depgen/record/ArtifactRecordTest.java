@@ -481,7 +481,8 @@ public class ArtifactRecordTest
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [Plugin]\n" +
-                              "    generatesApi: false\n" );
+                              "    plugin:\n" +
+                              "      generatesApi: false\n" );
       final Path jarFile =
         createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                        "arez.processor.ArezProcessor\n" );

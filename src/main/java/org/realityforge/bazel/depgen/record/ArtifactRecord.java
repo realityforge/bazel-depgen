@@ -15,6 +15,7 @@ import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.Nature;
+import org.realityforge.bazel.depgen.config.PluginConfig;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
 import org.realityforge.bazel.depgen.util.ArtifactUtil;
@@ -174,7 +175,8 @@ public final class ArtifactRecord
     }
     else
     {
-      final Boolean generatesApi = _artifactModel.getSource().getGeneratesApi();
+      final PluginConfig plugin = _artifactModel.getSource().getPlugin();
+      final Boolean generatesApi = null == plugin ? null : plugin.getGeneratesApi();
       return null == generatesApi ? true : generatesApi;
     }
   }
