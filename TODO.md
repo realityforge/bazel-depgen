@@ -56,6 +56,7 @@ complete as there is too much un-said.
     be `j2cl` as well and if we reach a declared artifact as a dependency that does not have the `j2cl` nature
     then we generate an error.
   - Add `j2cl.mode = Import|Library` configuration so that annotation only libraries can be directly imported.
+  - Replacements targets should have a nature associated with them. So each target is replaced only if target matches.
 
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
 
