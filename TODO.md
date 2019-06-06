@@ -52,9 +52,6 @@ complete as there is too much un-said.
   control how artifacts are defined. Artifacts may support multiple natures.
   - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
   - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
-  - Different natures will have different rules regarding propagation. i.e. `J2cl` forces all dependencies to
-    be `j2cl` as well and if we reach a declared artifact as a dependency that does not have the `j2cl` nature
-    then we generate an error.
   - Add `j2cl.mode = Import|Library` configuration so that annotation only libraries can be directly imported.
   - Replacements targets should have a nature associated with them. So each target is replaced only if target matches.
 
