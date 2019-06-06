@@ -11,7 +11,7 @@ complete as there is too much un-said.
   documentation for each option. Note that the `exportDeps` configuration potentially limits scalability of
   builds as it results in deep dependency trees. Consider also generating initial `WORKSPACE` if a walk through
   parent directories does not locate one.
-  
+
   `init --no-create-workspace`
 
 * Add `info` command that displays all the parameters passed into tool. This includes the
