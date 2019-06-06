@@ -43,7 +43,51 @@ public final class ApplicationRecord
     final ApplicationRecord record = new ApplicationRecord( model, node, authenticationContexts );
     node.accept( new DependencyCollector( record, callback ) );
     ensureAliasesAreUnique( record );
+    propagateJ2clNature( record );
     return record;
+  }
+
+  private static void propagateJ2clNature( @Nonnull final ApplicationRecord record )
+  {
+    for ( final ArtifactRecord artifact : record.getArtifacts() )
+    {
+      if ( null != artifact.getArtifactModel() && artifact.getNatures().contains( Nature.J2cl ) )
+      {
+        checkTransitiveJ2clNature( artifact, artifact );
+      }
+    }
+  }
+
+  private static void checkTransitiveJ2clNature( @Nonnull final ArtifactRecord root,
+                                                 @Nonnull final ArtifactRecord artifact )
+  {
+    for ( final ArtifactRecord dependency : artifact.getDeps() )
+    {
+      if ( null == dependency.getReplacementModel() )
+      {
+        if ( null == dependency.getArtifactModel() )
+        {
+          if ( dependency.addNature( Nature.J2cl ) )
+          {
+            checkTransitiveJ2clNature( root, dependency );
+          }
+        }
+        else if ( !dependency.getNatures().contains( Nature.J2cl ) )
+        {
+          //Must be a declared dependency
+          final String message =
+            "Artifact '" + dependency.getArtifact() + "' does not specify the " +
+            "J2cl nature but is a " + ( root == artifact ? "direct" : "transitive" ) +
+            " dependency of '" + root.getArtifact() + "' which has the J2cl nature. This is " +
+            "not a supported scenario.";
+          throw new IllegalStateException( message );
+        }
+      }
+      else
+      {
+        //TODO: Verify replacement has j2cl nature
+      }
+    }
   }
 
   private static void ensureAliasesAreUnique( @Nonnull final ApplicationRecord record )

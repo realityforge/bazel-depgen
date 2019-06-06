@@ -652,6 +652,170 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void propagateJ2clNature()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 3 );
+
+      assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
+                    Collections.singletonList( Nature.J2cl ) );
+      assertEquals( record.getArtifact( "com.example", "mylib" ).getNatures(),
+                    Collections.singletonList( Nature.J2cl ) );
+      assertEquals( record.getArtifact( "com.example", "base" ).getNatures(),
+                    Collections.singletonList( Nature.J2cl ) );
+    } );
+  }
+
+  @Test
+  public void propagateJ2clNature_viaDefaultNature()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "options:\n" +
+                              "  defaultNature: J2cl\n" +
+                              "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 3 );
+
+      assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
+                    Collections.singletonList( Nature.J2cl ) );
+      assertEquals( record.getArtifact( "com.example", "mylib" ).getNatures(),
+                    Collections.singletonList( Nature.J2cl ) );
+      assertEquals( record.getArtifact( "com.example", "base" ).getNatures(),
+                    Collections.singletonList( Nature.J2cl ) );
+    } );
+  }
+
+  @Test
+  public void propagateJ2clNature_declaredTransitivelyPresent()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl]\n" +
+                              "  - coord: com.example:base:1.0\n" +
+                              "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 3 );
+
+      assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
+                    Collections.singletonList( Nature.J2cl ) );
+      assertEquals( record.getArtifact( "com.example", "mylib" ).getNatures(),
+                    Collections.singletonList( Nature.J2cl ) );
+      assertEquals( record.getArtifact( "com.example", "base" ).getNatures(),
+                    Collections.singletonList( Nature.J2cl ) );
+    } );
+  }
+
+  @Test
+  public void propagateJ2clNature_replacementPresent()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl]\n" +
+                              "  - coord: com.example:base:1.0\n" +
+                              "replacements:\n" +
+                              "  - coord: com.example:mylib\n" +
+                              "    target: \"@com_example//:mylib\"\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 3 );
+
+      assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
+                    Collections.singletonList( Nature.J2cl ) );
+      // TODO: Figure out the nature of replacement or if replacement supports nature
+      //assertEquals( record.getArtifact( "com.example", "mylib" ).getNatures(),
+      //              Collections.singletonList( Nature.J2cl ) );
+      assertEquals( record.getArtifact( "com.example", "base" ).getNatures(),
+                    Collections.singletonList( Nature.Java ) );
+    } );
+  }
+
+  @Test
+  public void propagateJ2clNature_transitiveNonJ2clDependency()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl]\n" +
+                              "  - coord: com.example:base:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+      final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+
+      assertEquals( exception.getMessage(),
+                    "Artifact 'com.example:base:jar:1.0' does not specify the J2cl nature but is a transitive dependency of 'com.example:myapp:jar:1.0' which has the J2cl nature. This is not a supported scenario." );
+    } );
+  }
+
+  @Test
+  public void propagateJ2clNature_directNonJ2clDependency()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl]\n" +
+                              "  - coord: com.example:mylib:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+      final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+
+      assertEquals( exception.getMessage(),
+                    "Artifact 'com.example:mylib:jar:1.0' does not specify the J2cl nature but is a direct dependency of 'com.example:myapp:jar:1.0' which has the J2cl nature. This is not a supported scenario." );
+    } );
+  }
+
+  @Test
   public void depsAreSorted()
     throws Exception
   {
@@ -2225,6 +2389,94 @@ public class ApplicationRecordTest
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                     "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                    "        visibility = [\"//visibility:private\"],\n" +
+                    "    )\n" );
+    } );
+  }
+
+  @Test
+  public void writeBazelExtension_j2cl_withDependencies()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      final List<String> urls1 = artifacts.get( 0 ).getUrls();
+      assertNotNull( urls1 );
+      final List<String> urls2 = artifacts.get( 1 ).getUrls();
+      assertNotNull( urls2 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      record.writeBazelExtension( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "# DO NOT EDIT: File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                    "\n" +
+                    "\"\"\"\n" +
+                    "    Macro rules to load dependencies defined in '../dependencies.yml'.\n" +
+                    "\n" +
+                    "    Invoke 'generate_workspace_rules' from a WORKSPACE file.\n" +
+                    "    Invoke 'generate_targets' from a BUILD.bazel file.\n" +
+                    "\"\"\"\n" +
+                    "# Dependency Graph Generated from the input data\n" +
+                    "# \\- com.example:myapp:jar:1.0 [compile]\n" +
+                    "#    \\- com.example:mylib:jar:1.0 [compile]\n" +
+                    "\n" +
+                    "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                    "load(\"@com_google_j2cl//build_defs:rules.bzl\", \"j2cl_library\")\n" +
+                    "\n" +
+                    "def generate_workspace_rules():\n" +
+                    "    \"\"\"\n" +
+                    "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                    "\n" +
+                    "        Must be run from a WORKSPACE file.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + urls1.get( 0 ) + "\"],\n" +
+                    "    )\n" +
+                    "\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__mylib__1_0\",\n" +
+                    "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + urls2.get( 0 ) + "\"],\n" +
+                    "    )\n" +
+                    "\n" +
+                    "def generate_targets():\n" +
+                    "    \"\"\"\n" +
+                    "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                    "    \"\"\"\n" +
+                    "\n" +
+                    "    native.alias(\n" +
+                    "        name = \"com_example__myapp-j2cl\",\n" +
+                    "        actual = \":com_example__myapp__1_0-j2cl\",\n" +
+                    "    )\n" +
+                    "    j2cl_library(\n" +
+                    "        name = \"com_example__myapp__1_0-j2cl\",\n" +
+                    "        srcs = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "        visibility = [\"//visibility:private\"],\n" +
+                    "        deps = [\":com_example__mylib-j2cl\"],\n" +
+                    "    )\n" +
+                    "\n" +
+                    "    native.alias(\n" +
+                    "        name = \"com_example__mylib-j2cl\",\n" +
+                    "        actual = \":com_example__mylib__1_0-j2cl\",\n" +
+                    "        visibility = [\"//visibility:private\"],\n" +
+                    "    )\n" +
+                    "    j2cl_library(\n" +
+                    "        name = \"com_example__mylib__1_0-j2cl\",\n" +
+                    "        srcs = [\"@com_example__mylib__1_0//file\"],\n" +
                     "        visibility = [\"//visibility:private\"],\n" +
                     "    )\n" );
     } );

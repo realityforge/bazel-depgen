@@ -41,6 +41,9 @@ public final class ArtifactRecord
   private final ArtifactModel _artifactModel;
   @Nullable
   private final ReplacementModel _replacementModel;
+  // Natures is non-null if _artifactModel and _replacementModel are null
+  @Nullable
+  private final List<Nature> _natures;
   @Nullable
   private final String _sha256;
   @Nullable
@@ -76,6 +79,7 @@ public final class ArtifactRecord
     assert null == artifactModel || null == replacementModel;
     _application = Objects.requireNonNull( application );
     _node = Objects.requireNonNull( node );
+    _natures = null == artifactModel && null == replacementModel ? new ArrayList<>() : null;
     if ( null == replacementModel )
     {
       _sha256 = Objects.requireNonNull( sha256 );
@@ -158,11 +162,33 @@ public final class ArtifactRecord
   {
     if ( null == _artifactModel )
     {
-      return Collections.singletonList( getDefaultNature() );
+      if ( null != _natures && !_natures.isEmpty() )
+      {
+        return Collections.unmodifiableList( _natures );
+      }
+      else
+      {
+        return Collections.singletonList( getDefaultNature() );
+      }
     }
     else
     {
       return _artifactModel.getNatures( getDefaultNature() );
+    }
+  }
+
+  @SuppressWarnings( "SameParameterValue" )
+  boolean addNature( @Nonnull final Nature nature )
+  {
+    assert null == _artifactModel && null == _replacementModel && null != _natures;
+    if ( !_natures.contains( nature ) )
+    {
+      _natures.add( nature );
+      return true;
+    }
+    else
+    {
+      return false;
     }
   }
 
