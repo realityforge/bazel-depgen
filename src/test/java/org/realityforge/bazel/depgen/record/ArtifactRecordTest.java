@@ -600,7 +600,7 @@ public class ArtifactRecordTest
                     "j2cl_library(\n" +
                     "    name = \"com_example__myapp__1_0-j2cl\",\n" +
                     "    srcs = [\"@com_example__myapp__1_0//file\"],\n" +
-                    "    js_suppress = [checkDebuggerStatement],\n" +
+                    "    js_suppress = [\"checkDebuggerStatement\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );
     } );

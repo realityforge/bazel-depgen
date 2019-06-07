@@ -525,7 +525,7 @@ public final class ArtifactRecord
       final List<String> suppress = j2clConfig.getSuppress();
       if ( null != suppress )
       {
-        arguments.put( "js_suppress", suppress );
+        arguments.put( "js_suppress", suppress.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
       }
     }
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
