@@ -55,6 +55,9 @@ complete as there is too much un-said.
   - Add `j2cl.mode = Import|Library` configuration so that annotation only libraries can be directly imported.
   - Replacements targets should have a nature associated with them. So each target is replaced only if target matches.
 
+* The `ArtifactRecord.getAlias()` method should accept a `Nature` parameter and should perform the suffixing
+  in there rather than scattered through the emit methods.
+
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
 
 * Optionally pass output through [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier).
