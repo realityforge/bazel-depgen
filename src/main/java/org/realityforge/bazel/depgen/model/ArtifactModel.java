@@ -157,12 +157,6 @@ public final class ArtifactModel
     return null != _version;
   }
 
-  @Nullable
-  public String getAlias()
-  {
-    return _source.getAlias();
-  }
-
   @Nonnull
   public List<Nature> getNatures( @Nonnull final Nature defaultNature )
   {

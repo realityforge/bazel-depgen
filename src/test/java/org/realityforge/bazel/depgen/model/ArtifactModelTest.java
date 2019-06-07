@@ -26,7 +26,6 @@ public class ArtifactModelTest
     assertNull( model.getVersion() );
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
-    assertNull( model.getAlias() );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -49,7 +48,6 @@ public class ArtifactModelTest
     assertEquals( model.getVersion(), "1.0" );
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
-    assertNull( model.getAlias() );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -72,7 +70,6 @@ public class ArtifactModelTest
     assertEquals( model.getVersion(), "1.0" );
     assertEquals( model.getType(), "jszip" );
     assertNull( model.getClassifier() );
-    assertNull( model.getAlias() );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -95,7 +92,6 @@ public class ArtifactModelTest
     assertEquals( model.getVersion(), "1.0" );
     assertEquals( model.getType(), "jszip" );
     assertEquals( model.getClassifier(), "sources" );
-    assertNull( model.getAlias() );
     assertFalse( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -145,7 +141,6 @@ public class ArtifactModelTest
     assertNull( model.getVersion() );
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
-    assertNull( model.getAlias() );
     assertTrue( model.includeOptional() );
     assertTrue( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );
@@ -184,20 +179,6 @@ public class ArtifactModelTest
   }
 
   @Test
-  public void parseArtifactWithAlias()
-  {
-    final ArtifactConfig source = new ArtifactConfig();
-    source.setCoord( "com.example:myapp" );
-    source.setAlias( "my-app" );
-
-    final ArtifactModel model = ArtifactModel.parse( source );
-    assertEquals( model.getSource(), source );
-    assertEquals( model.getGroup(), "com.example" );
-    assertEquals( model.getId(), "myapp" );
-    assertEquals( model.getAlias(), "my-app" );
-  }
-
-  @Test
   public void parseArtifactWithNature()
   {
     final ArtifactConfig source = new ArtifactConfig();
@@ -226,7 +207,6 @@ public class ArtifactModelTest
     assertNull( model.getVersion() );
     assertEquals( model.getType(), "jar" );
     assertNull( model.getClassifier() );
-    assertNull( model.getAlias() );
     assertFalse( model.includeOptional() );
     assertFalse( model.includeSource( true ) );
     assertFalse( model.exportDeps( false ) );

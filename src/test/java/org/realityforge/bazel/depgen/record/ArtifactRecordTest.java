@@ -368,31 +368,6 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitAlias_AliasSpecified()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createLocalTempDir();
-
-      writeDependencies( dir,
-                         "artifacts:\n" +
-                         "  - coord: com.example:myapp:1.0\n" +
-                         "    alias: my_super_dooper_app\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
-
-      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
-
-      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), "" );
-      assertEquals( asString( outputStream ),
-                    "native.alias(\n" +
-                    "    name = \"my_super_dooper_app\",\n" +
-                    "    actual = \":com_example__myapp__1_0\",\n" +
-                    ")\n" );
-    } );
-  }
-
-  @Test
   public void emitAlias_forUndeclaredDependency()
     throws Exception
   {

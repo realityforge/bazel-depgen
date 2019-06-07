@@ -225,25 +225,6 @@ public class ApplicationConfigTest
   }
 
   @Test
-  public void parseDependencyWithAlias()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "artifacts:\n" +
-                         "  - coord: org.realityforge.gir:gir-core:0.08\n" +
-                         "    alias: mighty-gir-core\n" );
-      final ApplicationConfig config = loadApplicationConfig();
-      final List<ArtifactConfig> artifacts = config.getArtifacts();
-      assertNotNull( artifacts );
-
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactConfig artifact = artifacts.get( 0 );
-      assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:0.08" );
-      assertEquals( artifact.getAlias(), "mighty-gir-core" );
-    } );
-  }
-
-  @Test
   public void parseOptions()
     throws Exception
   {

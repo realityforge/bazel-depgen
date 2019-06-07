@@ -1563,29 +1563,6 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void getAlias_withExplicitAlias()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createLocalTempDir();
-
-      writeDependencies( dir,
-                         "artifacts:\n" +
-                         "  - coord: com.example:myapp:1.0\n" +
-                         "    alias: my-app\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
-
-      final ApplicationRecord record = loadApplicationRecord();
-      final List<ArtifactRecord> artifacts = record.getArtifacts();
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactRecord artifactRecord = artifacts.get( 0 );
-      assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
-      assertEquals( artifactRecord.getAlias(), "my_app" );
-    } );
-  }
-
-  @Test
   public void loadWhereDuplicateAliasesExist()
     throws Exception
   {
@@ -1604,42 +1581,6 @@ public class ApplicationRecordTest
       final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
       assertEquals( exception.getMessage(),
                     "Multiple artifacts have the same alias 'core' which is not supported. Either change the aliasStrategy option or explicitly specify the alias for the artifacts 'com.example.app1:core:jar:42.0' and 'com.example.app2:core:jar:37.0'." );
-    } );
-  }
-
-  @Test
-  public void loadWhereDuplicateAliasesWorkedAroundViaExplicitAlias()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createLocalTempDir();
-
-      writeDependencies( dir,
-                         "options:\n" +
-                         "  aliasStrategy: ArtifactId\n" +
-                         "artifacts:\n" +
-                         "  - coord: com.example.app1:core:42.0\n" +
-                         "    alias: app1-core\n" +
-                         "  - coord: com.example.app2:core:37.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
-
-      final ApplicationRecord record = loadApplicationRecord();
-
-      final List<ArtifactRecord> artifacts = record.getArtifacts();
-      assertEquals( artifacts.size(), 2 );
-      assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                    "com.example.app1:core,com.example.app2:core" );
-
-      final ArtifactRecord artifactRecord1 = artifacts.get( 0 );
-      assertEquals( artifactRecord1.getKey(), "com.example.app1:core" );
-      assertEquals( artifactRecord1.getName(), "com_example_app1__core__42_0" );
-      assertEquals( artifactRecord1.getAlias(), "app1_core" );
-
-      final ArtifactRecord artifactRecord2 = artifacts.get( 1 );
-      assertEquals( artifactRecord2.getKey(), "com.example.app2:core" );
-      assertEquals( artifactRecord2.getName(), "com_example_app2__core__37_0" );
-      assertEquals( artifactRecord2.getAlias(), "core" );
     } );
   }
 

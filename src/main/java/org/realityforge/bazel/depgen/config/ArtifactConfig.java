@@ -11,8 +11,6 @@ public final class ArtifactConfig
   @Nullable
   private String coord;
   @Nullable
-  private String alias;
-  @Nullable
   private Boolean includeOptional;
   @Nullable
   private Boolean includeSource;
@@ -38,17 +36,6 @@ public final class ArtifactConfig
   public void setCoord( @Nonnull final String coord )
   {
     this.coord = Objects.requireNonNull( coord );
-  }
-
-  @Nullable
-  public String getAlias()
-  {
-    return alias;
-  }
-
-  public void setAlias( @Nonnull final String alias )
-  {
-    this.alias = Objects.requireNonNull( alias );
   }
 
   @Nullable
