@@ -192,12 +192,6 @@ public final class ArtifactRecord
     }
   }
 
-  @Nonnull
-  private Nature getDefaultNature()
-  {
-    return null != getProcessors() ? Nature.Plugin : _application.getSource().getOptions().getDefaultNature();
-  }
-
   boolean generatesApi()
   {
     if ( null == _artifactModel )
@@ -643,5 +637,11 @@ public final class ArtifactRecord
     assert null != urls && !urls.isEmpty();
     arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
     output.writeCall( "http_file", arguments );
+  }
+
+  @Nonnull
+  private Nature getDefaultNature()
+  {
+    return null != getProcessors() ? Nature.Plugin : _application.getSource().getOptions().getDefaultNature();
   }
 }
