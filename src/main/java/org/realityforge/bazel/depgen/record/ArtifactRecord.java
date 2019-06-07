@@ -134,7 +134,7 @@ public final class ArtifactRecord
   String getAlias()
   {
     final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
-    final AliasStrategy aliasStrategy = _application.getSource().getOptions().getAliasStrategy();
+    final AliasStrategy aliasStrategy = getAliasStrategy();
     if ( AliasStrategy.GroupIdAndArtifactId == aliasStrategy )
     {
       return getNamePrefix() +
@@ -147,6 +147,13 @@ public final class ArtifactRecord
       assert AliasStrategy.ArtifactId == aliasStrategy;
       return getNamePrefix() + BazelUtil.cleanNamePart( artifact.getArtifactId() );
     }
+  }
+
+  @Nonnull
+  AliasStrategy getAliasStrategy()
+  {
+    final AliasStrategy aliasStrategy = null != _artifactModel ? _artifactModel.getSource().getAliasStrategy() : null;
+    return null == aliasStrategy ? _application.getSource().getOptions().getAliasStrategy() : aliasStrategy;
   }
 
   @Nonnull

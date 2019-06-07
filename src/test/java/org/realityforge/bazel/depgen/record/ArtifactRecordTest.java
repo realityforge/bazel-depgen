@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -291,6 +292,79 @@ public class ArtifactRecordTest
                       "    visibility = [\"//visibility:private\"],\n" +
                       ")\n" );
       }
+    } );
+  }
+
+  @Test
+  public void getAliasStrategy_implicit()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+      assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.GroupIdAndArtifactId );
+      assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+    } );
+  }
+
+  @Test
+  public void getAliasStrategy_locallySpecified_GroupIdAndArtifactId()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    aliasStrategy: GroupIdAndArtifactId\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+      assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.GroupIdAndArtifactId );
+      assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+    } );
+  }
+
+  @Test
+  public void getAliasStrategy_locallySpecified_ArtifactId()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "options:\n" +
+                         "  aliasStrategy: ArtifactId\n" +
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+      assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.ArtifactId );
+      assertEquals( artifactRecord.getAlias(), "myapp" );
+    } );
+  }
+
+  @Test
+  public void getAliasStrategy_globallySpecified_ArtifactId()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    aliasStrategy: ArtifactId\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+      assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.ArtifactId );
+      assertEquals( artifactRecord.getAlias(), "myapp" );
     } );
   }
 

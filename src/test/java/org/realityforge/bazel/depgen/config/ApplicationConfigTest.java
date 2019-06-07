@@ -170,6 +170,37 @@ public class ApplicationConfigTest
   }
 
   @Test
+  public void artifactWithAliasStrategy()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.arez:arez-core:0.138\n" +
+                         "    aliasStrategy: ArtifactId\n" );
+      final ApplicationConfig config = loadApplicationConfig();
+      assertNotNull( config );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
+      assertEquals( artifact.getCoord(), "org.realityforge.arez:arez-core:0.138" );
+      assertEquals( artifact.getAliasStrategy(), AliasStrategy.ArtifactId );
+    } );
+  }
+
+  @Test
+  public void artifactWithoutAliasStrategy()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.arez:arez-core:0.138\n" );
+      final ApplicationConfig config = loadApplicationConfig();
+      assertNotNull( config );
+      final ArtifactConfig artifact = ensureSingleArtifact( config );
+      assertEquals( artifact.getCoord(), "org.realityforge.arez:arez-core:0.138" );
+      assertNull( artifact.getAliasStrategy() );
+    } );
+  }
+
+  @Test
   public void parseDependencyWithIncludeOptional()
     throws Exception
   {

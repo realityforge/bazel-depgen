@@ -9,6 +9,8 @@ import javax.annotation.Nullable;
 public final class ArtifactConfig
 {
   @Nullable
+  private AliasStrategy aliasStrategy;
+  @Nullable
   private String coord;
   @Nullable
   private Boolean includeOptional;
@@ -26,6 +28,17 @@ public final class ArtifactConfig
   private J2clConfig j2cl;
   @Nullable
   private PluginConfig plugin;
+
+  @Nullable
+  public AliasStrategy getAliasStrategy()
+  {
+    return aliasStrategy;
+  }
+
+  public void setAliasStrategy( @Nonnull final AliasStrategy aliasStrategy )
+  {
+    this.aliasStrategy = Objects.requireNonNull( aliasStrategy );
+  }
 
   @Nullable
   public String getCoord()
