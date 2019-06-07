@@ -106,7 +106,7 @@ public final class ArtifactRecord
   }
 
   @Nonnull
-  public String getKey()
+  String getKey()
   {
     final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
     return artifact.getGroupId() + ":" + artifact.getArtifactId();
@@ -125,13 +125,13 @@ public final class ArtifactRecord
   }
 
   @Nonnull
-  public String getLabel()
+  String getLabel()
   {
     return null != _replacementModel ? _replacementModel.getTarget() : getAlias();
   }
 
   @Nonnull
-  public String getAlias()
+  String getAlias()
   {
     final String declaredAlias = null != _artifactModel ? _artifactModel.getAlias() : null;
     if ( null != declaredAlias )
@@ -158,7 +158,7 @@ public final class ArtifactRecord
   }
 
   @Nonnull
-  public List<Nature> getNatures()
+  List<Nature> getNatures()
   {
     if ( null == _artifactModel )
     {
@@ -198,7 +198,7 @@ public final class ArtifactRecord
     return null != getProcessors() ? Nature.Plugin : _application.getSource().getOptions().getDefaultNature();
   }
 
-  public boolean generatesApi()
+  boolean generatesApi()
   {
     if ( null == _artifactModel )
     {
@@ -219,7 +219,7 @@ public final class ArtifactRecord
   }
 
   @Nonnull
-  public String getMavenCoordinatesBazelTag()
+  String getMavenCoordinatesBazelTag()
   {
     final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
     return artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion();
@@ -232,7 +232,7 @@ public final class ArtifactRecord
   }
 
   @Nonnull
-  public DependencyNode getNode()
+  DependencyNode getNode()
   {
     return _node;
   }
@@ -256,7 +256,7 @@ public final class ArtifactRecord
    * @return the urls.
    */
   @Nullable
-  public List<String> getUrls()
+  List<String> getUrls()
   {
     return _urls;
   }
@@ -282,7 +282,7 @@ public final class ArtifactRecord
    * @return the urls.
    */
   @Nullable
-  public List<String> getSourceUrls()
+  List<String> getSourceUrls()
   {
     return _sourceUrls;
   }
@@ -296,7 +296,7 @@ public final class ArtifactRecord
    * @return the model if any.
    */
   @Nullable
-  public ArtifactModel getArtifactModel()
+  ArtifactModel getArtifactModel()
   {
     return _artifactModel;
   }
@@ -319,13 +319,13 @@ public final class ArtifactRecord
    * @return the name of any annotation processors that this artifact defines.
    */
   @Nullable
-  public List<String> getProcessors()
+  List<String> getProcessors()
   {
     return _processors;
   }
 
   @Nonnull
-  public List<ArtifactRecord> getDeps()
+  List<ArtifactRecord> getDeps()
   {
     if ( null == _depsCache )
     {
@@ -344,7 +344,7 @@ public final class ArtifactRecord
   }
 
   @Nonnull
-  public List<ArtifactRecord> getReverseDeps()
+  List<ArtifactRecord> getReverseDeps()
   {
     if ( null == _reverseDepsCache )
     {
@@ -358,7 +358,7 @@ public final class ArtifactRecord
   }
 
   @Nonnull
-  public List<ArtifactRecord> getRuntimeDeps()
+  List<ArtifactRecord> getRuntimeDeps()
   {
     if ( null == _runtimeDepsCache )
     {
@@ -377,7 +377,7 @@ public final class ArtifactRecord
   }
 
   @Nonnull
-  public List<ArtifactRecord> getReverseRuntimeDeps()
+  List<ArtifactRecord> getReverseRuntimeDeps()
   {
     if ( null == _reverseRuntimeDepsCache )
     {
@@ -390,7 +390,7 @@ public final class ArtifactRecord
     return _reverseRuntimeDepsCache;
   }
 
-  public boolean shouldExportDeps()
+  boolean shouldExportDeps()
   {
     return null != _artifactModel && _artifactModel.exportDeps( _application.getSource().getOptions().exportDeps() );
   }
