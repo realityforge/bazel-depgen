@@ -54,6 +54,7 @@ complete as there is too much un-said.
   - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
   - Add `j2cl.mode = Import|Library` configuration so that annotation only libraries can be directly imported.
   - Replacements targets should have a nature associated with them. So each target is replaced only if target matches.
+  - `Plugin` should propagate the `Java` nature to all of it's dependencies and runtime dependencies. 
 
 * The `ArtifactRecord.getAlias()` method should accept a `Nature` parameter and should perform the suffixing
   in there rather than scattered through the emit methods.
