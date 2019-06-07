@@ -81,8 +81,8 @@ public class ApplicationRecordTest
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertNotNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
-      assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
@@ -122,8 +122,8 @@ public class ApplicationRecordTest
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertNotNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
-      assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
@@ -241,8 +241,8 @@ public class ApplicationRecordTest
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
-      assertEquals( artifactRecord.getName(), "myapp_com_example__myapp__1_0" );
-      assertEquals( artifactRecord.getAlias(), "myapp_com_example__myapp" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "myapp_com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias( Nature.Java ), "myapp_com_example__myapp" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
     } );
@@ -267,8 +267,8 @@ public class ApplicationRecordTest
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
-      assertEquals( artifactRecord.getName(), "myapp_com_example__myapp__1_0" );
-      assertEquals( artifactRecord.getAlias(), "myapp_com_example__myapp" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "myapp_com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias( Nature.Java ), "myapp_com_example__myapp" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
     } );
@@ -352,8 +352,8 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord );
         assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-        assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
-        assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+        assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
+        assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -373,8 +373,8 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord );
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
-        assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
-        assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
+        assertEquals( artifactRecord.getName( Nature.Java ), "com_example__mylib__1_0" );
+        assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__mylib" );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -391,8 +391,8 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord );
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:rtA" );
-        assertEquals( artifactRecord.getName(), "com_example__rta__33_0" );
-        assertEquals( artifactRecord.getAlias(), "com_example__rta" );
+        assertEquals( artifactRecord.getName( Nature.Java ), "com_example__rta__33_0" );
+        assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__rta" );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtA:33.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -408,8 +408,8 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord );
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:rtB" );
-        assertEquals( artifactRecord.getName(), "com_example__rtb__2_0" );
-        assertEquals( artifactRecord.getAlias(), "com_example__rtb" );
+        assertEquals( artifactRecord.getName( Nature.Java ), "com_example__rtb__2_0" );
+        assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__rtb" );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtB:2.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -453,8 +453,8 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord );
         assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-        assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
-        assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+        assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
+        assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -481,8 +481,8 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord );
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
-        assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
-        assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
+        assertEquals( artifactRecord.getName( Nature.Java ), "com_example__mylib__1_0" );
+        assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__mylib" );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -537,8 +537,8 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord );
         assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-        assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
-        assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+        assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
+        assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -569,8 +569,8 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord );
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
-        assertEquals( artifactRecord.getName(), "com_example__mylib__1_0" );
-        assertEquals( artifactRecord.getAlias(), "com_example__mylib" );
+        assertEquals( artifactRecord.getName( Nature.Java ), "com_example__mylib__1_0" );
+        assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__mylib" );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
         assertNull( artifactRecord.getProcessors() );
@@ -751,7 +751,8 @@ public class ApplicationRecordTest
                               "  - coord: com.example:base:1.0\n" +
                               "replacements:\n" +
                               "  - coord: com.example:mylib\n" +
-                              "    target: \"@com_example//:mylib\"\n" );
+                              "    targets:\n" +
+                              "      - target: \"@com_example//:mylib\"\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
@@ -763,9 +764,8 @@ public class ApplicationRecordTest
 
       assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
                     Collections.singletonList( Nature.J2cl ) );
-      // TODO: Figure out the nature of replacement or if replacement supports nature
-      //assertEquals( record.getArtifact( "com.example", "mylib" ).getNatures(),
-      //              Collections.singletonList( Nature.J2cl ) );
+      assertEquals( record.getArtifact( "com.example", "mylib" ).getNatures(),
+                    Collections.singletonList( Nature.J2cl ) );
       assertEquals( record.getArtifact( "com.example", "base" ).getNatures(),
                     Collections.singletonList( Nature.Java ) );
     } );
@@ -939,8 +939,8 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord );
         assertNotNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-        assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
-        assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+        assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
+        assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
         assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
@@ -954,8 +954,8 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord );
         assertNull( artifactRecord.getArtifactModel() );
         assertEquals( artifactRecord.getKey(), "com.example:rtA" );
-        assertEquals( artifactRecord.getName(), "com_example__rta__33_0" );
-        assertEquals( artifactRecord.getAlias(), "com_example__rta" );
+        assertEquals( artifactRecord.getName( Nature.Java ), "com_example__rta__33_0" );
+        assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__rta" );
         assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
         assertTrue( artifactRecord.generatesApi() );
         assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtA:33.0" );
@@ -1085,7 +1085,8 @@ public class ApplicationRecordTest
                          "  - coord: com.example:myapp:1.0\n" +
                          "replacements:\n" +
                          "  - coord: com.example:mylib\n" +
-                         "    target: \"@com_example//:mylib\"\n" );
+                         "    targets:\n" +
+                         "      - target: \"@com_example//:mylib\"\n" );
       deployTempArtifactToLocalRepository( dir,
                                            "com.example:myapp:1.0",
                                            "com.example:mylib:1.0" );
@@ -1106,7 +1107,7 @@ public class ApplicationRecordTest
         assertNotNull( artifactRecord.getArtifactModel() );
         assertNull( artifactRecord.getReplacementModel() );
         assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-        assertEquals( artifactRecord.getLabel(), "com_example__myapp" );
+        assertEquals( artifactRecord.getLabel( Nature.Java ), "com_example__myapp" );
         assertEquals( artifactRecord.getDeps().size(), 1 );
         assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
         assertNotNull( artifactRecord.getDeps().get( 0 ).getReplacementModel() );
@@ -1119,7 +1120,7 @@ public class ApplicationRecordTest
         assertNull( artifactRecord.getArtifactModel() );
         assertNotNull( artifactRecord.getReplacementModel() );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
-        assertEquals( artifactRecord.getLabel(), "@com_example//:mylib" );
+        assertEquals( artifactRecord.getLabel( Nature.Java ), "@com_example//:mylib" );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
       }
@@ -1532,8 +1533,8 @@ public class ApplicationRecordTest
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
-      assertEquals( artifactRecord.getAlias(), "myapp" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias( Nature.Java ), "myapp" );
     } );
   }
 
@@ -1557,8 +1558,8 @@ public class ApplicationRecordTest
       assertEquals( artifacts.size(), 1 );
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getName(), "gwt_com_example__myapp__1_0" );
-      assertEquals( artifactRecord.getAlias(), "gwt_myapp" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "gwt_com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias( Nature.Java ), "gwt_myapp" );
     } );
   }
 
@@ -1580,7 +1581,43 @@ public class ApplicationRecordTest
 
       final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
       assertEquals( exception.getMessage(),
-                    "Multiple artifacts have the same alias 'core' which is not supported. Either change the aliasStrategy option or explicitly specify the alias for the artifacts 'com.example.app1:core:jar:42.0' and 'com.example.app2:core:jar:37.0'." );
+                    "Multiple artifacts have the same alias 'core' which is not supported. Change the aliasStrategy option globally or for one of the artifacts 'com.example.app1:core:jar:42.0' and 'com.example.app2:core:jar:37.0'." );
+    } );
+  }
+
+  @Test
+  public void loadWhereDuplicateAliasesWorkedAroundViaExplicitAlias()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "options:\n" +
+                         "  aliasStrategy: ArtifactId\n" +
+                         "artifacts:\n" +
+                         "  - coord: com.example.app1:core:42.0\n" +
+                         "    aliasStrategy: GroupIdAndArtifactId\n" +
+                         "  - coord: com.example.app2:core:37.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 2 );
+      assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
+                    "com.example.app1:core,com.example.app2:core" );
+
+      final ArtifactRecord artifactRecord1 = artifacts.get( 0 );
+      assertEquals( artifactRecord1.getKey(), "com.example.app1:core" );
+      assertEquals( artifactRecord1.getName( Nature.Java ), "com_example_app1__core__42_0" );
+      assertEquals( artifactRecord1.getAlias( Nature.Java ), "com_example_app1__core" );
+
+      final ArtifactRecord artifactRecord2 = artifacts.get( 1 );
+      assertEquals( artifactRecord2.getKey(), "com.example.app2:core" );
+      assertEquals( artifactRecord2.getName( Nature.Java ), "com_example_app2__core__37_0" );
+      assertEquals( artifactRecord2.getAlias( Nature.Java ), "core" );
     } );
   }
 
@@ -1908,7 +1945,8 @@ public class ApplicationRecordTest
                               "  - coord: com.example:myapp:1.0\n" +
                               "replacements:\n" +
                               "  - coord: com.example:mylib\n" +
-                              "    target: \"@com_example//:mylib\"\n" );
+                              "    targets:\n" +
+                              "      - target: \"@com_example//:mylib\"\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
@@ -2098,7 +2136,8 @@ public class ApplicationRecordTest
                               "  - coord: com.example:myapp:1.0\n" +
                               "replacements:\n" +
                               "  - coord: com.example:mylib\n" +
-                              "    target: \"@com_example//:mylib\"\n" );
+                              "    targets:\n" +
+                              "      - target: \"@com_example//:mylib\"\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 

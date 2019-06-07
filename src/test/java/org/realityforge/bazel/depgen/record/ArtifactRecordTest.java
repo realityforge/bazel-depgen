@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
+import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -31,8 +32,9 @@ public class ArtifactRecordTest
 
       assertNotNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getName(), "com_example__myapp__1_0" );
-      assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+      assertEquals( artifactRecord.getBaseName(), "com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
+      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
@@ -308,7 +310,7 @@ public class ArtifactRecordTest
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
       assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.GroupIdAndArtifactId );
-      assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
     } );
   }
 
@@ -326,7 +328,7 @@ public class ArtifactRecordTest
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
       assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.GroupIdAndArtifactId );
-      assertEquals( artifactRecord.getAlias(), "com_example__myapp" );
+      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
     } );
   }
 
@@ -346,7 +348,7 @@ public class ArtifactRecordTest
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
       assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.ArtifactId );
-      assertEquals( artifactRecord.getAlias(), "myapp" );
+      assertEquals( artifactRecord.getAlias( Nature.Java ), "myapp" );
     } );
   }
 
@@ -364,7 +366,7 @@ public class ArtifactRecordTest
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
       assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.ArtifactId );
-      assertEquals( artifactRecord.getAlias(), "myapp" );
+      assertEquals( artifactRecord.getAlias( Nature.Java ), "myapp" );
     } );
   }
 
@@ -381,7 +383,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), "" );
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.Java );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__myapp\",\n" +
@@ -391,7 +393,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void emitAlias_suffixSupplied()
+  public void emitAlias_natureSupplied()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -403,7 +405,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), "-j2cl" );
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.J2cl );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__myapp-j2cl\",\n" +
@@ -428,7 +430,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), "" );
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.Java );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__myapp\",\n" +
@@ -455,7 +457,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 1 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), "" );
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.Java );
       assertEquals( asString( outputStream ),
                     "native.alias(\n" +
                     "    name = \"com_example__mylib\",\n" +
@@ -566,7 +568,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ), "-j2cl" );
+      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "j2cl_library(\n" +
                     "    name = \"com_example__myapp__1_0-j2cl\",\n" +
@@ -593,7 +595,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ), "-j2cl" );
+      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "j2cl_library(\n" +
                     "    name = \"com_example__myapp__1_0-j2cl\",\n" +
@@ -620,7 +622,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ), "-j2cl" );
+      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "j2cl_library(\n" +
                     "    name = \"com_example__myapp__1_0-j2cl\",\n" +
@@ -651,7 +653,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ), "-j2cl" );
+      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "j2cl_library(\n" +
                     "    name = \"com_example__myapp__1_0-j2cl\",\n" +
@@ -701,7 +703,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ), "" );
+      artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
@@ -749,7 +751,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ), "" );
+      artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
@@ -771,7 +773,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void writePluginLibrary_withSuffix()
+  public void writePluginLibrary_withMultipleNatures()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -779,13 +781,13 @@ public class ArtifactRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
-                              "    natures: [Plugin]\n" );
+                              "    natures: [Plugin, Java]\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ), "__plugins" );
+      artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
@@ -799,7 +801,7 @@ public class ArtifactRecordTest
                     "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                     ")\n" +
                     "native.java_library(\n" +
-                    "    name = \"com_example__myapp__1_0__plugins\",\n" +
+                    "    name = \"com_example__myapp__1_0-plugin\",\n" +
                     "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );
@@ -824,7 +826,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ), "" );
+      artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.java_library(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -852,7 +854,7 @@ public class ArtifactRecordTest
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ), "" );
+      artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.java_library(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
@@ -863,7 +865,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void writeJavaPluginLibrary_withSuffix()
+  public void writeJavaPluginLibrary_withMultipleNatures()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -871,16 +873,16 @@ public class ArtifactRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
-                              "    natures: [Plugin]\n" );
+                              "    natures: [Plugin, Java]\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ), "__plugins" );
+      artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ) );
       assertEquals( asString( outputStream ),
                     "native.java_library(\n" +
-                    "    name = \"com_example__myapp__1_0__plugins\",\n" +
+                    "    name = \"com_example__myapp__1_0-plugin\",\n" +
                     "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );

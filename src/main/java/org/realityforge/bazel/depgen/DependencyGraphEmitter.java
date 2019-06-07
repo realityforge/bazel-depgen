@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.Dependency;
@@ -123,7 +124,10 @@ public final class DependencyGraphEmitter
     if ( null != replacementModel )
     {
       buffer.append( " REPLACED BY " );
-      buffer.append( replacementModel.getTarget() );
+      buffer.append( replacementModel.getTargets()
+                       .stream()
+                       .map( t -> t.getTarget() + " (" + t.getNature() + ")" )
+                       .collect( Collectors.joining( ", " ) ) );
     }
     return buffer.toString();
   }

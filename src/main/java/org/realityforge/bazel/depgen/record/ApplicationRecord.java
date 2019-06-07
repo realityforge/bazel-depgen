@@ -42,8 +42,8 @@ public final class ApplicationRecord
   {
     final ApplicationRecord record = new ApplicationRecord( model, node, authenticationContexts );
     node.accept( new DependencyCollector( record, callback ) );
-    ensureAliasesAreUnique( record );
     propagateJ2clNature( record );
+    ensureAliasesAreUnique( record );
     return record;
   }
 
@@ -63,29 +63,25 @@ public final class ApplicationRecord
   {
     for ( final ArtifactRecord dependency : artifact.getDeps() )
     {
-      if ( null == dependency.getReplacementModel() )
+      if ( null == dependency.getArtifactModel() )
       {
-        if ( null == dependency.getArtifactModel() )
+        if ( dependency.addNature( Nature.J2cl ) )
         {
-          if ( dependency.addNature( Nature.J2cl ) )
+          if ( null == dependency.getReplacementModel() )
           {
             checkTransitiveJ2clNature( root, dependency );
           }
         }
-        else if ( !dependency.getNatures().contains( Nature.J2cl ) )
-        {
-          //Must be a declared dependency
-          final String message =
-            "Artifact '" + dependency.getArtifact() + "' does not specify the " +
-            "J2cl nature but is a " + ( root == artifact ? "direct" : "transitive" ) +
-            " dependency of '" + root.getArtifact() + "' which has the J2cl nature. This is " +
-            "not a supported scenario.";
-          throw new IllegalStateException( message );
-        }
       }
-      else
+      else if ( !dependency.getNatures().contains( Nature.J2cl ) )
       {
-        //TODO: Verify replacement has j2cl nature
+        //Must be a declared dependency
+        final String message =
+          "Artifact '" + dependency.getArtifact() + "' does not specify the " +
+          "J2cl nature but is a " + ( root == artifact ? "direct" : "transitive" ) +
+          " dependency of '" + root.getArtifact() + "' which has the J2cl nature. This is " +
+          "not a supported scenario.";
+        throw new IllegalStateException( message );
       }
     }
   }
@@ -95,18 +91,21 @@ public final class ApplicationRecord
     final HashMap<String, ArtifactRecord> aliases = new HashMap<>();
     for ( final ArtifactRecord artifact : record.getArtifacts() )
     {
-      final String alias = artifact.getAlias();
-      final ArtifactRecord existing = aliases.get( alias );
-      if ( null != existing )
+      for ( final Nature nature : artifact.getNatures() )
       {
-        throw new IllegalStateException( "Multiple artifacts have the same alias '" + alias + "' which is " +
-                                         "not supported. Either change the aliasStrategy option or explicitly " +
-                                         "specify the alias for the artifacts '" + existing.getArtifact() +
-                                         "' and '" + artifact.getArtifact() + "'." );
-      }
-      else
-      {
-        aliases.put( alias, artifact );
+        final String alias = artifact.getAlias( nature );
+        final ArtifactRecord existing = aliases.get( alias );
+        if ( null != existing )
+        {
+          throw new IllegalStateException( "Multiple artifacts have the same alias '" + alias + "' which is " +
+                                           "not supported. Change the aliasStrategy option globally or for " +
+                                           "one of the artifacts '" + existing.getArtifact() + "' and '" +
+                                           artifact.getArtifact() + "'." );
+        }
+        else
+        {
+          aliases.put( alias, artifact );
+        }
       }
     }
   }
@@ -311,7 +310,7 @@ public final class ApplicationRecord
                        getArtifacts()
                          .stream()
                          .filter( a -> null == a.getReplacementModel() )
-                         .map( a -> "omit_" + a.getAlias() + " = False" )
+                         .map( a -> "omit_" + a.getSymbol() + " = False" )
                          .collect( Collectors.toList() ) :
                        Collections.emptyList(), macro -> {
         final String comment =
@@ -324,7 +323,7 @@ public final class ApplicationRecord
             macro.newLine();
             if ( supportDependencyOmit )
             {
-              macro.writeIfCondition( "not omit_" + artifact.getAlias(), artifact::writeArtifactTargets );
+              macro.writeIfCondition( "not omit_" + artifact.getSymbol(), artifact::writeArtifactTargets );
             }
             else
             {
@@ -345,7 +344,7 @@ public final class ApplicationRecord
                        getArtifacts()
                          .stream()
                          .filter( a -> null == a.getReplacementModel() )
-                         .map( a -> "omit_" + a.getAlias() + " = False" )
+                         .map( a -> "omit_" + a.getSymbol() + " = False" )
                          .collect( Collectors.toList() ) :
                        Collections.emptyList(), macro -> {
         macro.writeMultilineComment( o -> {
@@ -363,7 +362,7 @@ public final class ApplicationRecord
             macro.newLine();
             if ( supportDependencyOmit )
             {
-              macro.writeIfCondition( "not omit_" + artifact.getAlias(), o -> writeArtifactHttpRules( artifact, o ) );
+              macro.writeIfCondition( "not omit_" + artifact.getSymbol(), o -> writeArtifactHttpRules( artifact, o ) );
             }
             else
             {

@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen.config;
 
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -9,7 +10,7 @@ public final class ReplacementConfig
   @Nullable
   private String coord;
   @Nullable
-  private String target;
+  private List<ReplacementTargetConfig> targets;
 
   @Nullable
   public String getCoord()
@@ -23,13 +24,13 @@ public final class ReplacementConfig
   }
 
   @Nullable
-  public String getTarget()
+  public List<ReplacementTargetConfig> getTargets()
   {
-    return target;
+    return targets;
   }
 
-  public void setTarget( @Nonnull final String target )
+  public void setTargets( @Nonnull final List<ReplacementTargetConfig> targets )
   {
-    this.target = Objects.requireNonNull( target );
+    this.targets = Objects.requireNonNull( targets );
   }
 }

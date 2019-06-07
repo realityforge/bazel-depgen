@@ -1,8 +1,14 @@
 package org.realityforge.bazel.depgen.model;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.ReplacementConfig;
+import org.realityforge.bazel.depgen.config.ReplacementTargetConfig;
 
 public final class ReplacementModel
 {
@@ -13,16 +19,16 @@ public final class ReplacementModel
   @Nonnull
   private final String _id;
   @Nonnull
-  private final String _target;
+  private final List<ReplacementTargetModel> _targets;
 
   @Nonnull
-  public static ReplacementModel parse( @Nonnull final ReplacementConfig source )
+  public static ReplacementModel parse( @Nonnull final ReplacementConfig source, @Nonnull final Nature defaultNature )
   {
     final String coord = source.getCoord();
-    final String target = source.getTarget();
-    if ( null == target )
+    final List<ReplacementTargetConfig> targets = source.getTargets();
+    if ( null == targets )
     {
-      throw new InvalidModelException( "The replacement must specify the 'target' property.", source );
+      throw new InvalidModelException( "The replacement must specify the 'targets' property.", source );
     }
     else if ( null == coord )
     {
@@ -30,6 +36,14 @@ public final class ReplacementModel
     }
     else
     {
+      for ( final ReplacementTargetConfig config : targets )
+      {
+        if ( null == config.getTarget() )
+        {
+          throw new InvalidModelException( "The replacement target must specify the 'target' property.", config );
+        }
+      }
+
       final String[] components = coord.split( ":" );
       if ( components.length != 2 )
       {
@@ -39,7 +53,13 @@ public final class ReplacementModel
       }
       else
       {
-        return new ReplacementModel( source, components[ 0 ], components[ 1 ], target );
+        final List<ReplacementTargetModel> targetModels =
+          targets
+            .stream()
+            .map( target -> new ReplacementTargetModel( target.getNature() == null ? defaultNature : target.getNature(),
+                                                        Objects.requireNonNull( target.getTarget() ) ) )
+            .collect( Collectors.toList() );
+        return new ReplacementModel( source, components[ 0 ], components[ 1 ], targetModels );
       }
     }
   }
@@ -47,12 +67,12 @@ public final class ReplacementModel
   private ReplacementModel( @Nonnull final ReplacementConfig source,
                             @Nonnull final String group,
                             @Nonnull final String id,
-                            @Nonnull final String target )
+                            @Nonnull final List<ReplacementTargetModel> targets )
   {
     _source = Objects.requireNonNull( source );
     _group = Objects.requireNonNull( group );
     _id = Objects.requireNonNull( id );
-    _target = Objects.requireNonNull( target );
+    _targets = Collections.unmodifiableList( Objects.requireNonNull( targets ) );
   }
 
   @Nonnull
@@ -74,8 +94,37 @@ public final class ReplacementModel
   }
 
   @Nonnull
-  public String getTarget()
+  public List<ReplacementTargetModel> getTargets()
   {
-    return _target;
+    return _targets;
+  }
+
+  /**
+   * Return the replacement target associated with the specified nature.
+   *
+   * @param nature the nature.
+   * @return the target.
+   * @throws NullPointerException if no target found.
+   */
+  @Nonnull
+  public String getTarget( @Nonnull final Nature nature )
+  {
+    return Objects.requireNonNull( findTarget( nature ) );
+  }
+
+  /**
+   * Return the replacement target associated with the specified nature.
+   *
+   * @param nature the nature.
+   * @return the target or null if no such target can be found.
+   */
+  @Nullable
+  private String findTarget( @Nonnull final Nature nature )
+  {
+    return _targets.stream()
+      .filter( target -> target.getNature() == nature )
+      .map( ReplacementTargetModel::getTarget )
+      .findAny()
+      .orElse( null );
   }
 }

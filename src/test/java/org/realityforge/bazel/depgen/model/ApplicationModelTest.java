@@ -7,6 +7,7 @@ import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
+import org.realityforge.bazel.depgen.config.ReplacementTargetConfig;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -24,14 +25,15 @@ public class ApplicationModelTest
                          "  - coord: com.example:blib\n" +
                          "replacements:\n" +
                          "  - coord: com.example:alib\n" +
-                         "    target: \"@com_example//:alib\"\n" );
+                         "    targets:\n" +
+                         "      - target: \"@com_example//:alib\"\n" );
       final Path configFile = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
       final ApplicationConfig source = ApplicationConfig.parse( configFile );
 
       final ApplicationModel model = ApplicationModel.parse( source, false );
       assertEquals( model.getSource(), source );
       assertFalse( model.shouldResetCachedMetadata() );
-      assertEquals( model.getConfigSha256(), "5554C636655BB43F8BC8A1E01C985419ABAF8A4102ABEDD28CB1949FA8A7DADA" );
+      assertEquals( model.getConfigSha256(), "121141B72422F4A4487D9D13E43F920BA5DE1A8837DDDA78204AD3D74B5DD147" );
       assertEquals( model.getConfigLocation(), configFile );
       final List<RepositoryModel> repositories = model.getRepositories();
       assertEquals( repositories.size(), 1 );
@@ -53,7 +55,11 @@ public class ApplicationModelTest
       final ReplacementModel replacementModel = replacements.get( 0 );
       assertEquals( replacementModel.getGroup(), "com.example" );
       assertEquals( replacementModel.getId(), "alib" );
-      assertEquals( replacementModel.getTarget(), "@com_example//:alib" );
+      final List<ReplacementTargetModel> targets = replacementModel.getTargets();
+      assertEquals( targets.size(), 1 );
+      final ReplacementTargetModel replacementTarget = targets.get( 0 );
+      assertEquals( replacementTarget.getNature(), OptionsConfig.DEFAULT_NATURE );
+      assertEquals( replacementTarget.getTarget(), "@com_example//:alib" );
 
       final List<GlobalExcludeModel> excludes = model.getExcludes();
       assertEquals( excludes.size(), 1 );
@@ -106,14 +112,14 @@ public class ApplicationModelTest
                          "  - coord: com.example:myapp:1.0\n" +
                          "replacements:\n" +
                          "  - coord: com.example:mylib\n" +
-                         "    target: \"@com_example//:mylib\"\n" );
+                         "    targets:\n" +
+                         "      - target: \"@com_example//:mylib\"\n" );
 
       final ApplicationModel model = loadApplicationModel();
       assertEquals( model.getReplacements().size(), 1 );
       final ReplacementModel replacementModel = model.getReplacements().get( 0 );
       assertEquals( replacementModel.getGroup(), "com.example" );
       assertEquals( replacementModel.getId(), "mylib" );
-      assertEquals( replacementModel.getTarget(), "@com_example//:mylib" );
 
       assertEquals( replacementModel, model.findReplacement( "com.example", "mylib" ) );
       assertNull( model.findArtifact( "com.example", "noexist" ) );

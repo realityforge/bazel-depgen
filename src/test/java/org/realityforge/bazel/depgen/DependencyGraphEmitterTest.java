@@ -86,13 +86,14 @@ public class DependencyGraphEmitterTest
                               "  - coord: com.example:myapp:1.0\n" +
                               "replacements:\n" +
                               "  - coord: com.example:rtA\n" +
-                              "    target: //foo/rta" );
+                              "    targets:\n" +
+                              "      - target: //foo/rta\n" );
       final String output = collectOutput( createResolver( dir ) );
       assertEquals( output,
                     "\\- com.example:myapp:jar:1.0 [compile]\n" +
                     "   +- com.example:mylib:jar:1.0 [compile]\n" +
                     "   |  \\- com.example:rtB:jar:2.0 [runtime]\n" +
-                    "   \\- com.example:rtA:jar:33.0 [runtime] REPLACED BY //foo/rta\n" );
+                    "   \\- com.example:rtA:jar:33.0 [runtime] REPLACED BY //foo/rta (Java)\n" );
     } );
   }
 

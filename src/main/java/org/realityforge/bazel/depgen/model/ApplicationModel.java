@@ -52,7 +52,9 @@ public final class ApplicationModel
     final List<ReplacementModel> replacements =
       null == replacementsConfig ?
       Collections.emptyList() :
-      replacementsConfig.stream().map( ReplacementModel::parse ).collect( Collectors.toList() );
+      replacementsConfig.stream()
+        .map( c -> ReplacementModel.parse( c, optionsModel.getDefaultNature() ) )
+        .collect( Collectors.toList() );
     final List<ExcludeConfig> excludesConfig = source.getExcludes();
     final List<GlobalExcludeModel> excludes =
       null == excludesConfig ?

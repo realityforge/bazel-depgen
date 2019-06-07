@@ -325,13 +325,15 @@ public class ApplicationConfigTest
   }
 
   @Test
-  public void parseReplacementsDefinedUsingCoord()
+  public void parseReplacementsDefined()
     throws Exception
   {
     inIsolatedDirectory( () -> {
       writeDependencies( "replacements:\n" +
                          "  - coord: com.example:myapp\n" +
-                         "    target: \"@com_example//:myapp\"\n" );
+                         "    targets:\n" +
+                         "      - target: \"@com_example//:myapp\"\n" +
+                         "        nature: Java\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
 
@@ -340,8 +342,12 @@ public class ApplicationConfigTest
 
       assertEquals( replacements.size(), 1 );
       final ReplacementConfig replacement = replacements.get( 0 );
-      assertEquals( replacement.getTarget(), "@com_example//:myapp" );
       assertEquals( replacement.getCoord(), "com.example:myapp" );
+      final List<ReplacementTargetConfig> targets = replacement.getTargets();
+      assertNotNull( targets );
+      final ReplacementTargetConfig target = targets.get( 0 );
+      assertEquals( target.getTarget(), "@com_example//:myapp"  );
+      assertEquals( target.getNature(), Nature.Java  );
     } );
   }
 
