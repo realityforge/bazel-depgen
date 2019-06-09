@@ -816,6 +816,114 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void propagateNature_Java()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "options:\n" +
+                              "  defaultNature: J2cl\n" +
+                              "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [Java]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 3 );
+
+      assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
+                    Collections.singletonList( Nature.Java ) );
+      assertEquals( record.getArtifact( "com.example", "mylib" ).getNatures(),
+                    Collections.singletonList( Nature.Java ) );
+      assertEquals( record.getArtifact( "com.example", "base" ).getNatures(),
+                    Collections.singletonList( Nature.Java ) );
+    } );
+  }
+
+  @Test
+  public void propagateNature_Java_directNonJavaDependency()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "options:\n" +
+                              "  defaultNature: J2cl\n" +
+                              "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [Java]\n" +
+                              "  - coord: com.example:mylib:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+      final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+
+      assertEquals( exception.getMessage(),
+                    "Artifact 'com.example:mylib:jar:1.0' does not specify the Java nature but is a direct dependency of 'com.example:myapp:jar:1.0' which has the Java nature. This is not a supported scenario." );
+    } );
+  }
+
+  @Test
+  public void propagateNature_Plugin()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "options:\n" +
+                              "  defaultNature: J2cl\n" +
+                              "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [Plugin]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final List<ArtifactRecord> artifacts = record.getArtifacts();
+      assertEquals( artifacts.size(), 3 );
+
+      assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
+                    Collections.singletonList( Nature.Plugin ) );
+      assertEquals( record.getArtifact( "com.example", "mylib" ).getNatures(),
+                    Collections.singletonList( Nature.Java ) );
+      assertEquals( record.getArtifact( "com.example", "base" ).getNatures(),
+                    Collections.singletonList( Nature.Java ) );
+    } );
+  }
+
+  @Test
+  public void propagateNature_Plugin_directNonJavaDependency()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "options:\n" +
+                              "  defaultNature: J2cl\n" +
+                              "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [Plugin]\n" +
+                              "  - coord: com.example:mylib:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+      final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+
+      assertEquals( exception.getMessage(),
+                    "Artifact 'com.example:mylib:jar:1.0' does not specify the Java nature but is a direct dependency of 'com.example:myapp:jar:1.0' which has the Plugin nature. This is not a supported scenario." );
+    } );
+  }
+
+  @Test
   public void depsAreSorted()
     throws Exception
   {

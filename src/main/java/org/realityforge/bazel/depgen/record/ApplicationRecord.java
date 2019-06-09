@@ -43,6 +43,8 @@ public final class ApplicationRecord
     final ApplicationRecord record = new ApplicationRecord( model, node, authenticationContexts );
     node.accept( new DependencyCollector( record, callback ) );
     propagateNature( record, Nature.J2cl, Nature.J2cl );
+    propagateNature( record, Nature.Plugin, Nature.Java );
+    propagateNature( record, Nature.Java, Nature.Java );
     ensureAliasesAreUnique( record );
     return record;
   }
