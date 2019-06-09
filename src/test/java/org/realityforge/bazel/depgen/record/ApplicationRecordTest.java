@@ -652,7 +652,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void propagateJ2clNature()
+  public void propagateNature_J2cl()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -680,7 +680,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void propagateJ2clNature_viaDefaultNature()
+  public void propagateNature_J2cl_viaDefaultNature()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -709,7 +709,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void propagateJ2clNature_declaredTransitivelyPresent()
+  public void propagateNature_J2cl_declaredTransitivelyPresent()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -739,7 +739,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void propagateJ2clNature_replacementPresent()
+  public void propagateNature_J2cl_replacementPresent()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -772,7 +772,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void propagateJ2clNature_transitiveNonJ2clDependency()
+  public void propagateNature_J2cl_transitiveNonJ2clDependency()
     throws Exception
   {
     inIsolatedDirectory( () -> {
@@ -794,7 +794,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void propagateJ2clNature_directNonJ2clDependency()
+  public void propagateNature_J2cl_directNonJ2clDependency()
     throws Exception
   {
     inIsolatedDirectory( () -> {

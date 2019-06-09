@@ -42,45 +42,49 @@ public final class ApplicationRecord
   {
     final ApplicationRecord record = new ApplicationRecord( model, node, authenticationContexts );
     node.accept( new DependencyCollector( record, callback ) );
-    propagateJ2clNature( record );
+    propagateNature( record, Nature.J2cl, Nature.J2cl );
     ensureAliasesAreUnique( record );
     return record;
   }
 
-  private static void propagateJ2clNature( @Nonnull final ApplicationRecord record )
+  private static void propagateNature( @Nonnull final ApplicationRecord record,
+                                       @Nonnull final Nature rootNature,
+                                       @Nonnull final Nature targetNature )
   {
     for ( final ArtifactRecord artifact : record.getArtifacts() )
     {
-      if ( null != artifact.getArtifactModel() && artifact.getNatures().contains( Nature.J2cl ) )
+      if ( null != artifact.getArtifactModel() && artifact.getNatures().contains( rootNature ) )
       {
-        checkTransitiveJ2clNature( artifact, artifact );
+        checkTransitiveNature( artifact, artifact, rootNature, targetNature );
       }
     }
   }
 
-  private static void checkTransitiveJ2clNature( @Nonnull final ArtifactRecord root,
-                                                 @Nonnull final ArtifactRecord artifact )
+  private static void checkTransitiveNature( @Nonnull final ArtifactRecord root,
+                                             @Nonnull final ArtifactRecord artifact,
+                                             @Nonnull final Nature rootNature,
+                                             @Nonnull final Nature targetNature )
   {
     for ( final ArtifactRecord dependency : artifact.getDeps() )
     {
       if ( null == dependency.getArtifactModel() )
       {
-        if ( dependency.addNature( Nature.J2cl ) )
+        if ( dependency.addNature( targetNature ) )
         {
           if ( null == dependency.getReplacementModel() )
           {
-            checkTransitiveJ2clNature( root, dependency );
+            checkTransitiveNature( root, dependency, rootNature, targetNature );
           }
         }
       }
-      else if ( !dependency.getNatures().contains( Nature.J2cl ) )
+      else if ( !dependency.getNatures().contains( targetNature ) )
       {
         //Must be a declared dependency
         final String message =
           "Artifact '" + dependency.getArtifact() + "' does not specify the " +
-          "J2cl nature but is a " + ( root == artifact ? "direct" : "transitive" ) +
-          " dependency of '" + root.getArtifact() + "' which has the J2cl nature. This is " +
-          "not a supported scenario.";
+          targetNature + " nature but is a " + ( root == artifact ? "direct" : "transitive" ) +
+          " dependency of '" + root.getArtifact() + "' which has the " +
+          rootNature + " nature. This is not a supported scenario.";
         throw new IllegalStateException( message );
       }
     }
