@@ -572,7 +572,7 @@ public class ArtifactRecordTest
       assertEquals( asString( outputStream ),
                     "j2cl_library(\n" +
                     "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                    "    srcs = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );
     } );
@@ -599,7 +599,7 @@ public class ArtifactRecordTest
       assertEquals( asString( outputStream ),
                     "j2cl_library(\n" +
                     "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                    "    srcs = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                     "    js_suppress = [\"checkDebuggerStatement\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );
@@ -626,7 +626,7 @@ public class ArtifactRecordTest
       assertEquals( asString( outputStream ),
                     "j2cl_library(\n" +
                     "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                    "    srcs = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     "    deps = [\":com_example__mylib-j2cl\"],\n" +
                     ")\n" );
@@ -657,7 +657,7 @@ public class ArtifactRecordTest
       assertEquals( asString( outputStream ),
                     "j2cl_library(\n" +
                     "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                    "    srcs = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     "    deps = [\n" +
                     "        \":com_example__mylib-j2cl\",\n" +
@@ -1053,7 +1053,7 @@ public class ArtifactRecordTest
                     ")\n" +
                     "j2cl_library(\n" +
                     "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                    "    srcs = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );
     } );
@@ -1082,7 +1082,7 @@ public class ArtifactRecordTest
                     ")\n" +
                     "j2cl_library(\n" +
                     "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                    "    srcs = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" +
                     "\n" +

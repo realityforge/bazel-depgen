@@ -517,7 +517,7 @@ public final class ArtifactRecord
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + getName( Nature.J2cl ) + "\"" );
-    arguments.put( "srcs", Collections.singletonList( "\"" + getQualifiedBinaryLabel() + "\"" ) );
+    arguments.put( "srcs", Collections.singletonList( "\"" + getQualifiedSourcesLabel() + "\"" ) );
     //TODO: Add native_srcs that includes the native.js extracted from the artifact?
     final J2clConfig j2clConfig = null != _artifactModel ? _artifactModel.getSource().getJ2cl() : null;
     if ( null != j2clConfig )
