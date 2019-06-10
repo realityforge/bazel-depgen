@@ -1,6 +1,8 @@
 package org.realityforge.bazel.depgen.config;
 
 import java.util.List;
+import java.util.Objects;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class J2clConfig
@@ -14,8 +16,8 @@ public final class J2clConfig
     return suppress;
   }
 
-  public void setSuppress( @Nullable final List<String> suppress )
+  public void setSuppress( @Nonnull final List<String> suppress )
   {
-    this.suppress = suppress;
+    this.suppress = Objects.requireNonNull( suppress );
   }
 }
