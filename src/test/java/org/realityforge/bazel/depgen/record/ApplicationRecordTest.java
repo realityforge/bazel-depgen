@@ -1473,11 +1473,7 @@ public class ApplicationRecordTest
                          "  - coord: com.example:myapp:1.0\n" );
 
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      final Path jarFile =
-        createJarFile( "META-INF/services/javax.annotation.processing.Processor",
-                       "react4j.processor.ReactProcessor\n" +
-                       "arez.processor.ArezProcessor\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", jarFile );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
       final List<ArtifactRecord> artifacts = record.getArtifacts();
@@ -1491,7 +1487,7 @@ public class ApplicationRecordTest
       {
         final ArtifactRecord artifactRecord = artifacts.get( 1 );
         assertEquals( artifactRecord.getKey(), "com.example:mylib" );
-        assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Plugin ) );
+        assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
         assertTrue( artifactRecord.generatesApi() );
       }
     } );
