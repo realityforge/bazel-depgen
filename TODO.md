@@ -76,3 +76,8 @@ complete as there is too much un-said.
     or [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps), both of which scan java files and
     automagically creates `BUILD` files (somehow?) so that there is fine grain dependencies without the heartache.
   - Another option is [exodus](https://wix-incubator.github.io/exodus)
+
+* Figure out whether `j2cl_library` artifacts should include source artifact as src unless they are marked as
+  `j2cl.mode = Import`
+
+* Verify that `sources` classifier is present if nature is `J2cl`
