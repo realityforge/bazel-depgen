@@ -348,8 +348,8 @@ public class ApplicationConfigTest
       final List<ReplacementTargetConfig> targets = replacement.getTargets();
       assertNotNull( targets );
       final ReplacementTargetConfig target = targets.get( 0 );
-      assertEquals( target.getTarget(), "@com_example//:myapp"  );
-      assertEquals( target.getNature(), Nature.Java  );
+      assertEquals( target.getTarget(), "@com_example//:myapp" );
+      assertEquals( target.getNature(), Nature.Java );
     } );
   }
 
