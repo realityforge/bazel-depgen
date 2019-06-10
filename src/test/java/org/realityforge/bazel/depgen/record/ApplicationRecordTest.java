@@ -1642,7 +1642,7 @@ public class ApplicationRecordTest
                          "  - coord: com.example:myapp:1.0\n" +
                          "    natures: [J2cl]\n" +
                          "    j2cl:\n" +
-                         "      mode: Import\n"+
+                         "      mode: Import\n" +
                          "      suppress: [\"checkDebuggerStatement\"]\n" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
