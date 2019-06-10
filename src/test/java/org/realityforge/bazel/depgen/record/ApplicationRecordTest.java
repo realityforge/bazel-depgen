@@ -661,8 +661,11 @@ public class ApplicationRecordTest
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -690,8 +693,11 @@ public class ApplicationRecordTest
                               "  defaultNature: J2cl\n" +
                               "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -720,8 +726,11 @@ public class ApplicationRecordTest
                               "    natures: [J2cl]\n" +
                               "  - coord: com.example:base:1.0\n" +
                               "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -753,8 +762,11 @@ public class ApplicationRecordTest
                               "  - coord: com.example:mylib\n" +
                               "    targets:\n" +
                               "      - target: \"@com_example//:mylib\"\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:base:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -1726,6 +1738,25 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void loadWhereJ2clArtifactOmitsSourcesClassifierVariant()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example.app1:core:42.0\n" +
+                         "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
+
+      final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+      assertEquals( exception.getMessage(),
+                    "Unable to locate the sources classifier artifact for the artifact 'com.example.app1:core:jar:42.0' but the artifact has the J2cl nature which requires that sources be present." );
+    } );
+  }
+
+  @Test
   public void shouldExportDeps_perArtifactConfig()
     throws Exception
   {
@@ -1852,6 +1883,7 @@ public class ApplicationRecordTest
                          "  defaultNature: J2cl\n" +
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -1873,6 +1905,7 @@ public class ApplicationRecordTest
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
                          "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -2413,11 +2446,14 @@ public class ApplicationRecordTest
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl, Java]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
       final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
       assertNotNull( urls );
+      final List<String> srcUrls = record.getArtifacts().get( 0 ).getSourceUrls();
+      assertNotNull( srcUrls );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeBazelExtension( new StarlarkOutput( outputStream ) );
@@ -2450,6 +2486,13 @@ public class ApplicationRecordTest
                     "        urls = [\"" + urls.get( 0 ) + "\"],\n" +
                     "    )\n" +
                     "\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0__sources\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + srcUrls.get( 0 ) + "\"],\n" +
+                    "    )\n" +
+                    "\n" +
                     "def generate_targets():\n" +
                     "    \"\"\"\n" +
                     "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
@@ -2472,6 +2515,7 @@ public class ApplicationRecordTest
                     "    native.java_import(\n" +
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                     "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "        visibility = [\"//visibility:private\"],\n" +
                     "    )\n" );
@@ -2488,7 +2532,9 @@ public class ApplicationRecordTest
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -2497,6 +2543,10 @@ public class ApplicationRecordTest
       assertNotNull( urls1 );
       final List<String> urls2 = artifacts.get( 1 ).getUrls();
       assertNotNull( urls2 );
+      final List<String> srcUrls1 = artifacts.get( 0 ).getSourceUrls();
+      assertNotNull( srcUrls1 );
+      final List<String> srcUrls2 = artifacts.get( 1 ).getSourceUrls();
+      assertNotNull( srcUrls2 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeBazelExtension( new StarlarkOutput( outputStream ) );
@@ -2531,10 +2581,24 @@ public class ApplicationRecordTest
                     "    )\n" +
                     "\n" +
                     "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0__sources\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + srcUrls1.get( 0 ) + "\"],\n" +
+                    "    )\n" +
+                    "\n" +
+                    "    http_file(\n" +
                     "        name = \"com_example__mylib__1_0\",\n" +
                     "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                     "        urls = [\"" + urls2.get( 0 ) + "\"],\n" +
+                    "    )\n" +
+                    "\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__mylib__1_0__sources\",\n" +
+                    "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0-sources.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + srcUrls2.get( 0 ) + "\"],\n" +
                     "    )\n" +
                     "\n" +
                     "def generate_targets():\n" +

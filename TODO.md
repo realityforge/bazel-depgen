@@ -77,5 +77,3 @@ complete as there is too much un-said.
 
 * Figure out whether `j2cl_library` artifacts should include source artifact as src unless they are marked as
   `j2cl.mode = Import`
-
-* Verify that `sources` classifier is present if nature is `J2cl`

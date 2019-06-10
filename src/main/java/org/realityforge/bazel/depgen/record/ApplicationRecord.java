@@ -46,6 +46,7 @@ public final class ApplicationRecord
     propagateNature( record, Nature.Plugin, Nature.Java );
     propagateNature( record, Nature.Java, Nature.Java );
     ensureAliasesAreUnique( record );
+    ensureSourcesPresentIfRequired( record );
     return record;
   }
 
@@ -111,6 +112,24 @@ public final class ApplicationRecord
         else
         {
           aliases.put( alias, artifact );
+        }
+      }
+    }
+  }
+
+  private static void ensureSourcesPresentIfRequired( @Nonnull final ApplicationRecord record )
+  {
+    for ( final ArtifactRecord artifact : record.getArtifacts() )
+    {
+      final String sourceSha256 = artifact.getSourceSha256();
+      if ( null == sourceSha256 )
+      {
+        if ( null == artifact.getReplacementModel() && artifact.getNatures().contains( Nature.J2cl ) )
+        {
+          final String message =
+            "Unable to locate the sources classifier artifact for the artifact '" + artifact.getArtifact() +
+            "' but the artifact has the J2cl nature which requires that sources be present.";
+          throw new IllegalStateException( message );
         }
       }
     }

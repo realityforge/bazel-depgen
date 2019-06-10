@@ -563,6 +563,7 @@ public class ArtifactRecordTest
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -590,6 +591,7 @@ public class ArtifactRecordTest
                               "    natures: [J2cl]\n" +
                               "    j2cl:\n" +
                               "      suppress: [\"checkDebuggerStatement\"]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -616,7 +618,9 @@ public class ArtifactRecordTest
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -643,11 +647,14 @@ public class ArtifactRecordTest
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir,
                                            "com.example:myapp:1.0",
                                            "com.example:mylib:1.0",
                                            "com.example:mylib2:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib2:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib2:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -1040,6 +1047,7 @@ public class ArtifactRecordTest
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -1069,6 +1077,7 @@ public class ArtifactRecordTest
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl, Java]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -1093,6 +1102,7 @@ public class ArtifactRecordTest
                     "native.java_import(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
                     ")\n" );
