@@ -176,7 +176,7 @@ public final class DepgenMetadata
   private String getOrCompute( @Nonnull final String key, @Nonnull final Supplier<String> action )
   {
     String existingValue = getProperty( key );
-    if ( null != existingValue && shouldResetCachedProperties())
+    if ( null != existingValue && shouldResetCachedProperties() )
     {
       getCachedProperties().remove( key );
       saveCachedProperties();
