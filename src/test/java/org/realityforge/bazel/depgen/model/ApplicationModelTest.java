@@ -7,7 +7,6 @@ import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
-import org.realityforge.bazel.depgen.config.ReplacementTargetConfig;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
