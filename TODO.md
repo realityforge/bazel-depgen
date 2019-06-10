@@ -52,8 +52,6 @@ complete as there is too much un-said.
   control how artifacts are defined. Artifacts may support multiple natures.
   - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
   - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
-  - Add `j2cl.mode = Import|Library` configuration so that annotation only libraries can be directly imported.
-    `j2cl.mode = Import` need not require sources be present and will depend on the binary.
   - Ensure that replacements have natures to support all their reverse dependencies.
 
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
