@@ -89,6 +89,10 @@ public final class ArtifactRecord
       _sourceSha256 = sourceSha256;
       _sourceUrls = null != sourceUrls ? Collections.unmodifiableList( new ArrayList<>( sourceUrls ) ) : null;
       _processors = null != processors ? Collections.unmodifiableList( new ArrayList<>( processors ) ) : null;
+      if ( null != _natures && null != _processors && !_processors.isEmpty() )
+      {
+        addNature( Nature.Plugin );
+      }
     }
     else
     {
