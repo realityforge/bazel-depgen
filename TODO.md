@@ -53,6 +53,7 @@ complete as there is too much un-said.
   - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
   - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
   - Add `j2cl.mode = Import|Library` configuration so that annotation only libraries can be directly imported.
+    `j2cl.mode = Import` need not require sources be present and will depend on the binary.
   - Ensure that replacements have natures to support all their reverse dependencies.
 
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
@@ -74,6 +75,3 @@ complete as there is too much un-said.
     or [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps), both of which scan java files and
     automagically creates `BUILD` files (somehow?) so that there is fine grain dependencies without the heartache.
   - Another option is [exodus](https://wix-incubator.github.io/exodus)
-
-* Figure out whether `j2cl_library` artifacts should include source artifact as src unless they are marked as
-  `j2cl.mode = Import`
