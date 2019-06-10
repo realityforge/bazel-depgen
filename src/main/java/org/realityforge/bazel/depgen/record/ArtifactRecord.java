@@ -15,6 +15,7 @@ import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.J2clConfig;
+import org.realityforge.bazel.depgen.config.J2clMode;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.PluginConfig;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
@@ -106,6 +107,32 @@ public final class ArtifactRecord
       _processors = null;
       _replacementModel = replacementModel;
       _artifactModel = null;
+    }
+    validate();
+  }
+
+  private void validate()
+  {
+    if ( null != _artifactModel )
+    {
+      final PluginConfig plugin = _artifactModel.getSource().getPlugin();
+      if ( null != plugin )
+      {
+        if ( !getNatures().contains( Nature.Plugin ) )
+        {
+          final String message =
+            "Artifact '" + getArtifact() + "' has specified 'plugin' configuration but does not specify " +
+            "the Plugin nature nor does it contain any annotation processors.";
+          throw new IllegalStateException( message );
+        }
+        else if ( null != plugin.getGeneratesApi() && ( null == _processors || _processors.isEmpty() ) )
+        {
+          final String message =
+            "Artifact '" + getArtifact() + "' has specified 'plugin.generatesApi' configuration but does not " +
+            "contain any annotation processors.";
+          throw new IllegalStateException( message );
+        }
+      }
     }
   }
 

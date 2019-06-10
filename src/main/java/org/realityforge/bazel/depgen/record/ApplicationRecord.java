@@ -278,15 +278,6 @@ public final class ApplicationRecord
     final ArtifactModel model = _source.findArtifact( groupId, artifactId );
     final ArtifactRecord record =
       new ArtifactRecord( this, node, sha256, urls, sourceSha256, sourceUrls, processors, model, null );
-    if ( null != model &&
-         null != model.getSource().getPlugin() &&
-         ( null == processors || !record.getNatures().contains( Nature.Plugin ) ) )
-    {
-      final String message =
-        "Artifact '" + node.getArtifact() + "' has specified 'plugin' configuration but does not specify " +
-        "the Plugin nature nor does it contain any annotation processors.";
-      throw new IllegalStateException( message );
-    }
     final String key = record.getKey();
     final ArtifactRecord existing = _artifacts.get( key );
     if ( null == existing )

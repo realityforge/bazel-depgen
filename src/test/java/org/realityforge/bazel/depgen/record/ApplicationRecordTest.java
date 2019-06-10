@@ -1598,7 +1598,7 @@ public class ApplicationRecordTest
       final IllegalStateException exception =
         expectThrows( IllegalStateException.class, this::loadApplicationRecord );
       assertEquals( exception.getMessage(),
-                    "Artifact 'com.example:myapp:jar:1.0' has specified 'plugin' configuration but does not specify the Plugin nature nor does it contain any annotation processors." );
+                    "Artifact 'com.example:myapp:jar:1.0' has specified 'plugin.generatesApi' configuration but does not contain any annotation processors." );
     } );
   }
 
