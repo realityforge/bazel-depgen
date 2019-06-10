@@ -57,8 +57,6 @@ complete as there is too much un-said.
 
 * Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
 
-* Test `ensureAliasesAreUnique` when collision due to nature collision.
-
 * Optionally pass output through [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier).
 
 * Add support for managed dependencies which essentially contains a list of artifacts that include version
