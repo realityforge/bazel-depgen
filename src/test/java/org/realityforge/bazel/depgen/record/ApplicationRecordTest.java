@@ -1631,6 +1631,50 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void j2clImportWithSuppress()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "    natures: [J2cl]\n" +
+                         "    j2cl:\n" +
+                         "      mode: Import\n"+
+                         "      suppress: [\"checkDebuggerStatement\"]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final IllegalStateException exception =
+        expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+      assertEquals( exception.getMessage(),
+                    "Artifact 'com.example:myapp:jar:1.0' has specified 'j2cl.suppress' configuration but specified 'j2cl.mode = Import' which is incompatible with 'j2cl.suppress'." );
+    } );
+  }
+
+  @Test
+  public void j2clConfigWithoutJ2clNature()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "    j2cl:\n" +
+                         "      suppress: [\"checkDebuggerStatement\"]\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final IllegalStateException exception =
+        expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+      assertEquals( exception.getMessage(),
+                    "Artifact 'com.example:myapp:jar:1.0' has specified 'j2cl' configuration but does not specify the J2cl nature." );
+    } );
+  }
+
+  @Test
   public void getAlias_withAliasStrategy()
     throws Exception
   {

@@ -136,7 +136,8 @@ public class ApplicationConfigTest
                          "  - coord: org.realityforge.arez:arez-core:0.138\n" +
                          "    natures: [J2cl]\n" +
                          "    j2cl:\n" +
-                         "      suppress: ['checkDebuggerStatement','other']\n" );
+                         "      suppress: ['checkDebuggerStatement','other']\n" +
+                         "      mode: Library\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
       final ArtifactConfig artifact = ensureSingleArtifact( config );
@@ -147,6 +148,7 @@ public class ApplicationConfigTest
       final J2clConfig j2cl = artifact.getJ2cl();
       assertNotNull( j2cl );
       assertEquals( j2cl.getSuppress(), Arrays.asList( "checkDebuggerStatement", "other" ) );
+      assertEquals( j2cl.getMode(), J2clMode.Library );
     } );
   }
 

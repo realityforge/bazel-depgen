@@ -115,6 +115,23 @@ public final class ArtifactRecord
   {
     if ( null != _artifactModel )
     {
+      final J2clConfig j2cl = _artifactModel.getSource().getJ2cl();
+      if ( null != j2cl )
+      {
+        if ( !getNatures().contains( Nature.J2cl ) )
+        {
+          final String message =
+            "Artifact '" + getArtifact() + "' has specified 'j2cl' configuration but does not specify the J2cl nature.";
+          throw new IllegalStateException( message );
+        }
+        else if ( null != j2cl.getSuppress() && J2clMode.Import == j2cl.getMode() )
+        {
+          final String message =
+            "Artifact '" + getArtifact() + "' has specified 'j2cl.suppress' configuration but specified " +
+            "'j2cl.mode = Import' which is incompatible with 'j2cl.suppress'.";
+          throw new IllegalStateException( message );
+        }
+      }
       final PluginConfig plugin = _artifactModel.getSource().getPlugin();
       if ( null != plugin )
       {
@@ -546,30 +563,41 @@ public final class ArtifactRecord
   void writeJ2clLibrary( @Nonnull final StarlarkOutput output )
     throws IOException
   {
+    final J2clConfig j2clConfig = null != _artifactModel ? _artifactModel.getSource().getJ2cl() : null;
+    final J2clMode mode = null != j2clConfig && null != j2clConfig.getMode() ? j2clConfig.getMode() : J2clMode.Library;
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + getName( Nature.J2cl ) + "\"" );
-    arguments.put( "srcs", Collections.singletonList( "\"" + getQualifiedSourcesLabel() + "\"" ) );
-    //TODO: Add native_srcs that includes the native.js extracted from the artifact?
-    final J2clConfig j2clConfig = null != _artifactModel ? _artifactModel.getSource().getJ2cl() : null;
-    if ( null != j2clConfig )
+    if ( J2clMode.Library == mode )
     {
-      final List<String> suppress = j2clConfig.getSuppress();
-      if ( null != suppress )
+      arguments.put( "srcs", Collections.singletonList( "\"" + getQualifiedSourcesLabel() + "\"" ) );
+      //TODO: Add native_srcs that includes the native.js extracted from the artifact?
+      if ( null != j2clConfig )
       {
-        arguments.put( "js_suppress", suppress.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
+        final List<String> suppress = j2clConfig.getSuppress();
+        if ( null != suppress )
+        {
+          arguments.put( "js_suppress", suppress.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
+        }
       }
+      arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+      final List<ArtifactRecord> deps = getDeps();
+      if ( !deps.isEmpty() )
+      {
+        arguments.put( "deps",
+                       deps.stream()
+                         .map( a -> "\":" + a.getLabel( Nature.J2cl ) + "\"" )
+                         .sorted()
+                         .collect( Collectors.toList() ) );
+      }
+      output.writeCall( "j2cl_library", arguments );
     }
-    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    final List<ArtifactRecord> deps = getDeps();
-    if ( !deps.isEmpty() )
+    else
     {
-      arguments.put( "deps",
-                     deps.stream()
-                       .map( a -> "\":" + a.getLabel( Nature.J2cl ) + "\"" )
-                       .sorted()
-                       .collect( Collectors.toList() ) );
+      assert J2clMode.Import == mode;
+      arguments.put( "jar", "\"" + getQualifiedBinaryLabel() + "\"" );
+      arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+      output.writeCall( "j2cl_import", arguments );
     }
-    output.writeCall( "j2cl_library", arguments );
   }
 
   void emitJavaPlugin( @Nonnull final StarlarkOutput output, @Nullable final String processorClass )

@@ -9,6 +9,8 @@ public final class J2clConfig
 {
   @Nullable
   private List<String> suppress;
+  @Nullable
+  private J2clMode mode;
 
   @Nullable
   public List<String> getSuppress()
@@ -19,5 +21,16 @@ public final class J2clConfig
   public void setSuppress( @Nonnull final List<String> suppress )
   {
     this.suppress = Objects.requireNonNull( suppress );
+  }
+
+  @Nullable
+  public J2clMode getMode()
+  {
+    return mode;
+  }
+
+  public void setMode( @Nonnull final J2clMode mode )
+  {
+    this.mode = Objects.requireNonNull( mode );
   }
 }

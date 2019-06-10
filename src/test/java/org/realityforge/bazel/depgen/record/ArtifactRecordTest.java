@@ -609,6 +609,34 @@ public class ArtifactRecordTest
   }
 
   @Test
+  public void writeJ2clLibrary_modeImport()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl]\n" +
+                              "    j2cl:\n" +
+                              "      mode: Import\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ) );
+      assertEquals( asString( outputStream ),
+                    "j2cl_import(\n" +
+                    "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                    "    jar = \"@com_example__myapp__1_0//file\",\n" +
+                    "    visibility = [\"//visibility:private\"],\n" +
+                    ")\n" );
+    } );
+  }
+
+  @Test
   public void writeJ2clLibrary_singleDepsPresent()
     throws Exception
   {
