@@ -41,7 +41,7 @@ public final class ArtifactRecord
   private final ArtifactModel _artifactModel;
   @Nullable
   private final ReplacementModel _replacementModel;
-  // Natures is non-null if _artifactModel and _replacementModel are null
+  // Natures is non-null if _artifactModel is null
   @Nullable
   private final List<Nature> _natures;
   @Nullable
