@@ -119,7 +119,7 @@ public final class ReplacementModel
    * @return the target or null if no such target can be found.
    */
   @Nullable
-  private String findTarget( @Nonnull final Nature nature )
+  public String findTarget( @Nonnull final Nature nature )
   {
     return _targets.stream()
       .filter( target -> target.getNature() == nature )
