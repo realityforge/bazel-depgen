@@ -2690,6 +2690,62 @@ public class ApplicationRecordTest
     } );
   }
 
+  @Test
+  public void replacement_targetMissingForNature()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [J2cl, Java]\n" +
+                              "  - coord: com.example:base:1.0\n" +
+                              "replacements:\n" +
+                              "  - coord: com.example:mylib\n" +
+                              "    targets:\n" +
+                              "      - target: \"@com_example//:mylib\"\n" +
+                              "        nature: J2cl\n" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+      final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+
+      assertEquals( exception.getMessage(),
+                    "Artifact 'com.example:mylib:jar:1.0' is a replacement and has a nature of 'Java' but has not declared a replacement target for that nature." );
+    } );
+  }
+
+  @Test
+  public void replacement_targetPresentButNoSuchNature()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeDependencies( dir, "artifacts:\n" +
+                              "  - coord: com.example:myapp:1.0\n" +
+                              "    natures: [Java]\n" +
+                              "  - coord: com.example:base:1.0\n" +
+                              "replacements:\n" +
+                              "  - coord: com.example:mylib\n" +
+                              "    targets:\n" +
+                              "      - target: \"@com_example//:othermylib\"\n" +
+                              "        nature: Java\n" +
+                              "      - target: \"@com_example//:mylib\"\n" +
+                              "        nature: J2cl\n" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+      final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+
+      assertEquals( exception.getMessage(),
+                    "Artifact 'com.example:mylib:jar:1.0' declared target for nature 'J2cl' but artifact does not have specified nature." );
+    } );
+  }
+
   @Nonnull
   private String url( @Nonnull final ArtifactRecord artifactRecord )
   {

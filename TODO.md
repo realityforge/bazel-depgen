@@ -52,7 +52,6 @@ complete as there is too much un-said.
   control how artifacts are defined. Artifacts may support multiple natures.
   - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
   - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
-  - Ensure that replacements have natures to support all their reverse dependencies.
 
 * Optionally pass output through [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier).
 

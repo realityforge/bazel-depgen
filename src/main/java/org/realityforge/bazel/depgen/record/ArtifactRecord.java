@@ -20,6 +20,7 @@ import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.PluginConfig;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
+import org.realityforge.bazel.depgen.model.ReplacementTargetModel;
 import org.realityforge.bazel.depgen.util.ArtifactUtil;
 import org.realityforge.bazel.depgen.util.BazelUtil;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
@@ -182,6 +183,31 @@ public final class ArtifactRecord
         "Unable to locate source for artifact '" + getArtifact() + "'. Specify the 'includeSource' " +
         "configuration property as 'false' in the artifacts configuration.";
       throw new IllegalStateException( message );
+    }
+    if ( null != _replacementModel )
+    {
+      for ( final Nature nature : natures )
+      {
+        final String target = _replacementModel.findTarget( nature );
+        if ( null == target )
+        {
+          final String message =
+            "Artifact '" + getArtifact() + "' is a replacement and has a nature of '" + nature +
+            "' but has not declared a replacement target for that nature.";
+          throw new IllegalStateException( message );
+        }
+      }
+      for ( final ReplacementTargetModel target : _replacementModel.getTargets() )
+      {
+        final Nature nature = target.getNature();
+        if ( !natures.contains( nature ) )
+        {
+          final String message =
+            "Artifact '" + getArtifact() + "' declared target for nature '" + nature + "' but artifact " +
+            "does not have specified nature.";
+          throw new IllegalStateException( message );
+        }
+      }
     }
   }
 
