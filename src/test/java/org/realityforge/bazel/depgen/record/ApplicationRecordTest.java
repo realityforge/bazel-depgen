@@ -755,7 +755,8 @@ public class ApplicationRecordTest
                               "replacements:\n" +
                               "  - coord: com.example:mylib\n" +
                               "    targets:\n" +
-                              "      - target: \"@com_example//:mylib\"\n" );
+                              "      - target: \"@com_example//:mylib\"\n" +
+                              "        nature: J2cl\n" );
       deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
       deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
       deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
