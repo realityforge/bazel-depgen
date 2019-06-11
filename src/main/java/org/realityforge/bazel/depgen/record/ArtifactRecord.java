@@ -172,7 +172,8 @@ public final class ArtifactRecord
     if ( null == _sourceSha256 &&
          null == _replacementModel &&
          (
-           ( null != _artifactModel && _artifactModel.includeSource( _application.getSource().getOptions().includeSource() ) ) ||
+           ( null != _artifactModel &&
+             _artifactModel.includeSource( _application.getSource().getOptions().includeSource() ) ) ||
            ( null == _artifactModel && _application.getSource().getOptions().includeSource() )
          )
     )
