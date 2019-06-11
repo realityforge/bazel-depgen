@@ -182,15 +182,19 @@ public class ApplicationRecordTest
                          "    includeSource: false\n" +
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
       final List<ArtifactRecord> artifacts = record.getArtifacts();
-      assertEquals( artifacts.size(), 1 );
-      final ArtifactRecord artifactRecord = artifacts.get( 0 );
-      assertNull( artifactRecord.getSourceSha256() );
-      assertNull( artifactRecord.getSourceUrls() );
+      assertEquals( artifacts.size(), 2 );
+      final ArtifactRecord artifactRecord1 = artifacts.get( 0 );
+      assertNull( artifactRecord1.getSourceSha256() );
+      assertNull( artifactRecord1.getSourceUrls() );
+      final ArtifactRecord artifactRecord2 = artifacts.get( 1 );
+      assertNull( artifactRecord2.getSourceSha256() );
+      assertNull( artifactRecord2.getSourceUrls() );
     } );
   }
 
