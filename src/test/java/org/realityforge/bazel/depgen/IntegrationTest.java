@@ -20,7 +20,7 @@ public class IntegrationTest
     inIsolatedDirectory( () -> {
       final Path dir = FileUtil.createLocalTempDir();
 
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       writeWorkspace();
       writeDependencies( dir,
@@ -118,7 +118,7 @@ public class IntegrationTest
     inIsolatedDirectory( () -> {
       final Path dir = FileUtil.createLocalTempDir();
 
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       writeWorkspace();
       writeDependencies( dir,

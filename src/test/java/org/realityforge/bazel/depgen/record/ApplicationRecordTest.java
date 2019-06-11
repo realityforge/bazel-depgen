@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.Nature;
@@ -67,7 +68,7 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -88,8 +89,6 @@ public class ApplicationRecordTest
       assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
       assertEquals( artifactRecord.getUrls(),
                     Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
-      assertNull( artifactRecord.getSourceSha256() );
-      assertNull( artifactRecord.getSourceUrls() );
       assertEquals( artifactRecord.getDeps().size(), 0 );
       assertEquals( artifactRecord.getReverseDeps().size(), 0 );
       assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
@@ -107,8 +106,7 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -153,8 +151,7 @@ public class ApplicationRecordTest
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
                          "    includeSource: true\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -185,8 +182,7 @@ public class ApplicationRecordTest
                          "    includeSource: false\n" +
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -209,8 +205,7 @@ public class ApplicationRecordTest
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
                          "    includeSource: false\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -234,7 +229,7 @@ public class ApplicationRecordTest
                          "  namePrefix: myapp\n" +
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -260,7 +255,7 @@ public class ApplicationRecordTest
                          "  namePrefix: myapp_\n" +
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -319,20 +314,20 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib:1.0",
-                                           "com.example:rtA:jar::33.0:runtime" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:mylib:1.0",
-                                           "com.example:rtB:jar::2.0:runtime",
-                                           "org.test4j:core:jar::44.0:test" );
-      deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:rtB:2.0",
-                                           // Provided ignored by traversal
-                                           "com.example:container:jar::4.0:provided",
-                                           // System collected but ignored at later stage
-                                           "com.example:kernel:jar::4.0:system" );
+      deployArtifactToLocalRepository( dir,
+                                       "com.example:myapp:1.0",
+                                       "com.example:mylib:1.0",
+                                       "com.example:rtA:jar::33.0:runtime" );
+      deployArtifactToLocalRepository( dir,
+                                       "com.example:mylib:1.0",
+                                       "com.example:rtB:jar::2.0:runtime",
+                                       "org.test4j:core:jar::44.0:test" );
+      deployArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
+      deployArtifactToLocalRepository( dir, "com.example:rtB:2.0",
+                                       // Provided ignored by traversal
+                                       "com.example:container:jar::4.0:provided",
+                                       // System collected but ignored at later stage
+                                       "com.example:kernel:jar::4.0:system" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -434,10 +429,8 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -462,8 +455,10 @@ public class ApplicationRecordTest
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
                       Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
-        assertNull( artifactRecord.getSourceSha256() );
-        assertNull( artifactRecord.getSourceUrls() );
+        assertEquals( artifactRecord.getSourceSha256(),
+                      "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+        assertEquals( artifactRecord.getSourceUrls(),
+                      Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0-sources.jar" ) );
         assertEquals( artifactRecord.getDeps().size(), 1 );
         assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
@@ -473,7 +468,9 @@ public class ApplicationRecordTest
                       "<default>.local.url=" + urlEncoded + "com/example/myapp/1.0/myapp-1.0.jar\n" +
                       "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" +
                       "processors=-\n" +
-                      "sources.present=false\n" );
+                      "sources.local.url=" + urlEncoded + "com/example/myapp/1.0/myapp-1.0-sources.jar\n" +
+                      "sources.present=true\n" +
+                      "sources.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" );
       }
 
       {
@@ -490,8 +487,10 @@ public class ApplicationRecordTest
                       "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
         assertEquals( artifactRecord.getUrls(),
                       Collections.singletonList( dir.toUri() + "com/example/mylib/1.0/mylib-1.0.jar" ) );
-        assertNull( artifactRecord.getSourceSha256() );
-        assertNull( artifactRecord.getSourceUrls() );
+        assertEquals( artifactRecord.getSourceSha256(),
+                      "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+        assertEquals( artifactRecord.getSourceUrls(),
+                      Collections.singletonList( dir.toUri() + "com/example/mylib/1.0/mylib-1.0-sources.jar" ) );
         assertEquals( artifactRecord.getDeps().size(), 0 );
         assertEquals( artifactRecord.getRuntimeDeps().size(), 0 );
         final Path path =
@@ -500,7 +499,9 @@ public class ApplicationRecordTest
                       "<default>.local.url=" + urlEncoded + "com/example/mylib/1.0/mylib-1.0.jar\n" +
                       "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" +
                       "processors=-\n" +
-                      "sources.present=false\n" );
+                      "sources.local.url=" + urlEncoded + "com/example/mylib/1.0/mylib-1.0-sources.jar\n" +
+                      "sources.present=true\n" +
+                      "sources.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" );
       }
     } );
   }
@@ -517,10 +518,8 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final Path cacheDir = FileUtil.createLocalTempDir();
       final ApplicationRecord record = loadApplicationRecord( cacheDir );
@@ -605,12 +604,12 @@ public class ApplicationRecordTest
       final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib:jar:sources:1.0",
-                                           "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir,
+                                       "com.example:myapp:1.0",
+                                       "com.example:mylib:jar:sources:1.0",
+                                       "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -632,12 +631,12 @@ public class ApplicationRecordTest
       final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib:jar:sources:1.0:runtime",
-                                           "com.example:mylib:jar::1.0:runtime" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir,
+                                       "com.example:myapp:1.0",
+                                       "com.example:mylib:jar:sources:1.0:runtime",
+                                       "com.example:mylib:jar::1.0:runtime" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -661,12 +660,9 @@ public class ApplicationRecordTest
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl]\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -693,12 +689,9 @@ public class ApplicationRecordTest
                               "  defaultNature: J2cl\n" +
                               "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -726,12 +719,9 @@ public class ApplicationRecordTest
                               "    natures: [J2cl]\n" +
                               "  - coord: com.example:base:1.0\n" +
                               "    natures: [J2cl]\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -762,12 +752,9 @@ public class ApplicationRecordTest
                               "  - coord: com.example:mylib\n" +
                               "    targets:\n" +
                               "      - target: \"@com_example//:mylib\"\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -794,9 +781,9 @@ public class ApplicationRecordTest
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl]\n" +
                               "  - coord: com.example:base:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
 
@@ -816,9 +803,9 @@ public class ApplicationRecordTest
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl]\n" +
                               "  - coord: com.example:mylib:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
 
@@ -839,9 +826,9 @@ public class ApplicationRecordTest
                               "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [Java]\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -870,9 +857,9 @@ public class ApplicationRecordTest
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [Java]\n" +
                               "  - coord: com.example:mylib:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
 
@@ -893,9 +880,9 @@ public class ApplicationRecordTest
                               "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [Plugin]\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -924,9 +911,9 @@ public class ApplicationRecordTest
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [Plugin]\n" +
                               "  - coord: com.example:mylib:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
       final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
 
@@ -943,16 +930,16 @@ public class ApplicationRecordTest
       final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib1:1.0",
-                                           "com.example:mylib3:1.0",
-                                           "com.example:mylib2:1.0",
-                                           "com.example:mylib4:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib1:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib2:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib3:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib4:1.0" );
+      deployArtifactToLocalRepository( dir,
+                                       "com.example:myapp:1.0",
+                                       "com.example:mylib1:1.0",
+                                       "com.example:mylib3:1.0",
+                                       "com.example:mylib2:1.0",
+                                       "com.example:mylib4:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib1:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib2:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib3:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib4:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -977,16 +964,16 @@ public class ApplicationRecordTest
       final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib1:jar::1.0:runtime",
-                                           "com.example:mylib3:jar::1.0:runtime",
-                                           "com.example:mylib2:jar::1.0:runtime",
-                                           "com.example:mylib4:jar::1.0:runtime" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib1:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib2:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib3:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib4:1.0" );
+      deployArtifactToLocalRepository( dir,
+                                       "com.example:myapp:1.0",
+                                       "com.example:mylib1:jar::1.0:runtime",
+                                       "com.example:mylib3:jar::1.0:runtime",
+                                       "com.example:mylib2:jar::1.0:runtime",
+                                       "com.example:mylib4:jar::1.0:runtime" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib1:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib2:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib3:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib4:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1011,12 +998,12 @@ public class ApplicationRecordTest
       final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib:jar:stripped:1.0",
-                                           "com.example:mylib:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:stripped:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
+      deployArtifactToLocalRepository( dir,
+                                       "com.example:myapp:1.0",
+                                       "com.example:mylib:jar:stripped:1.0",
+                                       "com.example:mylib:jar:sources:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:jar:stripped:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1040,10 +1027,8 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:rtA:jar::33.0:runtime" );
-      deployTempArtifactToLocalRepository( dir, "com.example:rtA:jar:33.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:rtA:jar::33.0:runtime" );
+      deployArtifactToLocalRepository( dir, "com.example:rtA:jar:33.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1096,10 +1081,8 @@ public class ApplicationRecordTest
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
                          "  - coord: com.example:mylib\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1141,15 +1124,15 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib:1.0",
-                                           "com.example:rtA:jar::33.0:runtime" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:mylib:1.0",
-                                           "com.example:rtA:jar::32.0:runtime" );
-      deployTempArtifactToLocalRepository( dir, "com.example:rtA:32.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
+      deployArtifactToLocalRepository( dir,
+                                       "com.example:myapp:1.0",
+                                       "com.example:mylib:1.0",
+                                       "com.example:rtA:jar::33.0:runtime" );
+      deployArtifactToLocalRepository( dir,
+                                       "com.example:mylib:1.0",
+                                       "com.example:rtA:jar::32.0:runtime" );
+      deployArtifactToLocalRepository( dir, "com.example:rtA:32.0" );
+      deployArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1207,10 +1190,8 @@ public class ApplicationRecordTest
                          "  - coord: com.example:mylib\n" +
                          "    targets:\n" +
                          "      - target: \"@com_example//:mylib\"\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1259,10 +1240,8 @@ public class ApplicationRecordTest
                          "  - coord: com.example:myapp:1.0\n" +
                          "excludes:\n" +
                          "  - coord: com.example:mylib\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1294,10 +1273,8 @@ public class ApplicationRecordTest
                          "  - coord: com.example:myapp:1.0\n" +
                          "excludes:\n" +
                          "  - coord: com.example:mylib\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib:jar::1.0:runtime" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:jar::1.0:runtime" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1328,10 +1305,8 @@ public class ApplicationRecordTest
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
                          "    includeOptional: true\n" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:myapp:1.0",
-                                           "com.example:mylib:jar::1.0:compile:optional" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:jar::1.0:compile:optional" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1371,7 +1346,7 @@ public class ApplicationRecordTest
       final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1391,7 +1366,7 @@ public class ApplicationRecordTest
       final Path dir = FileUtil.createLocalTempDir();
 
       writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1413,7 +1388,7 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
       final List<ArtifactRecord> artifacts = record.getArtifacts();
@@ -1438,6 +1413,7 @@ public class ApplicationRecordTest
         createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                        "react4j.processor.ReactProcessor\n" +
                        "arez.processor.ArezProcessor\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -1461,7 +1437,7 @@ public class ApplicationRecordTest
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
                          "    natures: [Plugin]\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
       final List<ArtifactRecord> artifacts = record.getArtifacts();
@@ -1484,8 +1460,8 @@ public class ApplicationRecordTest
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
 
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
       final List<ArtifactRecord> artifacts = record.getArtifacts();
@@ -1519,6 +1495,7 @@ public class ApplicationRecordTest
         createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                        "react4j.processor.ReactProcessor\n" +
                        "arez.processor.ArezProcessor\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -1547,6 +1524,7 @@ public class ApplicationRecordTest
         createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                        "react4j.processor.ReactProcessor\n" +
                        "arez.processor.ArezProcessor\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -1618,6 +1596,7 @@ public class ApplicationRecordTest
         createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                        "react4j.processor.ReactProcessor\n" +
                        "arez.processor.ArezProcessor\n" );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -1686,7 +1665,7 @@ public class ApplicationRecordTest
                          "  aliasStrategy: ArtifactId\n" +
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
       final List<ArtifactRecord> artifacts = record.getArtifacts();
@@ -1711,7 +1690,7 @@ public class ApplicationRecordTest
                          "  aliasStrategy: ArtifactId\n" +
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
       final List<ArtifactRecord> artifacts = record.getArtifacts();
@@ -1736,8 +1715,8 @@ public class ApplicationRecordTest
                          "artifacts:\n" +
                          "  - coord: com.example.app1:core:42.0\n" +
                          "  - coord: com.example.app2:core:37.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
+      deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
+      deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
 
       final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
       assertEquals( exception.getMessage(),
@@ -1759,8 +1738,8 @@ public class ApplicationRecordTest
                          "  - coord: com.example.app1:core:42.0\n" +
                          "    aliasStrategy: GroupIdAndArtifactId\n" +
                          "  - coord: com.example.app2:core:37.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
+      deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
+      deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1812,8 +1791,8 @@ public class ApplicationRecordTest
                          "  - coord: com.example.app1:core:42.0\n" +
                          "    exportDeps: true\n" +
                          "  - coord: com.example.app2:core:37.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
+      deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
+      deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1846,8 +1825,8 @@ public class ApplicationRecordTest
                          "  - coord: com.example.app1:core:42.0\n" +
                          "    exportDeps: false\n" +
                          "  - coord: com.example.app2:core:37.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
+      deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
+      deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1881,6 +1860,7 @@ public class ApplicationRecordTest
                        "react4j.processor.ReactProcessor\n" +
                        "arez.processor.ArezProcessor\n" );
 
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0", jarFile );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -1905,7 +1885,7 @@ public class ApplicationRecordTest
       writeDependencies( dir,
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
       final List<ArtifactRecord> artifacts = record.getArtifacts();
@@ -1949,8 +1929,7 @@ public class ApplicationRecordTest
                          "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" +
                          "    natures: [J2cl]\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
       final List<ArtifactRecord> artifacts = record.getArtifacts();
@@ -1969,7 +1948,7 @@ public class ApplicationRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -1988,6 +1967,7 @@ public class ApplicationRecordTest
                     "    native.java_import(\n" +
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                     "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "        visibility = [\"//visibility:private\"],\n" +
                     "    )\n" );
@@ -2005,7 +1985,7 @@ public class ApplicationRecordTest
                               "  supportDependencyOmit: true\n" +
                               "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -2025,6 +2005,7 @@ public class ApplicationRecordTest
                     "        native.java_import(\n" +
                     "            name = \"com_example__myapp__1_0\",\n" +
                     "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "            srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                     "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "            visibility = [\"//visibility:private\"],\n" +
                     "        )\n" );
@@ -2042,7 +2023,7 @@ public class ApplicationRecordTest
                               "  targetMacroName: generate_myapp_targets\n" +
                               "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -2061,6 +2042,7 @@ public class ApplicationRecordTest
                     "    native.java_import(\n" +
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                     "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "        visibility = [\"//visibility:private\"],\n" +
                     "    )\n" );
@@ -2076,8 +2058,8 @@ public class ApplicationRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -2096,6 +2078,7 @@ public class ApplicationRecordTest
                     "    native.java_import(\n" +
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                     "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "        visibility = [\"//visibility:private\"],\n" +
                     "        deps = [\":com_example__mylib\"],\n" +
@@ -2109,6 +2092,7 @@ public class ApplicationRecordTest
                     "    native.java_import(\n" +
                     "        name = \"com_example__mylib__2_0\",\n" +
                     "        jars = [\"@com_example__mylib__2_0//file\"],\n" +
+                    "        srcjar = \"@com_example__mylib__2_0__sources//file\",\n" +
                     "        tags = [\"maven_coordinates=com.example:mylib:2.0\"],\n" +
                     "        visibility = [\"//visibility:private\"],\n" +
                     "    )\n" );
@@ -2128,8 +2112,8 @@ public class ApplicationRecordTest
                               "  - coord: com.example:mylib\n" +
                               "    targets:\n" +
                               "      - target: \"@com_example//:mylib\"\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -2148,6 +2132,7 @@ public class ApplicationRecordTest
                     "    native.java_import(\n" +
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                     "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "        visibility = [\"//visibility:private\"],\n" +
                     "        deps = [\":@com_example//:mylib\"],\n" +
@@ -2164,11 +2149,10 @@ public class ApplicationRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
-      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
-      assertNotNull( urls );
+      final ArtifactRecord artifactRecord = record.getArtifacts().get( 0 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
@@ -2184,7 +2168,14 @@ public class ApplicationRecordTest
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "        urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "        urls = [\"" + url( artifactRecord ) + "\"],\n" +
+                    "    )\n" +
+                    "\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0__sources\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + sourceUrl( artifactRecord ) + "\"],\n" +
                     "    )\n" );
     } );
   }
@@ -2200,11 +2191,9 @@ public class ApplicationRecordTest
                               "  supportDependencyOmit: true\n" +
                               "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
-      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
-      assertNotNull( urls );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
@@ -2221,7 +2210,14 @@ public class ApplicationRecordTest
                     "            name = \"com_example__myapp__1_0\",\n" +
                     "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                     "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "            urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "            urls = [\"" + url( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                    "        )\n" +
+                    "\n" +
+                    "        http_file(\n" +
+                    "            name = \"com_example__myapp__1_0__sources\",\n" +
+                    "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
+                    "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "            urls = [\"" + sourceUrl( record.getArtifacts().get( 0 ) ) + "\"],\n" +
                     "        )\n" );
     } );
   }
@@ -2237,11 +2233,9 @@ public class ApplicationRecordTest
                               "  workspaceMacroName: generate_myapp_workspace_rules\n" +
                               "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
-      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
-      assertNotNull( urls );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
@@ -2257,7 +2251,14 @@ public class ApplicationRecordTest
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "        urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "        urls = [\"" + url( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                    "    )\n" +
+                    "\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0__sources\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + sourceUrl( record.getArtifacts().get( 0 ) ) + "\"],\n" +
                     "    )\n" );
     } );
   }
@@ -2271,14 +2272,12 @@ public class ApplicationRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
-      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
-      assertNotNull( urls );
-      final List<String> urls2 = record.getArtifacts().get( 1 ).getUrls();
-      assertNotNull( urls2 );
+      final ArtifactRecord artifactRecord1 = record.getArtifacts().get( 0 );
+      final ArtifactRecord artifactRecord2 = record.getArtifacts().get( 1 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
@@ -2294,14 +2293,28 @@ public class ApplicationRecordTest
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "        urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "        urls = [\"" + url( artifactRecord1 ) + "\"],\n" +
+                    "    )\n" +
+                    "\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0__sources\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + sourceUrl( artifactRecord1 ) + "\"],\n" +
                     "    )\n" +
                     "\n" +
                     "    http_file(\n" +
                     "        name = \"com_example__mylib__2_0\",\n" +
                     "        downloaded_file_path = \"com/example/mylib/2.0/mylib-2.0.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "        urls = [\"" + urls2.get( 0 ) + "\"],\n" +
+                    "        urls = [\"" + url( artifactRecord2 ) + "\"],\n" +
+                    "    )\n" +
+                    "\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__mylib__2_0__sources\",\n" +
+                    "        downloaded_file_path = \"com/example/mylib/2.0/mylib-2.0-sources.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + sourceUrl( artifactRecord2 ) + "\"],\n" +
                     "    )\n" );
     } );
   }
@@ -2319,12 +2332,10 @@ public class ApplicationRecordTest
                               "  - coord: com.example:mylib\n" +
                               "    targets:\n" +
                               "      - target: \"@com_example//:mylib\"\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
-      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
-      assertNotNull( urls );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
@@ -2340,7 +2351,14 @@ public class ApplicationRecordTest
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "        urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "        urls = [\"" + url( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                    "    )\n" +
+                    "\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0__sources\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + sourceUrl( record.getArtifacts().get( 0 ) ) + "\"],\n" +
                     "    )\n" );
     } );
   }
@@ -2354,8 +2372,8 @@ public class ApplicationRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -2380,8 +2398,8 @@ public class ApplicationRecordTest
                               "  emitDependencyGraph: false\n" +
                               "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -2400,11 +2418,9 @@ public class ApplicationRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
-      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
-      assertNotNull( urls );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeBazelExtension( new StarlarkOutput( outputStream ) );
@@ -2433,7 +2449,14 @@ public class ApplicationRecordTest
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "        urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "        urls = [\"" + url( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                    "    )\n" +
+                    "\n" +
+                    "    http_file(\n" +
+                    "        name = \"com_example__myapp__1_0__sources\",\n" +
+                    "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
+                    "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                    "        urls = [\"" + sourceUrl( record.getArtifacts().get( 0 ) ) + "\"],\n" +
                     "    )\n" +
                     "\n" +
                     "def generate_targets():\n" +
@@ -2448,6 +2471,7 @@ public class ApplicationRecordTest
                     "    native.java_import(\n" +
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                     "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     "        visibility = [\"//visibility:private\"],\n" +
                     "    )\n" );
@@ -2463,7 +2487,7 @@ public class ApplicationRecordTest
 
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
 
@@ -2490,14 +2514,9 @@ public class ApplicationRecordTest
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl, Java]\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
-      final List<String> urls = record.getArtifacts().get( 0 ).getUrls();
-      assertNotNull( urls );
-      final List<String> srcUrls = record.getArtifacts().get( 0 ).getSourceUrls();
-      assertNotNull( srcUrls );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeBazelExtension( new StarlarkOutput( outputStream ) );
@@ -2527,14 +2546,14 @@ public class ApplicationRecordTest
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "        urls = [\"" + urls.get( 0 ) + "\"],\n" +
+                    "        urls = [\"" + url( record.getArtifacts().get( 0 ) ) + "\"],\n" +
                     "    )\n" +
                     "\n" +
                     "    http_file(\n" +
                     "        name = \"com_example__myapp__1_0__sources\",\n" +
                     "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "        urls = [\"" + srcUrls.get( 0 ) + "\"],\n" +
+                    "        urls = [\"" + sourceUrl( record.getArtifacts().get( 0 ) ) + "\"],\n" +
                     "    )\n" +
                     "\n" +
                     "def generate_targets():\n" +
@@ -2576,21 +2595,13 @@ public class ApplicationRecordTest
       writeDependencies( dir, "artifacts:\n" +
                               "  - coord: com.example:myapp:1.0\n" +
                               "    natures: [J2cl]\n" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
-      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
       final List<ArtifactRecord> artifacts = record.getArtifacts();
-      final List<String> urls1 = artifacts.get( 0 ).getUrls();
-      assertNotNull( urls1 );
-      final List<String> urls2 = artifacts.get( 1 ).getUrls();
-      assertNotNull( urls2 );
-      final List<String> srcUrls1 = artifacts.get( 0 ).getSourceUrls();
-      assertNotNull( srcUrls1 );
-      final List<String> srcUrls2 = artifacts.get( 1 ).getSourceUrls();
-      assertNotNull( srcUrls2 );
+      final ArtifactRecord artifactRecord1 = artifacts.get( 0 );
+      final ArtifactRecord artifactRecord2 = artifacts.get( 1 );
 
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       record.writeBazelExtension( new StarlarkOutput( outputStream ) );
@@ -2621,28 +2632,28 @@ public class ApplicationRecordTest
                     "        name = \"com_example__myapp__1_0\",\n" +
                     "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "        urls = [\"" + urls1.get( 0 ) + "\"],\n" +
+                    "        urls = [\"" + url( artifactRecord1 ) + "\"],\n" +
                     "    )\n" +
                     "\n" +
                     "    http_file(\n" +
                     "        name = \"com_example__myapp__1_0__sources\",\n" +
                     "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "        urls = [\"" + srcUrls1.get( 0 ) + "\"],\n" +
+                    "        urls = [\"" + sourceUrl( artifactRecord1 ) + "\"],\n" +
                     "    )\n" +
                     "\n" +
                     "    http_file(\n" +
                     "        name = \"com_example__mylib__1_0\",\n" +
                     "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "        urls = [\"" + urls2.get( 0 ) + "\"],\n" +
+                    "        urls = [\"" + url( artifactRecord2 ) + "\"],\n" +
                     "    )\n" +
                     "\n" +
                     "    http_file(\n" +
                     "        name = \"com_example__mylib__1_0__sources\",\n" +
                     "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0-sources.jar\",\n" +
                     "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                    "        urls = [\"" + srcUrls2.get( 0 ) + "\"],\n" +
+                    "        urls = [\"" + sourceUrl( artifactRecord2 ) + "\"],\n" +
                     "    )\n" +
                     "\n" +
                     "def generate_targets():\n" +
@@ -2672,5 +2683,33 @@ public class ApplicationRecordTest
                     "        visibility = [\"//visibility:private\"],\n" +
                     "    )\n" );
     } );
+  }
+
+  @Nonnull
+  private String url( @Nonnull final ArtifactRecord artifactRecord )
+  {
+    return urls( artifactRecord ).get( 0 );
+  }
+
+  @Nonnull
+  private String sourceUrl( @Nonnull final ArtifactRecord artifactRecord )
+  {
+    return sourceUrls( artifactRecord ).get( 0 );
+  }
+
+  @Nonnull
+  private List<String> urls( @Nonnull final ArtifactRecord artifactRecord )
+  {
+    final List<String> urls2 = artifactRecord.getUrls();
+    assertNotNull( urls2 );
+    return urls2;
+  }
+
+  @Nonnull
+  private List<String> sourceUrls( @Nonnull final ArtifactRecord artifactRecord )
+  {
+    final List<String> srcUrls2 = artifactRecord.getSourceUrls();
+    assertNotNull( srcUrls2 );
+    return srcUrls2;
   }
 }

@@ -54,8 +54,6 @@ complete as there is too much un-said.
   - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
   - Ensure that replacements have natures to support all their reverse dependencies.
 
-* Add strict mode so that if sources is not present and it has not been marked as not included, the tool will fail.
-
 * Optionally pass output through [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier).
 
 * Add support for managed dependencies which essentially contains a list of artifacts that include version

@@ -247,6 +247,16 @@ public abstract class AbstractTest
     }
   }
 
+  protected final void deployArtifactToLocalRepository( @Nonnull final Path localRepository,
+                                                        @Nonnull final String coords,
+                                                        @Nonnull final String... dependencies )
+    throws Exception
+  {
+    final SubArtifact sourcesArtifact = new SubArtifact( new DefaultArtifact( coords ), "sources", "jar" );
+    deployTempArtifactToLocalRepository( localRepository, sourcesArtifact.toString() );
+    deployTempArtifactToLocalRepository( localRepository, coords, dependencies );
+  }
+
   protected final void deployTempArtifactToLocalRepository( @Nonnull final Path localRepository,
                                                             @Nonnull final String coords,
                                                             @Nonnull final String... dependencies )

@@ -406,7 +406,8 @@ public class MainTest
 
       writeDependencies( dir,
                          "artifacts:\n" +
-                         "  - coord: com.example:myapp:1.0\n" );
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "    includeSource: false\n" );
       final Path jarFile2 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile2 );
 
@@ -448,7 +449,9 @@ public class MainTest
                          "  - coord: com.example:myapp:1.0\n" );
       final Path jarFile1 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
       final Path jarFile2 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", jarFile1 );
+      deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile2, "com.example:mylib:1.0" );
 
       final ApplicationRecord record = loadApplicationRecord();
@@ -472,6 +475,7 @@ public class MainTest
       Main.cacheArtifactsInRepositoryCache( environment, record );
       assertEquals( handler.toString(),
                     "Installed artifact 'com.example:myapp:jar:1.0' into repository cache.\n" +
+                    "Installed artifact 'com.example:myapp:jar:sources:1.0' into repository cache.\n" +
                     "Installed artifact 'com.example:mylib:jar:1.0' into repository cache." );
 
       assertTrue( Files.exists( targetFile1 ) );

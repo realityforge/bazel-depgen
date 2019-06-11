@@ -108,10 +108,9 @@ public final class ArtifactRecord
       _replacementModel = replacementModel;
       _artifactModel = null;
     }
-    validate();
   }
 
-  private void validate()
+  void validate()
   {
     if ( null != _artifactModel )
     {
@@ -150,6 +149,34 @@ public final class ArtifactRecord
           throw new IllegalStateException( message );
         }
       }
+    }
+    if ( getNatures().contains( Nature.J2cl ) )
+    {
+      if ( null != _artifactModel &&
+           !_artifactModel.includeSource( _application.getSource().getOptions().includeSource() ) )
+      {
+        final String message =
+          "Artifact '" + getArtifact() + "' has specified J2cl nature but the 'includeSource' configuration " +
+          "resolves to false.";
+        throw new IllegalStateException( message );
+      }
+      if ( null == _sourceSha256 && null == _replacementModel )
+      {
+        final String message =
+          "Unable to locate the sources classifier artifact for the artifact '" + getArtifact() +
+          "' but the artifact has the J2cl nature which requires that sources be present.";
+        throw new IllegalStateException( message );
+      }
+    }
+    if ( null == _sourceSha256 &&
+         null == _replacementModel &&
+         ( null == _artifactModel ||
+           _artifactModel.includeSource( _application.getSource().getOptions().includeSource() ) ) )
+    {
+      final String message =
+        "Unable to locate source for artifact '" + getArtifact() + "'. Specify the 'includeSource' " +
+        "configuration property as 'false' in the artifacts configuration.";
+      throw new IllegalStateException( message );
     }
   }
 
