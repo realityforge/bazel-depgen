@@ -112,12 +112,13 @@ public final class ArtifactRecord
 
   void validate()
   {
+    final List<Nature> natures = getNatures();
     if ( null != _artifactModel )
     {
       final J2clConfig j2cl = _artifactModel.getSource().getJ2cl();
       if ( null != j2cl )
       {
-        if ( !getNatures().contains( Nature.J2cl ) )
+        if ( !natures.contains( Nature.J2cl ) )
         {
           final String message =
             "Artifact '" + getArtifact() + "' has specified 'j2cl' configuration but does not specify the J2cl nature.";
@@ -134,7 +135,7 @@ public final class ArtifactRecord
       final PluginConfig plugin = _artifactModel.getSource().getPlugin();
       if ( null != plugin )
       {
-        if ( !getNatures().contains( Nature.Plugin ) )
+        if ( !natures.contains( Nature.Plugin ) )
         {
           final String message =
             "Artifact '" + getArtifact() + "' has specified 'plugin' configuration but does not specify " +
@@ -150,7 +151,7 @@ public final class ArtifactRecord
         }
       }
     }
-    if ( getNatures().contains( Nature.J2cl ) )
+    if ( natures.contains( Nature.J2cl ) )
     {
       if ( null != _artifactModel &&
            !_artifactModel.includeSource( _application.getSource().getOptions().includeSource() ) )
