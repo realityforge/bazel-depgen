@@ -42,18 +42,6 @@ final class SimpleRepositoryListener
   }
 
   @Override
-  public void artifactInstalled( @Nonnull final RepositoryEvent event )
-  {
-    _environment.logger().fine( "Installed " + event.getArtifact() + " to " + event.getFile() );
-  }
-
-  @Override
-  public void artifactInstalling( @Nonnull final RepositoryEvent event )
-  {
-    _environment.logger().fine( "Installing " + event.getArtifact() + " to " + event.getFile() );
-  }
-
-  @Override
   public void artifactResolved( @Nonnull final RepositoryEvent event )
   {
     _environment.logger().fine( "Resolved artifact " + event.getArtifact() + " from " + event.getRepository() );
@@ -87,24 +75,6 @@ final class SimpleRepositoryListener
   public void metadataDeploying( @Nonnull final RepositoryEvent event )
   {
     _environment.logger().fine( "Deploying " + event.getMetadata() + " to " + event.getRepository() );
-  }
-
-  @Override
-  public void metadataInstalled( @Nonnull final RepositoryEvent event )
-  {
-    _environment.logger().fine( "Installed " + event.getMetadata() + " to " + event.getFile() );
-  }
-
-  @Override
-  public void metadataInstalling( @Nonnull final RepositoryEvent event )
-  {
-    _environment.logger().fine( "Installing " + event.getMetadata() + " to " + event.getFile() );
-  }
-
-  @Override
-  public void metadataInvalid( @Nonnull final RepositoryEvent event )
-  {
-    _environment.logger().warning( "Invalid metadata " + event.getMetadata() );
   }
 
   @Override
