@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.DependencyVisitor;
@@ -47,13 +46,6 @@ final class DependencyCollector
     {
       // Manually supplied dependency
       _record.replacement( node );
-      return false;
-    }
-    else if ( !( "".equals( node.getDependency().getScope() ) ||
-                 Artifact.SCOPE_COMPILE.equals( node.getDependency().getScope() ) ||
-                 Artifact.SCOPE_RUNTIME.equals( node.getDependency().getScope() ) ) )
-    {
-      // Only compile and runtime scoped dependencies are collected
       return false;
     }
     else
