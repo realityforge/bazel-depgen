@@ -21,6 +21,17 @@ public class GlobalExcludeModelTest
   }
 
   @Test
+  public void parse_missingCoord()
+  {
+    final ExcludeConfig source = new ExcludeConfig();
+
+    final InvalidModelException exception =
+      expectThrows( InvalidModelException.class, () -> GlobalExcludeModel.parse( source ) );
+    assertEquals( exception.getMessage(), "The global exclude must specify the 'coord' property." );
+    assertEquals( exception.getModel(), source );
+  }
+
+  @Test
   public void parseExcludeWith1PartCoord()
   {
     final ExcludeConfig source = new ExcludeConfig();
