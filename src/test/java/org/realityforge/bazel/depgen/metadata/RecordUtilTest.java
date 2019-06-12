@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.concurrent.Executors;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -67,6 +68,19 @@ public class RecordUtilTest
   {
     inIsolatedDirectory( () -> {
       final Path path = createTempJarFile();
+      final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
+      assertEquals( processors, DepgenMetadata.SENTINEL );
+    } );
+  }
+
+  @Test
+  public void readAnnotationProcessors_jarNotReadable()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path path = createTempJarFile();
+      // Remove read permission so that attempting to read metadata generates an IOException
+      Files.setPosixFilePermissions( path, new HashSet<>() );
       final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
       assertEquals( processors, DepgenMetadata.SENTINEL );
     } );
