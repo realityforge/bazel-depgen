@@ -85,4 +85,15 @@ public class RepositoryModelTest
     assertEquals( model.getUrl(), "https://example.com/repo/" );
     assertTrue( model.cacheLookups() );
   }
+
+  @Test
+  public void parse_missing_url()
+  {
+    final RepositoryConfig config = new RepositoryConfig();
+    final InvalidModelException exception =
+      expectThrows( InvalidModelException.class, () -> RepositoryModel.parse( config ) );
+
+    assertEquals( exception.getMessage(), "The repository must specify the 'url' property." );
+    assertEquals( exception.getModel(), config );
+  }
 }
