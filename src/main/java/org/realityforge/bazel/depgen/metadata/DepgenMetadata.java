@@ -210,9 +210,8 @@ public final class DepgenMetadata
         _properties.store( writer, null );
       }
     }
-    catch ( final IOException ioe )
+    catch ( final IOException ignored )
     {
-      throw new IllegalStateException( "Failed to write metadata file " + _file + " due to " + ioe, ioe );
     }
   }
 
