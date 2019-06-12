@@ -354,6 +354,7 @@ public class RecordUtilTest
     }
     else
     {
+      httpExchange.sendResponseHeaders( 404, -1 );
       httpExchange.close();
     }
   }
