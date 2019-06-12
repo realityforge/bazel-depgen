@@ -247,6 +247,42 @@ public class DepgenMetadataTest
   }
 
   @Test
+  public void getUrls_artifactNotINRepositories()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
+
+      final Path dir1 = FileUtil.createLocalTempDir();
+
+      final URI uri = dir1.toUri();
+
+      final RemoteRepository repo1 = new RemoteRepository.Builder( "dir1", "default", uri.toString() ).build();
+
+      final DepgenMetadata metadata =
+        loadMetadata( dir,
+                      "repositories:\n" +
+                      "  - name: dir1\n" +
+                      "    url: " + uri.toString() + "\n" );
+
+      assertFalse( file.toFile().exists() );
+
+      final IllegalStateException exception =
+        expectThrows( IllegalStateException.class,
+                      () -> metadata.getUrls( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                              Collections.singletonList( repo1 ),
+                                              Collections.emptyMap(),
+                                              Assert::fail ) );
+      assertEquals( exception.getMessage(), "Unable to locate artifact com.example:myapp:jar:1.0 in any repository." );
+
+      assertTrue( file.toFile().exists() );
+
+      assertEquals( loadPropertiesContent( file ), "<default>.dir1.url=-\n" );
+    } );
+  }
+
+  @Test
   public void getUrls_alreadyCached()
     throws Exception
   {
