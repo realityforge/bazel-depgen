@@ -134,7 +134,7 @@ public class DepgenMetadataTest
   }
 
   @Test
-  public void getSha256_multipleCallsWIllNotAccessUnderlingCacheIfNotModified()
+  public void getSha256_multipleCallsWillNotAccessUnderlingCacheIfNotModified()
     throws Exception
   {
     inIsolatedDirectory( () -> {
