@@ -5,8 +5,10 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -589,6 +591,64 @@ public class DepgenMetadataTest
 
       assertEquals( loadPropertiesContent( file ),
                     "processors=react4j.processor.ReactProcessor,arez.processor.ArezProcessor\n" );
+    } );
+  }
+
+  @Test
+  public void writeOnlyCacheProperties()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
+
+      Files.write( file,
+                   "processors=react4j.processor.ReactProcessor,arez.processor.ArezProcessor\n"
+                     .getBytes( StandardCharsets.ISO_8859_1 ) );
+
+      final HashSet<PosixFilePermission> permissions = new HashSet<>();
+      permissions.add( PosixFilePermission.OWNER_WRITE );
+      Files.setPosixFilePermissions( file, permissions );
+
+      final DepgenMetadata metadata = loadMetadata( dir );
+
+      // getProcessors returns null as the actual jar has no processors even though it is recorded in the cache
+      assertNull( metadata.getProcessors( createTempJarFile().toFile() ) );
+
+      permissions.add( PosixFilePermission.OWNER_READ );
+      Files.setPosixFilePermissions( file, permissions );
+
+      assertTrue( file.toFile().exists() );
+
+      // The file was updated
+      assertEquals( loadPropertiesContent( file ), "processors=-\n" );
+    } );
+  }
+
+  @Test
+  public void readOnlyCacheProperties()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+      final Path file = dir.resolve( DepgenMetadata.FILENAME );
+
+      Files.write( file, "".getBytes( StandardCharsets.ISO_8859_1 ) );
+
+      final HashSet<PosixFilePermission> permissions = new HashSet<>();
+      permissions.add( PosixFilePermission.OWNER_READ );
+      Files.setPosixFilePermissions( file, permissions );
+
+      final DepgenMetadata metadata = loadMetadata( dir );
+
+      // getProcessors returns null as the actual jar has no processors even though it is recorded in the cache
+      assertEquals( metadata.getSha256( "", createTempJarFile().toFile() ),
+                    "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+
+      assertTrue( file.toFile().exists() );
+
+      // The file was not updated as it is read-only
+      assertEquals( loadPropertiesContent( file ), "" );
     } );
   }
 
