@@ -165,6 +165,23 @@ public class RecordUtilTest
   }
 
   @Test
+  public void lookupArtifactInRepository_unknown_protocol()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final RemoteRepository repo = new RemoteRepository.Builder( "dir1", "default", "ftp://example.com" ).build();
+
+      final IllegalStateException exception =
+        expectThrows( IllegalStateException.class,
+                      () -> RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                                                   repo,
+                                                                   Collections.emptyMap() ) );
+      assertEquals( exception.getMessage(),
+                    "Unsupported repository protocol for com.example:myapp:jar:1.0 with url ftp://example.com/com/example/myapp/1.0/myapp-1.0.jar." );
+    } );
+  }
+
+  @Test
   public void lookupArtifactInRepository_http_url()
     throws Exception
   {
