@@ -66,7 +66,7 @@ public class RecordUtilTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path path = createJarFile( "SomeFile.txt", "Blahblah" );
+      final Path path = createTempJarFile();
       final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
       assertEquals( processors, DepgenMetadata.SENTINEL );
     } );
