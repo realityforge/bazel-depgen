@@ -72,39 +72,43 @@ public class Main
     Collections.unmodifiableSet( new HashSet<>( Arrays.asList( GENERATE_COMMAND,
                                                                PRINT_GRAPH_COMMAND,
                                                                HASH_COMMAND ) ) );
-  private static final Environment c_environment =
-    new Environment( System.console(), Paths.get( "" ).toAbsolutePath(), Logger.getGlobal() );
   private static boolean c_resetCachedMetadata = false;
 
   public static void main( final String[] args )
   {
-    setupLogger();
-    if ( !processOptions( c_environment, args ) )
+    final Environment environment =
+      new Environment( System.console(), Paths.get( "" ).toAbsolutePath(), Logger.getGlobal() );
+    System.exit( run( environment, args ) );
+  }
+
+  private static int run( @Nonnull final Environment environment, @Nonnull final String[] args )
+  {
+    setupLogger( environment );
+    if ( !processOptions( environment, args ) )
     {
-      System.exit( ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE );
-      return;
+      return ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE;
     }
 
     try
     {
-      final String command = c_environment.getCommand();
+      final String command = environment.getCommand();
       if ( PRINT_GRAPH_COMMAND.equals( command ) )
       {
-        printGraph( loadApplicationRecord() );
+        printGraph( environment, loadApplicationRecord( environment ) );
       }
       else if ( HASH_COMMAND.equals( command ) )
       {
-        hash( loadApplicationModel() );
+        hash( environment, loadApplicationModel( environment ) );
       }
       else
       {
         assert GENERATE_COMMAND.equals( command );
-        generate( loadApplicationRecord() );
+        generate( loadApplicationRecord( environment ) );
       }
     }
     catch ( final InvalidModelException ime )
     {
-      final Logger logger = c_environment.logger();
+      final Logger logger = environment.logger();
       final String message = ime.getMessage();
       if ( null != message )
       {
@@ -116,14 +120,14 @@ public class Main
                   YamlUtil.asYamlString( ime.getModel() ) +
                   "--- End Config ---" );
 
-      System.exit( ExitCodes.ERROR_CONSTRUCTING_MODEL_CODE );
+      return ExitCodes.ERROR_CONSTRUCTING_MODEL_CODE;
     }
     catch ( final TerminalStateException tse )
     {
       final String message = tse.getMessage();
       if ( null != message )
       {
-        final Logger logger = c_environment.logger();
+        final Logger logger = environment.logger();
         logger.log( Level.WARNING, message );
         final Throwable cause = tse.getCause();
         if ( null != cause )
@@ -138,30 +142,31 @@ public class Main
           }
         }
       }
-      System.exit( tse.getExitCode() );
+      return tse.getExitCode();
     }
     catch ( final Throwable t )
     {
-      c_environment.logger().log( Level.WARNING, t.toString(), t );
-      System.exit( ExitCodes.ERROR_EXIT_CODE );
+      environment.logger().log( Level.WARNING, t.toString(), t );
+      return ExitCodes.ERROR_EXIT_CODE;
     }
 
-    System.exit( ExitCodes.SUCCESS_EXIT_CODE );
+    return ExitCodes.SUCCESS_EXIT_CODE;
   }
 
-  private static void hash( @Nonnull final ApplicationModel model )
+  private static void hash( @Nonnull final Environment environment, @Nonnull final ApplicationModel model )
   {
     final String configSha256 = model.getConfigSha256();
-    final Logger logger = c_environment.logger();
+    final Logger logger = environment.logger();
     if ( logger.isLoggable( Level.WARNING ) )
     {
       logger.log( Level.WARNING, "Content SHA256: " + configSha256 );
     }
   }
 
-  private static void printGraph( @Nonnull final ApplicationRecord record )
+  private static void printGraph( @Nonnull final Environment environment,
+                                  @Nonnull final ApplicationRecord record )
   {
-    final Logger logger = c_environment.logger();
+    final Logger logger = environment.logger();
     if ( logger.isLoggable( Level.WARNING ) )
     {
       logger.log( Level.WARNING, "Dependency Graph:" );
@@ -172,30 +177,34 @@ public class Main
   }
 
   @Nonnull
-  private static ApplicationModel loadApplicationModel()
+  private static ApplicationModel loadApplicationModel( @Nonnull final Environment environment )
   {
-    return ApplicationModel.parse( loadDependenciesYaml(), c_resetCachedMetadata );
+    return ApplicationModel.parse( loadDependenciesYaml( environment ), c_resetCachedMetadata );
   }
 
   @Nonnull
-  private static ApplicationRecord loadApplicationRecord()
+  private static ApplicationRecord loadApplicationRecord( @Nonnull final Environment environment )
     throws DependencyResolutionException
   {
-    return loadApplicationRecord( loadApplicationModel() );
+    return loadApplicationRecord( environment, loadApplicationModel( environment ) );
   }
 
   @Nonnull
-  private static ApplicationRecord loadApplicationRecord( @Nonnull final ApplicationModel model )
+  private static ApplicationRecord loadApplicationRecord( @Nonnull final Environment environment,
+                                                          @Nonnull final ApplicationModel model )
     throws DependencyResolutionException
   {
     final Resolver resolver =
-      ResolverUtil.createResolver( c_environment, getCacheDirectory( c_environment, model ), model, loadSettings() );
+      ResolverUtil.createResolver( environment,
+                                   getCacheDirectory( environment, model ),
+                                   model,
+                                   loadSettings( environment ) );
     final ApplicationRecord record =
       ApplicationRecord.build( model,
-                               resolveModel( resolver, model ),
+                               resolveModel( environment, resolver, model ),
                                resolver.getAuthenticationContexts(),
-                               m -> c_environment.logger().warning( m ) );
-    cacheArtifactsInRepositoryCache( c_environment, record );
+                               m -> environment.logger().warning( m ) );
+    cacheArtifactsInRepositoryCache( environment, record );
     return record;
   }
 
@@ -284,10 +293,12 @@ public class Main
   }
 
   @Nonnull
-  private static DependencyNode resolveModel( @Nonnull final Resolver resolver, @Nonnull final ApplicationModel model )
+  private static DependencyNode resolveModel( @Nonnull final Environment environment,
+                                              @Nonnull final Resolver resolver,
+                                              @Nonnull final ApplicationModel model )
     throws DependencyResolutionException
   {
-    final Logger logger = c_environment.logger();
+    final Logger logger = environment.logger();
     final DependencyResult result = resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> {
       // If we get here then the listener has already emitted a warning message so just need to exit
       // We can only get here if either failOnMissingPom or failOnInvalidPom is true and an error occurred
@@ -347,12 +358,12 @@ public class Main
   }
 
   @Nonnull
-  private static Settings loadSettings()
+  private static Settings loadSettings( @Nonnull final Environment environment )
   {
-    final Path settingsFile = c_environment.getSettingsFile();
+    final Path settingsFile = environment.getSettingsFile();
     try
     {
-      return SettingsUtil.loadSettings( settingsFile, c_environment.logger() );
+      return SettingsUtil.loadSettings( settingsFile, environment.logger() );
     }
     catch ( final SettingsBuildingException e )
     {
@@ -362,9 +373,9 @@ public class Main
   }
 
   @Nonnull
-  private static ApplicationConfig loadDependenciesYaml()
+  private static ApplicationConfig loadDependenciesYaml( @Nonnull final Environment environment )
   {
-    final Path dependenciesFile = c_environment.getDependenciesFile();
+    final Path dependenciesFile = environment.getDependenciesFile();
     try
     {
       return ApplicationConfig.parse( dependenciesFile );
@@ -377,12 +388,12 @@ public class Main
     }
   }
 
-  private static void setupLogger()
+  private static void setupLogger( @Nonnull final Environment environment )
   {
     final ConsoleHandler handler = new ConsoleHandler();
     handler.setFormatter( new RawFormatter() );
     handler.setLevel( Level.ALL );
-    final Logger logger = c_environment.logger();
+    final Logger logger = environment.logger();
     logger.setUseParentHandlers( false );
     logger.addHandler( handler );
     logger.setLevel( Level.INFO );
