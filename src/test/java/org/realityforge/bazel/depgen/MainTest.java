@@ -4,7 +4,9 @@ import gir.io.FileUtil;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
@@ -51,7 +53,7 @@ public class MainTest
   @Test
   public void processOptions_noCommand()
   {
-    assertEquals( processOptions( false ), "Error: No command specified. Please specify a command." );
+    assertEquals( failToProcessOptions(), "Error: No command specified. Please specify a command." );
   }
 
   @Test
@@ -61,7 +63,7 @@ public class MainTest
     inIsolatedDirectory( () -> {
       writeWorkspace();
 
-      final String output = processOptions( false, "generate" );
+      final String output = failToProcessOptions( "generate" );
       assertOutputContains( output, "Error: Default dependencies file does not exist: " );
     } );
   }
@@ -74,7 +76,7 @@ public class MainTest
       writeWorkspace();
       writeDependencies( "" );
 
-      final String output = processOptions( false, "generate", "Bleep" );
+      final String output = failToProcessOptions( "generate", "Bleep" );
       assertOutputContains( output, "Error: Unknown command: Bleep" );
     } );
   }
@@ -86,7 +88,7 @@ public class MainTest
     inIsolatedDirectory( () -> {
       writeWorkspace();
 
-      final String output = processOptions( false, "--dependencies-file", "deps.txt", "generate" );
+      final String output = failToProcessOptions( "--dependencies-file", "deps.txt", "generate" );
       assertOutputContains( output, "Error: Specified dependencies file does not exist. Specified value: deps.txt" );
     } );
   }
@@ -100,9 +102,22 @@ public class MainTest
       writeDependencies( "" );
       FileUtil.write( "StoreMeHere", "NotADir" );
 
-      final String output = processOptions( false, "--cache-directory", "StoreMeHere", "generate" );
+      final String output = failToProcessOptions( "--cache-directory", "StoreMeHere", "generate" );
       assertOutputContains( output,
                             "Error: Specified cache directory exists but is not a directory. Specified value: StoreMeHere" );
+    } );
+  }
+
+  @Test
+  public void processOptions_duplicateCommand()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final String output = failToProcessOptions( "generate", "generate" );
+      assertOutputContains( output, "Error: Duplicate command specified: generate" );
     } );
   }
 
@@ -118,7 +133,7 @@ public class MainTest
                          "  - name: central" +
                          "    url: http://repo1.maven.org/maven2\n" );
 
-      final String output = processOptions( false, "--settings-file", "some_settings.xml", "generate" );
+      final String output = failToProcessOptions( "--settings-file", "some_settings.xml", "generate" );
       assertOutputContains( output,
                             "Error: Specified settings file does not exist. Specified value: some_settings.xml" );
     } );
@@ -132,7 +147,7 @@ public class MainTest
       writeWorkspace();
       writeDependencies( "" );
 
-      final String output = processOptions( false, "--help" );
+      final String output = failToProcessOptions( "--help" );
       assertOutputContains( output, "-h, --help\n" );
       assertOutputContains( output, "-q, --quiet\n" );
       assertOutputContains( output, "-v, --verbose\n" );
@@ -151,8 +166,126 @@ public class MainTest
       writeWorkspace();
       writeDependencies( "" );
 
-      final String output = processOptions( false, "--some-command-no-exist" );
+      final String output = failToProcessOptions( "--some-command-no-exist" );
       assertEquals( output, "Error: Unknown option --some-command-no-exist" );
+    } );
+  }
+
+  @Test
+  public void processOptions_default()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final TestHandler handler = new TestHandler();
+      final Environment environment = newEnvironment( createLogger( handler ) );
+      assertTrue( Main.processOptions( environment, "generate" ) );
+      assertTrue( environment.hasCommand() );
+      assertEquals( environment.getCommand(), "generate" );
+      assertEquals( environment.getDependenciesFile(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+      assertEquals( environment.getSettingsFile(),
+                    Paths.get( System.getProperty( "user.home" ), ".m2", "settings.xml" )
+                      .toAbsolutePath()
+                      .normalize() );
+      assertFalse( environment.hasCacheDir() );
+      assertOutputContains( handler.toString(), "Bazel DepGen Starting..." );
+    } );
+  }
+
+  @Test
+  public void processOptions_specifyDependenciesFile()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      FileUtil.write( "dependencies2.yml", "" );
+
+      final TestHandler handler = new TestHandler();
+      final Environment environment = newEnvironment( createLogger( handler ) );
+      assertTrue( Main.processOptions( environment, "--dependencies-file", "dependencies2.yml", "generate" ) );
+      assertEquals( environment.getDependenciesFile(), FileUtil.getCurrentDirectory().resolve( "dependencies2.yml" ) );
+    } );
+  }
+
+  @Test
+  public void processOptions_specifyCacheDir()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+      final Path dir = FileUtil.createLocalTempDir();
+
+      final TestHandler handler = new TestHandler();
+      final Environment environment = newEnvironment( createLogger( handler ) );
+      assertTrue( Main.processOptions( environment, "--cache-directory", dir.toString(), "generate" ) );
+      assertTrue( environment.hasCacheDir() );
+      assertEquals( environment.getCacheDir(), dir );
+    } );
+  }
+
+  @Test
+  public void processOptions_specifySettingsFile()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "repositories:\n" +
+                         "  - name: central" +
+                         "    url: http://repo1.maven.org/maven2\n" );
+
+      FileUtil.write( "settings.xml",
+                      "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+                      "  <servers>\n" +
+                      "    <server>\n" +
+                      "      <id>my-repo</id>\n" +
+                      "      <username>root</username>\n" +
+                      "      <password>secret</password>\n" +
+                      "    </server>\n" +
+                      "  </servers>\n" +
+                      "</settings>\n" );
+      final Path path = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
+
+      final TestHandler handler = new TestHandler();
+      final Environment environment = newEnvironment( createLogger( handler ) );
+      assertTrue( Main.processOptions( environment, "--settings-file", path.toString(), "generate" ) );
+      assertTrue( environment.hasSettingsFile() );
+      assertEquals( environment.getSettingsFile(), path );
+    } );
+  }
+
+  @Test
+  public void processOptions_verbose()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final TestHandler handler = new TestHandler();
+      final Environment environment = newEnvironment( createLogger( handler ) );
+      environment.logger().setLevel( Level.OFF );
+      assertTrue( Main.processOptions( environment, "--verbose", "generate" ) );
+      assertEquals( environment.logger().getLevel(), Level.ALL );
+    } );
+  }
+
+  @Test
+  public void processOptions_quiet()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final TestHandler handler = new TestHandler();
+      final Environment environment = newEnvironment( createLogger( handler ) );
+      environment.logger().setLevel( Level.OFF );
+      assertTrue( Main.processOptions( environment, "--quiet", "generate" ) );
+      assertEquals( environment.logger().getLevel(), Level.WARNING );
     } );
   }
 
@@ -483,14 +616,12 @@ public class MainTest
     } );
   }
 
-  @SuppressWarnings( "SameParameterValue" )
   @Nonnull
-  private String processOptions( final boolean expectedResult, @Nonnull final String... args )
+  private String failToProcessOptions( @Nonnull final String... args )
   {
     final TestHandler handler = new TestHandler();
     final Environment environment = newEnvironment( createLogger( handler ) );
-    final boolean result = Main.processOptions( environment, args );
-    assertEquals( expectedResult, result, "Return value for Main.processOptions" );
+    assertFalse( Main.processOptions( environment, args ) );
     return handler.toString();
   }
 }
