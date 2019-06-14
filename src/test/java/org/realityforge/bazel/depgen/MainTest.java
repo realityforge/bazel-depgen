@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import org.realityforge.bazel.depgen.config.ApplicationConfig;
+import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
 import org.realityforge.guiceyloops.shared.ValueUtil;
@@ -302,6 +304,43 @@ public class MainTest
       assertFalse( environment.shouldResetCachedMetadata() );
       assertTrue( Main.processOptions( environment, "--reset-cached-metadata", "generate" ) );
       assertTrue( environment.shouldResetCachedMetadata() );
+    } );
+  }
+
+  @Test
+  public void loadDependenciesYaml()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: com.example:zeapp:2.0\n" );
+
+      final Environment environment = newEnvironment();
+      final Path file = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      environment.setDependenciesFile( file );
+      final ApplicationConfig config = Main.loadDependenciesYaml( environment );
+      assertEquals( config.getConfigLocation(), file );
+      final List<ArtifactConfig> artifacts = config.getArtifacts();
+      assertNotNull( artifacts );
+      assertEquals( artifacts.size(), 1 );
+    } );
+  }
+
+  @Test
+  public void loadDependenciesYaml_error()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+
+      final Environment environment = newEnvironment();
+      final Path file = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      environment.setDependenciesFile( file );
+      final TerminalStateException exception =
+        expectThrows( TerminalStateException.class, () -> Main.loadDependenciesYaml( environment ) );
+      assertEquals( exception.getMessage(), "Error: Failed to read dependencies file " + file );
+      assertEquals( exception.getExitCode(), ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE );
     } );
   }
 

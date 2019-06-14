@@ -371,7 +371,7 @@ public class Main
   }
 
   @Nonnull
-  private static ApplicationConfig loadDependenciesYaml( @Nonnull final Environment environment )
+  static ApplicationConfig loadDependenciesYaml( @Nonnull final Environment environment )
   {
     final Path dependenciesFile = environment.getDependenciesFile();
     try
