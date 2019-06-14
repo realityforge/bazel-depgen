@@ -96,7 +96,7 @@ public class Main
       }
       else if ( HASH_COMMAND.equals( command ) )
       {
-        hash( environment, loadApplicationModel( environment ) );
+        hash( environment, loadModel( environment ) );
       }
       else
       {
@@ -175,7 +175,7 @@ public class Main
   }
 
   @Nonnull
-  private static ApplicationModel loadApplicationModel( @Nonnull final Environment environment )
+  static ApplicationModel loadModel( @Nonnull final Environment environment )
   {
     return ApplicationModel.parse( loadDependenciesYaml( environment ), environment.shouldResetCachedMetadata() );
   }
@@ -184,7 +184,7 @@ public class Main
   private static ApplicationRecord loadApplicationRecord( @Nonnull final Environment environment )
     throws DependencyResolutionException
   {
-    return loadApplicationRecord( environment, loadApplicationModel( environment ) );
+    return loadApplicationRecord( environment, loadModel( environment ) );
   }
 
   @Nonnull

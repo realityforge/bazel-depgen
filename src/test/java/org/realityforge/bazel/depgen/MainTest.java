@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
+import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
 import org.realityforge.guiceyloops.shared.ValueUtil;
@@ -341,6 +343,53 @@ public class MainTest
         expectThrows( TerminalStateException.class, () -> Main.loadDependenciesYaml( environment ) );
       assertEquals( exception.getMessage(), "Error: Failed to read dependencies file " + file );
       assertEquals( exception.getExitCode(), ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE );
+    } );
+  }
+
+  @Test
+  public void loadModel()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: com.example:zeapp:2.0\n" );
+
+      final Environment environment = newEnvironment();
+
+      final Path file = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      environment.setDependenciesFile( file );
+
+      final ApplicationModel model = Main.loadModel( environment );
+      assertEquals( model.getConfigLocation(), file );
+      assertFalse( model.shouldResetCachedMetadata() );
+      final List<ArtifactModel> artifacts = model.getArtifacts();
+      assertNotNull( artifacts );
+      assertEquals( artifacts.size(), 1 );
+    } );
+  }
+
+  @Test
+  public void loadModel_resetCachedMetadata()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: com.example:zeapp:2.0\n" );
+
+      final Environment environment = newEnvironment();
+      environment.markResetCachedMetadata();
+
+      final Path file = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      environment.setDependenciesFile( file );
+
+      final ApplicationModel model = Main.loadModel( environment );
+      assertEquals( model.getConfigLocation(), file );
+      assertTrue( model.shouldResetCachedMetadata() );
+      final List<ArtifactModel> artifacts = model.getArtifacts();
+      assertNotNull( artifacts );
+      assertEquals( artifacts.size(), 1 );
     } );
   }
 
