@@ -72,6 +72,7 @@ public class Main
     Collections.unmodifiableSet( new HashSet<>( Arrays.asList( GENERATE_COMMAND,
                                                                PRINT_GRAPH_COMMAND,
                                                                HASH_COMMAND ) ) );
+
   public static void main( final String[] args )
   {
     final Environment environment =
@@ -161,8 +162,7 @@ public class Main
     }
   }
 
-  private static void printGraph( @Nonnull final Environment environment,
-                                  @Nonnull final ApplicationRecord record )
+  private static void printGraph( @Nonnull final Environment environment, @Nonnull final ApplicationRecord record )
   {
     final Logger logger = environment.logger();
     if ( logger.isLoggable( Level.WARNING ) )
