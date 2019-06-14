@@ -306,6 +306,20 @@ public class MainTest
   }
 
   @Test
+  public void setupLogger()
+  {
+    final Logger logger = Logger.getAnonymousLogger();
+    final Environment environment = newEnvironment( logger );
+    assertEquals( logger.getHandlers().length, 0 );
+    assertTrue( logger.getUseParentHandlers() );
+    logger.setLevel( Level.OFF );
+    Main.setupLogger( environment );
+    assertEquals( logger.getHandlers().length, 1 );
+    assertEquals( logger.getLevel(), Level.INFO );
+    assertFalse( logger.getUseParentHandlers() );
+  }
+
+  @Test
   public void printBanner_cacheExplicitlySpecified()
     throws Exception
   {

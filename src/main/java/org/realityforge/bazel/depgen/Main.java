@@ -386,7 +386,7 @@ public class Main
     }
   }
 
-  private static void setupLogger( @Nonnull final Environment environment )
+  static void setupLogger( @Nonnull final Environment environment )
   {
     final ConsoleHandler handler = new ConsoleHandler();
     handler.setFormatter( new RawFormatter() );
