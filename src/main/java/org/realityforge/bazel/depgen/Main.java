@@ -72,8 +72,6 @@ public class Main
     Collections.unmodifiableSet( new HashSet<>( Arrays.asList( GENERATE_COMMAND,
                                                                PRINT_GRAPH_COMMAND,
                                                                HASH_COMMAND ) ) );
-  private static boolean c_resetCachedMetadata = false;
-
   public static void main( final String[] args )
   {
     final Environment environment =
@@ -179,7 +177,7 @@ public class Main
   @Nonnull
   private static ApplicationModel loadApplicationModel( @Nonnull final Environment environment )
   {
-    return ApplicationModel.parse( loadDependenciesYaml( environment ), c_resetCachedMetadata );
+    return ApplicationModel.parse( loadDependenciesYaml( environment ), environment.shouldResetCachedMetadata() );
   }
 
   @Nonnull
@@ -477,7 +475,7 @@ public class Main
         }
         case Options.RESET_CACHED_METADATA_OPT:
         {
-          c_resetCachedMetadata = true;
+          environment.markResetCachedMetadata();
           break;
         }
 

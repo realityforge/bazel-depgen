@@ -290,6 +290,22 @@ public class MainTest
   }
 
   @Test
+  public void processOptions_reset_cached_metadata()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final TestHandler handler = new TestHandler();
+      final Environment environment = newEnvironment( createLogger( handler ) );
+      assertFalse( environment.shouldResetCachedMetadata() );
+      assertTrue( Main.processOptions( environment, "--reset-cached-metadata", "generate" ) );
+      assertTrue( environment.shouldResetCachedMetadata() );
+    } );
+  }
+
+  @Test
   public void printBanner_cacheExplicitlySpecified()
     throws Exception
   {

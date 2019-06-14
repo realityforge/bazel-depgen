@@ -23,6 +23,7 @@ final class Environment
   private Path _cacheDir;
   @Nullable
   private String _command;
+  private boolean _resetCachedMetadata;
 
   Environment( @Nullable final Console console, @Nonnull final Path currentDirectory, @Nonnull final Logger logger )
   {
@@ -115,5 +116,15 @@ final class Environment
   void setCommand( @Nonnull final String command )
   {
     _command = Objects.requireNonNull( command );
+  }
+
+  boolean shouldResetCachedMetadata()
+  {
+    return _resetCachedMetadata;
+  }
+
+  void markResetCachedMetadata()
+  {
+    _resetCachedMetadata = true;
   }
 }
