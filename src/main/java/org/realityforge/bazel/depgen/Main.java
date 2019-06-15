@@ -318,7 +318,7 @@ public class Main
     return result.getRoot();
   }
 
-  private static void generate( @Nonnull final ApplicationRecord record )
+  static void generate( @Nonnull final ApplicationRecord record )
     throws Exception
   {
     final Path extensionFile = record.getSource().getOptions().getExtensionFile();
