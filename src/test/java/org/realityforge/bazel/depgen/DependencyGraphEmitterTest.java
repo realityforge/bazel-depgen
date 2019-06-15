@@ -125,6 +125,26 @@ public class DependencyGraphEmitterTest
     } );
   }
 
+  @Test
+  public void emitGraphWithOptional()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      deployTempArtifactToLocalRepository( dir,
+                                           "com.example:myapp:1.0",
+                                           "com.example:mylib:jar::1.0:compile:optional" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+
+      writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+      final String output = collectOutput( createResolver( dir ) );
+      assertEquals( output,
+                    "\\- com.example:myapp:jar:1.0 [compile]\n" +
+                    "   \\- com.example:mylib:jar:1.0 [compile, optional]\n" );
+    } );
+  }
+
   @Nonnull
   private String collectOutput( @Nonnull final Resolver resolver )
     throws Exception
