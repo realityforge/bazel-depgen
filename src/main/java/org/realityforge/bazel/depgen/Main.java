@@ -93,7 +93,7 @@ public class Main
       final String command = environment.getCommand();
       if ( PRINT_GRAPH_COMMAND.equals( command ) )
       {
-        printGraph( environment, loadApplicationRecord( environment ) );
+        printGraph( environment, loadRecord( environment ) );
       }
       else if ( HASH_COMMAND.equals( command ) )
       {
@@ -102,7 +102,7 @@ public class Main
       else
       {
         assert GENERATE_COMMAND.equals( command );
-        generate( loadApplicationRecord( environment ) );
+        generate( loadRecord( environment ) );
       }
     }
     catch ( final InvalidModelException ime )
@@ -181,17 +181,10 @@ public class Main
   }
 
   @Nonnull
-  private static ApplicationRecord loadApplicationRecord( @Nonnull final Environment environment )
+  static ApplicationRecord loadRecord( @Nonnull final Environment environment )
     throws DependencyResolutionException
   {
-    return loadApplicationRecord( environment, loadModel( environment ) );
-  }
-
-  @Nonnull
-  private static ApplicationRecord loadApplicationRecord( @Nonnull final Environment environment,
-                                                          @Nonnull final ApplicationModel model )
-    throws DependencyResolutionException
-  {
+    final ApplicationModel model = loadModel( environment );
     final Resolver resolver =
       ResolverUtil.createResolver( environment,
                                    getCacheDirectory( environment, model ),
