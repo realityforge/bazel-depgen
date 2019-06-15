@@ -1105,6 +1105,213 @@ public class MainTest
     } );
   }
 
+  @Test
+  public void run_validDependencySpec()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      writeWorkspace();
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:jar:1.0\n" +
+                         "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n" );
+      final String output = runCommand( "generate" );
+      assertEquals( output, "" );
+    } );
+  }
+
+  @Test
+  public void run_hash()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" +
+                         "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n" );
+      final String output = runCommand( "hash" );
+      assertEquals( output, "Content SHA256: A8060A486659CC1397477EFE6C28F83F65DC9CBB19182978AFB69746EC3D99F2" );
+    } );
+  }
+
+  @Test
+  public void run_invalidDependencySpec()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "artifacts:\n" +
+                         "  - coord: org.realityforge.gir\n" );
+
+      final String output = runCommand( 5, "generate" );
+      assertOutputContains( output,
+                            "The 'coord' property on the dependency must specify 2-5 components separated by the ':' character. The 'coords' must be in one of the forms; 'group:id', 'group:id:version', 'group:id:type:version' or 'group:id:type:classifier:version'.\n" +
+                            "--- Invalid Config ---\n" +
+                            "coord: org.realityforge.gir\n" +
+                            "--- End Config ---" );
+    } );
+  }
+
+  @Test
+  public void run_invalidYaml()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "artifacts: 's\n" +
+                         "  - group: org.realityforge.gir\n" );
+
+      final String output = runCommand( 3, "generate" );
+      assertOutputContains( output, "Error: Failed to read dependencies file " );
+      assertOutputContains( output, "Cause: while scanning a quoted scalar" );
+      assertOutputDoesNotContain( output, "\tat org.yaml.snakeyaml.Yaml.load(" );
+    } );
+  }
+
+  @Test
+  public void run_invalidYamlInVerboseMode()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "artifacts: 's\n" +
+                         "  - group: org.realityforge.gir\n" );
+
+      final String output = runCommand( 3, "--verbose", "generate" );
+      assertOutputContains( output, "Error: Failed to read dependencies file " );
+      assertOutputContains( output, "Cause: while scanning a quoted scalar" );
+      assertOutputContains( output, "found unexpected end of stream" );
+    } );
+  }
+
+  @Test
+  public void run_noOutputInNormalCase()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final String output = runCommand( "generate" );
+      assertEquals( output, "" );
+    } );
+  }
+
+  @Test
+  public void run_printGraph()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      writeWorkspace();
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+
+      final String output = runCommand( "print-graph" );
+      assertEquals( output,
+                    "Dependency Graph:\n" +
+                    "\\- com.example:myapp:jar:1.0 [compile]" );
+    } );
+  }
+
+  @Test
+  public void run_missingDefaultSettingsIsFine()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "repositories:\n" +
+                         "  - name: central\n" +
+                         "    url: http://repo1.maven.org/maven2\n" );
+
+      runCommand( "generate" );
+    } );
+  }
+
+  @Test
+  public void run_validDefaultSettings()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "repositories:\n" +
+                         "  - name: central\n" +
+                         "    url: http://repo1.maven.org/maven2\n" );
+
+      assertTrue( FileUtil.getCurrentDirectory().resolve( ".m2" ).toFile().mkdir() );
+      FileUtil.write( ".m2/settings.xml",
+                      "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+                      "  <servers>\n" +
+                      "    <server>\n" +
+                      "      <id>my-repo</id>\n" +
+                      "      <username>root</username>\n" +
+                      "      <password>secret</password>\n" +
+                      "    </server>\n" +
+                      "  </servers>\n" +
+                      "</settings>\n" );
+
+      final String output = runCommand( "generate" );
+      assertOutputContains( output, "" );
+    } );
+  }
+
+  @Test
+  public void run_validSpecifiedSettings()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      // Need to declare repositories otherwise we never even try to load settings
+      writeDependencies( "repositories:\n" +
+                         "  - name: central\n" +
+                         "    url: http://repo1.maven.org/maven2\n" );
+
+      FileUtil.write( "some_settings.xml",
+                      "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+                      "  <servers>\n" +
+                      "    <server>\n" +
+                      "      <id>my-repo</id>\n" +
+                      "      <username>root</username>\n" +
+                      "      <password>secret</password>\n" +
+                      "    </server>\n" +
+                      "  </servers>\n" +
+                      "</settings>\n" );
+
+      final String output = runCommand( "--settings-file", "some_settings.xml", "generate" );
+      assertOutputContains( output, "" );
+    } );
+  }
+
+  @Nonnull
+  private String runCommand( @Nonnull final String... additionalArgs )
+    throws Exception
+  {
+    return runCommand( 0, additionalArgs );
+  }
+
+  @Nonnull
+  private String runCommand( final int expectedExitCode, @Nonnull final String... additionalArgs )
+    throws Exception
+  {
+    final TestHandler handler = new TestHandler();
+    handler.setLevel( Level.ALL );
+    final int exitCode = Main.run( newEnvironment( createLogger( handler ) ), additionalArgs );
+    assertEquals( expectedExitCode, exitCode );
+    return handler.toString();
+  }
+
   @Nonnull
   private String failToProcessOptions( @Nonnull final String... args )
     throws Exception

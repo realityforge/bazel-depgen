@@ -80,7 +80,7 @@ public class Main
     System.exit( run( environment, args ) );
   }
 
-  private static int run( @Nonnull final Environment environment, @Nonnull final String[] args )
+  static int run( @Nonnull final Environment environment, @Nonnull final String[] args )
   {
     setupLogger( environment );
     if ( !processOptions( environment, args ) )
