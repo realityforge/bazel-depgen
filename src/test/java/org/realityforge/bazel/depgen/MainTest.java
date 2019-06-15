@@ -608,7 +608,8 @@ public class MainTest
       assertNull( exception.getMessage() );
       assertEquals( exception.getExitCode(), ExitCodes.ERROR_INVALID_POM_CODE );
       assertOutputContains( handler.toString(), "Transfer Failed: com/example/myapp/1.0/myapp-1.0.jar" );
-      assertOutputContains( handler.toString(), "Could not transfer artifact com.example:myapp:jar:1.0 from/to local (" );
+      assertOutputContains( handler.toString(),
+                            "Could not transfer artifact com.example:myapp:jar:1.0 from/to local (" );
     } );
   }
 
