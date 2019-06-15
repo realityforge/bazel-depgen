@@ -306,7 +306,14 @@ public abstract class AbstractTest
   protected final String loadPropertiesContent( @Nonnull final Path file )
     throws IOException
   {
-    return new String( Files.readAllBytes( file ), StandardCharsets.ISO_8859_1 ).replaceAll( "^#[^\n]*\n", "" );
+    return loadAsString( file ).replaceAll( "^#[^\n]*\n", "" );
+  }
+
+  @Nonnull
+  protected final String loadAsString( @Nonnull final Path file )
+    throws IOException
+  {
+    return new String( Files.readAllBytes( file ), StandardCharsets.ISO_8859_1 );
   }
 
   @Nonnull
