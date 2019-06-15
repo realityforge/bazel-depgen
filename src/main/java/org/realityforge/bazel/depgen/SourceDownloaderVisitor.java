@@ -63,33 +63,25 @@ final class SourceDownloaderVisitor
       return artifact;
     }
     final DepgenMetadata metadata = DepgenMetadata.fromDirectory( _model, file.getParentFile().toPath() );
-    final String sourcesPresent = metadata.getProperty( SOURCES_PRESENT_PROPERTY );
-    if ( "false".equals( sourcesPresent ) )
+    final SubArtifact sourcesArtifact = new SubArtifact( artifact, "sources", "jar" );
+    try
     {
-      return artifact;
+      final ArtifactResult sourceArtifactResult =
+        _resolver.getSystem()
+          .resolveArtifact( _resolver.getSession(),
+                            new ArtifactRequest( sourcesArtifact, _resolver.getRepositories(), null ) );
+      final HashMap<String, String> properties = new HashMap<>( artifact.getProperties() );
+      properties.put( Constants.SOURCE_ARTIFACT_FILENAME,
+                      sourceArtifactResult.getArtifact().getFile().getAbsolutePath() );
+      metadata.updateProperty( SOURCES_PRESENT_PROPERTY, "true" );
+      return artifact.setProperties( properties );
     }
-    else
+    catch ( final ArtifactResolutionException ignored )
     {
-      final SubArtifact sourcesArtifact = new SubArtifact( artifact, "sources", "jar" );
-      try
-      {
-        final ArtifactResult sourceArtifactResult =
-          _resolver.getSystem()
-            .resolveArtifact( _resolver.getSession(),
-                              new ArtifactRequest( sourcesArtifact, _resolver.getRepositories(), null ) );
-        final HashMap<String, String> properties = new HashMap<>( artifact.getProperties() );
-        properties.put( Constants.SOURCE_ARTIFACT_FILENAME,
-                        sourceArtifactResult.getArtifact().getFile().getAbsolutePath() );
-        metadata.updateProperty( SOURCES_PRESENT_PROPERTY, "true" );
-        return artifact.setProperties( properties );
-      }
-      catch ( final ArtifactResolutionException ignored )
-      {
-        metadata.updateProperty( SOURCES_PRESENT_PROPERTY, "false" );
-        // User has already received a warning to console and ultimately it is only a warning as most
-        // builds will continue to work if source is not available.
-        return artifact;
-      }
+      metadata.updateProperty( SOURCES_PRESENT_PROPERTY, "false" );
+      // User has already received a warning to console and ultimately it is only a warning as most
+      // builds will continue to work if source is not available.
+      return artifact;
     }
   }
 }
