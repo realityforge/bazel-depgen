@@ -96,9 +96,9 @@ final class Environment
     return _cacheDir;
   }
 
-  void setCacheDir( @Nonnull final Path cacheDir )
+  void setCacheDir( @Nullable final Path cacheDir )
   {
-    _cacheDir = Objects.requireNonNull( cacheDir );
+    _cacheDir = cacheDir;
   }
 
   boolean hasCommand()

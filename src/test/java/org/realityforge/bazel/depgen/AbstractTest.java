@@ -65,13 +65,17 @@ public abstract class AbstractTest
   }
 
   final Environment newEnvironment()
+    throws IOException
   {
     return newEnvironment( Logger.getAnonymousLogger() );
   }
 
   final Environment newEnvironment( @Nonnull final Logger logger )
+    throws IOException
   {
-    return new Environment( null, FileUtil.getCurrentDirectory(), logger );
+    final Environment environment = new Environment( null, FileUtil.getCurrentDirectory(), logger );
+    environment.setCacheDir( FileUtil.createLocalTempDir() );
+    return environment;
   }
 
   @Nonnull

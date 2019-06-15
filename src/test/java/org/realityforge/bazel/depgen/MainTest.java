@@ -28,6 +28,7 @@ public class MainTest
 {
   @Test
   public void printUsage()
+    throws Exception
   {
     final TestHandler handler = new TestHandler();
     Main.printUsage( newEnvironment( createLogger( handler ) ) );
@@ -60,6 +61,7 @@ public class MainTest
 
   @Test
   public void processOptions_noCommand()
+    throws Exception
   {
     assertEquals( failToProcessOptions(), "Error: No command specified. Please specify a command." );
   }
@@ -189,6 +191,7 @@ public class MainTest
 
       final TestHandler handler = new TestHandler();
       final Environment environment = newEnvironment( createLogger( handler ) );
+      environment.setCacheDir( null );
       assertTrue( Main.processOptions( environment, "generate" ) );
       assertTrue( environment.hasCommand() );
       assertEquals( environment.getCommand(), "generate" );
@@ -615,6 +618,7 @@ public class MainTest
 
   @Test
   public void setupLogger()
+    throws Exception
   {
     final Logger logger = Logger.getAnonymousLogger();
     final Environment environment = newEnvironment( logger );
@@ -668,6 +672,7 @@ public class MainTest
       environment.setDependenciesFile( dependenciesFile );
       final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
       environment.setSettingsFile( settingsFile );
+      environment.setCacheDir( null );
       Main.printBanner( environment );
       final String output = handler.toString();
       assertOutputContains( output, "Bazel DepGen Starting...\n" );
@@ -712,9 +717,11 @@ public class MainTest
   {
     inIsolatedDirectory( () -> {
       writeDependencies( "" );
+      final Environment environment = newEnvironment();
+      environment.setCacheDir( null );
       final TerminalStateException exception =
         expectThrows( TerminalStateException.class,
-                      () -> Main.getCacheDirectory( newEnvironment(), loadApplicationModel() ) );
+                      () -> Main.getCacheDirectory( environment, loadApplicationModel() ) );
       assertEquals( exception.getMessage(),
                     "Error: Cache directory not specified and unable to derive default directory (Is the bazel command on the path?). Explicitly pass the cache directory as an option." );
       assertEquals( exception.getExitCode(), ExitCodes.ERROR_INVALID_DEFAULT_CACHE_DIR_CODE );
@@ -995,6 +1002,7 @@ public class MainTest
 
   @Nonnull
   private String failToProcessOptions( @Nonnull final String... args )
+    throws Exception
   {
     final TestHandler handler = new TestHandler();
     final Environment environment = newEnvironment( createLogger( handler ) );
