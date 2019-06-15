@@ -108,9 +108,7 @@ public class DependencyGraphEmitterTest
                                            "com.example:myapp:1.0",
                                            "com.example:mylib:1.0",
                                            "com.example:rtA:jar::33.0:runtime" );
-      deployTempArtifactToLocalRepository( dir,
-                                           "com.example:mylib:1.0",
-                                           "com.example:rtB:jar::2.0:runtime" );
+      deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:rtB:2.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
       deployTempArtifactToLocalRepository( dir, "com.example:rtB:2.0" );
 
@@ -119,6 +117,7 @@ public class DependencyGraphEmitterTest
                               "excludes:\n" +
                               "  - coord: com.example:rtB\n" );
       final String output = collectOutput( createResolver( dir ) );
+      //rtB appears nowhere in the graph output
       assertEquals( output,
                     "\\- com.example:myapp:jar:1.0 [compile]\n" +
                     "   +- com.example:mylib:jar:1.0 [compile]\n" +
