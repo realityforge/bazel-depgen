@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen;
 
 import gir.io.FileUtil;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,6 +12,7 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
+import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
@@ -390,6 +392,147 @@ public class MainTest
       final List<ArtifactModel> artifacts = model.getArtifacts();
       assertNotNull( artifacts );
       assertEquals( artifacts.size(), 1 );
+    } );
+  }
+
+  @Test
+  public void loadRecord_noDependencies()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeWorkspace();
+      writeDependencies( dir, "" );
+
+      final Environment environment = newEnvironment();
+
+      final Path file = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      environment.setDependenciesFile( file );
+      environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
+      environment.setCacheDir( FileUtil.createLocalTempDir() );
+
+      final ApplicationRecord record = Main.loadRecord( environment );
+      assertEquals( record.getSource().getConfigLocation(), file );
+      assertEquals( record.getArtifacts().size(), 0 );
+      assertEquals( record.getAuthenticationContexts().size(), 0 );
+    } );
+  }
+
+  @Test
+  public void loadRecord_singleDependency()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeWorkspace();
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final Environment environment = newEnvironment();
+
+      environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+      environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
+      environment.setCacheDir( FileUtil.createLocalTempDir() );
+
+      final ApplicationRecord record = Main.loadRecord( environment );
+      assertEquals( record.getArtifacts().size(), 1 );
+    } );
+  }
+
+  @Test
+  public void loadRecord_invalidSettings()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeWorkspace();
+      writeDependencies( dir, "" );
+
+      final Environment environment = newEnvironment();
+
+      environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+      final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
+      environment.setSettingsFile( settingsFile );
+      environment.setCacheDir( FileUtil.createLocalTempDir() );
+
+      FileUtil.write( settingsFile.toString(), "JHSGDJHDS()*&(&Y*&" );
+
+      final TerminalStateException exception =
+        expectThrows( TerminalStateException.class, () -> Main.loadRecord( environment ) );
+      assertEquals( exception.getMessage(), "Error: Problem loading settings from " + settingsFile );
+      assertEquals( exception.getExitCode(), ExitCodes.ERROR_LOADING_SETTINGS_CODE );
+    } );
+  }
+
+  @Test
+  public void loadRecord_validSettings()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeWorkspace();
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final Environment environment = newEnvironment();
+
+      environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+      final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
+      environment.setSettingsFile( settingsFile );
+      FileUtil.write( settingsFile.toString(),
+                      "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+                      "  <servers>\n" +
+                      "    <server>\n" +
+                      "      <id>local</id>\n" +
+                      "      <username>root</username>\n" +
+                      "      <password>secret</password>\n" +
+                      "    </server>\n" +
+                      "  </servers>\n" +
+                      "</settings>\n" );
+
+      environment.setCacheDir( FileUtil.createLocalTempDir() );
+
+      final ApplicationRecord record = Main.loadRecord( environment );
+      assertEquals( record.getAuthenticationContexts().size(), 1 );
+    } );
+  }
+
+  @Test
+  public void loadRecord_ensureInvalidCacheMessagePropagated()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeWorkspace();
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final TestHandler handler = new TestHandler();
+      final Environment environment = newEnvironment( createLogger( handler ) );
+
+      environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+      environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
+      final Path cacheDir = FileUtil.createLocalTempDir();
+      environment.setCacheDir( cacheDir );
+
+      final Path metadataCache = cacheDir.resolve( "com/example/myapp/1.0" ).resolve( DepgenMetadata.FILENAME );
+      Files.createDirectories( metadataCache.getParent() );
+      Files.write( metadataCache, ( "<default>.local.url=badUrl\n" ).getBytes( StandardCharsets.ISO_8859_1 ) );
+
+      Main.loadRecord( environment );
+      assertOutputContains( handler.toString(),
+                            "Cache entry '<default>.local.url' for artifact 'com.example:myapp:jar:1.0' contains a url 'badUrl' that does not match the repository url '" );
     } );
   }
 
