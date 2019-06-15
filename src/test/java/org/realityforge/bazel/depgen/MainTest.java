@@ -6,6 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -565,6 +567,48 @@ public class MainTest
       assertOutputContains( handler.toString(),
                             "1 dependency cycles detected when collecting dependencies:\n" +
                             "com.example:myapp:jar -> com.example:mylib:jar -> com.example:myapp:jar" );
+    } );
+  }
+
+  @Test
+  public void loadRecord_errorResolving()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeWorkspace();
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+
+      final TestHandler handler = new TestHandler();
+      final Environment environment = newEnvironment( createLogger( handler ) );
+
+      environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+      environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
+      final Path cacheDir = FileUtil.createLocalTempDir();
+      environment.setCacheDir( cacheDir );
+      final TerminalStateException exception;
+      try
+      {
+        //Make the cache directory un-writeable and thus error saving pom
+        Files.setPosixFilePermissions( cacheDir, new HashSet<>() );
+
+        exception = expectThrows( TerminalStateException.class, () -> Main.loadRecord( environment ) );
+      }
+      finally
+      {
+        final HashSet<PosixFilePermission> perms = new HashSet<>();
+        perms.add( PosixFilePermission.OWNER_READ );
+        perms.add( PosixFilePermission.OWNER_WRITE );
+        Files.setPosixFilePermissions( cacheDir, perms );
+      }
+      assertNull( exception.getMessage() );
+      assertEquals( exception.getExitCode(), ExitCodes.ERROR_INVALID_POM_CODE );
+      assertOutputContains( handler.toString(), "Transfer Failed: com/example/myapp/1.0/myapp-1.0.jar" );
+      assertOutputContains( handler.toString(), "Could not transfer artifact com.example:myapp:jar:1.0 from/to local (" );
     } );
   }
 
