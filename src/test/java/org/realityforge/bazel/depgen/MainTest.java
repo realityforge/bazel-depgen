@@ -977,6 +977,25 @@ public class MainTest
     } );
   }
 
+  @Test
+  public void hash()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeWorkspace();
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+
+      final TestHandler handler = new TestHandler();
+      Main.hash( newEnvironment( createLogger( handler ) ), loadApplicationModel() );
+      assertEquals( handler.toString(),
+                    "Content SHA256: FFF50A040B025A06142DC4E8367DDFE9B143A6C5244727691A2AB07475BE8A0E" );
+    } );
+  }
+
   @Nonnull
   private String failToProcessOptions( @Nonnull final String... args )
   {

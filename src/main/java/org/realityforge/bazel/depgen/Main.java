@@ -152,7 +152,7 @@ public class Main
     return ExitCodes.SUCCESS_EXIT_CODE;
   }
 
-  private static void hash( @Nonnull final Environment environment, @Nonnull final ApplicationModel model )
+  static void hash( @Nonnull final Environment environment, @Nonnull final ApplicationModel model )
   {
     final String configSha256 = model.getConfigSha256();
     final Logger logger = environment.logger();
