@@ -982,17 +982,14 @@ public class MainTest
     throws Exception
   {
     inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createLocalTempDir();
-
       writeWorkspace();
-      writeDependencies( dir,
-                         "artifacts:\n" +
+      writeDependencies( "artifacts:\n" +
                          "  - coord: com.example:myapp:1.0\n" );
 
       final TestHandler handler = new TestHandler();
       Main.hash( newEnvironment( createLogger( handler ) ), loadApplicationModel() );
       assertEquals( handler.toString(),
-                    "Content SHA256: FFF50A040B025A06142DC4E8367DDFE9B143A6C5244727691A2AB07475BE8A0E" );
+                    "Content SHA256: 68814747A184F6E9A415AC0B97061A8ED1A79E487364555F3BAE5E0B0785DA39" );
     } );
   }
 
