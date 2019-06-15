@@ -162,15 +162,13 @@ public class Main
     }
   }
 
-  private static void printGraph( @Nonnull final Environment environment, @Nonnull final ApplicationRecord record )
+  static void printGraph( @Nonnull final Environment environment, @Nonnull final ApplicationRecord record )
   {
     final Logger logger = environment.logger();
     if ( logger.isLoggable( Level.WARNING ) )
     {
       logger.log( Level.WARNING, "Dependency Graph:" );
-      record.getNode()
-        .accept( new DependencyGraphEmitter( record.getSource(),
-                                             line -> logger.log( Level.WARNING, line ) ) );
+      record.getNode().accept( new DependencyGraphEmitter( record.getSource(), l -> logger.log( Level.WARNING, l ) ) );
     }
   }
 

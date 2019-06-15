@@ -953,6 +953,29 @@ public class MainTest
     } );
   }
 
+  @Test
+  public void printGraph()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeWorkspace();
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final TestHandler handler = new TestHandler();
+      Main.printGraph( newEnvironment( createLogger( handler ) ), loadApplicationRecord() );
+      final String output = handler.toString();
+      assertEquals( output,
+                    "Dependency Graph:\n" +
+                    "\\- com.example:myapp:jar:1.0 [compile]" );
+    } );
+  }
+
   @Nonnull
   private String failToProcessOptions( @Nonnull final String... args )
   {
