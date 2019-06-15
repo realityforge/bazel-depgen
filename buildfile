@@ -65,9 +65,7 @@ define 'bazel-depgen' do
   test.using :testng
   test.with :gir, :guiceyloops
 
-  test.options[:properties] = { 'depgen.jar' => all_package.to_s }
-
-  ipr.add_default_testng_configuration(:jvm_args => "-ea -Ddepgen.jar=#{all_package.to_s}")
+  ipr.add_default_testng_configuration(jvm_args: '-ea')
 
   iml.excluded_directories << project._('tmp')
 
