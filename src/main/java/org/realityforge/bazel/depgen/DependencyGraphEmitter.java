@@ -113,12 +113,6 @@ public final class DependencyGraphEmitter
       }
       buffer.append( ")" );
     }
-    final boolean excluded =
-      null != d && _model.isExcluded( d.getArtifact().getGroupId(), d.getArtifact().getArtifactId() );
-    if ( excluded )
-    {
-      buffer.append( " EXCLUDED" );
-    }
     final ReplacementModel replacementModel =
       null != d ? _model.findReplacement( d.getArtifact().getGroupId(), d.getArtifact().getArtifactId() ) : null;
     if ( null != replacementModel )
