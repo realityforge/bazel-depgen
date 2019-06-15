@@ -537,6 +537,38 @@ public class MainTest
   }
 
   @Test
+  public void loadRecord_circularDependencies()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeWorkspace();
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+      deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:myapp:1.0" );
+
+      final TestHandler handler = new TestHandler();
+      final Environment environment = newEnvironment( createLogger( handler ) );
+
+      environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+      environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
+      final Path cacheDir = FileUtil.createLocalTempDir();
+      environment.setCacheDir( cacheDir );
+
+      final TerminalStateException exception =
+        expectThrows( TerminalStateException.class, () -> Main.loadRecord( environment ) );
+      assertNull( exception.getMessage() );
+      assertEquals( exception.getExitCode(), ExitCodes.ERROR_CYCLES_PRESENT_CODE );
+      assertOutputContains( handler.toString(),
+                            "1 dependency cycles detected when collecting dependencies:\n" +
+                            "com.example:myapp:jar -> com.example:mylib:jar -> com.example:myapp:jar" );
+    } );
+  }
+
+  @Test
   public void setupLogger()
   {
     final Logger logger = Logger.getAnonymousLogger();
