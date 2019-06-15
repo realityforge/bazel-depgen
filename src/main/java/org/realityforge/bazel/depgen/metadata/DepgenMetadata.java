@@ -55,18 +55,6 @@ public final class DepgenMetadata
     _file = Objects.requireNonNull( file );
   }
 
-  /**
-   * Return the value associated with key.
-   *
-   * @param key the property key.
-   * @return the value or null if no such value.
-   */
-  @Nullable
-  public String getProperty( @Nonnull final String key )
-  {
-    return getCachedProperties().getProperty( key );
-  }
-
   public void updateProperty( @Nonnull final String key, @Nonnull final String value )
   {
     getCachedProperties().setProperty( key, value );
@@ -175,7 +163,7 @@ public final class DepgenMetadata
   @Nonnull
   private String getOrCompute( @Nonnull final String key, @Nonnull final Supplier<String> action )
   {
-    String existingValue = getProperty( key );
+    String existingValue = getCachedProperties().getProperty( key );
     if ( null != existingValue && shouldResetCachedProperties() )
     {
       getCachedProperties().remove( key );
