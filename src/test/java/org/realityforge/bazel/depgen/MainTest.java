@@ -1074,8 +1074,6 @@ public class MainTest
     inIsolatedDirectory( () -> {
       final Path dir = FileUtil.createLocalTempDir();
 
-      final String url = dir.toUri().toString();
-
       writeWorkspace();
       writeDependencies( dir,
                          "artifacts:\n" +
