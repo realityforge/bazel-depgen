@@ -1088,6 +1088,42 @@ public class MainTest
   }
 
   @Test
+  public void generate_canNotCreateThirdpartyDirectory()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      final Path dir = FileUtil.createLocalTempDir();
+
+      writeWorkspace();
+      writeDependencies( dir,
+                         "artifacts:\n" +
+                         "  - coord: com.example:myapp:1.0\n" );
+
+      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+      final ApplicationRecord applicationRecord = loadApplicationRecord();
+
+      final HashSet<PosixFilePermission> perms = new HashSet<>();
+      perms.add( PosixFilePermission.OWNER_READ );
+      Files.setPosixFilePermissions( FileUtil.getCurrentDirectory(), perms );
+
+      try
+      {
+        final IllegalStateException exception =
+          expectThrows( IllegalStateException.class, () -> Main.generate( applicationRecord ) );
+        assertEquals( exception.getMessage(),
+                      "Failed to create directory " + FileUtil.getCurrentDirectory().resolve( "thirdparty" ) );
+      }
+      finally
+      {
+        perms.add( PosixFilePermission.OWNER_WRITE );
+        perms.add( PosixFilePermission.OWNER_EXECUTE );
+        Files.setPosixFilePermissions( FileUtil.getCurrentDirectory(), perms );
+      }
+    } );
+  }
+
+  @Test
   public void hash()
     throws Exception
   {
