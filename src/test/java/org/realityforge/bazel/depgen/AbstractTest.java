@@ -40,7 +40,10 @@ public abstract class AbstractTest
   {
     try
     {
-      Gir.go( () -> FileUtil.inTempDir( () -> callBack.runTestMethod( testResult ) ) );
+      Gir.go( () -> FileUtil.inTempDir( () -> {
+        writeBazelrc();
+        callBack.runTestMethod( testResult );
+      } ) );
     }
     catch ( final Exception e )
     {
@@ -158,7 +161,6 @@ public abstract class AbstractTest
   final void writeWorkspace()
     throws IOException
   {
-    writeBazelrc();
     FileUtil.write( "WORKSPACE", "" );
   }
 
