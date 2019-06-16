@@ -1222,6 +1222,19 @@ public class MainTest
   }
 
   @Test
+  public void run_badArg()
+    throws Exception
+  {
+    inIsolatedDirectory( () -> {
+      writeWorkspace();
+      writeDependencies( "" );
+
+      final String output = runCommand( ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE, "Bleep" );
+      assertEquals( output, "Error: Unknown command: Bleep" );
+    } );
+  }
+
+  @Test
   public void run_noOutputInNormalCase()
     throws Exception
   {
