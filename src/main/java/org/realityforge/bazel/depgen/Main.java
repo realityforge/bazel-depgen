@@ -351,8 +351,7 @@ public class Main
       return false;
     }
     // Get a list of parsed options
-    final List<CLOption> options = parser.getArguments();
-    for ( final CLOption option : options )
+    for ( final CLOption option : parser.getArguments() )
     {
       switch ( option.getId() )
       {
