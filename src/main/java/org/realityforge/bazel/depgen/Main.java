@@ -5,11 +5,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,10 +68,16 @@ public class Main
   private static final String GENERATE_COMMAND = "generate";
   private static final String PRINT_GRAPH_COMMAND = "print-graph";
   private static final String HASH_COMMAND = "hash";
-  private static final Set<String> VALID_COMMANDS =
-    Collections.unmodifiableSet( new HashSet<>( Arrays.asList( GENERATE_COMMAND,
-                                                               PRINT_GRAPH_COMMAND,
-                                                               HASH_COMMAND ) ) );
+  private static final Map<String, Supplier<Command>> COMMAND_MAP =
+    Collections.unmodifiableMap( new HashMap<String, Supplier<Command>>()
+    {
+      {
+        put( GENERATE_COMMAND, GenerateCommand::new );
+        put( PRINT_GRAPH_COMMAND, PrintGraphCommand::new );
+        put( HASH_COMMAND, HashCommand::new );
+      }
+    } );
+  private static final Set<String> VALID_COMMANDS = Collections.unmodifiableSet( COMMAND_MAP.keySet() );
 
   public static void main( final String[] args )
   {
@@ -89,21 +96,7 @@ public class Main
 
     try
     {
-      final Command.Context context = new CommandContextImpl( environment );
-      final String command = environment.getCommand();
-      if ( PRINT_GRAPH_COMMAND.equals( command ) )
-      {
-        return new PrintGraphCommand().run( context );
-      }
-      else if ( HASH_COMMAND.equals( command ) )
-      {
-        return new HashCommand().run( context );
-      }
-      else
-      {
-        assert GENERATE_COMMAND.equals( command );
-        return new GenerateCommand().run( context );
-      }
+      return environment.getCommand().run( new CommandContextImpl( environment ) );
     }
     catch ( final InvalidModelException ime )
     {
@@ -368,7 +361,7 @@ public class Main
             logger.log( Level.SEVERE, "Error: Duplicate command specified: " + command );
             return false;
           }
-          environment.setCommand( command );
+          environment.setCommand( COMMAND_MAP.get( command ).get() );
           break;
         }
         case Options.DEPENDENCIES_FILE_OPT:

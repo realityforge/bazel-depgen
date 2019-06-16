@@ -184,7 +184,7 @@ public class MainTest
     environment.setCacheDir( null );
     assertTrue( Main.processOptions( environment, "generate" ) );
     assertTrue( environment.hasCommand() );
-    assertEquals( environment.getCommand(), "generate" );
+    assertTrue( environment.getCommand() instanceof GenerateCommand );
     assertEquals( environment.getDependenciesFile(), getDefaultDependenciesFile() );
     assertEquals( environment.getSettingsFile(),
                   Paths.get( System.getProperty( "user.home" ), ".m2", "settings.xml" )

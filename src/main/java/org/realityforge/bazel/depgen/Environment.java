@@ -22,7 +22,7 @@ final class Environment
   @Nullable
   private Path _cacheDir;
   @Nullable
-  private String _command;
+  private Command _command;
   private boolean _resetCachedMetadata;
 
   Environment( @Nullable final Console console, @Nonnull final Path currentDirectory, @Nonnull final Logger logger )
@@ -107,13 +107,13 @@ final class Environment
   }
 
   @Nonnull
-  String getCommand()
+  Command getCommand()
   {
     assert null != _command;
     return _command;
   }
 
-  void setCommand( @Nonnull final String command )
+  void setCommand( @Nonnull final Command command )
   {
     _command = Objects.requireNonNull( command );
   }
