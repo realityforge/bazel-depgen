@@ -88,7 +88,7 @@ public class MainTest
     writeWorkspace();
     writeDependencies( "" );
 
-    final String output = failToProcessOptions( "generate", "Bleep" );
+    final String output = failToProcessOptions( "Bleep" );
     assertOutputContains( output, "Error: Unknown command: Bleep" );
   }
 
