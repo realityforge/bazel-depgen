@@ -1,17 +1,17 @@
 package org.realityforge.bazel.depgen;
 
+import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 
 final class Options
 {
-  static final String DEFAULT_DEPENDENCIES_FILE = "dependencies.yml";
   static final int DEPENDENCIES_FILE_OPT = 'd';
   static final CLOptionDescriptor DEPENDENCIES_DESCRIPTOR =
     new CLOptionDescriptor( "dependencies-file",
                             CLOptionDescriptor.ARGUMENT_REQUIRED,
                             DEPENDENCIES_FILE_OPT,
                             "The path to the yaml file containing the dependencies. Defaults to '" +
-                            DEFAULT_DEPENDENCIES_FILE + "' in the workspace directory." );
+                            ApplicationConfig.FILENAME + "' in the workspace directory." );
   static final int SETTINGS_FILE_OPT = 's';
   static final CLOptionDescriptor SETTINGS_DESCRIPTOR =
     new CLOptionDescriptor( "settings-file",

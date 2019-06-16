@@ -26,7 +26,7 @@ public class ApplicationModelTest
                          "  - coord: com.example:alib\n" +
                          "    targets:\n" +
                          "      - target: \"@com_example//:alib\"\n" );
-      final Path configFile = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      final Path configFile = getDefaultDependenciesFile();
       final ApplicationConfig source = ApplicationConfig.parse( configFile );
 
       final ApplicationModel model = ApplicationModel.parse( source, false );

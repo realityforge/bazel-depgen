@@ -201,7 +201,7 @@ public class MainTest
       assertTrue( Main.processOptions( environment, "generate" ) );
       assertTrue( environment.hasCommand() );
       assertEquals( environment.getCommand(), "generate" );
-      assertEquals( environment.getDependenciesFile(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+      assertEquals( environment.getDependenciesFile(), getDefaultDependenciesFile() );
       assertEquals( environment.getSettingsFile(),
                     Paths.get( System.getProperty( "user.home" ), ".m2", "settings.xml" )
                       .toAbsolutePath()
@@ -332,7 +332,7 @@ public class MainTest
                          "  - coord: com.example:zeapp:2.0\n" );
 
       final Environment environment = newEnvironment();
-      final Path file = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      final Path file = getDefaultDependenciesFile();
       environment.setDependenciesFile( file );
       final ApplicationConfig config = Main.loadDependenciesYaml( environment );
       assertEquals( config.getConfigLocation(), file );
@@ -350,7 +350,7 @@ public class MainTest
       writeWorkspace();
 
       final Environment environment = newEnvironment();
-      final Path file = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      final Path file = getDefaultDependenciesFile();
       environment.setDependenciesFile( file );
       final TerminalStateException exception =
         expectThrows( TerminalStateException.class, () -> Main.loadDependenciesYaml( environment ) );
@@ -370,7 +370,7 @@ public class MainTest
 
       final Environment environment = newEnvironment();
 
-      final Path file = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      final Path file = getDefaultDependenciesFile();
       environment.setDependenciesFile( file );
 
       final ApplicationModel model = Main.loadModel( environment );
@@ -615,7 +615,7 @@ public class MainTest
       final TestHandler handler = new TestHandler();
       final Logger logger = createLogger( handler );
       final Environment environment = newEnvironment( logger );
-      final Path dependenciesFile = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      final Path dependenciesFile = getDefaultDependenciesFile();
       environment.setDependenciesFile( dependenciesFile );
       final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
       environment.setSettingsFile( settingsFile );
@@ -641,7 +641,7 @@ public class MainTest
       final TestHandler handler = new TestHandler();
       final Logger logger = createLogger( handler );
       final Environment environment = newEnvironment( logger );
-      final Path dependenciesFile = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
+      final Path dependenciesFile = getDefaultDependenciesFile();
       environment.setDependenciesFile( dependenciesFile );
       final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
       environment.setSettingsFile( settingsFile );

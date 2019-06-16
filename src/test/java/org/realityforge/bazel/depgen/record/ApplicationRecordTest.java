@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
@@ -34,9 +35,8 @@ public class ApplicationRecordTest
 
       final ApplicationRecord record = loadApplicationRecord();
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
-      assertEquals( record.getPathFromExtensionToConfig(), Paths.get( "../dependencies.yml" ) );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+      assertEquals( record.getPathFromExtensionToConfig(), Paths.get( "../" + ApplicationConfig.FILENAME ) );
     } );
   }
 
@@ -52,9 +52,8 @@ public class ApplicationRecordTest
 
       final ApplicationRecord record = loadApplicationRecord();
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
-      assertEquals( record.getPathFromExtensionToConfig(), Paths.get( "../../dependencies.yml" ) );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+      assertEquals( record.getPathFromExtensionToConfig(), Paths.get( "../../" + ApplicationConfig.FILENAME ) );
     } );
   }
 
@@ -74,8 +73,7 @@ public class ApplicationRecordTest
 
       assertNotNull( record.getNode() );
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       assertTrue( record.getAuthenticationContexts().isEmpty() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 1 );
@@ -112,8 +110,7 @@ public class ApplicationRecordTest
 
       assertNotNull( record.getNode() );
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       assertTrue( record.getAuthenticationContexts().isEmpty() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 1 );
@@ -157,8 +154,7 @@ public class ApplicationRecordTest
 
       assertNotNull( record.getNode() );
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       assertTrue( record.getAuthenticationContexts().isEmpty() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 1 );
@@ -335,8 +331,7 @@ public class ApplicationRecordTest
 
       final ApplicationRecord record = loadApplicationRecord();
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       assertTrue( record.getAuthenticationContexts().isEmpty() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 4 );
@@ -438,8 +433,7 @@ public class ApplicationRecordTest
 
       final ApplicationRecord record = loadApplicationRecord();
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 2 );
       assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -528,8 +522,7 @@ public class ApplicationRecordTest
       final Path cacheDir = FileUtil.createLocalTempDir();
       final ApplicationRecord record = loadApplicationRecord( cacheDir );
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 2 );
       assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1037,8 +1030,7 @@ public class ApplicationRecordTest
 
       final ApplicationRecord record = loadApplicationRecord();
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 2 );
       assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1091,8 +1083,7 @@ public class ApplicationRecordTest
 
       final ApplicationRecord record = loadApplicationRecord();
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 2 );
       assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1141,8 +1132,7 @@ public class ApplicationRecordTest
 
       final ApplicationRecord record = loadApplicationRecord();
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 3 );
       assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1200,8 +1190,7 @@ public class ApplicationRecordTest
 
       final ApplicationRecord record = loadApplicationRecord();
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 2 );
       assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1250,8 +1239,7 @@ public class ApplicationRecordTest
 
       final ApplicationRecord record = loadApplicationRecord();
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 1 );
       assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1283,8 +1271,7 @@ public class ApplicationRecordTest
 
       final ApplicationRecord record = loadApplicationRecord();
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 1 );
       assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1315,8 +1302,7 @@ public class ApplicationRecordTest
 
       final ApplicationRecord record = loadApplicationRecord();
 
-      assertEquals( record.getSource().getConfigLocation(),
-                    FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ).toAbsolutePath().normalize() );
+      assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
       final List<ArtifactRecord> artifacts = record.getArtifacts();
       assertEquals( artifacts.size(), 2 );
       assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),

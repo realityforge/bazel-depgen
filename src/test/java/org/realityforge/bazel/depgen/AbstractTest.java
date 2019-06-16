@@ -74,10 +74,16 @@ public abstract class AbstractTest
     throws IOException
   {
     final Environment environment = new Environment( null, FileUtil.getCurrentDirectory(), logger );
-    environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+    environment.setDependenciesFile( getDefaultDependenciesFile() );
     environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
     environment.setCacheDir( FileUtil.createLocalTempDir() );
     return environment;
+  }
+
+  @Nonnull
+  protected final Path getDefaultDependenciesFile()
+  {
+    return FileUtil.getCurrentDirectory().resolve( ApplicationConfig.FILENAME );
   }
 
   @Nonnull
@@ -118,7 +124,7 @@ public abstract class AbstractTest
   protected final ApplicationConfig loadApplicationConfig()
     throws Exception
   {
-    return ApplicationConfig.parse( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+    return ApplicationConfig.parse( getDefaultDependenciesFile() );
   }
 
   protected final void inIsolatedDirectory( @Nonnull final Task task )
@@ -158,7 +164,7 @@ public abstract class AbstractTest
   protected final void writeDependencies( @Nonnull final String content )
     throws IOException
   {
-    FileUtil.write( "dependencies.yml", content );
+    FileUtil.write( ApplicationConfig.FILENAME, content );
   }
 
   final void assertOutputContains( @Nonnull final String output, @Nonnull final String text )

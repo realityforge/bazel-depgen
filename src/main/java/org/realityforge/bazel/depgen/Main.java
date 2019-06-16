@@ -447,11 +447,11 @@ public class Main
     if ( !environment.hasDependenciesFile() )
     {
       final Path dependenciesFile =
-        environment.currentDirectory().resolve( Options.DEFAULT_DEPENDENCIES_FILE ).toAbsolutePath().normalize();
+        environment.currentDirectory().resolve( ApplicationConfig.FILENAME ).toAbsolutePath().normalize();
       if ( !dependenciesFile.toFile().exists() )
       {
         logger.log( Level.SEVERE,
-                    "Error: Default dependencies file does not exist: " + Options.DEFAULT_DEPENDENCIES_FILE );
+                    "Error: Default dependencies file does not exist: " + ApplicationConfig.FILENAME );
         return false;
       }
       environment.setDependenciesFile( dependenciesFile );

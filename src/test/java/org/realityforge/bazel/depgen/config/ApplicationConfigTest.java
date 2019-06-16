@@ -1,6 +1,5 @@
 package org.realityforge.bazel.depgen.config;
 
-import gir.io.FileUtil;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +19,7 @@ public class ApplicationConfigTest
       writeDependencies( "" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
-      assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+      assertEquals( config.getConfigLocation(), getDefaultDependenciesFile() );
     } );
   }
 
@@ -37,7 +36,7 @@ public class ApplicationConfigTest
         "    cacheLookups: false\n" );
       final ApplicationConfig config = loadApplicationConfig();
       assertNotNull( config );
-      assertEquals( config.getConfigLocation(), FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+      assertEquals( config.getConfigLocation(), getDefaultDependenciesFile() );
       final List<RepositoryConfig> repositories = config.getRepositories();
       assertNotNull( repositories );
 
