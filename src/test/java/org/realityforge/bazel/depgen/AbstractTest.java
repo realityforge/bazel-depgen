@@ -89,6 +89,13 @@ public abstract class AbstractTest
     return newEnvironment( Logger.getAnonymousLogger() );
   }
 
+  @Nonnull
+  final Environment newEnvironment( @Nonnull final TestHandler handler )
+    throws IOException
+  {
+    return newEnvironment( createLogger( handler ) );
+  }
+
   final Environment newEnvironment( @Nonnull final Logger logger )
     throws IOException
   {

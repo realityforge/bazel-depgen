@@ -31,7 +31,7 @@ public class MainTest
     throws Exception
   {
     final TestHandler handler = new TestHandler();
-    Main.printUsage( newEnvironment( createLogger( handler ) ) );
+    Main.printUsage( newEnvironment( handler ) );
     assertEquals( handler.toString(),
                   "java org.realityforge.bazel.depgen.Main [options] [command]\n" +
                   "\tPossible Commands:\n" +
@@ -73,7 +73,7 @@ public class MainTest
     writeWorkspace();
 
     final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
     environment.setDependenciesFile( null );
     environment.setSettingsFile( null );
     assertFalse( Main.processOptions( environment, "generate" ) );
@@ -178,7 +178,7 @@ public class MainTest
     writeDependencies( "" );
 
     final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
     environment.setDependenciesFile( null );
     environment.setSettingsFile( null );
     environment.setCacheDir( null );
@@ -202,7 +202,7 @@ public class MainTest
     FileUtil.write( "dependencies2.yml", "" );
 
     final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
     assertTrue( Main.processOptions( environment, "--dependencies-file", "dependencies2.yml", "generate" ) );
     assertEquals( environment.getDependenciesFile(), FileUtil.getCurrentDirectory().resolve( "dependencies2.yml" ) );
   }
@@ -216,7 +216,7 @@ public class MainTest
     final Path dir = FileUtil.createLocalTempDir();
 
     final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
     assertTrue( Main.processOptions( environment, "--cache-directory", dir.toString(), "generate" ) );
     assertTrue( environment.hasCacheDir() );
     assertEquals( environment.getCacheDir(), dir );
@@ -246,7 +246,7 @@ public class MainTest
     final Path path = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
 
     final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
     assertTrue( Main.processOptions( environment, "--settings-file", path.toString(), "generate" ) );
     assertTrue( environment.hasSettingsFile() );
     assertEquals( environment.getSettingsFile(), path );
@@ -260,7 +260,7 @@ public class MainTest
     writeDependencies( "" );
 
     final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
     environment.logger().setLevel( Level.OFF );
     assertTrue( Main.processOptions( environment, "--verbose", "generate" ) );
     assertEquals( environment.logger().getLevel(), Level.ALL );
@@ -274,7 +274,7 @@ public class MainTest
     writeDependencies( "" );
 
     final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
     environment.logger().setLevel( Level.OFF );
     assertTrue( Main.processOptions( environment, "--quiet", "generate" ) );
     assertEquals( environment.logger().getLevel(), Level.WARNING );
@@ -288,7 +288,7 @@ public class MainTest
     writeDependencies( "" );
 
     final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
     assertFalse( environment.shouldResetCachedMetadata() );
     assertTrue( Main.processOptions( environment, "--reset-cached-metadata", "generate" ) );
     assertTrue( environment.shouldResetCachedMetadata() );
@@ -462,7 +462,7 @@ public class MainTest
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
 
     final Path cacheDir = FileUtil.createLocalTempDir();
     environment.setCacheDir( cacheDir );
@@ -492,7 +492,7 @@ public class MainTest
     final TestHandler handler = new TestHandler();
     final TerminalStateException exception =
       expectThrows( TerminalStateException.class,
-                    () -> Main.loadRecord( newEnvironment( createLogger( handler ) ) ) );
+                    () -> Main.loadRecord( newEnvironment( handler ) ) );
     assertNull( exception.getMessage() );
     assertEquals( exception.getExitCode(), ExitCodes.ERROR_CYCLES_PRESENT_CODE );
     assertOutputContains( handler.toString(),
@@ -514,7 +514,7 @@ public class MainTest
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
 
     final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
 
     final Path cacheDir = FileUtil.createLocalTempDir();
     environment.setCacheDir( cacheDir );
@@ -563,8 +563,7 @@ public class MainTest
     writeDependencies( "" );
 
     final TestHandler handler = new TestHandler();
-    final Logger logger = createLogger( handler );
-    final Environment environment = newEnvironment( logger );
+    final Environment environment = newEnvironment( handler );
     final Path dependenciesFile = getDefaultDependenciesFile();
     environment.setDependenciesFile( dependenciesFile );
     final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
@@ -587,8 +586,7 @@ public class MainTest
     writeDependencies( "" );
 
     final TestHandler handler = new TestHandler();
-    final Logger logger = createLogger( handler );
-    final Environment environment = newEnvironment( logger );
+    final Environment environment = newEnvironment( handler );
     final Path dependenciesFile = getDefaultDependenciesFile();
     environment.setDependenciesFile( dependenciesFile );
     final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
@@ -769,7 +767,7 @@ public class MainTest
     assertFalse( Files.exists( targetFile ) );
     assertFalse( Files.exists( sourceTargetFile ) );
 
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
     Main.cacheArtifactsInRepositoryCache( environment, record );
     assertEquals( handler.toString(),
                   "Installed artifact 'com.example:myapp:jar:1.0' into repository cache.\n" +
@@ -809,7 +807,7 @@ public class MainTest
 
     assertFalse( Files.exists( targetFile ) );
 
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
     Main.cacheArtifactsInRepositoryCache( environment, record );
     assertEquals( handler.toString(),
                   "Installed artifact 'com.example:myapp:jar:1.0' into repository cache." );
@@ -853,7 +851,7 @@ public class MainTest
     assertFalse( Files.exists( targetFile1 ) );
     assertFalse( Files.exists( targetFile2 ) );
 
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
     Main.cacheArtifactsInRepositoryCache( environment, record );
     assertEquals( handler.toString(),
                   "Installed artifact 'com.example:myapp:jar:1.0' into repository cache.\n" +
@@ -1058,7 +1056,7 @@ public class MainTest
   {
     final TestHandler handler = new TestHandler();
     handler.setLevel( Level.ALL );
-    final int exitCode = Main.run( newEnvironment( createLogger( handler ) ), args );
+    final int exitCode = Main.run( newEnvironment( handler ), args );
     assertEquals( expectedExitCode, exitCode );
     return handler.toString();
   }
@@ -1068,7 +1066,7 @@ public class MainTest
     throws Exception
   {
     final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( createLogger( handler ) );
+    final Environment environment = newEnvironment( handler );
     assertFalse( Main.processOptions( environment, args ) );
     return handler.toString();
   }

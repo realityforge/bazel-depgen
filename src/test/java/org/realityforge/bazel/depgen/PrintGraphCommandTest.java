@@ -25,7 +25,7 @@ public class PrintGraphCommandTest
     final TestHandler handler = new TestHandler();
     handler.setLevel( Level.INFO );
     final PrintGraphCommand command = new PrintGraphCommand();
-    final int exitCode = command.run( new CommandContextImpl( newEnvironment( createLogger( handler ) ) ) );
+    final int exitCode = command.run( new CommandContextImpl( newEnvironment( handler ) ) );
     assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
     assertEquals( handler.toString(),
                   "Dependency Graph:\n" +

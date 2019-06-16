@@ -4,7 +4,6 @@ import gir.io.FileUtil;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingException;
@@ -63,8 +62,7 @@ public class SettingsUtilTest
                     "</settings>\n" );
     final Path path = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
     final TestHandler handler = new TestHandler();
-    final Logger logger = createLogger( handler );
-    final Settings settings = SettingsUtil.loadSettings( path, logger );
+    final Settings settings = SettingsUtil.loadSettings( path, createLogger( handler ) );
     assertNotNull( settings );
     final ArrayList<LogRecord> records = handler.getRecords();
     assertEquals( records.size(), 1 );
@@ -84,8 +82,7 @@ public class SettingsUtilTest
     FileUtil.write( "settings.xml", "X\n" );
     final Path path = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
     final TestHandler handler = new TestHandler();
-    final Logger logger = createLogger( handler );
-    assertThrows( SettingsBuildingException.class, () -> SettingsUtil.loadSettings( path, logger ) );
+    assertThrows( SettingsBuildingException.class, () -> SettingsUtil.loadSettings( path, createLogger( handler ) ) );
     assertEquals( handler.getRecords().size(), 0 );
   }
 }

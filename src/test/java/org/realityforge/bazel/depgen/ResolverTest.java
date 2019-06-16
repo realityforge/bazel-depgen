@@ -33,7 +33,7 @@ public class ResolverTest
     final Path dir = FileUtil.createLocalTempDir();
 
     final Resolver resolver =
-      ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+      ResolverUtil.createResolver( newEnvironment( handler ),
                                    dir,
                                    Collections.emptyList(),
                                    true,
@@ -75,7 +75,7 @@ public class ResolverTest
     Files.write( artifactDir.resolve( "myapp-1.0.jar" ), new byte[ 0 ] );
 
     final Resolver resolver =
-      ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+      ResolverUtil.createResolver( newEnvironment( handler ),
                                    dir,
                                    Collections.emptyList(),
                                    true,
@@ -118,7 +118,7 @@ public class ResolverTest
     Files.write( artifactFile, new byte[ 0 ] );
 
     final Resolver resolver =
-      ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+      ResolverUtil.createResolver( newEnvironment( handler ),
                                    dir,
                                    Collections.emptyList(),
                                    false,
@@ -161,7 +161,7 @@ public class ResolverTest
     final TestHandler handler = newHandler();
 
     final Resolver resolver =
-      ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+      ResolverUtil.createResolver( newEnvironment( handler ),
                                    dir,
                                    Collections.emptyList(),
                                    true,
@@ -206,7 +206,7 @@ public class ResolverTest
     final TestHandler handler = newHandler();
 
     final Resolver resolver =
-      ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+      ResolverUtil.createResolver( newEnvironment( handler ),
                                    dir,
                                    Collections.emptyList(),
                                    true,
@@ -261,7 +261,7 @@ public class ResolverTest
     final RemoteRepository remoteRepository =
       new RemoteRepository.Builder( "local", "default", remoteDir.toUri().toString() ).build();
     final Resolver resolver =
-      ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+      ResolverUtil.createResolver( newEnvironment( handler ),
                                    dir,
                                    Collections.singletonList( remoteRepository ),
                                    true,
@@ -307,7 +307,7 @@ public class ResolverTest
     final TestHandler handler = newHandler();
 
     final Resolver resolver =
-      ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+      ResolverUtil.createResolver( newEnvironment( handler ),
                                    dir,
                                    Collections.emptyList(),
                                    true,
@@ -347,7 +347,7 @@ public class ResolverTest
     final TestHandler handler = newHandler();
 
     final Resolver resolver =
-      ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+      ResolverUtil.createResolver( newEnvironment( handler ),
                                    dir,
                                    Collections.emptyList(),
                                    true,
@@ -403,7 +403,7 @@ public class ResolverTest
     final TestHandler handler = newHandler();
 
     final Resolver resolver =
-      ResolverUtil.createResolver( newEnvironment( createLogger( handler ) ),
+      ResolverUtil.createResolver( newEnvironment( handler ),
                                    dir,
                                    Collections.emptyList(),
                                    true,
