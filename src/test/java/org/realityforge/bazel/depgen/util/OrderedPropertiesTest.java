@@ -36,21 +36,20 @@ public class OrderedPropertiesTest
     properties.put( "4", "1" );
     properties.put( "3", "1" );
 
-    inIsolatedDirectory( () -> {
+    // Note: we are skipping over comment line
 
-      final Path file = FileUtil.createLocalTempDir().resolve( "myfile.properties" );
+    final Path file = FileUtil.createLocalTempDir().resolve( "myfile.properties" );
 
-      properties.store( Files.newBufferedWriter( file ), null );
+    properties.store( Files.newBufferedWriter( file ), null );
 
-      final List<String> lines = Files.readAllLines( file );
-      // Note: we are skipping over comment line
-      assertEquals( String.join( "\n", lines.subList( 1, lines.size() ) ),
-                    "1=1\n" +
-                    "2=1\n" +
-                    "3=1\n" +
-                    "4=1\n" +
-                    "5=1" );
-    } );
+    final List<String> lines = Files.readAllLines( file );
+    // Note: we are skipping over comment line
+    assertEquals( String.join( "\n", lines.subList( 1, lines.size() ) ),
+                  "1=1\n" +
+                  "2=1\n" +
+                  "3=1\n" +
+                  "4=1\n" +
+                  "5=1" );
 
   }
 }

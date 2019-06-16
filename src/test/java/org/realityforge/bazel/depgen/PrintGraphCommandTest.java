@@ -13,24 +13,22 @@ public class PrintGraphCommandTest
   public void run_printGraph()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createLocalTempDir();
+    final Path dir = FileUtil.createLocalTempDir();
 
-      deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-      writeWorkspace();
-      writeDependencies( dir,
-                         "artifacts:\n" +
-                         "  - coord: com.example:myapp:1.0\n" );
+    writeWorkspace();
+    writeDependencies( dir,
+                       "artifacts:\n" +
+                       "  - coord: com.example:myapp:1.0\n" );
 
-      final TestHandler handler = new TestHandler();
-      handler.setLevel( Level.INFO );
-      final PrintGraphCommand command = new PrintGraphCommand();
-      final int exitCode = command.run( new CommandContextImpl( newEnvironment( createLogger( handler ) ) ) );
-      assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
-      assertEquals( handler.toString(),
-                    "Dependency Graph:\n" +
-                    "\\- com.example:myapp:jar:1.0 [compile]" );
-    } );
+    final TestHandler handler = new TestHandler();
+    handler.setLevel( Level.INFO );
+    final PrintGraphCommand command = new PrintGraphCommand();
+    final int exitCode = command.run( new CommandContextImpl( newEnvironment( createLogger( handler ) ) ) );
+    assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
+    assertEquals( handler.toString(),
+                  "Dependency Graph:\n" +
+                  "\\- com.example:myapp:jar:1.0 [compile]" );
   }
 }

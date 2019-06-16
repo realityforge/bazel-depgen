@@ -17,129 +17,119 @@ public class ApplicationModelTest
   public void parse()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "artifacts:\n" +
-                         "  - coord: com.example:myapp:1.0\n" +
-                         "excludes:\n" +
-                         "  - coord: com.example:blib\n" +
-                         "replacements:\n" +
-                         "  - coord: com.example:alib\n" +
-                         "    targets:\n" +
-                         "      - target: \"@com_example//:alib\"\n" );
-      final Path configFile = getDefaultDependenciesFile();
-      final ApplicationConfig source = ApplicationConfig.parse( configFile );
+    writeDependencies( "artifacts:\n" +
+                       "  - coord: com.example:myapp:1.0\n" +
+                       "excludes:\n" +
+                       "  - coord: com.example:blib\n" +
+                       "replacements:\n" +
+                       "  - coord: com.example:alib\n" +
+                       "    targets:\n" +
+                       "      - target: \"@com_example//:alib\"\n" );
+    final Path configFile = getDefaultDependenciesFile();
+    final ApplicationConfig source = ApplicationConfig.parse( configFile );
 
-      final ApplicationModel model = ApplicationModel.parse( source, false );
-      assertEquals( model.getSource(), source );
-      assertFalse( model.shouldResetCachedMetadata() );
-      assertEquals( model.getConfigSha256(), "121141B72422F4A4487D9D13E43F920BA5DE1A8837DDDA78204AD3D74B5DD147" );
-      assertEquals( model.getConfigLocation(), configFile );
-      final List<RepositoryModel> repositories = model.getRepositories();
-      assertEquals( repositories.size(), 1 );
-      final RepositoryModel repository = repositories.get( 0 );
-      assertEquals( repository.getName(), ApplicationConfig.MAVEN_CENTRAL_NAME );
-      assertEquals( repository.getUrl(), ApplicationConfig.MAVEN_CENTRAL_URL );
-      assertTrue( repository.cacheLookups() );
-      assertEquals( model.getOptions().getWorkspaceDirectory(), FileUtil.getCurrentDirectory() );
-      assertEquals( model.getOptions().getExtensionFile(),
-                    FileUtil.getCurrentDirectory().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );
-      assertEquals( model.getArtifacts().size(), 1 );
-      final ArtifactModel artifactModel = model.getArtifacts().get( 0 );
-      assertEquals( artifactModel.getGroup(), "com.example" );
-      assertEquals( artifactModel.getId(), "myapp" );
-      assertEquals( artifactModel.getVersion(), "1.0" );
+    final ApplicationModel model = ApplicationModel.parse( source, false );
+    assertEquals( model.getSource(), source );
+    assertFalse( model.shouldResetCachedMetadata() );
+    assertEquals( model.getConfigSha256(), "121141B72422F4A4487D9D13E43F920BA5DE1A8837DDDA78204AD3D74B5DD147" );
+    assertEquals( model.getConfigLocation(), configFile );
+    final List<RepositoryModel> repositories = model.getRepositories();
+    assertEquals( repositories.size(), 1 );
+    final RepositoryModel repository = repositories.get( 0 );
+    assertEquals( repository.getName(), ApplicationConfig.MAVEN_CENTRAL_NAME );
+    assertEquals( repository.getUrl(), ApplicationConfig.MAVEN_CENTRAL_URL );
+    assertTrue( repository.cacheLookups() );
+    assertEquals( model.getOptions().getWorkspaceDirectory(), FileUtil.getCurrentDirectory() );
+    assertEquals( model.getOptions().getExtensionFile(),
+                  FileUtil.getCurrentDirectory().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );
+    assertEquals( model.getArtifacts().size(), 1 );
+    final ArtifactModel artifactModel = model.getArtifacts().get( 0 );
+    assertEquals( artifactModel.getGroup(), "com.example" );
+    assertEquals( artifactModel.getId(), "myapp" );
+    assertEquals( artifactModel.getVersion(), "1.0" );
 
-      final List<ReplacementModel> replacements = model.getReplacements();
-      assertEquals( replacements.size(), 1 );
-      final ReplacementModel replacementModel = replacements.get( 0 );
-      assertEquals( replacementModel.getGroup(), "com.example" );
-      assertEquals( replacementModel.getId(), "alib" );
-      final List<ReplacementTargetModel> targets = replacementModel.getTargets();
-      assertEquals( targets.size(), 1 );
-      final ReplacementTargetModel replacementTarget = targets.get( 0 );
-      assertEquals( replacementTarget.getNature(), OptionsConfig.DEFAULT_NATURE );
-      assertEquals( replacementTarget.getTarget(), "@com_example//:alib" );
+    final List<ReplacementModel> replacements = model.getReplacements();
+    assertEquals( replacements.size(), 1 );
+    final ReplacementModel replacementModel = replacements.get( 0 );
+    assertEquals( replacementModel.getGroup(), "com.example" );
+    assertEquals( replacementModel.getId(), "alib" );
+    final List<ReplacementTargetModel> targets = replacementModel.getTargets();
+    assertEquals( targets.size(), 1 );
+    final ReplacementTargetModel replacementTarget = targets.get( 0 );
+    assertEquals( replacementTarget.getNature(), OptionsConfig.DEFAULT_NATURE );
+    assertEquals( replacementTarget.getTarget(), "@com_example//:alib" );
 
-      final List<GlobalExcludeModel> excludes = model.getExcludes();
-      assertEquals( excludes.size(), 1 );
-      final GlobalExcludeModel excludeModel = excludes.get( 0 );
-      assertEquals( excludeModel.getGroup(), "com.example" );
-      assertEquals( excludeModel.getId(), "blib" );
-    } );
+    final List<GlobalExcludeModel> excludes = model.getExcludes();
+    assertEquals( excludes.size(), 1 );
+    final GlobalExcludeModel excludeModel = excludes.get( 0 );
+    assertEquals( excludeModel.getGroup(), "com.example" );
+    assertEquals( excludeModel.getId(), "blib" );
   }
 
   @Test
   public void isExcluded()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "artifacts:\n" +
-                         "  - coord: com.example:myapp:1.0\n" +
-                         "excludes:\n" +
-                         "  - coord: com.example:blib\n" );
-      final ApplicationModel model = loadApplicationModel();
+    writeDependencies( "artifacts:\n" +
+                       "  - coord: com.example:myapp:1.0\n" +
+                       "excludes:\n" +
+                       "  - coord: com.example:blib\n" );
+    final ApplicationModel model = loadApplicationModel();
 
-      assertFalse( model.isExcluded( "com.example", "alib" ) );
-      assertTrue( model.isExcluded( "com.example", "blib" ) );
-    } );
+    assertFalse( model.isExcluded( "com.example", "alib" ) );
+    assertTrue( model.isExcluded( "com.example", "blib" ) );
   }
 
   @Test
   public void findArtifact()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "artifacts:\n" +
-                         "  - coord: com.example:myapp:1.0\n" );
+    writeDependencies( "artifacts:\n" +
+                       "  - coord: com.example:myapp:1.0\n" );
 
-      final ApplicationModel model = loadApplicationModel();
-      assertEquals( model.getArtifacts().size(), 1 );
-      final ArtifactModel artifactModel = model.getArtifacts().get( 0 );
-      assertEquals( artifactModel.toCoord(), "com.example:myapp:jar:1.0" );
+    final ApplicationModel model = loadApplicationModel();
+    assertEquals( model.getArtifacts().size(), 1 );
+    final ArtifactModel artifactModel = model.getArtifacts().get( 0 );
+    assertEquals( artifactModel.toCoord(), "com.example:myapp:jar:1.0" );
 
-      assertEquals( artifactModel, model.findArtifact( "com.example", "myapp" ) );
-      assertNull( model.findArtifact( "com.example", "noexist" ) );
-    } );
+    assertEquals( artifactModel, model.findArtifact( "com.example", "myapp" ) );
+    assertNull( model.findArtifact( "com.example", "noexist" ) );
   }
 
   @Test
   public void findReplacement()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "artifacts:\n" +
-                         "  - coord: com.example:myapp:1.0\n" +
-                         "replacements:\n" +
-                         "  - coord: com.example:mylib\n" +
-                         "    targets:\n" +
-                         "      - target: \"@com_example//:mylib\"\n" );
+    writeDependencies( "artifacts:\n" +
+                       "  - coord: com.example:myapp:1.0\n" +
+                       "replacements:\n" +
+                       "  - coord: com.example:mylib\n" +
+                       "    targets:\n" +
+                       "      - target: \"@com_example//:mylib\"\n" );
 
-      final ApplicationModel model = loadApplicationModel();
-      assertEquals( model.getReplacements().size(), 1 );
-      final ReplacementModel replacementModel = model.getReplacements().get( 0 );
-      assertEquals( replacementModel.getGroup(), "com.example" );
-      assertEquals( replacementModel.getId(), "mylib" );
+    final ApplicationModel model = loadApplicationModel();
+    assertEquals( model.getReplacements().size(), 1 );
+    final ReplacementModel replacementModel = model.getReplacements().get( 0 );
+    assertEquals( replacementModel.getGroup(), "com.example" );
+    assertEquals( replacementModel.getId(), "mylib" );
 
-      assertEquals( replacementModel, model.findReplacement( "com.example", "mylib" ) );
-      assertNull( model.findArtifact( "com.example", "noexist" ) );
-    } );
+    assertEquals( replacementModel, model.findReplacement( "com.example", "mylib" ) );
+    assertNull( model.findArtifact( "com.example", "noexist" ) );
   }
 
   @Test
   public void findRepository()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      writeDependencies( "artifacts:\n" +
-                         "  - coord: com.example:myapp:1.0\n" );
+    writeDependencies( "artifacts:\n" +
+                       "  - coord: com.example:myapp:1.0\n" );
 
-      final ApplicationModel model = loadApplicationModel();
-      final List<RepositoryModel> repositories = model.getRepositories();
-      assertEquals( repositories.size(), 1 );
+    final ApplicationModel model = loadApplicationModel();
+    final List<RepositoryModel> repositories = model.getRepositories();
+    assertEquals( repositories.size(), 1 );
 
-      assertEquals( model.findRepository( ApplicationConfig.MAVEN_CENTRAL_NAME ), repositories.get( 0 ) );
-      assertNull( model.findRepository( "other" ) );
-    } );
+    assertEquals( model.findRepository( ApplicationConfig.MAVEN_CENTRAL_NAME ), repositories.get( 0 ) );
+    assertNull( model.findRepository( "other" ) );
   }
 
   @Test

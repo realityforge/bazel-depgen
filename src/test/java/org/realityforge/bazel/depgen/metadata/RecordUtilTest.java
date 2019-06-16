@@ -31,109 +31,150 @@ public class RecordUtilTest
   public void sha256()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path filename = FileUtil.createLocalTempDir().resolve( "file.txt" );
-      Files.write( filename, new byte[]{ 1, 2, 3 } );
-      assertEquals( RecordUtil.sha256( filename.toFile() ),
-                    "039058C6F2C0CB492C533B0A4D14EF77CC0F78ABCCCED5287D84A1A2011CFB81" );
-    } );
+    final Path filename = FileUtil.createLocalTempDir().resolve( "file.txt" );
+    Files.write( filename, new byte[]{ 1, 2, 3 } );
+    assertEquals( RecordUtil.sha256( filename.toFile() ),
+                  "039058C6F2C0CB492C533B0A4D14EF77CC0F78ABCCCED5287D84A1A2011CFB81" );
   }
 
   @Test
   public void sha256_badFile()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path filename = FileUtil.createLocalTempDir().resolve( "file.txt" );
-      final IllegalStateException exception =
-        expectThrows( IllegalStateException.class, () -> RecordUtil.sha256( filename.toFile() ) );
-      assertEquals( exception.getMessage(), "Error generating sha256 hash for file " + filename.toFile() );
-    } );
+    final Path filename = FileUtil.createLocalTempDir().resolve( "file.txt" );
+    final IllegalStateException exception =
+      expectThrows( IllegalStateException.class, () -> RecordUtil.sha256( filename.toFile() ) );
+    assertEquals( exception.getMessage(), "Error generating sha256 hash for file " + filename.toFile() );
   }
 
   @Test
   public void readAnnotationProcessors_notAJar()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path path = FileUtil.createLocalTempDir().resolve( "file.txt" );
-      final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
-      assertEquals( processors, DepgenMetadata.SENTINEL );
-    } );
+    final Path path = FileUtil.createLocalTempDir().resolve( "file.txt" );
+    final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
+    assertEquals( processors, DepgenMetadata.SENTINEL );
   }
 
   @Test
   public void readAnnotationProcessors_jarButNoProcessors()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path path = createTempJarFile();
-      final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
-      assertEquals( processors, DepgenMetadata.SENTINEL );
-    } );
+    final Path path = createTempJarFile();
+    final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
+    assertEquals( processors, DepgenMetadata.SENTINEL );
   }
 
   @Test
   public void readAnnotationProcessors_jarNotReadable()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path path = createTempJarFile();
-      // Remove read permission so that attempting to read metadata generates an IOException
-      Files.setPosixFilePermissions( path, new HashSet<>() );
-      final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
-      assertEquals( processors, DepgenMetadata.SENTINEL );
-    } );
+    // Remove read permission so that attempting to read metadata generates an IOException
+    final Path path = createTempJarFile();
+    // Remove read permission so that attempting to read metadata generates an IOException
+    Files.setPosixFilePermissions( path, new HashSet<>() );
+    final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
+    assertEquals( processors, DepgenMetadata.SENTINEL );
   }
 
   @Test
   public void readAnnotationProcessors_jarWithSingleProcessor()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
-                                       "react4j.processor.ReactProcessor\n" );
-      final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
-      assertEquals( processors, "react4j.processor.ReactProcessor" );
-    } );
+    final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                                     "react4j.processor.ReactProcessor\n" );
+    final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
+    assertEquals( processors, "react4j.processor.ReactProcessor" );
   }
 
   @Test
   public void readAnnotationProcessors_jarWithSingleProcessorAndBlankLInes()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
-                                       "\nreact4j.processor.ReactProcessor\n\n\n" );
-      final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
-      assertEquals( processors, "react4j.processor.ReactProcessor" );
-    } );
+    final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                                     "\nreact4j.processor.ReactProcessor\n\n\n" );
+    final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
+    assertEquals( processors, "react4j.processor.ReactProcessor" );
   }
 
   @Test
   public void readAnnotationProcessors_jarWithMultipleProcessors()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
-                                       "react4j.processor.ReactProcessor\narez.processor.ArezProcessor\n" );
-      final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
-      assertEquals( processors, "react4j.processor.ReactProcessor,arez.processor.ArezProcessor" );
-    } );
+    final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                                     "react4j.processor.ReactProcessor\narez.processor.ArezProcessor\n" );
+    final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
+    assertEquals( processors, "react4j.processor.ReactProcessor,arez.processor.ArezProcessor" );
   }
 
   @Test
   public void lookupArtifactInRepository_file_url()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createLocalTempDir();
+    final Path dir = FileUtil.createLocalTempDir();
 
-      final URI uri = dir.toUri();
+    final URI uri = dir.toUri();
 
-      final RemoteRepository repo = new RemoteRepository.Builder( "dir1", "default", uri.toString() ).build();
+    final RemoteRepository repo = new RemoteRepository.Builder( "dir1", "default", uri.toString() ).build();
 
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final String url =
+      RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                             repo,
+                                             Collections.emptyMap() );
+    assertNotNull( url );
+    assertTrue( url.startsWith( repo.getUrl() ) );
+    assertTrue( url.endsWith( "com/example/myapp/1.0/myapp-1.0.jar" ) );
+  }
+
+  @Test
+  public void lookupArtifactInRepository_file_url_missing()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    final URI uri = dir.toUri();
+
+    final RemoteRepository repo = new RemoteRepository.Builder( "dir1", "default", uri.toString() ).build();
+
+    final String url =
+      RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                             repo,
+                                             Collections.emptyMap() );
+    assertNull( url );
+  }
+
+  @Test
+  public void lookupArtifactInRepository_unknown_protocol()
+    throws Exception
+  {
+    final RemoteRepository repo = new RemoteRepository.Builder( "dir1", "default", "ftp://example.com" ).build();
+
+    final IllegalStateException exception =
+      expectThrows( IllegalStateException.class,
+                    () -> RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                                                 repo,
+                                                                 Collections.emptyMap() ) );
+    assertEquals( exception.getMessage(),
+                  "Unsupported repository protocol for com.example:myapp:jar:1.0 with url ftp://example.com/com/example/myapp/1.0/myapp-1.0.jar." );
+  }
+
+  @Test
+  public void lookupArtifactInRepository_http_url()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    final TinyHttpd server = TinyHttpdFactory.createServer();
+    server.setHttpHandler( e -> serveFilePath( dir, e ) );
+
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    server.start();
+    try
+    {
+      final RemoteRepository repo = new RemoteRepository.Builder( "http", "default", server.getBaseURL() ).build();
 
       final String url =
         RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
@@ -142,179 +183,109 @@ public class RecordUtilTest
       assertNotNull( url );
       assertTrue( url.startsWith( repo.getUrl() ) );
       assertTrue( url.endsWith( "com/example/myapp/1.0/myapp-1.0.jar" ) );
-    } );
-  }
-
-  @Test
-  public void lookupArtifactInRepository_file_url_missing()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createLocalTempDir();
-
-      final URI uri = dir.toUri();
-
-      final RemoteRepository repo = new RemoteRepository.Builder( "dir1", "default", uri.toString() ).build();
-
-      final String url =
-        RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
-                                               repo,
-                                               Collections.emptyMap() );
-      assertNull( url );
-    } );
-  }
-
-  @Test
-  public void lookupArtifactInRepository_unknown_protocol()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final RemoteRepository repo = new RemoteRepository.Builder( "dir1", "default", "ftp://example.com" ).build();
-
-      final IllegalStateException exception =
-        expectThrows( IllegalStateException.class,
-                      () -> RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
-                                                                   repo,
-                                                                   Collections.emptyMap() ) );
-      assertEquals( exception.getMessage(),
-                    "Unsupported repository protocol for com.example:myapp:jar:1.0 with url ftp://example.com/com/example/myapp/1.0/myapp-1.0.jar." );
-    } );
-  }
-
-  @Test
-  public void lookupArtifactInRepository_http_url()
-    throws Exception
-  {
-    inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createLocalTempDir();
-
-      final TinyHttpd server = TinyHttpdFactory.createServer();
-      server.setHttpHandler( e -> serveFilePath( dir, e ) );
-
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
-
-      server.start();
-      try
-      {
-        final RemoteRepository repo = new RemoteRepository.Builder( "http", "default", server.getBaseURL() ).build();
-
-        final String url =
-          RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
-                                                 repo,
-                                                 Collections.emptyMap() );
-        assertNotNull( url );
-        assertTrue( url.startsWith( repo.getUrl() ) );
-        assertTrue( url.endsWith( "com/example/myapp/1.0/myapp-1.0.jar" ) );
-      }
-      finally
-      {
-        server.stop();
-      }
-    } );
+    }
+    finally
+    {
+      server.stop();
+    }
   }
 
   @Test
   public void lookupArtifactInRepository_http_url_missing()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createLocalTempDir();
+    final Path dir = FileUtil.createLocalTempDir();
 
-      final TinyHttpd server1 = TinyHttpdFactory.createServer();
-      server1.setHttpHandler( e -> serveFilePath( dir, e ) );
+    final TinyHttpd server1 = TinyHttpdFactory.createServer();
+    server1.setHttpHandler( e -> serveFilePath( dir, e ) );
 
-      server1.start();
-      try
-      {
-        final RemoteRepository repo = new RemoteRepository.Builder( "http", "default", server1.getBaseURL() ).build();
+    server1.start();
+    try
+    {
+      final RemoteRepository repo = new RemoteRepository.Builder( "http", "default", server1.getBaseURL() ).build();
 
-        final String url =
-          RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
-                                                 repo,
-                                                 Collections.emptyMap() );
-        assertNull( url );
-      }
-      finally
-      {
-        server1.stop();
-      }
-    } );
+      final String url =
+        RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                               repo,
+                                               Collections.emptyMap() );
+      assertNull( url );
+    }
+    finally
+    {
+      server1.stop();
+    }
   }
 
   @Test
   public void lookupArtifactInRepository_authenticated_http_url()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final String username = "root";
-      final String password = "secret";
-      emitSettings( "my-repo", username, password );
+    final String username = "root";
+    final String password = "secret";
+    emitSettings( "my-repo", username, password );
 
-      final Path dir = FileUtil.createLocalTempDir();
+    final Path dir = FileUtil.createLocalTempDir();
 
-      final HttpServer server = serveDirectoryWithBasicAuth( dir, username, password );
+    final HttpServer server = serveDirectoryWithBasicAuth( dir, username, password );
 
-      deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-      server.start();
-      try
-      {
-        final String repositoryUrl = toUrl( server );
+    server.start();
+    try
+    {
+      final String repositoryUrl = toUrl( server );
 
-        writeDependencies( dir, "repositories:\n" +
-                                "  - name: my-repo\n" +
-                                "    url: " + repositoryUrl + "\n" );
-        final ApplicationRecord record = loadApplicationRecord();
+      writeDependencies( dir, "repositories:\n" +
+                              "  - name: my-repo\n" +
+                              "    url: " + repositoryUrl + "\n" );
+      final ApplicationRecord record = loadApplicationRecord();
 
-        final String url =
-          RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
-                                                 record.getNode().getRepositories().get( 0 ),
-                                                 record.getAuthenticationContexts() );
-        assertNotNull( url );
-        assertTrue( url.startsWith( repositoryUrl ) );
-        assertTrue( url.endsWith( "com/example/myapp/1.0/myapp-1.0.jar" ) );
-      }
-      finally
-      {
-        server.stop( 1 );
-      }
-    } );
+      final String url =
+        RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                               record.getNode().getRepositories().get( 0 ),
+                                               record.getAuthenticationContexts() );
+      assertNotNull( url );
+      assertTrue( url.startsWith( repositoryUrl ) );
+      assertTrue( url.endsWith( "com/example/myapp/1.0/myapp-1.0.jar" ) );
+    }
+    finally
+    {
+      server.stop( 1 );
+    }
   }
 
   @Test
   public void lookupArtifactInRepository_authenticated_http_url_missing()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final String username = "root";
-      final String password = "secret";
-      emitSettings( "my-repo", username, password );
+    final String username = "root";
+    final String password = "secret";
+    emitSettings( "my-repo", username, password );
 
-      final Path dir = FileUtil.createLocalTempDir();
+    final Path dir = FileUtil.createLocalTempDir();
 
-      final HttpServer server = serveDirectoryWithBasicAuth( dir, username, password );
+    final HttpServer server = serveDirectoryWithBasicAuth( dir, username, password );
 
-      server.start();
-      try
-      {
-        final String repositoryUrl = toUrl( server );
+    server.start();
+    try
+    {
+      final String repositoryUrl = toUrl( server );
 
-        writeDependencies( dir, "repositories:\n" +
-                                "  - name: my-repo\n" +
-                                "    url: " + repositoryUrl + "\n" );
-        final ApplicationRecord record = loadApplicationRecord();
+      writeDependencies( dir, "repositories:\n" +
+                              "  - name: my-repo\n" +
+                              "    url: " + repositoryUrl + "\n" );
+      final ApplicationRecord record = loadApplicationRecord();
 
-        final String url =
-          RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
-                                                 record.getNode().getRepositories().get( 0 ),
-                                                 record.getAuthenticationContexts() );
-        assertNull( url );
-      }
-      finally
-      {
-        server.stop( 1 );
-      }
-    } );
+      final String url =
+        RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                               record.getNode().getRepositories().get( 0 ),
+                                               record.getAuthenticationContexts() );
+      assertNull( url );
+    }
+    finally
+    {
+      server.stop( 1 );
+    }
   }
 
   @SuppressWarnings( "SameParameterValue" )

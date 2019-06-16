@@ -19,260 +19,234 @@ public class StarlarkOutputTest
   public void basicOperation()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file =
-        writeFileContent( output -> {
-          output.write( "A" );
-          output.write( "B" );
-          output.newLine();
-          output.incIndent();
-          output.write( "C" );
-          output.incIndent();
-          output.write( "D" );
-          output.write( "E" );
-          output.incIndent();
-          output.write( "F" );
-          output.decIndent();
-          output.write( "G" );
-          output.incIndent();
-          output.write( "H" );
-          output.decIndent();
-          output.write( "I" );
-          output.decIndent();
-          output.decIndent();
-          output.write( "J" );
-        } );
+    final Path file =
+      writeFileContent( output -> {
+        output.write( "A" );
+        output.write( "B" );
+        output.newLine();
+        output.incIndent();
+        output.write( "C" );
+        output.incIndent();
+        output.write( "D" );
+        output.write( "E" );
+        output.incIndent();
+        output.write( "F" );
+        output.decIndent();
+        output.write( "G" );
+        output.incIndent();
+        output.write( "H" );
+        output.decIndent();
+        output.write( "I" );
+        output.decIndent();
+        output.decIndent();
+        output.write( "J" );
+      } );
 
-      assertFileContent( file,
-                         "A\n" +
-                         "B\n" +
-                         "\n" +
-                         "    C\n" +
-                         "        D\n" +
-                         "        E\n" +
-                         "            F\n" +
-                         "        G\n" +
-                         "            H\n" +
-                         "        I\n" +
-                         "J\n" );
-    } );
+    assertFileContent( file,
+                       "A\n" +
+                       "B\n" +
+                       "\n" +
+                       "    C\n" +
+                       "        D\n" +
+                       "        E\n" +
+                       "            F\n" +
+                       "        G\n" +
+                       "            H\n" +
+                       "        I\n" +
+                       "J\n" );
   }
 
   @Test
   public void writeCall_emptyFunction()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file =
-        writeFileContent( output -> output.writeCall( "myFunction", new LinkedHashMap<>() ) );
+    final Path file =
+      writeFileContent( output -> output.writeCall( "myFunction", new LinkedHashMap<>() ) );
 
-      assertFileContent( file, "myFunction()\n" );
-    } );
+    assertFileContent( file, "myFunction()\n" );
   }
 
   @Test
   public void writeCall_indent()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file =
-        writeFileContent( output -> {
-          output.incIndent();
-          output.writeCall( "myFunction", new LinkedHashMap<>() );
-          output.decIndent();
-        } );
+    final Path file =
+      writeFileContent( output -> {
+        output.incIndent();
+        output.writeCall( "myFunction", new LinkedHashMap<>() );
+        output.decIndent();
+      } );
 
-      assertFileContent( file, "    myFunction()\n" );
-    } );
+    assertFileContent( file, "    myFunction()\n" );
   }
 
   @Test
   public void writeCall_singleArg()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file =
-        writeFileContent( output -> {
-          output.incIndent();
-          final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-          arguments.put( "name", "'Foo'" );
-          output.writeCall( "myFunction", arguments );
-          output.decIndent();
-        } );
+    final Path file =
+      writeFileContent( output -> {
+        output.incIndent();
+        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        arguments.put( "name", "'Foo'" );
+        output.writeCall( "myFunction", arguments );
+        output.decIndent();
+      } );
 
-      assertFileContent( file,
-                         "    myFunction(\n" +
-                         "        name = 'Foo',\n" +
-                         "    )\n" );
-    } );
+    assertFileContent( file,
+                       "    myFunction(\n" +
+                       "        name = 'Foo',\n" +
+                       "    )\n" );
   }
 
   @Test
   public void writeCall_singleArrayArg()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file =
-        writeFileContent( output -> {
-          output.incIndent();
-          final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-          arguments.put( "name", Arrays.asList( "1", "2", "3" ) );
-          output.writeCall( "myFunction", arguments );
-          output.decIndent();
-        } );
+    final Path file =
+      writeFileContent( output -> {
+        output.incIndent();
+        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        arguments.put( "name", Arrays.asList( "1", "2", "3" ) );
+        output.writeCall( "myFunction", arguments );
+        output.decIndent();
+      } );
 
-      assertFileContent( file,
-                         "    myFunction(\n" +
-                         "        name = [\n" +
-                         "            1,\n" +
-                         "            2,\n" +
-                         "            3,\n" +
-                         "        ],\n" +
-                         "    )\n" );
-    } );
+    assertFileContent( file,
+                       "    myFunction(\n" +
+                       "        name = [\n" +
+                       "            1,\n" +
+                       "            2,\n" +
+                       "            3,\n" +
+                       "        ],\n" +
+                       "    )\n" );
   }
 
   @Test
   public void writeCall_singleMultiValueArrayArg()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file =
-        writeFileContent( output -> {
-          output.incIndent();
-          final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-          arguments.put( "name", Arrays.asList( "1", "2", "3" ) );
-          output.writeCall( "myFunction", arguments );
-          output.decIndent();
-        } );
+    final Path file =
+      writeFileContent( output -> {
+        output.incIndent();
+        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        arguments.put( "name", Arrays.asList( "1", "2", "3" ) );
+        output.writeCall( "myFunction", arguments );
+        output.decIndent();
+      } );
 
-      assertFileContent( file,
-                         "    myFunction(\n" +
-                         "        name = [\n" +
-                         "            1,\n" +
-                         "            2,\n" +
-                         "            3,\n" +
-                         "        ],\n" +
-                         "    )\n" );
-    } );
+    assertFileContent( file,
+                       "    myFunction(\n" +
+                       "        name = [\n" +
+                       "            1,\n" +
+                       "            2,\n" +
+                       "            3,\n" +
+                       "        ],\n" +
+                       "    )\n" );
   }
 
   @Test
   public void writeCall_multiArg()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file =
-        writeFileContent( output -> {
-          output.incIndent();
-          final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-          arguments.put( "name", "'com_biz__myartifact'" );
-          arguments.put( "actual", "':com_biz__myartifact_42'" );
-          arguments.put( "visibility", Collections.singletonList( "'//visibility:public'" ) );
-          output.writeCall( "myFunction", arguments );
-          output.decIndent();
-        } );
+    final Path file =
+      writeFileContent( output -> {
+        output.incIndent();
+        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        arguments.put( "name", "'com_biz__myartifact'" );
+        arguments.put( "actual", "':com_biz__myartifact_42'" );
+        arguments.put( "visibility", Collections.singletonList( "'//visibility:public'" ) );
+        output.writeCall( "myFunction", arguments );
+        output.decIndent();
+      } );
 
-      assertFileContent( file,
-                         "    myFunction(\n" +
-                         "        name = 'com_biz__myartifact',\n" +
-                         "        actual = ':com_biz__myartifact_42',\n" +
-                         "        visibility = ['//visibility:public'],\n" +
-                         "    )\n" );
-    } );
+    assertFileContent( file,
+                       "    myFunction(\n" +
+                       "        name = 'com_biz__myartifact',\n" +
+                       "        actual = ':com_biz__myartifact_42',\n" +
+                       "        visibility = ['//visibility:public'],\n" +
+                       "    )\n" );
   }
 
   @Test
   public void writeMultilineComment()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file = writeFileContent( output -> output.writeMultilineComment( o -> o.write( "Some comment" ) ) );
-      assertFileContent( file, "\"\"\"\n" +
-                               "    Some comment\n" +
-                               "\"\"\"\n" );
-    } );
+    final Path file = writeFileContent( output -> output.writeMultilineComment( o -> o.write( "Some comment" ) ) );
+    assertFileContent( file, "\"\"\"\n" +
+                             "    Some comment\n" +
+                             "\"\"\"\n" );
   }
 
   @Test
   public void writeIfCondition()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file =
-        writeFileContent( output -> output.writeIfCondition( "not someCondition", o -> o.write( "someCall()" ) ) );
+    final Path file =
+      writeFileContent( output -> output.writeIfCondition( "not someCondition", o -> o.write( "someCall()" ) ) );
 
-      assertFileContent( file, "if not someCondition:\n    someCall()\n" );
-    } );
+    assertFileContent( file, "if not someCondition:\n    someCall()\n" );
   }
 
   @Test
   public void writeMacro_noArgs()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file =
-        writeFileContent( output -> {
-          output.incIndent();
-          output.writeMacroStart( "myMacro", Collections.emptyList() );
-          output.decIndent();
-        } );
+    final Path file =
+      writeFileContent( output -> {
+        output.incIndent();
+        output.writeMacroStart( "myMacro", Collections.emptyList() );
+        output.decIndent();
+      } );
 
-      assertFileContent( file, "    def myMacro():\n" );
-    } );
+    assertFileContent( file, "    def myMacro():\n" );
   }
 
   @Test
   public void writeMacro()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file =
-        writeFileContent( output -> output.writeMacro( "myMacro", Collections.singletonList( "foo" ), o -> {
-          o.write( "bar()" );
-          o.write( "baz()" );
-        } ) );
+    final Path file =
+      writeFileContent( output -> output.writeMacro( "myMacro", Collections.singletonList( "foo" ), o -> {
+        o.write( "bar()" );
+        o.write( "baz()" );
+      } ) );
 
-      assertFileContent( file, "def myMacro(foo):\n" +
-                               "    bar()\n" +
-                               "    baz()\n" );
-    } );
+    assertFileContent( file, "def myMacro(foo):\n" +
+                             "    bar()\n" +
+                             "    baz()\n" );
   }
 
   @Test
   public void writeMacro_singleArg()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file =
-        writeFileContent( output -> {
-          output.incIndent();
-          output.writeMacroStart( "myMacro", Collections.singletonList( "foo" ) );
-          output.decIndent();
-        } );
+    final Path file =
+      writeFileContent( output -> {
+        output.incIndent();
+        output.writeMacroStart( "myMacro", Collections.singletonList( "foo" ) );
+        output.decIndent();
+      } );
 
-      assertFileContent( file, "    def myMacro(foo):\n" );
-    } );
+    assertFileContent( file, "    def myMacro(foo):\n" );
   }
 
   @Test
   public void writeMacro_multipleArgs()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path file =
-        writeFileContent( output -> {
-          output.incIndent();
-          output.writeMacroStart( "myMacro", Arrays.asList( "foo", "bar = True", "baz = \"yes\"" ) );
-          output.decIndent();
-        } );
+    final Path file =
+      writeFileContent( output -> {
+        output.incIndent();
+        output.writeMacroStart( "myMacro", Arrays.asList( "foo", "bar = True", "baz = \"yes\"" ) );
+        output.decIndent();
+      } );
 
-      assertFileContent( file,
-                         "    def myMacro(\n" +
-                         "            foo,\n" +
-                         "            bar = True,\n" +
-                         "            baz = \"yes\"):\n" );
-    } );
+    assertFileContent( file,
+                       "    def myMacro(\n" +
+                       "            foo,\n" +
+                       "            bar = True,\n" +
+                       "            baz = \"yes\"):\n" );
   }
 
   @FunctionalInterface

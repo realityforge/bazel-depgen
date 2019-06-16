@@ -51,39 +51,37 @@ public class OptionsModelTest
   public void parse()
     throws Exception
   {
-    inIsolatedDirectory( () -> {
-      final Path dir = FileUtil.createLocalTempDir();
-      final Path thirdpartyDir = dir.resolve( "thirdparty" );
+    final Path dir = FileUtil.createLocalTempDir();
+    final Path thirdpartyDir = dir.resolve( "thirdparty" );
 
-      final OptionsConfig source = new OptionsConfig();
-      source.setWorkspaceDirectory( ".." );
-      source.setExtensionFile( "dependencies.bzl" );
-      source.setWorkspaceMacroName( "gen_myprj_dependency_rules" );
-      source.setTargetMacroName( "gen_myprj_targets" );
-      source.setNamePrefix( "myprj_" );
-      source.setAliasStrategy( AliasStrategy.ArtifactId );
-      source.setDefaultNature( Nature.J2cl );
-      source.setFailOnMissingPom( false );
-      source.setFailOnInvalidPom( false );
-      source.setEmitDependencyGraph( false );
-      source.setIncludeSource( false );
-      source.setExportDeps( true );
-      source.setSupportDependencyOmit( true );
+    final OptionsConfig source = new OptionsConfig();
+    source.setWorkspaceDirectory( ".." );
+    source.setExtensionFile( "dependencies.bzl" );
+    source.setWorkspaceMacroName( "gen_myprj_dependency_rules" );
+    source.setTargetMacroName( "gen_myprj_targets" );
+    source.setNamePrefix( "myprj_" );
+    source.setAliasStrategy( AliasStrategy.ArtifactId );
+    source.setDefaultNature( Nature.J2cl );
+    source.setFailOnMissingPom( false );
+    source.setFailOnInvalidPom( false );
+    source.setEmitDependencyGraph( false );
+    source.setIncludeSource( false );
+    source.setExportDeps( true );
+    source.setSupportDependencyOmit( true );
 
-      final OptionsModel model = OptionsModel.parse( thirdpartyDir, source );
-      assertEquals( model.getSource(), source );
-      assertEquals( model.getWorkspaceDirectory(), dir.normalize() );
-      assertEquals( model.getExtensionFile(), dir.resolve( "dependencies.bzl" ) );
-      assertEquals( model.getWorkspaceMacroName(), "gen_myprj_dependency_rules" );
-      assertEquals( model.getTargetMacroName(), "gen_myprj_targets" );
-      assertEquals( model.getNamePrefix(), "myprj_" );
-      assertEquals( model.getAliasStrategy(), AliasStrategy.ArtifactId );
-      assertEquals( model.getDefaultNature(), Nature.J2cl );
-      assertFalse( model.failOnMissingPom() );
-      assertFalse( model.failOnInvalidPom() );
-      assertFalse( model.includeSource() );
-      assertTrue( model.exportDeps() );
-      assertTrue( model.supportDependencyOmit() );
-    } );
+    final OptionsModel model = OptionsModel.parse( thirdpartyDir, source );
+    assertEquals( model.getSource(), source );
+    assertEquals( model.getWorkspaceDirectory(), dir.normalize() );
+    assertEquals( model.getExtensionFile(), dir.resolve( "dependencies.bzl" ) );
+    assertEquals( model.getWorkspaceMacroName(), "gen_myprj_dependency_rules" );
+    assertEquals( model.getTargetMacroName(), "gen_myprj_targets" );
+    assertEquals( model.getNamePrefix(), "myprj_" );
+    assertEquals( model.getAliasStrategy(), AliasStrategy.ArtifactId );
+    assertEquals( model.getDefaultNature(), Nature.J2cl );
+    assertFalse( model.failOnMissingPom() );
+    assertFalse( model.failOnInvalidPom() );
+    assertFalse( model.includeSource() );
+    assertTrue( model.exportDeps() );
+    assertTrue( model.supportDependencyOmit() );
   }
 }

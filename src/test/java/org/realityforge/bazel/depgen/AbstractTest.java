@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen;
 
 import gir.Gir;
-import gir.Task;
 import gir.io.FileUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -28,10 +27,27 @@ import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.testng.Assert;
+import org.testng.IHookCallBack;
+import org.testng.IHookable;
+import org.testng.ITestResult;
 import static org.testng.Assert.*;
 
 public abstract class AbstractTest
+  implements IHookable
 {
+  @Override
+  public void run( final IHookCallBack callBack, final ITestResult testResult )
+  {
+    try
+    {
+      Gir.go( () -> FileUtil.inTempDir( () -> callBack.runTestMethod( testResult ) ) );
+    }
+    catch ( final Exception e )
+    {
+      assertNull( e );
+    }
+  }
+
   @Nonnull
   protected final ApplicationRecord loadApplicationRecord()
     throws Exception
@@ -125,12 +141,6 @@ public abstract class AbstractTest
     throws Exception
   {
     return ApplicationConfig.parse( getDefaultDependenciesFile() );
-  }
-
-  protected final void inIsolatedDirectory( @Nonnull final Task task )
-    throws Exception
-  {
-    Gir.go( () -> FileUtil.inTempDir( task ) );
   }
 
   private void writeBazelrc()
