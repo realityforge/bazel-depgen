@@ -1181,7 +1181,7 @@ public class MainTest
       writeDependencies( "artifacts:\n" +
                          "  - coord: org.realityforge.gir\n" );
 
-      final String output = runCommand( 5, "generate" );
+      final String output = runCommand( ExitCodes.ERROR_CONSTRUCTING_MODEL_CODE, "generate" );
       assertOutputContains( output,
                             "The 'coord' property on the dependency must specify 2-5 components separated by the ':' character. The 'coords' must be in one of the forms; 'group:id', 'group:id:version', 'group:id:type:version' or 'group:id:type:classifier:version'.\n" +
                             "--- Invalid Config ---\n" +
@@ -1200,7 +1200,7 @@ public class MainTest
       writeDependencies( "artifacts: 's\n" +
                          "  - group: org.realityforge.gir\n" );
 
-      final String output = runCommand( 3, "generate" );
+      final String output = runCommand( ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE, "generate" );
       assertOutputContains( output, "Error: Failed to read dependencies file " );
       assertOutputContains( output, "Cause: while scanning a quoted scalar" );
       assertOutputDoesNotContain( output, "\tat org.yaml.snakeyaml.Yaml.load(" );
@@ -1217,7 +1217,7 @@ public class MainTest
       writeDependencies( "artifacts: 's\n" +
                          "  - group: org.realityforge.gir\n" );
 
-      final String output = runCommand( 3, "--verbose", "generate" );
+      final String output = runCommand( ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE, "--verbose", "generate" );
       assertOutputContains( output, "Error: Failed to read dependencies file " );
       assertOutputContains( output, "Cause: while scanning a quoted scalar" );
       assertOutputContains( output, "found unexpected end of stream" );
@@ -1332,7 +1332,7 @@ public class MainTest
   private String runCommand( @Nonnull final String... args )
     throws Exception
   {
-    return runCommand( 0, args );
+    return runCommand( ExitCodes.SUCCESS_EXIT_CODE, args );
   }
 
   @Nonnull
