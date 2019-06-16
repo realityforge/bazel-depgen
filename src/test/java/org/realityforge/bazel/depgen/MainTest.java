@@ -136,7 +136,6 @@ public class MainTest
   public void processOptions_missingSpecifiedSettings()
     throws Exception
   {
-    // Need to declare repositories otherwise we never even try to load settings
     inIsolatedDirectory( () -> {
       writeWorkspace();
       // Need to declare repositories otherwise we never even try to load settings
@@ -1196,7 +1195,6 @@ public class MainTest
   {
     inIsolatedDirectory( () -> {
       writeWorkspace();
-      // Need to declare repositories otherwise we never even try to load settings
       writeDependencies( "artifacts: 's\n" +
                          "  - group: org.realityforge.gir\n" );
 
@@ -1213,7 +1211,6 @@ public class MainTest
   {
     inIsolatedDirectory( () -> {
       writeWorkspace();
-      // Need to declare repositories otherwise we never even try to load settings
       writeDependencies( "artifacts: 's\n" +
                          "  - group: org.realityforge.gir\n" );
 
