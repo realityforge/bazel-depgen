@@ -7,6 +7,11 @@ import javax.annotation.Nonnull;
 final class HashCommand
   extends Command
 {
+  HashCommand()
+  {
+    super( Main.HASH_COMMAND );
+  }
+
   int run( @Nonnull final Context context )
   {
     final String configSha256 = context.loadModel().getConfigSha256();

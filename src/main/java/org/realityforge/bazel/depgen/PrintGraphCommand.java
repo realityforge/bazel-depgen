@@ -8,6 +8,11 @@ import org.realityforge.bazel.depgen.record.ApplicationRecord;
 final class PrintGraphCommand
   extends Command
 {
+  PrintGraphCommand()
+  {
+    super( Main.PRINT_GRAPH_COMMAND );
+  }
+
   int run( @Nonnull final Context context )
     throws Exception
   {

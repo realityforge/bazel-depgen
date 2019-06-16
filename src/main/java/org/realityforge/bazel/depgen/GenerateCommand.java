@@ -8,6 +8,11 @@ import org.realityforge.bazel.depgen.util.StarlarkOutput;
 final class GenerateCommand
   extends Command
 {
+  GenerateCommand()
+  {
+    super( Main.GENERATE_COMMAND );
+  }
+
   int run( @Nonnull final Context context )
     throws Exception
   {
