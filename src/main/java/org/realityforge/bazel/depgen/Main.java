@@ -334,7 +334,8 @@ public class Main
   static boolean processOptions( @Nonnull final Environment environment, @Nonnull final String... args )
   {
     // Parse the arguments
-    final CLArgsParser parser = new CLArgsParser( args, OPTIONS );
+    final CLArgsParser parser =
+      new CLArgsParser( args, OPTIONS, lastOptionCode -> CLOption.TEXT_ARGUMENT == lastOptionCode );
 
     //Make sure that there was no errors parsing arguments
     final Logger logger = environment.logger();
@@ -434,6 +435,14 @@ public class Main
     {
       logger.log( Level.SEVERE, "Error: No command specified. Please specify a command." );
       return false;
+    }
+    final String[] unParsedArgs = parser.getUnParsedArgs();
+    if ( unParsedArgs.length > 0 )
+    {
+      if ( !environment.getCommand().processOptions( environment, unParsedArgs ) )
+      {
+        return false;
+      }
     }
 
     if ( !environment.hasDependenciesFile() )

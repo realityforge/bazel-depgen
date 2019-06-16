@@ -116,14 +116,14 @@ public class MainTest
   }
 
   @Test
-  public void processOptions_duplicateCommand()
+  public void processOptions_unknownArgumentTCommand()
     throws Exception
   {
     writeWorkspace();
     writeDependencies( "" );
 
     final String output = failToProcessOptions( "generate", "generate" );
-    assertOutputContains( output, "Error: Duplicate command specified: generate" );
+    assertOutputContains( output, "Error: Unknown arguments to generate command. Arguments: [generate]" );
   }
 
   @Test
