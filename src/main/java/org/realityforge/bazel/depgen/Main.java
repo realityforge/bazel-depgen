@@ -29,7 +29,6 @@ import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
 import org.realityforge.bazel.depgen.util.ArtifactUtil;
 import org.realityforge.bazel.depgen.util.BazelUtil;
-import org.realityforge.bazel.depgen.util.StarlarkOutput;
 import org.realityforge.bazel.depgen.util.YamlUtil;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
@@ -90,19 +89,20 @@ public class Main
 
     try
     {
+      final Command.Context context = new CommandContextImpl( environment );
       final String command = environment.getCommand();
       if ( PRINT_GRAPH_COMMAND.equals( command ) )
       {
-        printGraph( environment, loadRecord( environment ) );
+        return new PrintGraphCommand().run( context );
       }
       else if ( HASH_COMMAND.equals( command ) )
       {
-        hash( environment, loadModel( environment ) );
+        return new HashCommand().run( context );
       }
       else
       {
         assert GENERATE_COMMAND.equals( command );
-        generate( loadRecord( environment ) );
+        return new GenerateCommand().run( context );
       }
     }
     catch ( final InvalidModelException ime )
@@ -147,28 +147,6 @@ public class Main
     {
       environment.logger().log( Level.WARNING, t.toString(), t );
       return ExitCodes.ERROR_EXIT_CODE;
-    }
-
-    return ExitCodes.SUCCESS_EXIT_CODE;
-  }
-
-  static void hash( @Nonnull final Environment environment, @Nonnull final ApplicationModel model )
-  {
-    final String configSha256 = model.getConfigSha256();
-    final Logger logger = environment.logger();
-    if ( logger.isLoggable( Level.WARNING ) )
-    {
-      logger.log( Level.WARNING, "Content SHA256: " + configSha256 );
-    }
-  }
-
-  static void printGraph( @Nonnull final Environment environment, @Nonnull final ApplicationRecord record )
-  {
-    final Logger logger = environment.logger();
-    if ( logger.isLoggable( Level.WARNING ) )
-    {
-      logger.log( Level.WARNING, "Dependency Graph:" );
-      record.getNode().accept( new DependencyGraphEmitter( record.getSource(), l -> logger.log( Level.WARNING, l ) ) );
     }
   }
 
@@ -316,34 +294,6 @@ public class Main
     }
 
     return result.getRoot();
-  }
-
-  static void generate( @Nonnull final ApplicationRecord record )
-    throws Exception
-  {
-    final Path extensionFile = record.getSource().getOptions().getExtensionFile();
-    final Path dir = extensionFile.getParent();
-    final Path buildfile = dir.resolve( "BUILD.bazel" );
-
-    if ( !dir.toFile().exists() && !dir.toFile().mkdirs() )
-    {
-      throw new IllegalStateException( "Failed to create directory " + dir.toFile() );
-    }
-
-    // The tool will only emit the `BUILD.bazel` file if none exist. If one exists then
-    // the tool assumes the user has supplied it or it is an artifact from a previous run.
-    if ( !buildfile.toFile().exists() )
-    {
-      try ( final StarlarkOutput output = new StarlarkOutput( buildfile ) )
-      {
-        record.writeDefaultBuild( output );
-      }
-    }
-
-    try ( final StarlarkOutput output = new StarlarkOutput( extensionFile ) )
-    {
-      record.writeBazelExtension( output );
-    }
   }
 
   @Nonnull
