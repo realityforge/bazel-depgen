@@ -62,9 +62,9 @@ final class Environment
     return _dependenciesFile;
   }
 
-  void setDependenciesFile( @Nonnull final Path dependenciesFile )
+  void setDependenciesFile( @Nullable final Path dependenciesFile )
   {
-    _dependenciesFile = Objects.requireNonNull( dependenciesFile );
+    _dependenciesFile = dependenciesFile;
   }
 
   boolean hasSettingsFile()
@@ -79,9 +79,9 @@ final class Environment
     return _settingsFile;
   }
 
-  void setSettingsFile( @Nonnull final Path settingsFile )
+  void setSettingsFile( @Nullable final Path settingsFile )
   {
-    _settingsFile = Objects.requireNonNull( settingsFile );
+    _settingsFile = settingsFile;
   }
 
   boolean hasCacheDir()

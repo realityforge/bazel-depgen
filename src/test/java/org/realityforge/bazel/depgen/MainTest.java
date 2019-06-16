@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen;
 
 import gir.io.FileUtil;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -74,7 +73,12 @@ public class MainTest
     inIsolatedDirectory( () -> {
       writeWorkspace();
 
-      final String output = failToProcessOptions( "generate" );
+      final TestHandler handler = new TestHandler();
+      final Environment environment = newEnvironment( createLogger( handler ) );
+      environment.setDependenciesFile( null );
+      environment.setSettingsFile( null );
+      assertFalse( Main.processOptions( environment, "generate" ) );
+      final String output = handler.toString();
       assertOutputContains( output, "Error: Default dependencies file does not exist: " );
     } );
   }
@@ -191,6 +195,8 @@ public class MainTest
 
       final TestHandler handler = new TestHandler();
       final Environment environment = newEnvironment( createLogger( handler ) );
+      environment.setDependenciesFile( null );
+      environment.setSettingsFile( null );
       environment.setCacheDir( null );
       assertTrue( Main.processOptions( environment, "generate" ) );
       assertTrue( environment.hasCommand() );
@@ -388,11 +394,7 @@ public class MainTest
       final Environment environment = newEnvironment();
       environment.markResetCachedMetadata();
 
-      final Path file = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
-      environment.setDependenciesFile( file );
-
       final ApplicationModel model = Main.loadModel( environment );
-      assertEquals( model.getConfigLocation(), file );
       assertTrue( model.shouldResetCachedMetadata() );
       final List<ArtifactModel> artifacts = model.getArtifacts();
       assertNotNull( artifacts );
@@ -410,15 +412,7 @@ public class MainTest
       writeWorkspace();
       writeDependencies( dir, "" );
 
-      final Environment environment = newEnvironment();
-
-      final Path file = FileUtil.getCurrentDirectory().resolve( "dependencies.yml" );
-      environment.setDependenciesFile( file );
-      environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
-      environment.setCacheDir( FileUtil.createLocalTempDir() );
-
-      final ApplicationRecord record = Main.loadRecord( environment );
-      assertEquals( record.getSource().getConfigLocation(), file );
+      final ApplicationRecord record = Main.loadRecord( newEnvironment() );
       assertEquals( record.getArtifacts().size(), 0 );
       assertEquals( record.getAuthenticationContexts().size(), 0 );
     } );
@@ -437,13 +431,7 @@ public class MainTest
                          "  - coord: com.example:myapp:1.0\n" );
       deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-      final Environment environment = newEnvironment();
-
-      environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
-      environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
-      environment.setCacheDir( FileUtil.createLocalTempDir() );
-
-      final ApplicationRecord record = Main.loadRecord( environment );
+      final ApplicationRecord record = Main.loadRecord( newEnvironment() );
       assertEquals( record.getArtifacts().size(), 1 );
     } );
   }
@@ -460,10 +448,8 @@ public class MainTest
 
       final Environment environment = newEnvironment();
 
-      environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
       final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
       environment.setSettingsFile( settingsFile );
-      environment.setCacheDir( FileUtil.createLocalTempDir() );
 
       FileUtil.write( settingsFile.toString(), "JHSGDJHDS()*&(&Y*&" );
 
@@ -489,7 +475,6 @@ public class MainTest
 
       final Environment environment = newEnvironment();
 
-      environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
       final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
       environment.setSettingsFile( settingsFile );
       FileUtil.write( settingsFile.toString(),
@@ -502,8 +487,6 @@ public class MainTest
                       "    </server>\n" +
                       "  </servers>\n" +
                       "</settings>\n" );
-
-      environment.setCacheDir( FileUtil.createLocalTempDir() );
 
       final ApplicationRecord record = Main.loadRecord( environment );
       assertEquals( record.getAuthenticationContexts().size(), 1 );
@@ -526,8 +509,6 @@ public class MainTest
       final TestHandler handler = new TestHandler();
       final Environment environment = newEnvironment( createLogger( handler ) );
 
-      environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
-      environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
       final Path cacheDir = FileUtil.createLocalTempDir();
       environment.setCacheDir( cacheDir );
 
@@ -556,15 +537,9 @@ public class MainTest
       deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:myapp:1.0" );
 
       final TestHandler handler = new TestHandler();
-      final Environment environment = newEnvironment( createLogger( handler ) );
-
-      environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
-      environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
-      final Path cacheDir = FileUtil.createLocalTempDir();
-      environment.setCacheDir( cacheDir );
-
       final TerminalStateException exception =
-        expectThrows( TerminalStateException.class, () -> Main.loadRecord( environment ) );
+        expectThrows( TerminalStateException.class,
+                      () -> Main.loadRecord( newEnvironment( createLogger( handler ) ) ) );
       assertNull( exception.getMessage() );
       assertEquals( exception.getExitCode(), ExitCodes.ERROR_CYCLES_PRESENT_CODE );
       assertOutputContains( handler.toString(),
@@ -589,8 +564,6 @@ public class MainTest
       final TestHandler handler = new TestHandler();
       final Environment environment = newEnvironment( createLogger( handler ) );
 
-      environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
-      environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
       final Path cacheDir = FileUtil.createLocalTempDir();
       environment.setCacheDir( cacheDir );
       final TerminalStateException exception;

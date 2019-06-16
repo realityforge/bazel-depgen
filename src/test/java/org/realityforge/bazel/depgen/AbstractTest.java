@@ -74,6 +74,8 @@ public abstract class AbstractTest
     throws IOException
   {
     final Environment environment = new Environment( null, FileUtil.getCurrentDirectory(), logger );
+    environment.setDependenciesFile( FileUtil.getCurrentDirectory().resolve( "dependencies.yml" ) );
+    environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
     environment.setCacheDir( FileUtil.createLocalTempDir() );
     return environment;
   }
