@@ -1055,8 +1055,9 @@ public class MainTest
     throws Exception
   {
     final TestHandler handler = new TestHandler();
-    handler.setLevel( Level.ALL );
-    final int exitCode = Main.run( newEnvironment( handler ), args );
+    final Environment environment = newEnvironment( handler );
+    environment.logger().setLevel( Level.INFO );
+    final int exitCode = Main.run( environment, args );
     assertEquals( expectedExitCode, exitCode );
     return handler.toString();
   }

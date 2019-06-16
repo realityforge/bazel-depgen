@@ -76,12 +76,12 @@ public class Main
   {
     final Environment environment =
       new Environment( System.console(), Paths.get( "" ).toAbsolutePath(), Logger.getGlobal() );
+    setupLogger( environment );
     System.exit( run( environment, args ) );
   }
 
   static int run( @Nonnull final Environment environment, @Nonnull final String[] args )
   {
-    setupLogger( environment );
     if ( !processOptions( environment, args ) )
     {
       return ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE;
