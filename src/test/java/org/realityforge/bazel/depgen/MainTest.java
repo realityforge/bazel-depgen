@@ -1329,19 +1329,19 @@ public class MainTest
   }
 
   @Nonnull
-  private String runCommand( @Nonnull final String... additionalArgs )
+  private String runCommand( @Nonnull final String... args )
     throws Exception
   {
-    return runCommand( 0, additionalArgs );
+    return runCommand( 0, args );
   }
 
   @Nonnull
-  private String runCommand( final int expectedExitCode, @Nonnull final String... additionalArgs )
+  private String runCommand( final int expectedExitCode, @Nonnull final String... args )
     throws Exception
   {
     final TestHandler handler = new TestHandler();
     handler.setLevel( Level.ALL );
-    final int exitCode = Main.run( newEnvironment( createLogger( handler ) ), additionalArgs );
+    final int exitCode = Main.run( newEnvironment( createLogger( handler ) ), args );
     assertEquals( expectedExitCode, exitCode );
     return handler.toString();
   }
