@@ -136,7 +136,7 @@ public class Main
             logger.log( Level.INFO, "Cause: " + cause.toString() );
             if ( logger.isLoggable( Level.FINE ) )
             {
-              cause.printStackTrace();
+              logger.log( Level.FINE, null, cause );
             }
           }
         }
