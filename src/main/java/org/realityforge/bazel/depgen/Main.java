@@ -65,9 +65,9 @@ public class Main
       Options.CACHE_DESCRIPTOR,
       Options.RESET_CACHED_METADATA_DESCRIPTOR
     };
-  private static final String GENERATE_COMMAND = "generate";
-  private static final String PRINT_GRAPH_COMMAND = "print-graph";
-  private static final String HASH_COMMAND = "hash";
+  static final String GENERATE_COMMAND = "generate";
+  static final String PRINT_GRAPH_COMMAND = "print-graph";
+  static final String HASH_COMMAND = "hash";
   private static final Map<String, Supplier<Command>> COMMAND_MAP =
     Collections.unmodifiableMap( new HashMap<String, Supplier<Command>>()
     {
