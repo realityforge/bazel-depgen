@@ -4,6 +4,13 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
+* Extract constant for `dependencies.yml` and make test always set it.
+
+* Default the dependencies file value for `Environment` in tests and only override when required.
+
+* Refactor tests so that by default they don't call out to bazel except when needed. This should speed
+  up tests. 
+
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
   directory to some central place (i.e. `~/.depgen/repository`)
 
