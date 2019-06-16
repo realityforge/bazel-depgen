@@ -21,7 +21,8 @@ complete as there is too much un-said.
 
   `init --no-create-workspace`
 
-* Add `info` command that displays all the parameters passed into tool. This includes the
+* Add `info` command that displays all the parameters passed into tool. This will replace printBanner
+  methods responsibilities. This includes the
   - dependency file
   - settings file
   - cache directory
