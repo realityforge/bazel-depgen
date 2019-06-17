@@ -12,6 +12,7 @@ final class ExitCodes
   static final int ERROR_CYCLES_PRESENT_CODE = 7;
   static final int ERROR_COLLECTING_DEPENDENCIES_CODE = 8;
   static final int ERROR_INVALID_DEFAULT_CACHE_DIR_CODE = 9;
+  static final int ERROR_BAD_SHA256_CONFIG_CODE = 10;
 
   private ExitCodes()
   {

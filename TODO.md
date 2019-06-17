@@ -39,12 +39,9 @@ complete as there is too much un-said.
 
   `remove [2-part coord] version`
 
-* Change `hash` command so that it checks an optionally supplied hash matches actual hash. If it does not then
-  the command exits with a non-zero exit code. Generate a target that verifies that the actual hash matches the
-  hash of the `dependencies.yml` that was used to generate the extension. The target is a dependency of the
-  `http_file` (if possible) or the leaf targets so that it is only run if a dependency requires it.
-
-  `hash [sha256?]`
+* Generate a target that verifies that the actual hash matches the hash of the `dependencies.yml` that was
+  used to generate the extension. The target is a dependency of the `http_file` (if possible) or the leaf targets
+  so that it is only run if a dependency requires it.
 
 * Consider converting to commandline tool named `bzt`
 

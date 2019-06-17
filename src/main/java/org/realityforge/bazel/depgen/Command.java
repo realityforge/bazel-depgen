@@ -23,11 +23,17 @@ abstract class Command
   }
 
   @Nonnull
-  private final String _option;
+  private final String _name;
 
-  Command( @Nonnull final String option )
+  Command( @Nonnull final String name )
   {
-    _option = Objects.requireNonNull( option );
+    _name = Objects.requireNonNull( name );
+  }
+
+  @Nonnull
+  String getName()
+  {
+    return _name;
   }
 
   boolean processOptions( @Nonnull final Environment environment, @Nonnull final String[] args )
@@ -35,7 +41,7 @@ abstract class Command
     if ( args.length > 0 )
     {
       environment.logger()
-        .log( Level.SEVERE, "Error: Unknown arguments to " + _option + " command. Arguments: " + Arrays.asList( args ) );
+        .log( Level.SEVERE, "Error: Unknown arguments to " + _name + " command. Arguments: " + Arrays.asList( args ) );
       return false;
     }
     else
