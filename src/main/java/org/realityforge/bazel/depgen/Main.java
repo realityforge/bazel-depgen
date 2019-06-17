@@ -44,6 +44,10 @@ public class Main
   private static final int HELP_OPT = 'h';
   private static final int QUIET_OPT = 'q';
   private static final int VERBOSE_OPT = 'v';
+  private static final int RESET_CACHED_METADATA_OPT = 1;
+  private static final int CACHE_DIR_OPT = 'r';
+  private static final int SETTINGS_FILE_OPT = 's';
+  private static final int DEPENDENCIES_FILE_OPT = 'd';
   private static final CLOptionDescriptor[] OPTIONS = new CLOptionDescriptor[]
     {
       new CLOptionDescriptor( "help",
@@ -60,10 +64,25 @@ public class Main
                               VERBOSE_OPT,
                               "Verbose output of differences.",
                               new int[]{ QUIET_OPT } ),
-      Options.DEPENDENCIES_DESCRIPTOR,
-      Options.SETTINGS_DESCRIPTOR,
-      Options.CACHE_DESCRIPTOR,
-      Options.RESET_CACHED_METADATA_DESCRIPTOR
+      new CLOptionDescriptor( "dependencies-file",
+                              CLOptionDescriptor.ARGUMENT_REQUIRED,
+                              DEPENDENCIES_FILE_OPT,
+                              "The path to the yaml file containing the dependencies. Defaults to '" +
+                              ApplicationConfig.FILENAME + "' in the workspace directory." ),
+      new CLOptionDescriptor( "settings-file",
+                              CLOptionDescriptor.ARGUMENT_REQUIRED,
+                              SETTINGS_FILE_OPT,
+                              "The path to the settings.xml used by Maven to extract repository credentials. " +
+                              "Defaults to '~/.m2/settings.xml'." ),
+      new CLOptionDescriptor( "cache-directory",
+                              CLOptionDescriptor.ARGUMENT_REQUIRED,
+                              CACHE_DIR_OPT,
+                              "The path to the directory in which to cache downloads from remote " +
+                              "repositories. Defaults to \"$(bazel info output_base)/.depgen-cache\"." ),
+      new CLOptionDescriptor( "reset-cached-metadata",
+                              CLOptionDescriptor.ARGUMENT_DISALLOWED,
+                              RESET_CACHED_METADATA_OPT,
+                              "Recalculate metadata about an artifact." )
     };
   static final String GENERATE_COMMAND = "generate";
   static final String PRINT_GRAPH_COMMAND = "print-graph";
@@ -365,7 +384,7 @@ public class Main
           environment.setCommand( COMMAND_MAP.get( command ).get() );
           break;
         }
-        case Options.DEPENDENCIES_FILE_OPT:
+        case DEPENDENCIES_FILE_OPT:
         {
           final String argument = option.getArgument();
           final Path dependenciesFile = environment.currentDirectory().resolve( argument ).toAbsolutePath().normalize();
@@ -378,7 +397,7 @@ public class Main
           environment.setDependenciesFile( dependenciesFile );
           break;
         }
-        case Options.SETTINGS_FILE_OPT:
+        case SETTINGS_FILE_OPT:
         {
           final String argument = option.getArgument();
           final Path settingsFile = environment.currentDirectory().resolve( argument ).toAbsolutePath().normalize();
@@ -392,7 +411,7 @@ public class Main
           break;
         }
 
-        case Options.CACHE_DIR_OPT:
+        case CACHE_DIR_OPT:
         {
           final String argument = option.getArgument();
           final Path cacheDir = environment.currentDirectory().resolve( argument ).toAbsolutePath().normalize();
@@ -407,7 +426,7 @@ public class Main
           environment.setCacheDir( cacheDir );
           break;
         }
-        case Options.RESET_CACHED_METADATA_OPT:
+        case RESET_CACHED_METADATA_OPT:
         {
           environment.markResetCachedMetadata();
           break;
