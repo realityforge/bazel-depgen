@@ -17,16 +17,6 @@ complete as there is too much un-said.
 
   `init --no-create-workspace`
 
-* Add `info` command that displays all the parameters passed into tool. This will replace printBanner
-  methods responsibilities. This includes the
-  - dependency file
-  - settings file
-  - cache directory
-  - reset-cached-metadata flag
-  - bazel's repository cache directory
-
-  `init [info key]`
-
 * Add `add` command that adds a dependency.
 
   `add [coord] --alias foo --nature java --nature plugin --include-optional --include-source --export-deps --generates-api --excludes com.example:base --excludes com.example:base --visibility //blah  --visibility //blee --j2cl-suppress blah`

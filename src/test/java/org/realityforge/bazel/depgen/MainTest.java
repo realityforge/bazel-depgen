@@ -191,7 +191,6 @@ public class MainTest
                     .toAbsolutePath()
                     .normalize() );
     assertFalse( environment.hasCacheDir() );
-    assertOutputContains( handler.toString(), "Bazel DepGen Starting..." );
   }
 
   @Test
@@ -553,51 +552,6 @@ public class MainTest
     assertEquals( logger.getHandlers().length, 1 );
     assertEquals( logger.getLevel(), Level.INFO );
     assertFalse( logger.getUseParentHandlers() );
-  }
-
-  @Test
-  public void printBanner_cacheExplicitlySpecified()
-    throws Exception
-  {
-    writeWorkspace();
-    writeDependencies( "" );
-
-    final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( handler );
-    final Path dependenciesFile = getDefaultDependenciesFile();
-    environment.setDependenciesFile( dependenciesFile );
-    final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
-    environment.setSettingsFile( settingsFile );
-    final Path cacheDir = FileUtil.getCurrentDirectory().resolve( ".depgen-cache" );
-    environment.setCacheDir( cacheDir );
-    Main.printBanner( environment );
-    final String output = handler.toString();
-    assertOutputContains( output, "Bazel DepGen Starting...\n" );
-    assertOutputContains( output, "\n  Dependencies file: " + dependenciesFile );
-    assertOutputContains( output, "\n  Settings file: " + settingsFile );
-    assertOutputContains( output, "\n  Cache directory: " + cacheDir );
-  }
-
-  @Test
-  public void printBanner()
-    throws Exception
-  {
-    writeWorkspace();
-    writeDependencies( "" );
-
-    final TestHandler handler = new TestHandler();
-    final Environment environment = newEnvironment( handler );
-    final Path dependenciesFile = getDefaultDependenciesFile();
-    environment.setDependenciesFile( dependenciesFile );
-    final Path settingsFile = FileUtil.getCurrentDirectory().resolve( "settings.xml" );
-    environment.setSettingsFile( settingsFile );
-    environment.setCacheDir( null );
-    Main.printBanner( environment );
-    final String output = handler.toString();
-    assertOutputContains( output, "Bazel DepGen Starting...\n" );
-    assertOutputContains( output, "\n  Dependencies file: " + dependenciesFile );
-    assertOutputContains( output, "\n  Settings file: " + settingsFile );
-    assertOutputDoesNotContain( output, "\n  Cache directory: " );
   }
 
   @Test

@@ -36,7 +36,7 @@ abstract class Command
     return _name;
   }
 
-  boolean processOptions( @Nonnull final Environment environment, @Nonnull final String[] args )
+  boolean processOptions( @Nonnull final Environment environment, @Nonnull final String... args )
   {
     if ( args.length > 0 )
     {

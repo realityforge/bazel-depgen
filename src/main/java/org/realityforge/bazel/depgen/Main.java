@@ -87,6 +87,7 @@ public class Main
   static final String GENERATE_COMMAND = "generate";
   static final String PRINT_GRAPH_COMMAND = "print-graph";
   static final String HASH_COMMAND = "hash";
+  static final String INFO_COMMAND = "info";
   private static final Map<String, Supplier<Command>> COMMAND_MAP =
     Collections.unmodifiableMap( new HashMap<String, Supplier<Command>>()
     {
@@ -94,6 +95,7 @@ public class Main
         put( GENERATE_COMMAND, GenerateCommand::new );
         put( PRINT_GRAPH_COMMAND, PrintGraphCommand::new );
         put( HASH_COMMAND, HashCommand::new );
+        put( INFO_COMMAND, InfoCommand::new );
       }
     } );
   private static final Set<String> VALID_COMMANDS = Collections.unmodifiableSet( COMMAND_MAP.keySet() );
@@ -484,24 +486,7 @@ public class Main
       environment.setSettingsFile( settingsFile );
     }
 
-    printBanner( environment );
-
     return true;
-  }
-
-  static void printBanner( @Nonnull final Environment environment )
-  {
-    final Logger logger = environment.logger();
-    if ( logger.isLoggable( Level.FINE ) )
-    {
-      logger.log( Level.FINE, "Bazel DepGen Starting..." );
-      logger.log( Level.FINE, "  Dependencies file: " + environment.getDependenciesFile() );
-      logger.log( Level.FINE, "  Settings file: " + environment.getSettingsFile() );
-      if ( environment.hasCacheDir() )
-      {
-        logger.log( Level.FINE, "  Cache directory: " + environment.getCacheDir() );
-      }
-    }
   }
 
   /**
@@ -516,6 +501,7 @@ public class Main
     logger.info( "\t\t" + PRINT_GRAPH_COMMAND + ": Compute and print the dependency graph " +
                  "for the dependency configuration." );
     logger.info( "\t\t" + HASH_COMMAND + ": Generate a hash of the content of the dependency configuration." );
+    logger.info( "\t\t" + INFO_COMMAND + ": Print runtime info about the tool." );
     logger.info( "\tOptions:" );
     final String[] options =
       CLUtil.describeOptions( OPTIONS ).toString().split( System.getProperty( "line.separator" ) );
