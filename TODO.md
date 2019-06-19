@@ -4,6 +4,8 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
+* Write hash as constant in output file in `ApplicationRecord` but only if `verifySha256` config option is enabled.
+
 * Refactor tests so that by default they don't call out to bazel except when needed. This should speed
   up tests. 
 
