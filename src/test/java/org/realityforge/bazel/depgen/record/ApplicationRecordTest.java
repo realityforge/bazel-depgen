@@ -2288,6 +2288,9 @@ public class ApplicationRecordTest
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
                   "\n" +
+                  "# SHA256 of the configuration content that generated this file\n" +
+                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
+                  "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
                   "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
@@ -2381,6 +2384,9 @@ public class ApplicationRecordTest
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
                   "load(\"@com_google_j2cl//build_defs:rules.bzl\", \"j2cl_library\")\n" +
                   "\n" +
+                  "# SHA256 of the configuration content that generated this file\n" +
+                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256()  + "\"\n" +
+                  "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
                   "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
@@ -2464,6 +2470,9 @@ public class ApplicationRecordTest
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
                   "load(\"@com_google_j2cl//build_defs:rules.bzl\", \"j2cl_library\")\n" +
+                  "\n" +
+                  "# SHA256 of the configuration content that generated this file\n" +
+                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +

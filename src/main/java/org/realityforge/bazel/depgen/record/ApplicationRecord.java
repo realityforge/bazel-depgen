@@ -206,6 +206,13 @@ public final class ApplicationRecord
       output.newLine();
     }
 
+    if ( getSource().getOptions().verifyConfigSha256() )
+    {
+      output.write( "# SHA256 of the configuration content that generated this file" );
+      output.write( "_CONFIG_SHA256 = \"" + getSource().getConfigSha256() + "\"" );
+      output.newLine();
+    }
+
     writeWorkspaceMacro( output );
 
     output.newLine();

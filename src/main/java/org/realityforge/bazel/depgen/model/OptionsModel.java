@@ -150,4 +150,10 @@ public final class OptionsModel
     final Boolean flag = _source.getSupportDependencyOmit();
     return null == flag ? OptionsConfig.DEFAULT_SUPPORT_DEPENDENCY_OMIT : flag;
   }
+
+  public boolean verifyConfigSha256()
+  {
+    final Boolean flag = _source.getVerifyConfigSha256();
+    return null == flag ? OptionsConfig.DEFAULT_VERIFY_CONFIG_SHA256 : flag;
+  }
 }

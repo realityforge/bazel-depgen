@@ -29,6 +29,7 @@ public class GenerateCommandTest
                      "  - coord: com.example:myapp:1.0\n" );
 
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+    final ApplicationModel model = loadApplicationModel();
 
     final TestHandler handler = new TestHandler();
     final GenerateCommand command = new GenerateCommand();
@@ -57,6 +58,9 @@ public class GenerateCommandTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                  "\n" +
+                  "# SHA256 of the configuration content that generated this file\n" +
+                  "_CONFIG_SHA256 = \"" + model.getConfigSha256()  + "\"\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +

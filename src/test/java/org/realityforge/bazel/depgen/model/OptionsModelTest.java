@@ -33,6 +33,7 @@ public class OptionsModelTest
     assertTrue( model.includeSource() );
     assertFalse( model.exportDeps() );
     assertFalse( model.supportDependencyOmit() );
+    assertTrue( model.verifyConfigSha256() );
   }
 
   @Test
@@ -68,6 +69,7 @@ public class OptionsModelTest
     source.setIncludeSource( false );
     source.setExportDeps( true );
     source.setSupportDependencyOmit( true );
+    source.setVerifyConfigSha256( false );
 
     final OptionsModel model = OptionsModel.parse( thirdpartyDir, source );
     assertEquals( model.getSource(), source );
@@ -83,5 +85,6 @@ public class OptionsModelTest
     assertFalse( model.includeSource() );
     assertTrue( model.exportDeps() );
     assertTrue( model.supportDependencyOmit() );
+    assertFalse( model.verifyConfigSha256() );
   }
 }

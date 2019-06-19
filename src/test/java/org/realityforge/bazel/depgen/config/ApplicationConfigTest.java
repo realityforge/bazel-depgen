@@ -239,6 +239,7 @@ public class ApplicationConfigTest
                      "  failOnMissingPom: false\n" +
                      "  failOnInvalidPom: false\n" +
                      "  includeSource: false\n" +
+                     "  verifyConfigSha256: false\n" +
                      "  exportDeps: true\n" +
                      "  supportDependencyOmit: true\n" +
                      "  emitDependencyGraph: false\n" +
@@ -267,6 +268,7 @@ public class ApplicationConfigTest
     assertEquals( options.getIncludeSource(), Boolean.FALSE );
     assertEquals( options.getExportDeps(), Boolean.TRUE );
     assertEquals( options.getSupportDependencyOmit(), Boolean.TRUE );
+    assertEquals( options.getVerifyConfigSha256(), Boolean.FALSE );
   }
 
   @Test
@@ -293,6 +295,7 @@ public class ApplicationConfigTest
     assertNull( options.getIncludeSource() );
     assertNull( options.getExportDeps() );
     assertNull( options.getSupportDependencyOmit() );
+    assertNull( options.getVerifyConfigSha256() );
   }
 
   @Test

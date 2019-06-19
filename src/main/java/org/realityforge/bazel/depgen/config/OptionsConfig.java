@@ -18,6 +18,7 @@ public final class OptionsConfig
   public static final boolean DEFAULT_INCLUDE_SOURCE = true;
   public static final boolean DEFAULT_EXPORT_DEPS = false;
   public static final boolean DEFAULT_SUPPORT_DEPENDENCY_OMIT = false;
+  public static final boolean DEFAULT_VERIFY_CONFIG_SHA256 = true;
   public static final Nature DEFAULT_NATURE = Nature.Java;
   @Nullable
   private String workspaceDirectory;
@@ -45,6 +46,8 @@ public final class OptionsConfig
   private Boolean exportDeps;
   @Nullable
   private Boolean supportDependencyOmit;
+  @Nullable
+  private Boolean verifyConfigSha256;
 
   @Nullable
   public String getWorkspaceDirectory()
@@ -187,5 +190,16 @@ public final class OptionsConfig
   public void setSupportDependencyOmit( @Nonnull final Boolean supportDependencyOmit )
   {
     this.supportDependencyOmit = Objects.requireNonNull( supportDependencyOmit );
+  }
+
+  @Nullable
+  public Boolean getVerifyConfigSha256()
+  {
+    return verifyConfigSha256;
+  }
+
+  public void setVerifyConfigSha256( @Nonnull final Boolean verifyConfigSha256 )
+  {
+    this.verifyConfigSha256 = Objects.requireNonNull( verifyConfigSha256 );
   }
 }
