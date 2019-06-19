@@ -11,8 +11,8 @@ public class HashCommandTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     final TestHandler handler = new TestHandler();
     final HashCommand command = new HashCommand();
@@ -27,8 +27,8 @@ public class HashCommandTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     final TestHandler handler = new TestHandler();
     final HashCommand command = new HashCommand();
@@ -49,8 +49,8 @@ public class HashCommandTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     final TestHandler handler = new TestHandler();
     final HashCommand command = new HashCommand();
@@ -68,8 +68,8 @@ public class HashCommandTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     final TestHandler handler = new TestHandler();
     final HashCommand command = new HashCommand();
@@ -84,8 +84,8 @@ public class HashCommandTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     final TestHandler handler = new TestHandler();
     final HashCommand command = new HashCommand();

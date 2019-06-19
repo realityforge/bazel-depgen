@@ -100,14 +100,14 @@ public abstract class AbstractTest
     throws IOException
   {
     final Environment environment = new Environment( null, FileUtil.getCurrentDirectory(), logger );
-    environment.setDependenciesFile( getDefaultDependenciesFile() );
+    environment.setConfigFile( getDefaultConfigFile() );
     environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
     environment.setCacheDir( FileUtil.createLocalTempDir() );
     return environment;
   }
 
   @Nonnull
-  protected final Path getDefaultDependenciesFile()
+  protected final Path getDefaultConfigFile()
   {
     return FileUtil.getCurrentDirectory().resolve( ApplicationConfig.FILENAME );
   }
@@ -150,7 +150,7 @@ public abstract class AbstractTest
   protected final ApplicationConfig loadApplicationConfig()
     throws Exception
   {
-    return ApplicationConfig.parse( getDefaultDependenciesFile() );
+    return ApplicationConfig.parse( getDefaultConfigFile() );
   }
 
   private void writeBazelrc()
@@ -171,16 +171,16 @@ public abstract class AbstractTest
     FileUtil.write( "WORKSPACE", "" );
   }
 
-  protected final void writeDependencies( @Nonnull final Path dir, @Nonnull final String content )
+  protected final void writeConfigFile( @Nonnull final Path dir, @Nonnull final String content )
     throws IOException
   {
-    writeDependencies( "repositories:\n" +
-                       "  - name: local\n" +
-                       "    url: " + dir.toUri() + "\n" +
-                       content );
+    writeConfigFile( "repositories:\n" +
+                     "  - name: local\n" +
+                     "    url: " + dir.toUri() + "\n" +
+                     content );
   }
 
-  protected final void writeDependencies( @Nonnull final String content )
+  protected final void writeConfigFile( @Nonnull final String content )
     throws IOException
   {
     FileUtil.write( ApplicationConfig.FILENAME, content );

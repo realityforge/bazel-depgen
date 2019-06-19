@@ -353,12 +353,12 @@ public class ResolverTest
                                    true,
                                    true );
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "  - coord: com.example:mylib:2.5\n" +
-                       // This next dep is unversioned so it is skipped
-                       "  - coord: com.example:mydep\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "  - coord: com.example:mylib:2.5\n" +
+                     // This next dep is unversioned so it is skipped
+                     "  - coord: com.example:mydep\n" );
     final ApplicationModel model = loadApplicationModel();
 
     final AtomicBoolean hasFailed = new AtomicBoolean( false );
@@ -409,7 +409,7 @@ public class ResolverTest
                                    true,
                                    true );
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     final ApplicationModel model = loadApplicationModel();
 
     final AtomicBoolean hasFailed = new AtomicBoolean( false );
@@ -456,9 +456,9 @@ public class ResolverTest
     final Resolver resolver =
       ResolverUtil.createResolver( newEnvironment(), dir, Collections.emptyList(), true, true );
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    excludes: ['com.example:mylib']\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    excludes: ['com.example:mylib']\n" );
     final ApplicationModel model = loadApplicationModel();
 
     final AtomicBoolean hasFailed = new AtomicBoolean( false );

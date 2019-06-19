@@ -39,7 +39,7 @@ final class InfoCommand
 
   int run( @Nonnull final Context context )
   {
-    printInfo( context, "config-file", () -> context.environment().getDependenciesFile() );
+    printInfo( context, "config-file", () -> context.environment().getConfigFile() );
     printInfo( context, "settings-file", () -> context.environment().getSettingsFile() );
     printInfo( context, "cache-directory", () -> getCacheDir( context ) );
     printInfo( context, "reset-cached-metadata", () -> context.environment().shouldResetCachedMetadata() );
@@ -56,7 +56,7 @@ final class InfoCommand
     {
       return context.environment().getCacheDir().toString();
     }
-    else if ( Files.exists( context.environment().getDependenciesFile() ) )
+    else if ( Files.exists( context.environment().getConfigFile() ) )
     {
       try
       {

@@ -18,9 +18,9 @@ public class PrintGraphCommandTest
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     writeWorkspace();
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     final TestHandler handler = new TestHandler();
     handler.setLevel( Level.INFO );

@@ -109,7 +109,7 @@ public class DepgenMetadataTest
     final Path file = dir.resolve( DepgenMetadata.FILENAME );
     Files.write( file, "<default>.sha256=ABCD\n".getBytes( StandardCharsets.ISO_8859_1 ) );
 
-    writeDependencies( FileUtil.getCurrentDirectory(), "" );
+    writeConfigFile( FileUtil.getCurrentDirectory(), "" );
     final ApplicationModel model = ApplicationModel.parse( loadApplicationConfig(), true );
     final DepgenMetadata metadata = DepgenMetadata.fromDirectory( model, dir );
 
@@ -474,10 +474,10 @@ public class DepgenMetadataTest
 
     deployTempArtifactToLocalRepository( dir1, "com.example:myapp:1.0" );
 
-    writeDependencies( FileUtil.getCurrentDirectory(),
-                       "repositories:\n" +
-                       "  - name: dir1\n" +
-                       "    url: " + uri.toString() + "\n" );
+    writeConfigFile( FileUtil.getCurrentDirectory(),
+                     "repositories:\n" +
+                     "  - name: dir1\n" +
+                     "    url: " + uri.toString() + "\n" );
     final ApplicationModel model = ApplicationModel.parse( loadApplicationConfig(), true );
     final DepgenMetadata metadata = DepgenMetadata.fromDirectory( model, dir );
 
@@ -675,7 +675,7 @@ public class DepgenMetadataTest
   private DepgenMetadata loadMetadata( @Nonnull final Path dir, @Nonnull final String dependenciesContent )
     throws Exception
   {
-    writeDependencies( FileUtil.getCurrentDirectory(), dependenciesContent );
+    writeConfigFile( FileUtil.getCurrentDirectory(), dependenciesContent );
     return DepgenMetadata.fromDirectory( loadApplicationModel(), dir );
   }
 }

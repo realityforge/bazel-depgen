@@ -47,7 +47,7 @@ public class Main
   private static final int RESET_CACHED_METADATA_OPT = 1;
   private static final int CACHE_DIR_OPT = 'r';
   private static final int SETTINGS_FILE_OPT = 's';
-  private static final int DEPENDENCIES_FILE_OPT = 'd';
+  private static final int CONFIG_FILE_OPT = 'c';
   private static final CLOptionDescriptor[] OPTIONS = new CLOptionDescriptor[]
     {
       new CLOptionDescriptor( "help",
@@ -64,11 +64,11 @@ public class Main
                               VERBOSE_OPT,
                               "Verbose output of differences.",
                               new int[]{ QUIET_OPT } ),
-      new CLOptionDescriptor( "dependencies-file",
+      new CLOptionDescriptor( "config-file",
                               CLOptionDescriptor.ARGUMENT_REQUIRED,
-                              DEPENDENCIES_FILE_OPT,
-                              "The path to the yaml file containing the dependencies. Defaults to '" +
-                              ApplicationConfig.FILENAME + "' in the workspace directory." ),
+                              CONFIG_FILE_OPT,
+                              "The path to the yaml file containing the dependency configuration. " +
+                              "Defaults to '" + ApplicationConfig.FILENAME + "' in the workspace directory." ),
       new CLOptionDescriptor( "settings-file",
                               CLOptionDescriptor.ARGUMENT_REQUIRED,
                               SETTINGS_FILE_OPT,
@@ -167,7 +167,7 @@ public class Main
   @Nonnull
   static ApplicationModel loadModel( @Nonnull final Environment environment )
   {
-    return ApplicationModel.parse( loadDependenciesYaml( environment ), environment.shouldResetCachedMetadata() );
+    return ApplicationModel.parse( loadConfigFile( environment ), environment.shouldResetCachedMetadata() );
   }
 
   @Nonnull
@@ -326,9 +326,9 @@ public class Main
   }
 
   @Nonnull
-  static ApplicationConfig loadDependenciesYaml( @Nonnull final Environment environment )
+  static ApplicationConfig loadConfigFile( @Nonnull final Environment environment )
   {
-    final Path dependenciesFile = environment.getDependenciesFile();
+    final Path dependenciesFile = environment.getConfigFile();
     try
     {
       return ApplicationConfig.parse( dependenciesFile );
@@ -386,17 +386,17 @@ public class Main
           environment.setCommand( COMMAND_MAP.get( command ).get() );
           break;
         }
-        case DEPENDENCIES_FILE_OPT:
+        case CONFIG_FILE_OPT:
         {
           final String argument = option.getArgument();
-          final Path dependenciesFile = environment.currentDirectory().resolve( argument ).toAbsolutePath().normalize();
-          if ( !dependenciesFile.toFile().exists() )
+          final Path configFile = environment.currentDirectory().resolve( argument ).toAbsolutePath().normalize();
+          if ( !configFile.toFile().exists() )
           {
             logger.log( Level.SEVERE,
-                        "Error: Specified dependencies file does not exist. Specified value: " + argument );
+                        "Error: Specified config file does not exist. Specified value: " + argument );
             return false;
           }
-          environment.setDependenciesFile( dependenciesFile );
+          environment.setConfigFile( configFile );
           break;
         }
         case SETTINGS_FILE_OPT:
@@ -466,17 +466,17 @@ public class Main
       }
     }
 
-    if ( !environment.hasDependenciesFile() )
+    if ( !environment.hasConfigFile() )
     {
       final Path dependenciesFile =
         environment.currentDirectory().resolve( ApplicationConfig.FILENAME ).toAbsolutePath().normalize();
       if ( !dependenciesFile.toFile().exists() )
       {
         logger.log( Level.SEVERE,
-                    "Error: Default dependencies file does not exist: " + ApplicationConfig.FILENAME );
+                    "Error: Default config file does not exist: " + ApplicationConfig.FILENAME );
         return false;
       }
-      environment.setDependenciesFile( dependenciesFile );
+      environment.setConfigFile( dependenciesFile );
     }
 
     if ( !environment.hasSettingsFile() )

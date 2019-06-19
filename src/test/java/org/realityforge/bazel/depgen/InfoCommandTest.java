@@ -12,7 +12,7 @@ public class InfoCommandTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final TestHandler handler = new TestHandler();
     final Command command = new InfoCommand();
@@ -20,7 +20,7 @@ public class InfoCommandTest
     final int exitCode = command.run( new CommandContextImpl( environment ) );
     assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
     final String output = handler.toString();
-    assertOutputContains( output, "config-file=" + environment.getDependenciesFile() + "\n" );
+    assertOutputContains( output, "config-file=" + environment.getConfigFile() + "\n" );
     assertOutputContains( output, "settings-file=" + environment.getSettingsFile() + "\n" );
     assertOutputContains( output, "cache-directory=" + environment.getCacheDir() + "\n" );
     assertOutputContains( output, "reset-cached-metadata=false\n" );
@@ -32,7 +32,7 @@ public class InfoCommandTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final TestHandler handler = new TestHandler();
     final Command command = new InfoCommand();
@@ -41,7 +41,7 @@ public class InfoCommandTest
     final int exitCode = command.run( new CommandContextImpl( environment ) );
     assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
     final String output = handler.toString();
-    assertEquals( output, "config-file=" + environment.getDependenciesFile() );
+    assertEquals( output, "config-file=" + environment.getConfigFile() );
   }
 
   @Test
@@ -49,7 +49,7 @@ public class InfoCommandTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final TestHandler handler = new TestHandler();
     final Command command = new InfoCommand();
@@ -58,7 +58,7 @@ public class InfoCommandTest
     final int exitCode = command.run( new CommandContextImpl( environment ) );
     assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
     final String output = handler.toString();
-    assertEquals( output, "config-file=" + environment.getDependenciesFile() + "\n" +
+    assertEquals( output, "config-file=" + environment.getConfigFile() + "\n" +
                           "settings-file=" + environment.getSettingsFile() );
   }
 
@@ -67,7 +67,7 @@ public class InfoCommandTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final TestHandler handler = new TestHandler();
     final Command command = new InfoCommand();
@@ -83,7 +83,7 @@ public class InfoCommandTest
   public void info_deriveCacheDirInsideWorkspace()
     throws Exception
   {
-    writeDependencies( "" );
+    writeConfigFile( "" );
     final TestHandler handler = new TestHandler();
     final Environment environment = newEnvironment( handler );
     environment.setCacheDir( null );
@@ -99,7 +99,7 @@ public class InfoCommandTest
   public void info_deriveCacheDirOutsideWorkspace()
     throws Exception
   {
-    writeDependencies( "" );
+    writeConfigFile( "" );
     final TestHandler handler = new TestHandler();
     final Environment environment = newEnvironment( handler );
     environment.setCacheDir( null );
@@ -146,7 +146,7 @@ public class InfoCommandTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final TestHandler handler = new TestHandler();
     final InfoCommand command = new InfoCommand();

@@ -22,9 +22,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -55,7 +55,7 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -78,11 +78,11 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "options:\n" +
-                       "  namePrefix: zeapp\n" +
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  namePrefix: zeapp\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -105,7 +105,7 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -128,7 +128,7 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -151,7 +151,7 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
@@ -176,7 +176,7 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n    exportDeps: true\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n    exportDeps: true\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
@@ -202,7 +202,7 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:jar::1.0:runtime" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
@@ -229,7 +229,7 @@ public class ArtifactRecordTest
     // System collected but ignored at later stage
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir,
                                      "com.example:myapp:1.0",
                                      "com.example:mylib:1.0",
@@ -297,8 +297,8 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -312,9 +312,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    aliasStrategy: GroupIdAndArtifactId\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    aliasStrategy: GroupIdAndArtifactId\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -328,11 +328,11 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "options:\n" +
-                       "  aliasStrategy: ArtifactId\n" +
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  aliasStrategy: ArtifactId\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -346,9 +346,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    aliasStrategy: ArtifactId\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    aliasStrategy: ArtifactId\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -362,7 +362,7 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -382,7 +382,7 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -402,10 +402,10 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    visibility: ['//some/package:__pkg__', '//other/package:__subpackages__']\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    visibility: ['//some/package:__pkg__', '//other/package:__subpackages__']\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -429,7 +429,7 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
@@ -451,9 +451,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [Plugin]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Plugin]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -474,9 +474,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [Plugin]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Plugin]\n" );
     final Path jarFile =
       createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                      "arez.processor.ArezProcessor\n" );
@@ -503,11 +503,11 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [Plugin]\n" +
-                            "    plugin:\n" +
-                            "      generatesApi: false\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Plugin]\n" +
+                          "    plugin:\n" +
+                          "      generatesApi: false\n" );
     final Path jarFile =
       createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                      "arez.processor.ArezProcessor\n" );
@@ -533,9 +533,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -556,11 +556,11 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl]\n" +
-                            "    j2cl:\n" +
-                            "      suppress: [\"checkDebuggerStatement\"]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl]\n" +
+                          "    j2cl:\n" +
+                          "      suppress: [\"checkDebuggerStatement\"]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -582,11 +582,11 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl]\n" +
-                            "    j2cl:\n" +
-                            "      mode: Import\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl]\n" +
+                          "    j2cl:\n" +
+                          "      mode: Import\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -607,9 +607,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
@@ -632,9 +632,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl]\n" );
     deployArtifactToLocalRepository( dir,
                                      "com.example:myapp:1.0",
                                      "com.example:mylib:1.0",
@@ -664,7 +664,7 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -680,8 +680,8 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     final Path jarFile =
       createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                      "arez.processor.ArezProcessor\n" +
@@ -731,9 +731,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [Plugin]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Plugin]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -766,9 +766,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [Plugin, Java]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Plugin, Java]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -801,8 +801,8 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     final Path jarFile =
       createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                      "arez.processor.ArezProcessor\n" +
@@ -831,9 +831,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [Plugin]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Plugin]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -854,9 +854,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [Plugin, Java]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Plugin, Java]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -877,9 +877,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -903,9 +903,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -929,8 +929,8 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -957,8 +957,8 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     final Path jarFile =
       createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                      "arez.processor.ArezProcessor\n" +
@@ -1012,9 +1012,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
@@ -1039,9 +1039,9 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl, Java]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl, Java]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );

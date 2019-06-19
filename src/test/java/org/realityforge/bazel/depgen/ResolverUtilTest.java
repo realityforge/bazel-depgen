@@ -157,9 +157,9 @@ public class ResolverUtilTest
   public void deriveGlobalExclusions()
     throws Exception
   {
-    writeDependencies( "excludes:\n" +
-                       "  - coord: org.oss:app\n" +
-                       "  - coord: com.biz:zelib\n" );
+    writeConfigFile( "excludes:\n" +
+                     "  - coord: org.oss:app\n" +
+                     "  - coord: com.biz:zelib\n" );
     final ApplicationModel model = loadApplicationModel();
 
     final ArrayList<Exclusion> exclusions = ResolverUtil.deriveGlobalExclusions( model );

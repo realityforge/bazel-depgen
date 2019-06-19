@@ -30,11 +30,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "" );
+    writeConfigFile( dir, "" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     assertEquals( record.getPathFromExtensionToConfig(), Paths.get( "../" + ApplicationConfig.FILENAME ) );
   }
 
@@ -44,12 +44,12 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "options:\n" +
-                            "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
+    writeConfigFile( dir, "options:\n" +
+                          "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     assertEquals( record.getPathFromExtensionToConfig(), Paths.get( "../../" + ApplicationConfig.FILENAME ) );
   }
 
@@ -59,16 +59,16 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
     assertNotNull( record.getNode() );
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     assertTrue( record.getAuthenticationContexts().isEmpty() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 1 );
@@ -94,16 +94,16 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
     assertNotNull( record.getNode() );
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     assertTrue( record.getAuthenticationContexts().isEmpty() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 1 );
@@ -133,19 +133,19 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "options:\n" +
-                       "    includeSource: false\n" +
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    includeSource: true\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "    includeSource: false\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    includeSource: true\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
     assertNotNull( record.getNode() );
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     assertTrue( record.getAuthenticationContexts().isEmpty() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 1 );
@@ -162,11 +162,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "options:\n" +
-                       "    includeSource: false\n" +
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "    includeSource: false\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
@@ -188,10 +188,10 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    includeSource: false\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    includeSource: false\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -209,11 +209,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "options:\n" +
-                       "  namePrefix: myapp\n" +
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  namePrefix: myapp\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -233,11 +233,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "options:\n" +
-                       "  namePrefix: myapp_\n" +
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  namePrefix: myapp_\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -270,10 +270,10 @@ public class ApplicationRecordTest
 
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "repositories:\n" +
-                       "  - name: my-repo\n" +
-                       "    url: http://my-repo.example.com/maven2\n" );
+    writeConfigFile( dir,
+                     "repositories:\n" +
+                     "  - name: my-repo\n" +
+                     "    url: http://my-repo.example.com/maven2\n" );
     final ApplicationRecord record = loadApplicationRecord();
 
     final Map<String, AuthenticationContext> contexts = record.getAuthenticationContexts();
@@ -292,9 +292,9 @@ public class ApplicationRecordTest
     // System collected but ignored at later stage
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir,
                                      "com.example:myapp:1.0",
                                      "com.example:mylib:1.0",
@@ -312,7 +312,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     assertTrue( record.getAuthenticationContexts().isEmpty() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 4 );
@@ -404,15 +404,15 @@ public class ApplicationRecordTest
     final String url = dir.toUri().toString();
     final String urlEncoded = url.replaceAll( ":", "\\\\:" );
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 2 );
     assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -490,16 +490,16 @@ public class ApplicationRecordTest
     final String url = dir.toUri().toString();
     final String urlEncoded = url.replaceAll( ":", "\\\\:" );
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
     final Path cacheDir = FileUtil.createLocalTempDir();
     final ApplicationRecord record = loadApplicationRecord( cacheDir );
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 2 );
     assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -575,7 +575,7 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir,
                                      "com.example:myapp:1.0",
                                      "com.example:mylib:jar:sources:1.0",
@@ -600,7 +600,7 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir,
                                      "com.example:myapp:1.0",
                                      "com.example:mylib:jar:sources:1.0:runtime",
@@ -625,9 +625,9 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
@@ -651,10 +651,10 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "options:\n" +
-                            "  defaultNature: J2cl\n" +
-                            "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "options:\n" +
+                          "  defaultNature: J2cl\n" +
+                          "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
@@ -678,11 +678,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl]\n" +
-                            "  - coord: com.example:base:1.0\n" +
-                            "    natures: [J2cl]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl]\n" +
+                          "  - coord: com.example:base:1.0\n" +
+                          "    natures: [J2cl]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
@@ -706,15 +706,15 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl]\n" +
-                            "  - coord: com.example:base:1.0\n" +
-                            "replacements:\n" +
-                            "  - coord: com.example:mylib\n" +
-                            "    targets:\n" +
-                            "      - target: \"@com_example//:mylib\"\n" +
-                            "        nature: J2cl\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl]\n" +
+                          "  - coord: com.example:base:1.0\n" +
+                          "replacements:\n" +
+                          "  - coord: com.example:mylib\n" +
+                          "    targets:\n" +
+                          "      - target: \"@com_example//:mylib\"\n" +
+                          "        nature: J2cl\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
@@ -738,10 +738,10 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl]\n" +
-                            "  - coord: com.example:base:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl]\n" +
+                          "  - coord: com.example:base:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
@@ -758,10 +758,10 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl]\n" +
-                            "  - coord: com.example:mylib:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl]\n" +
+                          "  - coord: com.example:mylib:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
@@ -778,11 +778,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "options:\n" +
-                            "  defaultNature: J2cl\n" +
-                            "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [Java]\n" );
+    writeConfigFile( dir, "options:\n" +
+                          "  defaultNature: J2cl\n" +
+                          "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Java]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
@@ -806,12 +806,12 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "options:\n" +
-                            "  defaultNature: J2cl\n" +
-                            "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [Java]\n" +
-                            "  - coord: com.example:mylib:1.0\n" );
+    writeConfigFile( dir, "options:\n" +
+                          "  defaultNature: J2cl\n" +
+                          "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Java]\n" +
+                          "  - coord: com.example:mylib:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
@@ -828,11 +828,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "options:\n" +
-                            "  defaultNature: J2cl\n" +
-                            "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [Plugin]\n" );
+    writeConfigFile( dir, "options:\n" +
+                          "  defaultNature: J2cl\n" +
+                          "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Plugin]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
@@ -856,12 +856,12 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "options:\n" +
-                            "  defaultNature: J2cl\n" +
-                            "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [Plugin]\n" +
-                            "  - coord: com.example:mylib:1.0\n" );
+    writeConfigFile( dir, "options:\n" +
+                          "  defaultNature: J2cl\n" +
+                          "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Plugin]\n" +
+                          "  - coord: com.example:mylib:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
@@ -878,7 +878,7 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir,
                                      "com.example:myapp:1.0",
                                      "com.example:mylib1:1.0",
@@ -910,7 +910,7 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir,
                                      "com.example:myapp:1.0",
                                      "com.example:mylib1:jar::1.0:runtime",
@@ -942,7 +942,7 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir,
                                      "com.example:myapp:1.0",
                                      "com.example:mylib:jar:stripped:1.0",
@@ -967,15 +967,15 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:rtA:jar::33.0:runtime" );
     deployArtifactToLocalRepository( dir, "com.example:rtA:jar:33.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 2 );
     assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1017,16 +1017,16 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "  - coord: com.example:mylib\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "  - coord: com.example:mylib\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 2 );
     assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1058,9 +1058,9 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir,
                                      "com.example:myapp:1.0",
                                      "com.example:mylib:1.0",
@@ -1073,7 +1073,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 3 );
     assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1117,19 +1117,19 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "replacements:\n" +
-                       "  - coord: com.example:mylib\n" +
-                       "    targets:\n" +
-                       "      - target: \"@com_example//:mylib\"\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "replacements:\n" +
+                     "  - coord: com.example:mylib\n" +
+                     "    targets:\n" +
+                     "      - target: \"@com_example//:mylib\"\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 2 );
     assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1166,17 +1166,17 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "excludes:\n" +
-                       "  - coord: com.example:mylib\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "excludes:\n" +
+                     "  - coord: com.example:mylib\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 1 );
     assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1196,17 +1196,17 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "excludes:\n" +
-                       "  - coord: com.example:mylib\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "excludes:\n" +
+                     "  - coord: com.example:mylib\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:jar::1.0:runtime" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 1 );
     assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1226,16 +1226,16 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    includeOptional: true\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    includeOptional: true\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:jar::1.0:compile:optional" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( record.getSource().getConfigLocation(), getDefaultDependenciesFile().toAbsolutePath().normalize() );
+    assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertEquals( artifacts.size(), 2 );
     assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
@@ -1267,7 +1267,7 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -1285,7 +1285,7 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -1303,9 +1303,9 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -1322,9 +1322,9 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     final Path jarFile =
       createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                      "react4j.processor.ReactProcessor\n" +
@@ -1347,10 +1347,10 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    natures: [Plugin]\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [Plugin]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -1368,9 +1368,9 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
@@ -1398,9 +1398,9 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     final Path jarFile =
       createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                      "react4j.processor.ReactProcessor\n" +
@@ -1423,11 +1423,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    plugin:\n" +
-                       "      generatesApi: true\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    plugin:\n" +
+                     "      generatesApi: true\n" );
     final Path jarFile =
       createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                      "react4j.processor.ReactProcessor\n" +
@@ -1450,11 +1450,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    plugin:\n" +
-                       "      generatesApi: false\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    plugin:\n" +
+                     "      generatesApi: false\n" );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final IllegalStateException exception =
@@ -1469,12 +1469,12 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    natures: [Plugin]\n" +
-                       "    plugin:\n" +
-                       "      generatesApi: false\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [Plugin]\n" +
+                     "    plugin:\n" +
+                     "      generatesApi: false\n" );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final IllegalStateException exception =
@@ -1489,11 +1489,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    plugin:\n" +
-                       "      generatesApi: false\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    plugin:\n" +
+                     "      generatesApi: false\n" );
     final Path jarFile =
       createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                      "react4j.processor.ReactProcessor\n" +
@@ -1516,13 +1516,13 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    natures: [J2cl]\n" +
-                       "    j2cl:\n" +
-                       "      mode: Import\n" +
-                       "      suppress: [\"checkDebuggerStatement\"]\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [J2cl]\n" +
+                     "    j2cl:\n" +
+                     "      mode: Import\n" +
+                     "      suppress: [\"checkDebuggerStatement\"]\n" );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final IllegalStateException exception =
@@ -1537,11 +1537,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    j2cl:\n" +
-                       "      suppress: [\"checkDebuggerStatement\"]\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    j2cl:\n" +
+                     "      suppress: [\"checkDebuggerStatement\"]\n" );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final IllegalStateException exception =
@@ -1556,11 +1556,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "options:\n" +
-                       "  aliasStrategy: ArtifactId\n" +
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  aliasStrategy: ArtifactId\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -1578,12 +1578,12 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "options:\n" +
-                       "  namePrefix: gwt_\n" +
-                       "  aliasStrategy: ArtifactId\n" +
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  namePrefix: gwt_\n" +
+                     "  aliasStrategy: ArtifactId\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -1601,12 +1601,12 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "options:\n" +
-                       "  aliasStrategy: ArtifactId\n" +
-                       "artifacts:\n" +
-                       "  - coord: com.example.app1:core:42.0\n" +
-                       "  - coord: com.example.app2:core:37.0\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  aliasStrategy: ArtifactId\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example.app1:core:42.0\n" +
+                     "  - coord: com.example.app2:core:37.0\n" );
     deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
     deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
 
@@ -1621,13 +1621,13 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "options:\n" +
-                       "  aliasStrategy: ArtifactId\n" +
-                       "artifacts:\n" +
-                       "  - coord: com.example.app1:core:42.0\n" +
-                       "    aliasStrategy: GroupIdAndArtifactId\n" +
-                       "  - coord: com.example.app2:core:37.0\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  aliasStrategy: ArtifactId\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example.app1:core:42.0\n" +
+                     "    aliasStrategy: GroupIdAndArtifactId\n" +
+                     "  - coord: com.example.app2:core:37.0\n" );
     deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
     deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
 
@@ -1655,10 +1655,10 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example.app1:core:42.0\n" +
-                       "    natures: [J2cl]\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example.app1:core:42.0\n" +
+                     "    natures: [J2cl]\n" );
     deployTempArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
 
     final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
@@ -1672,11 +1672,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example.app1:core:42.0\n" +
-                       "    exportDeps: true\n" +
-                       "  - coord: com.example.app2:core:37.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example.app1:core:42.0\n" +
+                     "    exportDeps: true\n" +
+                     "  - coord: com.example.app2:core:37.0\n" );
     deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
     deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
 
@@ -1702,13 +1702,13 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "options:\n" +
-                       "  exportDeps: true\n" +
-                       "artifacts:\n" +
-                       "  - coord: com.example.app1:core:42.0\n" +
-                       "    exportDeps: false\n" +
-                       "  - coord: com.example.app2:core:37.0\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  exportDeps: true\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example.app1:core:42.0\n" +
+                     "    exportDeps: false\n" +
+                     "  - coord: com.example.app2:core:37.0\n" );
     deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
     deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
 
@@ -1734,9 +1734,9 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     final Path jarFile =
       createJarFile( "META-INF/services/javax.annotation.processing.Processor",
                      "react4j.processor.ReactProcessor\n" +
@@ -1762,9 +1762,9 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -1780,11 +1780,11 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "options:\n" +
-                       "  defaultNature: J2cl\n" +
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  defaultNature: J2cl\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
@@ -1801,10 +1801,10 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    natures: [J2cl]\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [J2cl]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -1820,8 +1820,8 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -1853,10 +1853,10 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "options:\n" +
-                            "  supportDependencyOmit: true\n" +
-                            "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "options:\n" +
+                          "  supportDependencyOmit: true\n" +
+                          "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -1889,10 +1889,10 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "options:\n" +
-                            "  targetMacroName: generate_myapp_targets\n" +
-                            "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "options:\n" +
+                          "  targetMacroName: generate_myapp_targets\n" +
+                          "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -1924,8 +1924,8 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
@@ -1972,12 +1972,12 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "replacements:\n" +
-                            "  - coord: com.example:mylib\n" +
-                            "    targets:\n" +
-                            "      - target: \"@com_example//:mylib\"\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "replacements:\n" +
+                          "  - coord: com.example:mylib\n" +
+                          "    targets:\n" +
+                          "      - target: \"@com_example//:mylib\"\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
@@ -2011,8 +2011,8 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -2049,10 +2049,10 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "options:\n" +
-                            "  supportDependencyOmit: true\n" +
-                            "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "options:\n" +
+                          "  supportDependencyOmit: true\n" +
+                          "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -2089,10 +2089,10 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "options:\n" +
-                            "  workspaceMacroName: generate_myapp_workspace_rules\n" +
-                            "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "options:\n" +
+                          "  workspaceMacroName: generate_myapp_workspace_rules\n" +
+                          "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -2128,8 +2128,8 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
@@ -2182,12 +2182,12 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "replacements:\n" +
-                            "  - coord: com.example:mylib\n" +
-                            "    targets:\n" +
-                            "      - target: \"@com_example//:mylib\"\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "replacements:\n" +
+                          "  - coord: com.example:mylib\n" +
+                          "    targets:\n" +
+                          "      - target: \"@com_example//:mylib\"\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
@@ -2224,8 +2224,8 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
@@ -2246,10 +2246,10 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "options:\n" +
-                            "  emitDependencyGraph: false\n" +
-                            "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "options:\n" +
+                          "  emitDependencyGraph: false\n" +
+                          "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:2.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
@@ -2266,8 +2266,8 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -2333,8 +2333,8 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -2357,9 +2357,9 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl, Java]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl, Java]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -2436,9 +2436,9 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl]\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl]\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
@@ -2534,15 +2534,15 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [J2cl, Java]\n" +
-                            "  - coord: com.example:base:1.0\n" +
-                            "replacements:\n" +
-                            "  - coord: com.example:mylib\n" +
-                            "    targets:\n" +
-                            "      - target: \"@com_example//:mylib\"\n" +
-                            "        nature: J2cl\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [J2cl, Java]\n" +
+                          "  - coord: com.example:base:1.0\n" +
+                          "replacements:\n" +
+                          "  - coord: com.example:mylib\n" +
+                          "    targets:\n" +
+                          "      - target: \"@com_example//:mylib\"\n" +
+                          "        nature: J2cl\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
@@ -2559,17 +2559,17 @@ public class ApplicationRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "    natures: [Java]\n" +
-                            "  - coord: com.example:base:1.0\n" +
-                            "replacements:\n" +
-                            "  - coord: com.example:mylib\n" +
-                            "    targets:\n" +
-                            "      - target: \"@com_example//:othermylib\"\n" +
-                            "        nature: Java\n" +
-                            "      - target: \"@com_example//:mylib\"\n" +
-                            "        nature: J2cl\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Java]\n" +
+                          "  - coord: com.example:base:1.0\n" +
+                          "replacements:\n" +
+                          "  - coord: com.example:mylib\n" +
+                          "    targets:\n" +
+                          "      - target: \"@com_example//:othermylib\"\n" +
+                          "        nature: Java\n" +
+                          "      - target: \"@com_example//:mylib\"\n" +
+                          "        nature: J2cl\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );

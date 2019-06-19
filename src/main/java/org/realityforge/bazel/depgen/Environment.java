@@ -16,7 +16,7 @@ final class Environment
   @Nonnull
   private final Logger _logger;
   @Nullable
-  private Path _dependenciesFile;
+  private Path _configFile;
   @Nullable
   private Path _settingsFile;
   @Nullable
@@ -50,21 +50,21 @@ final class Environment
     return _logger;
   }
 
-  boolean hasDependenciesFile()
+  boolean hasConfigFile()
   {
-    return null != _dependenciesFile;
+    return null != _configFile;
   }
 
   @Nonnull
-  Path getDependenciesFile()
+  Path getConfigFile()
   {
-    assert null != _dependenciesFile;
-    return _dependenciesFile;
+    assert null != _configFile;
+    return _configFile;
   }
 
-  void setDependenciesFile( @Nullable final Path dependenciesFile )
+  void setConfigFile( @Nullable final Path configFile )
   {
-    _dependenciesFile = dependenciesFile;
+    _configFile = configFile;
   }
 
   boolean hasSettingsFile()

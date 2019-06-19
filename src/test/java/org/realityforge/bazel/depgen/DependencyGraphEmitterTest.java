@@ -27,7 +27,7 @@ public class DependencyGraphEmitterTest
     deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
     deployTempArtifactToLocalRepository( dir, "com.example:rtB:2.0" );
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     final String output = collectOutput( createResolver( dir ) );
     assertEquals( output,
                   "\\- com.example:myapp:jar:1.0 [compile]\n" +
@@ -52,7 +52,7 @@ public class DependencyGraphEmitterTest
     deployTempArtifactToLocalRepository( dir, "com.example:rtA:32.0" );
     deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     final String output = collectOutput( createResolver( dir ) );
     assertEquals( output,
                   "\\- com.example:myapp:jar:1.0 [compile]\n" +
@@ -77,12 +77,12 @@ public class DependencyGraphEmitterTest
     deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
     deployTempArtifactToLocalRepository( dir, "com.example:rtB:2.0" );
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "replacements:\n" +
-                            "  - coord: com.example:rtA\n" +
-                            "    targets:\n" +
-                            "      - target: //foo/rta\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "replacements:\n" +
+                          "  - coord: com.example:rtA\n" +
+                          "    targets:\n" +
+                          "      - target: //foo/rta\n" );
     final String output = collectOutput( createResolver( dir ) );
     assertEquals( output,
                   "\\- com.example:myapp:jar:1.0 [compile]\n" +
@@ -106,10 +106,10 @@ public class DependencyGraphEmitterTest
     deployTempArtifactToLocalRepository( dir, "com.example:rtA:33.0" );
     deployTempArtifactToLocalRepository( dir, "com.example:rtB:2.0" );
 
-    writeDependencies( dir, "artifacts:\n" +
-                            "  - coord: com.example:myapp:1.0\n" +
-                            "excludes:\n" +
-                            "  - coord: com.example:rtB\n" );
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "excludes:\n" +
+                          "  - coord: com.example:rtB\n" );
     final String output = collectOutput( createResolver( dir ) );
     //rtB appears nowhere in the graph output
     assertEquals( output,
@@ -129,7 +129,7 @@ public class DependencyGraphEmitterTest
                                          "com.example:mylib:jar::1.0:compile:optional" );
     deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
-    writeDependencies( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
     final String output = collectOutput( createResolver( dir ) );
     assertEquals( output,
                   "\\- com.example:myapp:jar:1.0 [compile]\n" +

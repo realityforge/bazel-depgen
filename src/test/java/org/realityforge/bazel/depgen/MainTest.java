@@ -46,9 +46,10 @@ public class MainTest
                   "\t\tDo not output unless an error occurs.\n" +
                   "\t-v, --verbose\n" +
                   "\t\tVerbose output of differences.\n" +
-                  "\t-d, --dependencies-file <argument>\n" +
-                  "\t\tThe path to the yaml file containing the dependencies. Defau\n" +
-                  "\t\tlts to 'dependencies.yml' in the workspace directory.\n" +
+                  "\t-c, --config-file <argument>\n" +
+                  "\t\tThe path to the yaml file containing the dependency configur\n" +
+                  "\t\tation. Defaults to 'dependencies.yml' in the workspace direc\n" +
+                  "\t\ttory.\n" +
                   "\t-s, --settings-file <argument>\n" +
                   "\t\tThe path to the settings.xml used by Maven to extract reposi\n" +
                   "\t\ttory credentials. Defaults to '~/.m2/settings.xml'.\n" +
@@ -68,18 +69,18 @@ public class MainTest
   }
 
   @Test
-  public void processOptions_defaultDependenciesMissing()
+  public void processOptions_defaultConfigFileMissing()
     throws Exception
   {
     writeWorkspace();
 
     final TestHandler handler = new TestHandler();
     final Environment environment = newEnvironment( handler );
-    environment.setDependenciesFile( null );
+    environment.setConfigFile( null );
     environment.setSettingsFile( null );
     assertFalse( Main.processOptions( environment, "generate" ) );
     final String output = handler.toString();
-    assertOutputContains( output, "Error: Default dependencies file does not exist: " );
+    assertOutputContains( output, "Error: Default config file does not exist: " );
   }
 
   @Test
@@ -87,20 +88,20 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final String output = failToProcessOptions( "Bleep" );
     assertOutputContains( output, "Error: Unknown command: Bleep" );
   }
 
   @Test
-  public void processOptions_specifiedDependenciesMissing()
+  public void processOptions_specifiedConfigFileMissing()
     throws Exception
   {
     writeWorkspace();
 
-    final String output = failToProcessOptions( "--dependencies-file", "deps.txt", "generate" );
-    assertOutputContains( output, "Error: Specified dependencies file does not exist. Specified value: deps.txt" );
+    final String output = failToProcessOptions( "--config-file", "deps.txt", "generate" );
+    assertOutputContains( output, "Error: Specified config file does not exist. Specified value: deps.txt" );
   }
 
   @Test
@@ -108,7 +109,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
     FileUtil.write( "StoreMeHere", "NotADir" );
 
     final String output = failToProcessOptions( "--cache-directory", "StoreMeHere", "generate" );
@@ -121,7 +122,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final String output = failToProcessOptions( "generate", "generate" );
     assertOutputContains( output, "Error: Unknown arguments to generate command. Arguments: [generate]" );
@@ -134,9 +135,9 @@ public class MainTest
     // Need to declare repositories otherwise we never even try to load settings
     writeWorkspace();
     // Need to declare repositories otherwise we never even try to load settings
-    writeDependencies( "repositories:\n" +
-                       "  - name: central" +
-                       "    url: http://repo1.maven.org/maven2\n" );
+    writeConfigFile( "repositories:\n" +
+                     "  - name: central" +
+                     "    url: http://repo1.maven.org/maven2\n" );
 
     final String output = failToProcessOptions( "--settings-file", "some_settings.xml", "generate" );
     assertOutputContains( output,
@@ -148,13 +149,13 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final String output = failToProcessOptions( "--help" );
     assertOutputContains( output, "-h, --help\n" );
     assertOutputContains( output, "-q, --quiet\n" );
     assertOutputContains( output, "-v, --verbose\n" );
-    assertOutputContains( output, "-d, --dependencies-file <argument>\n" );
+    assertOutputContains( output, "-c, --config-file <argument>\n" );
     assertOutputContains( output, "-s, --settings-file <argument>\n" );
     assertOutputContains( output, "-r, --cache-directory <argument>\n" );
     assertOutputContains( output, "--reset-cached-metadata\n" );
@@ -165,7 +166,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final String output = failToProcessOptions( "--some-command-no-exist" );
     assertEquals( output, "Error: Unknown option --some-command-no-exist" );
@@ -176,17 +177,17 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final TestHandler handler = new TestHandler();
     final Environment environment = newEnvironment( handler );
-    environment.setDependenciesFile( null );
+    environment.setConfigFile( null );
     environment.setSettingsFile( null );
     environment.setCacheDir( null );
     assertTrue( Main.processOptions( environment, "generate" ) );
     assertTrue( environment.hasCommand() );
     assertTrue( environment.getCommand() instanceof GenerateCommand );
-    assertEquals( environment.getDependenciesFile(), getDefaultDependenciesFile() );
+    assertEquals( environment.getConfigFile(), getDefaultConfigFile() );
     assertEquals( environment.getSettingsFile(),
                   Paths.get( System.getProperty( "user.home" ), ".m2", "settings.xml" )
                     .toAbsolutePath()
@@ -195,7 +196,7 @@ public class MainTest
   }
 
   @Test
-  public void processOptions_specifyDependenciesFile()
+  public void processOptions_specifyConfigFile()
     throws Exception
   {
     writeWorkspace();
@@ -203,8 +204,8 @@ public class MainTest
 
     final TestHandler handler = new TestHandler();
     final Environment environment = newEnvironment( handler );
-    assertTrue( Main.processOptions( environment, "--dependencies-file", "dependencies2.yml", "generate" ) );
-    assertEquals( environment.getDependenciesFile(), FileUtil.getCurrentDirectory().resolve( "dependencies2.yml" ) );
+    assertTrue( Main.processOptions( environment, "--config-file", "dependencies2.yml", "generate" ) );
+    assertEquals( environment.getConfigFile(), FileUtil.getCurrentDirectory().resolve( "dependencies2.yml" ) );
   }
 
   @Test
@@ -212,7 +213,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
     final Path dir = FileUtil.createLocalTempDir();
 
     final TestHandler handler = new TestHandler();
@@ -229,9 +230,9 @@ public class MainTest
     // Need to declare repositories otherwise we never even try to load settings
     writeWorkspace();
     // Need to declare repositories otherwise we never even try to load settings
-    writeDependencies( "repositories:\n" +
-                       "  - name: central" +
-                       "    url: http://repo1.maven.org/maven2\n" );
+    writeConfigFile( "repositories:\n" +
+                     "  - name: central" +
+                     "    url: http://repo1.maven.org/maven2\n" );
 
     FileUtil.write( "settings.xml",
                     "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
@@ -257,7 +258,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final TestHandler handler = new TestHandler();
     final Environment environment = newEnvironment( handler );
@@ -271,7 +272,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final TestHandler handler = new TestHandler();
     final Environment environment = newEnvironment( handler );
@@ -285,7 +286,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final TestHandler handler = new TestHandler();
     final Environment environment = newEnvironment( handler );
@@ -295,17 +296,17 @@ public class MainTest
   }
 
   @Test
-  public void loadDependenciesYaml()
+  public void loadConfigFile()
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:zeapp:2.0\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:zeapp:2.0\n" );
 
     final Environment environment = newEnvironment();
-    final Path file = getDefaultDependenciesFile();
-    environment.setDependenciesFile( file );
-    final ApplicationConfig config = Main.loadDependenciesYaml( environment );
+    final Path file = getDefaultConfigFile();
+    environment.setConfigFile( file );
+    final ApplicationConfig config = Main.loadConfigFile( environment );
     assertEquals( config.getConfigLocation(), file );
     final List<ArtifactConfig> artifacts = config.getArtifacts();
     assertNotNull( artifacts );
@@ -313,16 +314,16 @@ public class MainTest
   }
 
   @Test
-  public void loadDependenciesYaml_error()
+  public void loadConfigFile_error()
     throws Exception
   {
     writeWorkspace();
 
     final Environment environment = newEnvironment();
-    final Path file = getDefaultDependenciesFile();
-    environment.setDependenciesFile( file );
+    final Path file = getDefaultConfigFile();
+    environment.setConfigFile( file );
     final TerminalStateException exception =
-      expectThrows( TerminalStateException.class, () -> Main.loadDependenciesYaml( environment ) );
+      expectThrows( TerminalStateException.class, () -> Main.loadConfigFile( environment ) );
     assertEquals( exception.getMessage(), "Error: Failed to read dependencies file " + file );
     assertEquals( exception.getExitCode(), ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE );
   }
@@ -332,13 +333,13 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:zeapp:2.0\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:zeapp:2.0\n" );
 
     final Environment environment = newEnvironment();
 
-    final Path file = getDefaultDependenciesFile();
-    environment.setDependenciesFile( file );
+    final Path file = getDefaultConfigFile();
+    environment.setConfigFile( file );
 
     final ApplicationModel model = Main.loadModel( environment );
     assertEquals( model.getConfigLocation(), file );
@@ -353,8 +354,8 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:zeapp:2.0\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:zeapp:2.0\n" );
 
     final Environment environment = newEnvironment();
     environment.markResetCachedMetadata();
@@ -373,7 +374,7 @@ public class MainTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeWorkspace();
-    writeDependencies( dir, "" );
+    writeConfigFile( dir, "" );
 
     final ApplicationRecord record = Main.loadRecord( newEnvironment() );
     assertEquals( record.getArtifacts().size(), 0 );
@@ -387,9 +388,9 @@ public class MainTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeWorkspace();
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = Main.loadRecord( newEnvironment() );
@@ -403,7 +404,7 @@ public class MainTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeWorkspace();
-    writeDependencies( dir, "" );
+    writeConfigFile( dir, "" );
 
     final Environment environment = newEnvironment();
 
@@ -425,9 +426,9 @@ public class MainTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeWorkspace();
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final Environment environment = newEnvironment();
@@ -456,9 +457,9 @@ public class MainTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeWorkspace();
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final TestHandler handler = new TestHandler();
@@ -483,9 +484,9 @@ public class MainTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeWorkspace();
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:myapp:1.0" );
 
@@ -508,9 +509,9 @@ public class MainTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeWorkspace();
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
 
     final TestHandler handler = new TestHandler();
@@ -560,7 +561,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final Path cacheDirectory = Main.getCacheDirectory( newEnvironment(), loadApplicationModel() );
     assertNotNull( cacheDirectory );
@@ -571,7 +572,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final Environment environment = newEnvironment();
     final Path cacheDir = FileUtil.createLocalTempDir();
@@ -584,7 +585,7 @@ public class MainTest
   public void getCacheDirectory_outsideWorkspace()
     throws Exception
   {
-    writeDependencies( "" );
+    writeConfigFile( "" );
     final Environment environment = newEnvironment();
     environment.setCacheDir( null );
     final TerminalStateException exception =
@@ -600,7 +601,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final Path cacheDir = FileUtil.createLocalTempDir();
     final Path file = FileUtil.createLocalTempDir().resolve( "somefile.txt" );
@@ -629,7 +630,7 @@ public class MainTest
   {
     // Writing cacheContent into cache that differs from actual content so we can tell if it has been updated
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final Path cacheDir = FileUtil.createLocalTempDir();
     final Path file = FileUtil.createLocalTempDir().resolve( "somefile.txt" );
@@ -662,7 +663,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final Path cacheDir = FileUtil.createLocalTempDir();
     final Path file = FileUtil.createLocalTempDir().resolve( "somefile.txt" );
@@ -697,9 +698,9 @@ public class MainTest
     FileUtil.write( "WORKSPACE", "" );
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     final Path jarFile1 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
     final Path jarFile2 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0", jarFile1 );
@@ -741,10 +742,10 @@ public class MainTest
     FileUtil.write( "WORKSPACE", "" );
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    includeSource: false\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    includeSource: false\n" );
     final Path jarFile2 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", jarFile2 );
 
@@ -779,9 +780,9 @@ public class MainTest
     FileUtil.write( "WORKSPACE", "" );
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
     final Path jarFile1 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
     final Path jarFile2 = createJarFile( ValueUtil.randomString() + ".jar", ValueUtil.randomString() );
     deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0" );
@@ -826,10 +827,10 @@ public class MainTest
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     writeWorkspace();
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:jar:1.0\n" +
-                       "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:jar:1.0\n" +
+                     "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n" );
     final String output = runCommand( "generate" );
     assertEquals( output, "" );
   }
@@ -839,9 +840,9 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n" );
     final String output = runCommand( "hash" );
     assertEquals( output, "Content SHA256: A8060A486659CC1397477EFE6C28F83F65DC9CBB19182978AFB69746EC3D99F2" );
   }
@@ -851,8 +852,8 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: org.realityforge.gir\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: org.realityforge.gir\n" );
 
     final String output = runCommand( ExitCodes.ERROR_CONSTRUCTING_MODEL_CODE, "generate" );
     assertOutputContains( output,
@@ -867,8 +868,8 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "artifacts: 's\n" +
-                       "  - group: org.realityforge.gir\n" );
+    writeConfigFile( "artifacts: 's\n" +
+                     "  - group: org.realityforge.gir\n" );
 
     final String output = runCommand( ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE, "generate" );
     assertOutputContains( output, "Error: Failed to read dependencies file " );
@@ -881,8 +882,8 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "artifacts: 's\n" +
-                       "  - group: org.realityforge.gir\n" );
+    writeConfigFile( "artifacts: 's\n" +
+                     "  - group: org.realityforge.gir\n" );
 
     final String output = runCommand( ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE, "--verbose", "generate" );
     assertOutputContains( output, "Error: Failed to read dependencies file " );
@@ -895,7 +896,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final String output = runCommand( ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE, "Bleep" );
     assertEquals( output, "Error: Unknown command: Bleep" );
@@ -906,7 +907,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeDependencies( "" );
+    writeConfigFile( "" );
 
     final String output = runCommand( "generate" );
     assertEquals( output, "" );
@@ -921,9 +922,9 @@ public class MainTest
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     writeWorkspace();
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     final String output = runCommand( "print-graph" );
     assertEquals( output,
@@ -938,9 +939,9 @@ public class MainTest
     // Need to declare repositories otherwise we never even try to load settings
     writeWorkspace();
     // Need to declare repositories otherwise we never even try to load settings
-    writeDependencies( "repositories:\n" +
-                       "  - name: central\n" +
-                       "    url: http://repo1.maven.org/maven2\n" );
+    writeConfigFile( "repositories:\n" +
+                     "  - name: central\n" +
+                     "    url: http://repo1.maven.org/maven2\n" );
 
     runCommand( "generate" );
   }
@@ -952,9 +953,9 @@ public class MainTest
     // Need to declare repositories otherwise we never even try to load settings
     writeWorkspace();
     // Need to declare repositories otherwise we never even try to load settings
-    writeDependencies( "repositories:\n" +
-                       "  - name: central\n" +
-                       "    url: http://repo1.maven.org/maven2\n" );
+    writeConfigFile( "repositories:\n" +
+                     "  - name: central\n" +
+                     "    url: http://repo1.maven.org/maven2\n" );
 
     assertTrue( FileUtil.getCurrentDirectory().resolve( ".m2" ).toFile().mkdir() );
     FileUtil.write( ".m2/settings.xml",
@@ -979,9 +980,9 @@ public class MainTest
     // Need to declare repositories otherwise we never even try to load settings
     writeWorkspace();
     // Need to declare repositories otherwise we never even try to load settings
-    writeDependencies( "repositories:\n" +
-                       "  - name: central\n" +
-                       "    url: http://repo1.maven.org/maven2\n" );
+    writeConfigFile( "repositories:\n" +
+                     "  - name: central\n" +
+                     "    url: http://repo1.maven.org/maven2\n" );
 
     FileUtil.write( "some_settings.xml",
                     "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +

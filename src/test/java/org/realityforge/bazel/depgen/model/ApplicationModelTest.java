@@ -17,15 +17,15 @@ public class ApplicationModelTest
   public void parse()
     throws Exception
   {
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "excludes:\n" +
-                       "  - coord: com.example:blib\n" +
-                       "replacements:\n" +
-                       "  - coord: com.example:alib\n" +
-                       "    targets:\n" +
-                       "      - target: \"@com_example//:alib\"\n" );
-    final Path configFile = getDefaultDependenciesFile();
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "excludes:\n" +
+                     "  - coord: com.example:blib\n" +
+                     "replacements:\n" +
+                     "  - coord: com.example:alib\n" +
+                     "    targets:\n" +
+                     "      - target: \"@com_example//:alib\"\n" );
+    final Path configFile = getDefaultConfigFile();
     final ApplicationConfig source = ApplicationConfig.parse( configFile );
 
     final ApplicationModel model = ApplicationModel.parse( source, false );
@@ -70,10 +70,10 @@ public class ApplicationModelTest
   public void isExcluded()
     throws Exception
   {
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "excludes:\n" +
-                       "  - coord: com.example:blib\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "excludes:\n" +
+                     "  - coord: com.example:blib\n" );
     final ApplicationModel model = loadApplicationModel();
 
     assertFalse( model.isExcluded( "com.example", "alib" ) );
@@ -84,8 +84,8 @@ public class ApplicationModelTest
   public void findArtifact()
     throws Exception
   {
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     final ApplicationModel model = loadApplicationModel();
     assertEquals( model.getArtifacts().size(), 1 );
@@ -100,12 +100,12 @@ public class ApplicationModelTest
   public void findReplacement()
     throws Exception
   {
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" +
-                       "replacements:\n" +
-                       "  - coord: com.example:mylib\n" +
-                       "    targets:\n" +
-                       "      - target: \"@com_example//:mylib\"\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "replacements:\n" +
+                     "  - coord: com.example:mylib\n" +
+                     "    targets:\n" +
+                     "      - target: \"@com_example//:mylib\"\n" );
 
     final ApplicationModel model = loadApplicationModel();
     assertEquals( model.getReplacements().size(), 1 );
@@ -121,8 +121,8 @@ public class ApplicationModelTest
   public void findRepository()
     throws Exception
   {
-    writeDependencies( "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     final ApplicationModel model = loadApplicationModel();
     final List<RepositoryModel> repositories = model.getRepositories();

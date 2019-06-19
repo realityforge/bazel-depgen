@@ -24,9 +24,9 @@ public class GenerateCommandTest
     final String url = dir.toUri().toString();
 
     writeWorkspace();
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
@@ -104,9 +104,9 @@ public class GenerateCommandTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeWorkspace();
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
@@ -126,9 +126,9 @@ public class GenerateCommandTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeWorkspace();
-    writeDependencies( dir,
-                       "artifacts:\n" +
-                       "  - coord: com.example:myapp:1.0\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
 
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
