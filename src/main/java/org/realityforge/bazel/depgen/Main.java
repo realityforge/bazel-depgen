@@ -41,6 +41,7 @@ import org.realityforge.getopt4j.CLUtil;
  */
 public class Main
 {
+  private static final int VERSION_OPT = 2;
   private static final int HELP_OPT = 'h';
   private static final int QUIET_OPT = 'q';
   private static final int VERBOSE_OPT = 'v';
@@ -50,6 +51,10 @@ public class Main
   private static final int CONFIG_FILE_OPT = 'c';
   private static final CLOptionDescriptor[] OPTIONS = new CLOptionDescriptor[]
     {
+      new CLOptionDescriptor( "version",
+                              CLOptionDescriptor.ARGUMENT_DISALLOWED,
+                              VERSION_OPT,
+                              "print the version and exit" ),
       new CLOptionDescriptor( "help",
                               CLOptionDescriptor.ARGUMENT_DISALLOWED,
                               HELP_OPT,
@@ -443,6 +448,11 @@ public class Main
         {
           logger.setLevel( Level.WARNING );
           break;
+        }
+        case VERSION_OPT:
+        {
+          environment.logger().log( Level.WARNING, "DepGen Version: " + Version.get() );
+          return false;
         }
         case HELP_OPT:
         {

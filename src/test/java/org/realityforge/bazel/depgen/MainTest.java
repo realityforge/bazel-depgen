@@ -40,6 +40,8 @@ public class MainTest
                   "\t\thash: Generate a hash of the content of the dependency configuration.\n" +
                   "\t\tinfo: Print runtime info about the tool.\n" +
                   "\tOptions:\n" +
+                  "\t--version\n" +
+                  "\t\tprint the version and exit\n" +
                   "\t-h, --help\n" +
                   "\t\tprint this message and exit\n" +
                   "\t-q, --quiet\n" +
@@ -159,6 +161,17 @@ public class MainTest
     assertOutputContains( output, "-s, --settings-file <argument>\n" );
     assertOutputContains( output, "-r, --cache-directory <argument>\n" );
     assertOutputContains( output, "--reset-cached-metadata\n" );
+  }
+
+  @Test
+  public void processOptions_version()
+    throws Exception
+  {
+    writeWorkspace();
+    writeConfigFile( "" );
+
+    final String output = failToProcessOptions( "--version" );
+    assertEquals( output, "DepGen Version: " );
   }
 
   @Test
