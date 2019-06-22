@@ -88,7 +88,6 @@ public class ApplicationModelTest
                      "  - coord: com.example:myapp:1.0\n" );
 
     final ApplicationModel model = loadApplicationModel();
-    assertEquals( model.getArtifacts().size(), 1 );
     final ArtifactModel artifactModel = model.getArtifacts().get( 0 );
     assertEquals( artifactModel.toCoord(), "com.example:myapp:jar:1.0" );
 
