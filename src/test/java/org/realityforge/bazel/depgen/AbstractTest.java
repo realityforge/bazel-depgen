@@ -177,7 +177,7 @@ public abstract class AbstractTest
   }
 
   protected final void writeConfigFile( @Nonnull final Path dir, @Nonnull final String content )
-    throws IOException
+    throws Exception
   {
     writeConfigFile( "repositories:\n" +
                      "  - name: local\n" +
