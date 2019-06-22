@@ -451,7 +451,7 @@ public class Main
         }
         case VERSION_OPT:
         {
-          environment.logger().log( Level.WARNING, "DepGen Version: " + Version.get() );
+          environment.logger().log( Level.WARNING, "DepGen Version: " + DepGenConfig.getVersion() );
           return false;
         }
         case HELP_OPT:

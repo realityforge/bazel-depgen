@@ -38,7 +38,7 @@ public abstract class AbstractTest
   @Override
   public void run( final IHookCallBack callBack, final ITestResult testResult )
   {
-    System.setProperty( Version.PROPERTY_KEY, "" );
+    System.setProperty( DepGenConfig.PROPERTY_KEY, "1" );
     try
     {
       Gir.go( () -> FileUtil.inTempDir( () -> {
@@ -52,7 +52,7 @@ public abstract class AbstractTest
     }
     finally
     {
-      System.getProperties().remove( Version.PROPERTY_KEY );
+      System.getProperties().remove( DepGenConfig.PROPERTY_KEY );
     }
   }
 

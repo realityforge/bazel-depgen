@@ -50,7 +50,7 @@ define 'bazel-depgen' do
                MAVEN_RESOLVER,
                :snakeyaml
 
-  generate_version_resource(project)
+  generate_config_resource(project)
 
   package(:jar)
   package(:sources)
