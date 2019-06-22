@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen.model;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.realityforge.bazel.depgen.Version;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.ExcludeConfig;
@@ -80,7 +82,8 @@ public final class ApplicationModel
   @Nonnull
   static String calculateConfigSha256( @Nonnull final ApplicationConfig config )
   {
-    return HashUtil.sha256( YamlUtil.asYamlString( config ).getBytes() );
+    return HashUtil.sha256( Version.get().getBytes( StandardCharsets.UTF_8 ),
+                            YamlUtil.asYamlString( config ).getBytes() );
   }
 
   private ApplicationModel( @Nonnull final ApplicationConfig source,
