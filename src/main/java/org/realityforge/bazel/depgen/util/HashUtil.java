@@ -13,12 +13,16 @@ public final class HashUtil
   }
 
   @Nonnull
-  public static String sha256( @Nonnull final byte[] data )
+  public static String sha256( @Nonnull final byte[]... data )
   {
     try
     {
       final MessageDigest digest = MessageDigest.getInstance( "SHA-256" );
-      return bytesToHex( digest.digest( data ) );
+      for ( final byte[] datum : data )
+      {
+        digest.update( datum );
+      }
+      return bytesToHex( digest.digest() );
     }
     catch ( final NoSuchAlgorithmException nsae )
     {
