@@ -5,5 +5,6 @@
 /Gemfile.lock
 /_buildr.rb
 /tmp
+/generated
 /reports
 /target

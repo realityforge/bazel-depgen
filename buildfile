@@ -1,5 +1,6 @@
 require 'buildr/git_auto_version'
 require 'buildr/gpg'
+require 'buildr/top_level_generate_dir'
 
 MAVEN_RESOLVER = %w(
   org.apache.maven.resolver:maven-resolver-api:jar:1.3.3
@@ -48,6 +49,8 @@ define 'bazel-depgen' do
                :getopt4j,
                MAVEN_RESOLVER,
                :snakeyaml
+
+  generate_version_resource(project)
 
   package(:jar)
   package(:sources)

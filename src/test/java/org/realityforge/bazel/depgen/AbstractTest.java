@@ -38,6 +38,7 @@ public abstract class AbstractTest
   @Override
   public void run( final IHookCallBack callBack, final ITestResult testResult )
   {
+    System.setProperty( Version.PROPERTY_KEY, "" );
     try
     {
       Gir.go( () -> FileUtil.inTempDir( () -> {
@@ -48,6 +49,10 @@ public abstract class AbstractTest
     catch ( final Exception e )
     {
       assertNull( e );
+    }
+    finally
+    {
+      System.getProperties().remove( Version.PROPERTY_KEY );
     }
   }
 
