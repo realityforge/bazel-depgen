@@ -44,8 +44,6 @@ define 'bazel-depgen' do
   pom.add_github_project('realityforge/bazel-depgen')
   pom.add_developer('realityforge', 'Peter Donald')
 
-  manifest['Main-Class'] = 'org.realityforge.bazel.depgen.Main'
-
   compile.with :javax_annotation,
                :getopt4j,
                MAVEN_RESOLVER,
