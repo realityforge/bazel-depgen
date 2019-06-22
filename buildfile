@@ -59,7 +59,6 @@ define 'bazel-depgen' do
     end
   end
 
-  test.using :integration
   test.using :testng
   test.with :gir, :guiceyloops
 
