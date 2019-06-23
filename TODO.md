@@ -4,6 +4,13 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
+* Add `todod:scan` task that will block releases if any TODOs left.
+
+* Fix TODOs in code base.
+
+* Generate a more reasonable error message when verify task fails. Probably pointing to task to run
+  to regenerate dependencies.
+
 * Refactor tests so that by default they don't call out to bazel except when needed. This should speed
   up tests. 
 
