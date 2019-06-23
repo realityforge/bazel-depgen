@@ -2347,7 +2347,7 @@ public class ApplicationRecordTest
                   "load(\"@com_google_j2cl//build_defs:rules.bzl\", \"j2cl_library\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
-                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256()  + "\"\n" +
+                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
