@@ -17,7 +17,8 @@ final class GenerateCommand
     throws Exception
   {
     final ApplicationRecord record = context.loadRecord();
-    final Path extensionFile = record.getSource().getOptions().getExtensionFile();
+    final OptionsModel options = record.getSource().getOptions();
+    final Path extensionFile = options.getExtensionFile();
     final Path dir = extensionFile.getParent();
     final Path buildfile = dir.resolve( "BUILD.bazel" );
 
