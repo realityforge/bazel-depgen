@@ -351,6 +351,7 @@ public class RecordUtilTest
         final byte[] data = Files.readAllBytes( file );
         httpExchange.sendResponseHeaders( 200, data.length );
         httpExchange.getResponseBody().write( data );
+        httpExchange.close();
       }
     }
     else
