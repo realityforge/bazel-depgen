@@ -248,6 +248,19 @@ public final class ApplicationRecord
     }
   }
 
+  public void writeDefaultConfigBuild( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    output.write( "# File is auto-generated from " + getPathFromExtensionToConfig() +
+                  " by https://github.com/realityforge/bazel-depgen" );
+    output.write( "# Contents can be edited and will not be overridden." );
+
+    output.write( "package(default_visibility = [\"//visibility:public\"])" );
+    output.newLine();
+
+    output.write( "exports_files([\"" + getSource().getConfigLocation().getFileName() + "\"])" );
+  }
+
   void replacement( @Nonnull final DependencyNode node )
   {
     final String groupId = node.getArtifact().getGroupId();

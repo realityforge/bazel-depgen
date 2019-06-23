@@ -2483,6 +2483,27 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void writeDefaultConfigBuild()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir, "" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    record.writeDefaultConfigBuild( new StarlarkOutput( outputStream ) );
+    assertEquals( asString( outputStream ),
+                  "# File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# Contents can be edited and will not be overridden.\n" +
+                  "package(default_visibility = [\"//visibility:public\"])\n" +
+                  "\n" +
+                  "exports_files([\"dependencies.yml\"])\n" );
+  }
+
+  @Test
   public void writeBazelExtension_j2clArtifactPresent()
     throws Exception
   {

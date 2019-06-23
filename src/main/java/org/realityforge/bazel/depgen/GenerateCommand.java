@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen;
 
 import java.nio.file.Path;
 import javax.annotation.Nonnull;
+import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 
@@ -21,6 +22,7 @@ final class GenerateCommand
     final Path extensionFile = options.getExtensionFile();
     final Path dir = extensionFile.getParent();
     final Path extensionBuildfile = dir.resolve( "BUILD.bazel" );
+    final Path configBuildfile = options.getWorkspaceDirectory().resolve( "BUILD.bazel" );
 
     if ( !dir.toFile().exists() && !dir.toFile().mkdirs() )
     {
@@ -35,6 +37,17 @@ final class GenerateCommand
       try ( final StarlarkOutput output = new StarlarkOutput( extensionBuildfile ) )
       {
         record.writeDefaultDependenciesBuild( output );
+      }
+    }
+
+    // The tool will emit the `BUILD.bazel` file for the package containing the config file
+    // if none exist. If a `BUILD.bazel` exists then the tool assumes the user has supplied
+    // it or it is an artifact from a previous run.
+    if ( !configBuildfile.toFile().exists() )
+    {
+      try ( final StarlarkOutput output = new StarlarkOutput( configBuildfile ) )
+      {
+        record.writeDefaultConfigBuild( output );
       }
     }
 
