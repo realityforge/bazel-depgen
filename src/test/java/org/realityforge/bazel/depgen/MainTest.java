@@ -963,9 +963,7 @@ public class MainTest
   public void run_validDefaultSettings()
     throws Exception
   {
-    // Need to declare repositories otherwise we never even try to load settings
     writeWorkspace();
-    // Need to declare repositories otherwise we never even try to load settings
     writeConfigFile( "repositories:\n" +
                      "  - name: central\n" +
                      "    url: http://repo1.maven.org/maven2\n" );
@@ -990,9 +988,7 @@ public class MainTest
   public void run_validSpecifiedSettings()
     throws Exception
   {
-    // Need to declare repositories otherwise we never even try to load settings
     writeWorkspace();
-    // Need to declare repositories otherwise we never even try to load settings
     writeConfigFile( "repositories:\n" +
                      "  - name: central\n" +
                      "    url: http://repo1.maven.org/maven2\n" );
