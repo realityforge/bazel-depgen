@@ -2,9 +2,11 @@ package org.realityforge.bazel.depgen.record;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -14,6 +16,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.AuthenticationContext;
+import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.metadata.RecordBuildCallback;
@@ -220,7 +223,7 @@ public final class ApplicationRecord
     writeTargetMacro( output );
   }
 
-  public void writeDefaultDependenciesBuild( @Nonnull final StarlarkOutput output )
+  public void writeDefaultExtensionBuild( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     output.write( "# File is auto-generated from " + getPathFromExtensionToConfig() +
@@ -242,8 +245,9 @@ public final class ApplicationRecord
 
     output.write( targetMacroName + "()" );
 
-    if ( getRelativeConfigPath().toString().equals( "" ) )
+    if ( getRelativeConfigDirFromExtension().toString().isEmpty() )
     {
+      output.newLine();
       output.write( "exports_files([\"" + getSource().getConfigLocation().getFileName() + "\"])" );
     }
   }
@@ -323,6 +327,53 @@ public final class ApplicationRecord
       .orElse( null );
   }
 
+  void writeVerifyTarget( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + _source.getOptions().getNamePrefix() + "verify_config_sha256\"" );
+    final String configLabel = "//" + getRelativeConfigPath() + ":" + _source.getConfigLocation().getFileName();
+
+    final ArtifactRecord artifact = findArtifact( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
+    final String depgenArtifactLabel;
+    if ( null != artifact )
+    {
+      depgenArtifactLabel = ":" + artifact.getLabel( Nature.Java );
+    }
+    else
+    {
+      final ReplacementModel replacement =
+        getSource().findReplacement( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
+      assert null != replacement;
+      depgenArtifactLabel = replacement.getTarget( Nature.Java );
+    }
+
+    arguments.put( "srcs", Arrays.asList( "\"" + depgenArtifactLabel + "\"", "\"" + configLabel + "\"" ) );
+
+    arguments.put( "outs", Collections.singletonList( "\"command-output.txt\"" ) );
+
+    //TODO: Fix raw java command by using toolchain infrastructure ... somehow
+    arguments.put( "cmd", "\"java " +
+                          "-jar $(location " + depgenArtifactLabel + ") " +
+                          "--config-file $(location " + configLabel + ") " +
+                          "--quiet " +
+                          "hash " +
+                          "--verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256)" );
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    output.writeCall( "native.genrule", arguments );
+  }
+
+  @Nonnull
+  private Path getRelativeConfigDirFromExtension()
+  {
+    final Path configLocation = _source.getConfigLocation();
+    final Path extensionFile = _source.getOptions().getExtensionFile();
+    return extensionFile.getParent()
+      .toAbsolutePath()
+      .normalize()
+      .relativize( configLocation.getParent().toAbsolutePath().normalize() );
+  }
+
   @Nonnull
   private Path getRelativeConfigPath()
   {
@@ -346,6 +397,11 @@ public final class ApplicationRecord
         final String comment =
           "Macro to define targets for dependencies specified by '" + getPathFromExtensionToConfig() + "'.";
         macro.writeMultilineComment( o -> o.write( comment ) );
+        if ( getSource().getOptions().verifyConfigSha256() )
+        {
+          macro.newLine();
+          writeVerifyTarget( output );
+        }
         for ( final ArtifactRecord artifact : getArtifacts() )
         {
           if ( null == artifact.getReplacementModel() )

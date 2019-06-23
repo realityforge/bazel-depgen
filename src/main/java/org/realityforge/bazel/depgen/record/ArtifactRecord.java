@@ -18,7 +18,9 @@ import org.realityforge.bazel.depgen.config.J2clConfig;
 import org.realityforge.bazel.depgen.config.J2clMode;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.PluginConfig;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
+import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
 import org.realityforge.bazel.depgen.model.ReplacementTargetModel;
 import org.realityforge.bazel.depgen.util.ArtifactUtil;
@@ -615,7 +617,19 @@ public final class ArtifactRecord
                        .sorted()
                        .collect( Collectors.toList() ) );
     }
+    if ( shouldDependOnVerify() )
+    {
+      arguments.put( "data", Collections.singletonList( "\":" + _application.getSource().getOptions().getNamePrefix() + "verify_config_sha256\"" ) );
+    }
     output.writeCall( "native.java_import", arguments );
+  }
+
+  private boolean shouldDependOnVerify()
+  {
+    return !_application.getSource().isSystemArtifact( getArtifact().getGroupId(), getArtifact().getArtifactId() ) &&
+         _application.getSource().getOptions().verifyConfigSha256() &&
+         getRuntimeDeps().isEmpty() &&
+         getDeps().isEmpty();
   }
 
   void writeJ2clLibrary( @Nonnull final StarlarkOutput output )
@@ -647,6 +661,10 @@ public final class ArtifactRecord
                          .sorted()
                          .collect( Collectors.toList() ) );
       }
+      if ( shouldDependOnVerify() )
+      {
+        arguments.put( "data", Collections.singletonList( "\":" + _application.getSource().getOptions().getNamePrefix() + "verify_config_sha256\"" ) );
+      }
       output.writeCall( "j2cl_library", arguments );
     }
     else
@@ -654,6 +672,10 @@ public final class ArtifactRecord
       assert J2clMode.Import == mode;
       arguments.put( "jar", "\"" + getQualifiedBinaryLabel() + "\"" );
       arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+      if ( shouldDependOnVerify() )
+      {
+        arguments.put( "data", Collections.singletonList( "\":" + _application.getSource().getOptions().getNamePrefix() + "verify_config_sha256\"" ) );
+      }
       output.writeCall( "j2cl_import", arguments );
     }
   }

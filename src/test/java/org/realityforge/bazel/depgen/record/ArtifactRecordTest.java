@@ -69,6 +69,7 @@ public class ArtifactRecordTest
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -96,6 +97,7 @@ public class ArtifactRecordTest
                   "    srcjar = \"@zeapp_com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":zeapp_verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -119,6 +121,7 @@ public class ArtifactRecordTest
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -142,6 +145,7 @@ public class ArtifactRecordTest
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -287,6 +291,7 @@ public class ArtifactRecordTest
                     "    srcjar = \"@com_example__rta__33_0__sources//file\",\n" +
                     "    tags = [\"maven_coordinates=com.example:rtA:33.0\"],\n" +
                     "    visibility = [\"//visibility:private\"],\n" +
+                    "    data = [\":verify_config_sha256\"],\n" +
                     ")\n" );
     }
   }
@@ -547,6 +552,7 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp__1_0-j2cl\",\n" +
                   "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -573,6 +579,7 @@ public class ArtifactRecordTest
                   "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "    js_suppress = [\"checkDebuggerStatement\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -598,6 +605,7 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp__1_0-j2cl\",\n" +
                   "    jar = \"@com_example__myapp__1_0//file\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -700,6 +708,7 @@ public class ArtifactRecordTest
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" +
                   "native.java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
@@ -747,6 +756,7 @@ public class ArtifactRecordTest
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" +
                   "native.java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__plugin\",\n" +
@@ -782,6 +792,7 @@ public class ArtifactRecordTest
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" +
                   "native.java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__plugin\",\n" +
@@ -948,6 +959,7 @@ public class ArtifactRecordTest
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -981,6 +993,7 @@ public class ArtifactRecordTest
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" +
                   "native.java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
@@ -1030,6 +1043,7 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp__1_0-j2cl\",\n" +
                   "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -1057,6 +1071,7 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp__1_0-j2cl\",\n" +
                   "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" +
                   "\n" +
                   "native.alias(\n" +
@@ -1069,6 +1084,7 @@ public class ArtifactRecordTest
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 

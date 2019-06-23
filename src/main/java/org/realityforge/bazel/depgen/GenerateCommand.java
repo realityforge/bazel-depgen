@@ -36,7 +36,7 @@ final class GenerateCommand
     {
       try ( final StarlarkOutput output = new StarlarkOutput( extensionBuildfile ) )
       {
-        record.writeDefaultDependenciesBuild( output );
+        record.writeDefaultExtensionBuild( output );
       }
     }
 
