@@ -145,7 +145,12 @@ final class SimpleTransferListener
     final Logger logger = _environment.logger();
     if ( logger.isLoggable( Level.WARNING ) )
     {
-      logger.log( Level.WARNING, "Transfer Corrupted: " + event.getResource().getResourceName(), event.getException() );
+      logger.log( Level.WARNING,
+                  "Transfer Corrupted: " + event.getResource().getResourceName() + " due to " + event.getException() );
+    }
+    if ( logger.isLoggable( Level.FINE ) )
+    {
+      logger.log( Level.FINE, null, event.getException() );
     }
   }
 
