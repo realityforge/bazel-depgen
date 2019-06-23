@@ -14,6 +14,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -26,6 +27,7 @@ import org.eclipse.aether.util.artifact.SubArtifact;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
+import org.realityforge.bazel.depgen.record.ArtifactRecord;
 import org.testng.Assert;
 import org.testng.IHookCallBack;
 import org.testng.IHookable;
@@ -397,5 +399,19 @@ public abstract class AbstractTest
   protected final String asString( @Nonnull final ByteArrayOutputStream outputStream )
   {
     return new String( outputStream.toByteArray(), StandardCharsets.US_ASCII );
+  }
+
+  protected final void assertNonSystemArtifactList( @Nonnull final ApplicationRecord record,
+                                                    @Nonnull final String expected )
+  {
+    assertEquals( record.getArtifacts()
+                    .stream()
+                    .map( ArtifactRecord::getKey )
+                    .collect( Collectors.joining( "," ) ), expected );
+  }
+
+  protected final void assertNonSystemArtifactCount( @Nonnull final ApplicationRecord record, final int expectedCount )
+  {
+    assertEquals( record.getArtifacts().size(), expectedCount );
   }
 }

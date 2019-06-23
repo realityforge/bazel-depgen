@@ -212,7 +212,7 @@ public final class ArtifactRecord
   }
 
   @Nonnull
-  String getKey()
+  public String getKey()
   {
     final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
     return artifact.getGroupId() + ":" + artifact.getArtifactId();

@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
@@ -71,7 +70,7 @@ public class ApplicationRecordTest
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     assertTrue( record.getAuthenticationContexts().isEmpty() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertNotNull( artifactRecord.getArtifactModel() );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
@@ -106,7 +105,7 @@ public class ApplicationRecordTest
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     assertTrue( record.getAuthenticationContexts().isEmpty() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertNotNull( artifactRecord.getArtifactModel() );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
@@ -148,7 +147,7 @@ public class ApplicationRecordTest
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     assertTrue( record.getAuthenticationContexts().isEmpty() );
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getSourceSha256(),
                   "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
@@ -173,7 +172,7 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
+    assertNonSystemArtifactCount( record, 2 );
     final ArtifactRecord artifactRecord1 = artifacts.get( 0 );
     assertNull( artifactRecord1.getSourceSha256() );
     assertNull( artifactRecord1.getSourceUrls() );
@@ -197,7 +196,7 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertNull( artifactRecord.getSourceSha256() );
     assertNull( artifactRecord.getSourceUrls() );
@@ -219,7 +218,7 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getName( Nature.Java ), "myapp_com_example__myapp__1_0" );
     assertEquals( artifactRecord.getAlias( Nature.Java ), "myapp_com_example__myapp" );
@@ -243,7 +242,7 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getName( Nature.Java ), "myapp_com_example__myapp__1_0" );
     assertEquals( artifactRecord.getAlias( Nature.Java ), "myapp_com_example__myapp" );
@@ -314,13 +313,8 @@ public class ApplicationRecordTest
 
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
     assertTrue( record.getAuthenticationContexts().isEmpty() );
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 4 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example:myapp," +
-                  "com.example:mylib," +
-                  "com.example:rtA," +
-                  "com.example:rtB" );
+    assertNonSystemArtifactCount( record, 4 );
+    assertNonSystemArtifactList( record, "com.example:myapp,com.example:mylib,com.example:rtA,com.example:rtB" );
 
     {
       final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
@@ -413,10 +407,8 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example:myapp,com.example:mylib" );
+    assertNonSystemArtifactCount( record, 2 );
+    assertNonSystemArtifactList( record, "com.example:myapp,com.example:mylib" );
 
     {
       final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
@@ -500,10 +492,8 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord( cacheDir );
 
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example:myapp,com.example:mylib" );
+    assertNonSystemArtifactCount( record, 2 );
+    assertNonSystemArtifactList( record, "com.example:myapp,com.example:mylib" );
 
     {
       final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
@@ -585,8 +575,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
+    assertNonSystemArtifactCount( record, 2 );
 
     final ArtifactRecord artifactRecord = record.getArtifact( "com.example", "myapp" );
     final List<ArtifactRecord> deps = artifactRecord.getDeps();
@@ -610,8 +599,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
+    assertNonSystemArtifactCount( record, 2 );
 
     final ArtifactRecord artifactRecord = record.getArtifact( "com.example", "myapp" );
     final List<ArtifactRecord> deps = artifactRecord.getRuntimeDeps();
@@ -634,8 +622,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 3 );
+    assertNonSystemArtifactCount( record, 3 );
 
     assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
                   Collections.singletonList( Nature.J2cl ) );
@@ -661,8 +648,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 3 );
+    assertNonSystemArtifactCount( record, 3 );
 
     assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
                   Collections.singletonList( Nature.J2cl ) );
@@ -689,8 +675,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 3 );
+    assertNonSystemArtifactCount( record, 3 );
 
     assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
                   Collections.singletonList( Nature.J2cl ) );
@@ -721,8 +706,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 3 );
+    assertNonSystemArtifactCount( record, 3 );
 
     assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
                   Collections.singletonList( Nature.J2cl ) );
@@ -789,8 +773,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 3 );
+    assertNonSystemArtifactCount( record, 3 );
 
     assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
                   Collections.singletonList( Nature.Java ) );
@@ -839,8 +822,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 3 );
+    assertNonSystemArtifactCount( record, 3 );
 
     assertEquals( record.getArtifact( "com.example", "myapp" ).getNatures(),
                   Collections.singletonList( Nature.Plugin ) );
@@ -892,8 +874,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 5 );
+    assertNonSystemArtifactCount( record, 5 );
 
     final ArtifactRecord artifactRecord = record.getArtifact( "com.example", "myapp" );
     final List<ArtifactRecord> deps = artifactRecord.getDeps();
@@ -924,8 +905,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 5 );
+    assertNonSystemArtifactCount( record, 5 );
 
     final ArtifactRecord artifactRecord = record.getArtifact( "com.example", "myapp" );
     final List<ArtifactRecord> deps = artifactRecord.getRuntimeDeps();
@@ -952,8 +932,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
+    assertNonSystemArtifactCount( record, 2 );
 
     final ArtifactRecord artifactRecord = record.getArtifact( "com.example", "myapp" );
     final List<ArtifactRecord> deps = artifactRecord.getDeps();
@@ -976,10 +955,8 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example:myapp,com.example:rtA" );
+    assertNonSystemArtifactCount( record, 2 );
+    assertNonSystemArtifactList( record, "com.example:myapp,com.example:rtA" );
 
     {
       final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
@@ -1027,10 +1004,8 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example:myapp,com.example:mylib" );
+    assertNonSystemArtifactCount( record, 2 );
+    assertNonSystemArtifactList( record, "com.example:myapp,com.example:mylib" );
 
     {
       final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
@@ -1074,10 +1049,8 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 3 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example:myapp,com.example:mylib,com.example:rtA" );
+    assertNonSystemArtifactCount( record, 3 );
+    assertNonSystemArtifactList( record, "com.example:myapp,com.example:mylib,com.example:rtA" );
 
     {
       final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
@@ -1130,10 +1103,8 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example:myapp,com.example:mylib" );
+    assertNonSystemArtifactCount( record, 2 );
+    assertNonSystemArtifactList( record, "com.example:myapp,com.example:mylib" );
 
     {
       final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
@@ -1177,10 +1148,8 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example:myapp" );
+    assertNonSystemArtifactCount( record, 1 );
+    assertNonSystemArtifactList( record, "com.example:myapp" );
 
     final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
     assertNotNull( artifactRecord );
@@ -1207,10 +1176,8 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example:myapp" );
+    assertNonSystemArtifactCount( record, 1 );
+    assertNonSystemArtifactList( record, "com.example:myapp" );
 
     final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
     assertNotNull( artifactRecord );
@@ -1236,10 +1203,8 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example:myapp,com.example:mylib" );
+    assertNonSystemArtifactCount( record, 2 );
+    assertNonSystemArtifactList( record, "com.example:myapp,com.example:mylib" );
 
     {
       final ArtifactRecord artifactRecord = record.findArtifact( "com.example", "myapp" );
@@ -1310,7 +1275,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
     assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
@@ -1334,7 +1299,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
     assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Plugin ) );
@@ -1355,7 +1320,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
     assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Plugin ) );
@@ -1377,7 +1342,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
+    assertNonSystemArtifactCount( record, 2 );
     {
       final ArtifactRecord artifactRecord = artifacts.get( 0 );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
@@ -1410,7 +1375,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
     assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Plugin ) );
@@ -1437,7 +1402,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
     assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Plugin ) );
@@ -1503,7 +1468,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
     assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Plugin ) );
@@ -1565,7 +1530,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
     assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
@@ -1588,7 +1553,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
     assertEquals( artifactRecord.getName( Nature.Java ), "gwt_com_example__myapp__1_0" );
@@ -1634,9 +1599,8 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example.app1:core,com.example.app2:core" );
+    assertNonSystemArtifactCount( record, 2 );
+    assertNonSystemArtifactList( record, "com.example.app1:core,com.example.app2:core" );
 
     final ArtifactRecord artifactRecord1 = artifacts.get( 0 );
     assertEquals( artifactRecord1.getKey(), "com.example.app1:core" );
@@ -1683,9 +1647,8 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example.app1:core,com.example.app2:core" );
+    assertNonSystemArtifactCount( record, 2 );
+    assertNonSystemArtifactList( record, "com.example.app1:core,com.example.app2:core" );
 
     final ArtifactRecord artifactRecord1 = artifacts.get( 0 );
     assertEquals( artifactRecord1.getKey(), "com.example.app1:core" );
@@ -1715,9 +1678,8 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 2 );
-    assertEquals( artifacts.stream().map( ArtifactRecord::getKey ).collect( Collectors.joining( "," ) ),
-                  "com.example.app1:core,com.example.app2:core" );
+    assertNonSystemArtifactCount( record, 2 );
+    assertNonSystemArtifactList( record, "com.example.app1:core,com.example.app2:core" );
 
     final ArtifactRecord artifactRecord1 = artifacts.get( 0 );
     assertEquals( artifactRecord1.getKey(), "com.example.app1:core" );
@@ -1748,7 +1710,7 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertNotNull( artifactRecord.getArtifactModel() );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
@@ -1790,7 +1752,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.J2cl ) );
   }
@@ -1809,7 +1771,7 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.J2cl ) );
   }
