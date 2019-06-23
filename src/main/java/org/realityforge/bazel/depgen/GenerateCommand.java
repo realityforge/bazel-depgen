@@ -20,7 +20,7 @@ final class GenerateCommand
     final OptionsModel options = record.getSource().getOptions();
     final Path extensionFile = options.getExtensionFile();
     final Path dir = extensionFile.getParent();
-    final Path buildfile = dir.resolve( "BUILD.bazel" );
+    final Path extensionBuildfile = dir.resolve( "BUILD.bazel" );
 
     if ( !dir.toFile().exists() && !dir.toFile().mkdirs() )
     {
@@ -30,8 +30,9 @@ final class GenerateCommand
     // The tool will emit the `BUILD.bazel` file for the package containing the extension
     // if none exist. If a `BUILD.bazel` exists then the tool assumes the user has supplied
     // it or it is an artifact from a previous run.
+    if ( !extensionBuildfile.toFile().exists() )
     {
-      try ( final StarlarkOutput output = new StarlarkOutput( buildfile ) )
+      try ( final StarlarkOutput output = new StarlarkOutput( extensionBuildfile ) )
       {
         record.writeDefaultDependenciesBuild( output );
       }
