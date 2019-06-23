@@ -2098,8 +2098,6 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:2.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
-    final ArtifactRecord artifactRecord1 = record.getArtifacts().get( 0 );
-    final ArtifactRecord artifactRecord2 = record.getArtifacts().get( 1 );
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
