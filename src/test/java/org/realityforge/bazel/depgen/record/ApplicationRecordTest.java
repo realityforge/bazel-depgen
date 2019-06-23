@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen.record;
 
 import gir.io.FileUtil;
 import java.io.ByteArrayOutputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +11,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
@@ -1971,13 +1971,13 @@ public class ApplicationRecordTest
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
+    final URI uri = dir.toUri();
 
     writeConfigFile( dir, "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
-    final ArtifactRecord artifactRecord = record.getArtifacts().get( 0 );
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
@@ -1993,14 +1993,14 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + url( artifactRecord ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + sourceUrl( artifactRecord ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" );
   }
 
@@ -2009,6 +2009,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
+    final URI uri = dir.toUri();
 
     writeConfigFile( dir, "options:\n" +
                           "  supportDependencyOmit: true\n" +
@@ -2033,14 +2034,14 @@ public class ApplicationRecordTest
                   "            name = \"com_example__myapp__1_0\",\n" +
                   "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "            urls = [\"" + url( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                  "            urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "        )\n" +
                   "\n" +
                   "        http_file(\n" +
                   "            name = \"com_example__myapp__1_0__sources\",\n" +
                   "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "            urls = [\"" + sourceUrl( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                  "            urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "        )\n" );
   }
 
@@ -2049,6 +2050,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
+    final URI uri = dir.toUri();
 
     writeConfigFile( dir, "options:\n" +
                           "  workspaceMacroName: generate_myapp_workspace_rules\n" +
@@ -2072,14 +2074,14 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + url( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + sourceUrl( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" );
   }
 
@@ -2088,6 +2090,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
+    final URI uri = dir.toUri();
 
     writeConfigFile( dir, "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" );
@@ -2112,28 +2115,28 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + url( artifactRecord1 ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + sourceUrl( artifactRecord1 ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_file(\n" +
                   "        name = \"com_example__mylib__2_0\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/2.0/mylib-2.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + url( artifactRecord2 ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/mylib/2.0/mylib-2.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_file(\n" +
                   "        name = \"com_example__mylib__2_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/2.0/mylib-2.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + sourceUrl( artifactRecord2 ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/mylib/2.0/mylib-2.0-sources.jar\"],\n" +
                   "    )\n" );
   }
 
@@ -2142,6 +2145,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
+    final URI uri = dir.toUri();
 
     writeConfigFile( dir, "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" +
@@ -2168,14 +2172,14 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + url( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + sourceUrl( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" );
   }
 
@@ -2226,6 +2230,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
+    final URI uri = dir.toUri();
 
     writeConfigFile( dir, "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" );
@@ -2263,14 +2268,14 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + url( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + sourceUrl( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "def generate_targets():\n" +
@@ -2320,6 +2325,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
+    final URI uri = dir.toUri();
 
     writeConfigFile( dir, "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" +
@@ -2359,14 +2365,14 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + url( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + sourceUrl( record.getArtifacts().get( 0 ) ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "def generate_targets():\n" +
@@ -2402,6 +2408,7 @@ public class ApplicationRecordTest
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
+    final URI uri = dir.toUri();
 
     writeConfigFile( dir, "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" +
@@ -2410,9 +2417,6 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
-    final ArtifactRecord artifactRecord1 = artifacts.get( 0 );
-    final ArtifactRecord artifactRecord2 = artifacts.get( 1 );
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
@@ -2446,28 +2450,28 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + url( artifactRecord1 ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + sourceUrl( artifactRecord1 ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_file(\n" +
                   "        name = \"com_example__mylib__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + url( artifactRecord2 ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_file(\n" +
                   "        name = \"com_example__mylib__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + sourceUrl( artifactRecord2 ) + "\"],\n" +
+                  "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "def generate_targets():\n" +
@@ -2548,33 +2552,5 @@ public class ApplicationRecordTest
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:mylib:jar:1.0' declared target for nature 'J2cl' but artifact does not have specified nature." );
-  }
-
-  @Nonnull
-  private String url( @Nonnull final ArtifactRecord artifactRecord )
-  {
-    return urls( artifactRecord ).get( 0 );
-  }
-
-  @Nonnull
-  private String sourceUrl( @Nonnull final ArtifactRecord artifactRecord )
-  {
-    return sourceUrls( artifactRecord ).get( 0 );
-  }
-
-  @Nonnull
-  private List<String> urls( @Nonnull final ArtifactRecord artifactRecord )
-  {
-    final List<String> urls2 = artifactRecord.getUrls();
-    assertNotNull( urls2 );
-    return urls2;
-  }
-
-  @Nonnull
-  private List<String> sourceUrls( @Nonnull final ArtifactRecord artifactRecord )
-  {
-    final List<String> srcUrls2 = artifactRecord.getSourceUrls();
-    assertNotNull( srcUrls2 );
-    return srcUrls2;
   }
 }
