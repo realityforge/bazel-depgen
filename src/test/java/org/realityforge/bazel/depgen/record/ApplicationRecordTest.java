@@ -2434,7 +2434,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void writeDefaultBuild()
+  public void writeDefaultDependenciesBuild()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
@@ -2446,7 +2446,7 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    record.writeDefaultBuild( new StarlarkOutput( outputStream ) );
+    record.writeDefaultDependenciesBuild( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
                   "# File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "# Contents can be edited and will not be overridden.\n" +
@@ -2455,6 +2455,31 @@ public class ApplicationRecordTest
                   "load(\"//thirdparty:dependencies.bzl\", \"generate_targets\")\n" +
                   "\n" +
                   "generate_targets()\n" );
+  }
+
+  @Test
+  public void writeDefaultDependenciesBuild_configFileInSameDirectory()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir, "options:\n" +
+                          "  extensionFile: dependencies.yaml\n" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    record.writeDefaultDependenciesBuild( new StarlarkOutput( outputStream ) );
+    assertEquals( asString( outputStream ),
+                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# Contents can be edited and will not be overridden.\n" +
+                  "package(default_visibility = [\"//visibility:public\"])\n" +
+                  "\n" +
+                  "load(\"//:dependencies.yaml\", \"generate_targets\")\n" +
+                  "\n" +
+                  "generate_targets()\n" +
+                  "exports_files([\"dependencies.yml\"])\n" );
   }
 
   @Test

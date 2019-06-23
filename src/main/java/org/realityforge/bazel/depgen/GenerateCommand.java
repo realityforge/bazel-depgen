@@ -32,7 +32,7 @@ final class GenerateCommand
     {
       try ( final StarlarkOutput output = new StarlarkOutput( buildfile ) )
       {
-        record.writeDefaultBuild( output );
+        record.writeDefaultDependenciesBuild( output );
       }
     }
 

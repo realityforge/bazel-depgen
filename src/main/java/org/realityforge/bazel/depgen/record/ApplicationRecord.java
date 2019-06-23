@@ -220,7 +220,7 @@ public final class ApplicationRecord
     writeTargetMacro( output );
   }
 
-  public void writeDefaultBuild( @Nonnull final StarlarkOutput output )
+  public void writeDefaultDependenciesBuild( @Nonnull final StarlarkOutput output )
     throws IOException
   {
     output.write( "# File is auto-generated from " + getPathFromExtensionToConfig() +
@@ -241,6 +241,11 @@ public final class ApplicationRecord
     output.newLine();
 
     output.write( targetMacroName + "()" );
+
+    if ( getRelativeConfigPath().toString().equals( "" ) )
+    {
+      output.write( "exports_files([\"" + getSource().getConfigLocation().getFileName() + "\"])" );
+    }
   }
 
   void replacement( @Nonnull final DependencyNode node )
@@ -303,6 +308,13 @@ public final class ApplicationRecord
       .filter( predicate )
       .findAny()
       .orElse( null );
+  }
+
+  @Nonnull
+  private Path getRelativeConfigPath()
+  {
+    final Path configLocation = _source.getConfigLocation();
+    return configLocation.getParent().relativize( _source.getOptions().getWorkspaceDirectory() );
   }
 
   void writeTargetMacro( @Nonnull final StarlarkOutput output )
