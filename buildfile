@@ -45,6 +45,7 @@ define 'bazel-depgen' do
   pom.add_apache_v2_license
   pom.add_github_project('realityforge/bazel-depgen')
   pom.add_developer('realityforge', 'Peter Donald')
+  pom.dependency_filter = Proc.new {|_| false}
 
   compile.with :javax_annotation,
                :getopt4j,
