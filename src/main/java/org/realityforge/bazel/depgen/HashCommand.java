@@ -58,11 +58,22 @@ final class HashCommand
   {
     final String configSha256 = context.loadModel().getConfigSha256();
     final Logger logger = context.environment().logger();
-    if ( null == _expectedSha256 || _expectedSha256.equals( configSha256 ) )
+    if ( null == _expectedSha256 )
     {
       if ( logger.isLoggable( Level.WARNING ) )
       {
         logger.log( Level.WARNING, "Content SHA256: " + configSha256 );
+      }
+      return ExitCodes.SUCCESS_EXIT_CODE;
+    }
+    else if ( _expectedSha256.equals( configSha256 ) )
+    {
+      // If we are verifying, it is quiet mode and verification is a success, there
+      // is no need to emit any message. This stops the tool filling up bazel build
+      // logs with spurious messages.
+      if ( logger.isLoggable( Level.INFO ) )
+      {
+        logger.log( Level.INFO, "Content SHA256: " + configSha256 );
       }
       return ExitCodes.SUCCESS_EXIT_CODE;
     }
