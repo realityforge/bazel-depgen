@@ -31,7 +31,7 @@ public class ApplicationModelTest
     final ApplicationModel model = ApplicationModel.parse( source, false );
     assertEquals( model.getSource(), source );
     assertFalse( model.shouldResetCachedMetadata() );
-    assertEquals( model.getConfigSha256(), "121141B72422F4A4487D9D13E43F920BA5DE1A8837DDDA78204AD3D74B5DD147" );
+    assertEquals( model.getConfigSha256(), "91FA6F7CF42E0E65BAC6B0CA263E220439F61646AA95DA8D0BA085B0C141D8BC" );
     assertEquals( model.getConfigLocation(), configFile );
     final List<RepositoryModel> repositories = model.getRepositories();
     assertEquals( repositories.size(), 1 );
@@ -141,13 +141,13 @@ public class ApplicationModelTest
     // ensure sha changes as more data added
     final ApplicationConfig config1 = new ApplicationConfig();
     final String shaA = ApplicationModel.calculateConfigSha256( config1 );
-    assertEquals( shaA, "CA3D163BAB055381827226140568F3BEF7EAAC187CEBD76878E0B63E9E442356" );
+    assertEquals( shaA, "C63A169524CF58709A43361D23D8B9C0DBBB999461CA1500EB374D7A72C3334C" );
     final OptionsConfig options = new OptionsConfig();
     config1.setOptions( options );
     final String shaB = ApplicationModel.calculateConfigSha256( config1 );
-    assertEquals( shaB, "1473761ABB0E15C32E8D598B873750FAD3B57B737B7FF5C49A846EA921C80801" );
+    assertEquals( shaB, "EF5CF3CC89EAD37C90FC2CB27F3922F7D7CD7CB63180371E9F737AF7CA8E122E" );
     options.setDefaultNature( Nature.Java );
     final String shaC = ApplicationModel.calculateConfigSha256( config1 );
-    assertEquals( shaC, "C60262623878C465934DD29FBEF0EA8C7C0FD4CA29ED6F87177D2672BE75AC59" );
+    assertEquals( shaC, "51547EE556C5AD9452C5F885ED9FC3772B39A66ED0A43152F77EB790127D20C3" );
   }
 }

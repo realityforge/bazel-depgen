@@ -171,7 +171,7 @@ public class MainTest
     writeConfigFile( "" );
 
     final String output = failToProcessOptions( "--version" );
-    assertEquals( output, "DepGen Version: " );
+    assertEquals( output, "DepGen Version: 1" );
   }
 
   @Test

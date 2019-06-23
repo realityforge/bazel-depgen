@@ -19,7 +19,7 @@ public class HashCommandTest
     final int exitCode = command.run( new CommandContextImpl( newEnvironment( handler ) ) );
     assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
     assertEquals( handler.toString(),
-                  "Content SHA256: 68814747A184F6E9A415AC0B97061A8ED1A79E487364555F3BAE5E0B0785DA39" );
+                  "Content SHA256: 0A8DBED4B09238126BA5E065EB4E392A1B631FA1A20FCA9AE1DF5AA364F59C96" );
   }
 
   @Test
@@ -36,12 +36,12 @@ public class HashCommandTest
     final boolean parsed =
       command.processOptions( environment,
                               "--verify-sha256",
-                              "68814747A184F6E9A415AC0B97061A8ED1A79E487364555F3BAE5E0B0785DA39" );
+                              "0A8DBED4B09238126BA5E065EB4E392A1B631FA1A20FCA9AE1DF5AA364F59C96" );
     assertTrue( parsed );
     final int exitCode = command.run( new CommandContextImpl( environment ) );
     assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
     assertEquals( handler.toString(),
-                  "Content SHA256: 68814747A184F6E9A415AC0B97061A8ED1A79E487364555F3BAE5E0B0785DA39" );
+                  "Content SHA256: 0A8DBED4B09238126BA5E065EB4E392A1B631FA1A20FCA9AE1DF5AA364F59C96" );
   }
 
   @Test
@@ -60,7 +60,7 @@ public class HashCommandTest
     final int exitCode = command.run( new CommandContextImpl( environment ) );
     assertEquals( exitCode, ExitCodes.ERROR_BAD_SHA256_CONFIG_CODE );
     assertEquals( handler.toString(),
-                  "Content SHA256: 68814747A184F6E9A415AC0B97061A8ED1A79E487364555F3BAE5E0B0785DA39 (Expected XXXX)" );
+                  "Content SHA256: 0A8DBED4B09238126BA5E065EB4E392A1B631FA1A20FCA9AE1DF5AA364F59C96 (Expected XXXX)" );
   }
 
   @Test
