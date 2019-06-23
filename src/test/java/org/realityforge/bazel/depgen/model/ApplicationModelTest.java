@@ -2,8 +2,10 @@ package org.realityforge.bazel.depgen.model;
 
 import gir.io.FileUtil;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
@@ -64,6 +66,64 @@ public class ApplicationModelTest
     final GlobalExcludeModel excludeModel = excludes.get( 0 );
     assertEquals( excludeModel.getGroup(), "com.example" );
     assertEquals( excludeModel.getId(), "blib" );
+
+    final List<ArtifactModel> systemArtifacts = model.getSystemArtifacts();
+    assertEquals( systemArtifacts.size(), 1 );
+    final ArtifactModel systemArtifact = systemArtifacts.get( 0 );
+    assertEquals( systemArtifact.getGroup(), DepGenConfig.getGroupId() );
+    assertEquals( systemArtifact.getId(), DepGenConfig.getArtifactId() );
+    assertEquals( systemArtifact.getVersion(), DepGenConfig.getVersion() );
+  }
+
+  @Test
+  public void explicitDepGenArtifactListed()
+    throws Exception
+  {
+    final String coord = DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + ":jar:all:2.33";
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: " + coord + "\n" );
+    final Path configFile = getDefaultConfigFile();
+    final ApplicationConfig source = ApplicationConfig.parse( configFile );
+    final ApplicationModel model = ApplicationModel.parse( source, false );
+
+    final List<ArtifactModel> artifacts = model.getArtifacts();
+    assertEquals( artifacts.size(), 1 );
+    final ArtifactModel artifactModel = artifacts.get( 0 );
+    assertEquals( artifactModel.toCoord(), coord );
+    assertTrue( artifactModel.includeSource( true ) );
+    assertEquals( artifactModel.getNatures( Nature.J2cl ), Collections.singletonList( Nature.J2cl ) );
+    assertTrue( model.getSystemArtifacts().isEmpty() );
+  }
+
+  @Test
+  public void explicitDepGenMarkedAsReplacement()
+    throws Exception
+  {
+    final String coord = DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId();
+    writeConfigFile( "replacements:\n" +
+                     "  - coord: " + coord + "\n" +
+                     "    targets:\n" +
+                     "      - target: \":depgen\"\n" );
+    final Path configFile = getDefaultConfigFile();
+    final ApplicationConfig source = ApplicationConfig.parse( configFile );
+    final ApplicationModel model = ApplicationModel.parse( source, false );
+
+    assertTrue( model.getArtifacts().isEmpty() );
+    assertTrue( model.getSystemArtifacts().isEmpty() );
+    assertEquals( model.getReplacements().size(), 1 );
+  }
+
+  @Test
+  public void verifyConfigSha_false()
+    throws Exception
+  {
+    writeConfigFile( "options:\n" +
+                     "  verifyConfigSha256: false\n" );
+    final Path configFile = getDefaultConfigFile();
+    final ApplicationConfig source = ApplicationConfig.parse( configFile );
+    final ApplicationModel model = ApplicationModel.parse( source, false );
+
+    assertTrue( model.getSystemArtifacts().isEmpty() );
   }
 
   @Test
@@ -93,6 +153,31 @@ public class ApplicationModelTest
 
     assertEquals( artifactModel, model.findArtifact( "com.example", "myapp" ) );
     assertNull( model.findArtifact( "com.example", "noexist" ) );
+
+    // Also finds system artifacts
+    final ArtifactModel artifactModel2 = model.findArtifact( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
+    assertNotNull( artifactModel2 );
+    assertEquals( artifactModel2.getGroup(), DepGenConfig.getGroupId() );
+    assertEquals( artifactModel2.getId(), DepGenConfig.getArtifactId() );
+  }
+
+  @Test
+  public void isSystemArtifact()
+    throws Exception
+  {
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+
+    final ApplicationModel model = loadApplicationModel();
+
+    assertNotNull( model.findArtifact( "com.example", "myapp" ) );
+    assertFalse( model.isSystemArtifact( "com.example", "myapp" ) );
+
+    assertNull( model.findArtifact( "com.example", "noexist" ) );
+    assertFalse( model.isSystemArtifact( "com.example", "noexist" ) );
+
+    assertNotNull( model.findArtifact( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() ) );
+    assertTrue( model.isSystemArtifact( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() ) );
   }
 
   @Test

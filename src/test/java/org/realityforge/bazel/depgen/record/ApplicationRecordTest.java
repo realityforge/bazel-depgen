@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
@@ -270,7 +271,6 @@ public class ApplicationRecordTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir,
-                     "repositories:\n" +
                      "  - name: my-repo\n" +
                      "    url: http://my-repo.example.com/maven2\n" );
     final ApplicationRecord record = loadApplicationRecord();
@@ -1242,6 +1242,11 @@ public class ApplicationRecordTest
     assertEquals( artifact1.getKey(), "com.example:myapp" );
 
     assertNull( record.findArtifact( "com.example", "other-no-exist" ) );
+
+    // Also finds system artifacts
+    final ArtifactRecord artifact2 = record.findArtifact( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
+    assertNotNull( artifact2 );
+    assertEquals( artifact2.getKey(), DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() );
   }
 
   @Test
@@ -1730,9 +1735,17 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
     final List<ArtifactRecord> artifacts = record.getArtifacts();
-    assertEquals( artifacts.size(), 1 );
-    final ArtifactRecord artifactRecord = artifacts.get( 0 );
-    assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
+    assertEquals( artifacts.size(), 1 + record.getSource().getSystemArtifacts().size() );
+    {
+      final ArtifactRecord artifactRecord = record.getArtifact( "com.example", "myapp" );
+      assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
+      assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
+    }
+    {
+      final ArtifactRecord artifactRecord = record.getArtifact( "org.realityforge.bazel.depgen", "bazel-depgen" );
+      assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "org.realityforge.bazel.depgen:bazel-depgen:1" );
+      assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
+    }
   }
 
   @Test
@@ -1805,6 +1818,17 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.alias(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    )\n" +
+                  "    native.java_import(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
+                  "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -1825,7 +1849,9 @@ public class ApplicationRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeTargetMacro( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "def generate_targets(omit_com_example__myapp = False):\n" +
+                  "def generate_targets(\n" +
+                  "        omit_com_example__myapp = False,\n" +
+                  "        omit_org_realityforge_bazel_depgen__bazel_depgen = False):\n" +
                   "    \"\"\"\n" +
                   "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
                   "    \"\"\"\n" +
@@ -1840,6 +1866,18 @@ public class ApplicationRecordTest
                   "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "            srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                  "            visibility = [\"//visibility:private\"],\n" +
+                  "        )\n" +
+                  "\n" +
+                  "    if not omit_org_realityforge_bazel_depgen__bazel_depgen:\n" +
+                  "        native.alias(\n" +
+                  "            name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        )\n" +
+                  "        native.java_import(\n" +
+                  "            name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "            jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
+                  "            tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
                   "            visibility = [\"//visibility:private\"],\n" +
                   "        )\n" );
   }
@@ -1875,6 +1913,17 @@ public class ApplicationRecordTest
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.alias(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    )\n" +
+                  "    native.java_import(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
+                  "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
@@ -1924,6 +1973,17 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__mylib__2_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:mylib:2.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.alias(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    )\n" +
+                  "    native.java_import(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
+                  "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -1963,6 +2023,17 @@ public class ApplicationRecordTest
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":@com_example//:mylib\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.alias(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    )\n" +
+                  "    native.java_import(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
+                  "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -1981,6 +2052,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
+    //@formatter:off
     assertEquals( asString( outputStream ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -2001,7 +2073,15 @@ public class ApplicationRecordTest
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    http_file(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" );
+    //@formatter:on
   }
 
   @Test
@@ -2021,8 +2101,11 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
+    //@formatter:off
     assertEquals( asString( outputStream ),
-                  "def generate_workspace_rules(omit_com_example__myapp = False):\n" +
+                  "def generate_workspace_rules(\n" +
+                  "        omit_com_example__myapp = False,\n" +
+                  "        omit_org_realityforge_bazel_depgen__bazel_depgen = False):\n" +
                   "    \"\"\"\n" +
                   "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
                   "\n" +
@@ -2042,7 +2125,16 @@ public class ApplicationRecordTest
                   "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "            urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        )\n" +
+                  "\n" +
+                  "    if not omit_org_realityforge_bazel_depgen__bazel_depgen:\n" +
+                  "        http_file(\n" +
+                  "            name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "            downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "            urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "        )\n" );
+    //@formatter:on
   }
 
   @Test
@@ -2062,6 +2154,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
+    //@formatter:off
     assertEquals( asString( outputStream ),
                   "def generate_myapp_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -2082,7 +2175,15 @@ public class ApplicationRecordTest
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    http_file(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" );
+    //@formatter:on
   }
 
   @Test
@@ -2101,6 +2202,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
+    //@formatter:off
     assertEquals( asString( outputStream ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -2135,7 +2237,15 @@ public class ApplicationRecordTest
                   "        downloaded_file_path = \"com/example/mylib/2.0/mylib-2.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/mylib/2.0/mylib-2.0-sources.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    http_file(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" );
+    //@formatter:on
   }
 
   @Test
@@ -2158,6 +2268,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
+    //@formatter:off
     assertEquals( asString( outputStream ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -2178,7 +2289,15 @@ public class ApplicationRecordTest
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    http_file(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" );
+    //@formatter:on
   }
 
   @Test
@@ -2238,6 +2357,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
+    //@formatter:off
     assertEquals( asString( outputStream ),
                   "# DO NOT EDIT: File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "\n" +
@@ -2276,6 +2396,13 @@ public class ApplicationRecordTest
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
+                  "    http_file(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
                   "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
@@ -2291,7 +2418,19 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.alias(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    )\n" +
+                  "    native.java_import(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
+                  "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
+    //@formatter:on
   }
 
   @Test
@@ -2334,6 +2473,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
+    //@formatter:off
     assertEquals( asString( outputStream ),
                   "# DO NOT EDIT: File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "\n" +
@@ -2373,6 +2513,13 @@ public class ApplicationRecordTest
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
+                  "    http_file(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
                   "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
@@ -2398,7 +2545,19 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.alias(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    )\n" +
+                  "    native.java_import(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
+                  "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
+    //@formatter:on
   }
 
   @Test
@@ -2418,6 +2577,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
+    //@formatter:off
     assertEquals( asString( outputStream ),
                   "# DO NOT EDIT: File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "\n" +
@@ -2472,6 +2632,13 @@ public class ApplicationRecordTest
                   "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
+                  "    http_file(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
                   "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
@@ -2497,7 +2664,19 @@ public class ApplicationRecordTest
                   "        name = \"com_example__mylib__1_0-j2cl\",\n" +
                   "        srcs = [\"@com_example__mylib__1_0__sources//file\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.alias(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    )\n" +
+                  "    native.java_import(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
+                  "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
+    //@formatter:on
   }
 
   @Test

@@ -390,7 +390,7 @@ public class MainTest
     writeConfigFile( dir, "" );
 
     final ApplicationRecord record = Main.loadRecord( newEnvironment() );
-    assertEquals( record.getArtifacts().size(), 0 );
+    assertNonSystemArtifactCount( record, 0 );
     assertEquals( record.getAuthenticationContexts().size(), 0 );
   }
 
@@ -407,7 +407,7 @@ public class MainTest
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = Main.loadRecord( newEnvironment() );
-    assertEquals( record.getArtifacts().size(), 1 );
+    assertNonSystemArtifactCount( record, 1 );
   }
 
   @Test
@@ -738,9 +738,9 @@ public class MainTest
 
     final Environment environment = newEnvironment( handler );
     Main.cacheArtifactsInRepositoryCache( environment, record );
-    assertEquals( handler.toString(),
-                  "Installed artifact 'com.example:myapp:jar:1.0' into repository cache.\n" +
-                  "Installed artifact 'com.example:myapp:jar:sources:1.0' into repository cache." );
+    assertOutputContains( handler.toString(),
+                          "Installed artifact 'com.example:myapp:jar:1.0' into repository cache.\n" +
+                          "Installed artifact 'com.example:myapp:jar:sources:1.0' into repository cache." );
 
     assertTrue( Files.exists( targetFile ) );
     assertTrue( Files.exists( sourceTargetFile ) );
@@ -778,8 +778,7 @@ public class MainTest
 
     final Environment environment = newEnvironment( handler );
     Main.cacheArtifactsInRepositoryCache( environment, record );
-    assertEquals( handler.toString(),
-                  "Installed artifact 'com.example:myapp:jar:1.0' into repository cache." );
+    assertOutputContains( handler.toString(), "Installed artifact 'com.example:myapp:jar:1.0' into repository cache." );
 
     assertTrue( Files.exists( targetFile ) );
   }
@@ -857,7 +856,7 @@ public class MainTest
                      "  - coord: com.example:myapp:1.0\n" +
                      "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n" );
     final String output = runCommand( "hash" );
-    assertEquals( output, "Content SHA256: A8060A486659CC1397477EFE6C28F83F65DC9CBB19182978AFB69746EC3D99F2" );
+    assertEquals( output, "Content SHA256: 2DDCEE0CE8D16EE57C89A175877115495555796D3C1598EB32DC7652CA37204A" );
   }
 
   @Test
@@ -920,7 +919,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeConfigFile( "" );
+    writeConfigFile( FileUtil.createLocalTempDir(), "" );
 
     final String output = runCommand( "generate" );
     assertEquals( output, "" );
@@ -949,12 +948,8 @@ public class MainTest
   public void run_missingDefaultSettingsIsFine()
     throws Exception
   {
-    // Need to declare repositories otherwise we never even try to load settings
     writeWorkspace();
-    // Need to declare repositories otherwise we never even try to load settings
-    writeConfigFile( "repositories:\n" +
-                     "  - name: central\n" +
-                     "    url: http://repo1.maven.org/maven2\n" );
+    writeConfigFile( FileUtil.createLocalTempDir(), "" );
 
     runCommand( "generate" );
   }
@@ -964,9 +959,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeConfigFile( "repositories:\n" +
-                     "  - name: central\n" +
-                     "    url: http://repo1.maven.org/maven2\n" );
+    writeConfigFile( FileUtil.createLocalTempDir(), "" );
 
     assertTrue( FileUtil.getCurrentDirectory().resolve( ".m2" ).toFile().mkdir() );
     FileUtil.write( ".m2/settings.xml",
@@ -989,9 +982,7 @@ public class MainTest
     throws Exception
   {
     writeWorkspace();
-    writeConfigFile( "repositories:\n" +
-                     "  - name: central\n" +
-                     "    url: http://repo1.maven.org/maven2\n" );
+    writeConfigFile( FileUtil.createLocalTempDir(), "" );
 
     FileUtil.write( "some_settings.xml",
                     "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +

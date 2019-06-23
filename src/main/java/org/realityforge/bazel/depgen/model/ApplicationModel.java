@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen.model;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +14,7 @@ import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.ExcludeConfig;
+import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.realityforge.bazel.depgen.config.ReplacementConfig;
 import org.realityforge.bazel.depgen.config.RepositoryConfig;
@@ -30,6 +32,8 @@ public final class ApplicationModel
   private final OptionsModel _options;
   @Nonnull
   private final List<ArtifactModel> _artifacts;
+  @Nonnull
+  private final List<ArtifactModel> _systemArtifacts;
   @Nonnull
   private final List<ReplacementModel> _replacements;
   @Nonnull
@@ -57,6 +61,21 @@ public final class ApplicationModel
       replacementsConfig.stream()
         .map( c -> ReplacementModel.parse( c, optionsModel.getDefaultNature() ) )
         .collect( Collectors.toList() );
+
+    final List<ArtifactModel> systemArtifacts = new ArrayList<>();
+    if ( optionsModel.verifyConfigSha256() &&
+         artifactModels.stream().noneMatch( a -> DepGenConfig.getGroupId().equals( a.getGroup() ) &&
+                                                 DepGenConfig.getArtifactId().equals( a.getId() ) ) &&
+         replacements.stream().noneMatch( r -> DepGenConfig.getGroupId().equals( r.getGroup() ) &&
+                                               DepGenConfig.getArtifactId().equals( r.getId() ) ) )
+    {
+      final ArtifactConfig config = new ArtifactConfig();
+      config.setCoord( DepGenConfig.getCoord() );
+      config.setIncludeSource( false );
+      config.setNatures( Collections.singletonList( Nature.Java ) );
+      systemArtifacts.add( ArtifactModel.parse( config ) );
+    }
+
     final List<ExcludeConfig> excludesConfig = source.getExcludes();
     final List<GlobalExcludeModel> excludes =
       null == excludesConfig ?
@@ -74,6 +93,7 @@ public final class ApplicationModel
                                  configSha256,
                                  optionsModel,
                                  artifactModels,
+                                 systemArtifacts,
                                  replacements,
                                  excludes,
                                  repositories );
@@ -91,6 +111,7 @@ public final class ApplicationModel
                             @Nonnull final String configSha256,
                             @Nonnull final OptionsModel options,
                             @Nonnull final List<ArtifactModel> artifacts,
+                            @Nonnull final List<ArtifactModel> systemArtifacts,
                             @Nonnull final List<ReplacementModel> replacements,
                             @Nonnull final List<GlobalExcludeModel> excludes,
                             @Nonnull final List<RepositoryModel> repositories )
@@ -100,6 +121,7 @@ public final class ApplicationModel
     _configSha256 = Objects.requireNonNull( configSha256 );
     _options = Objects.requireNonNull( options );
     _artifacts = Objects.requireNonNull( artifacts );
+    _systemArtifacts = Objects.requireNonNull( systemArtifacts );
     _replacements = Objects.requireNonNull( replacements );
     _excludes = Objects.requireNonNull( excludes );
     _repositories = Collections.unmodifiableList( Objects.requireNonNull( repositories ) );
@@ -152,6 +174,12 @@ public final class ApplicationModel
     return _artifacts;
   }
 
+  @Nonnull
+  public List<ArtifactModel> getSystemArtifacts()
+  {
+    return _systemArtifacts;
+  }
+
   @Nullable
   public ArtifactModel findArtifact( @Nonnull final String groupId, @Nonnull final String artifactId )
   {
@@ -162,6 +190,25 @@ public final class ApplicationModel
   private ArtifactModel findArtifact( @Nonnull final Predicate<ArtifactModel> predicate )
   {
     return getArtifacts()
+      .stream()
+      .filter( predicate )
+      .findAny()
+      .orElse( getSystemArtifacts()
+                 .stream()
+                 .filter( predicate )
+                 .findAny()
+                 .orElse( null ) );
+  }
+
+  public boolean isSystemArtifact( @Nonnull final String groupId, @Nonnull final String artifactId )
+  {
+    return null != findSystemArtifact( m -> m.getGroup().equals( groupId ) && m.getId().equals( artifactId ) );
+  }
+
+  @Nullable
+  private ArtifactModel findSystemArtifact( @Nonnull final Predicate<ArtifactModel> predicate )
+  {
+    return getSystemArtifacts()
       .stream()
       .filter( predicate )
       .findAny()

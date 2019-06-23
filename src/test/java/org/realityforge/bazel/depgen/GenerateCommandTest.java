@@ -83,6 +83,13 @@ public class GenerateCommandTest
                   "        urls = [\"" + url + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
+                  "    http_file(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + url + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
                   "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
@@ -97,6 +104,17 @@ public class GenerateCommandTest
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.alias(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    )\n" +
+                  "    native.java_import(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
+                  "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }

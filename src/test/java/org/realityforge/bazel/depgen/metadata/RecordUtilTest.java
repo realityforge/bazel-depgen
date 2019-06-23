@@ -224,6 +224,7 @@ public class RecordUtilTest
     emitSettings( "my-repo", username, password );
 
     final Path dir = FileUtil.createLocalTempDir();
+    deployDepGenArtifactToLocalRepository( dir );
 
     final HttpServer server = serveDirectoryWithBasicAuth( dir, username, password );
 
@@ -273,6 +274,8 @@ public class RecordUtilTest
       writeConfigFile( "repositories:\n" +
                        "  - name: my-repo\n" +
                        "    url: " + repositoryUrl + "\n" );
+      deployDepGenArtifactToLocalRepository( dir );
+
       final ApplicationRecord record = loadApplicationRecord();
 
       final String url =

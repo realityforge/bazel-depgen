@@ -369,12 +369,15 @@ public class ResolverTest
     assertFalse( hasFailed.get() );
     assertTrue( handler.getRecords().isEmpty() );
 
-    assertEquals( dependencies.size(), 2 );
+    assertEquals( dependencies.size(), 2 + model.getSystemArtifacts().size() );
     final Dependency dependency1 = dependencies.get( 0 );
     assertEquals( dependency1.toString(), "com.example:myapp:jar:1.0 (compile)" );
 
     final Dependency dependency2 = dependencies.get( 1 );
     assertEquals( dependency2.toString(), "com.example:mylib:jar:2.5 (compile)" );
+
+    final Dependency dependency3 = dependencies.get( 2 );
+    assertEquals( dependency3.toString(), "org.realityforge.bazel.depgen:bazel-depgen:jar:all:1 (compile)" );
   }
 
   @Test
@@ -427,7 +430,7 @@ public class ResolverTest
     assertNull( node1.getArtifact() );
     assertNull( node1.getDependency() );
     final List<DependencyNode> children1 = node1.getChildren();
-    assertEquals( children1.size(), 1 );
+    assertEquals( children1.size(), 1 + model.getSystemArtifacts().size() );
     final DependencyNode node2 = children1.get( 0 );
     assertEquals( node2.getArtifact().toString(), "com.example:myapp:jar:1.0" );
     final List<DependencyNode> children2 = node2.getChildren();
@@ -443,6 +446,10 @@ public class ResolverTest
     assertEquals( node5.getDependency().toString(), "com.example:rtB:jar:2.0 (runtime)" );
     final List<DependencyNode> children4 = node5.getChildren();
     assertEquals( children4.size(), 0 );
+
+    final DependencyNode node6 = children1.get( 1 );
+    assertEquals( node6.getDependency().toString(), DepGenConfig.getCoord() + " (compile)" );
+    assertEquals( node6.getChildren().size(), 0 );
   }
 
   @Test

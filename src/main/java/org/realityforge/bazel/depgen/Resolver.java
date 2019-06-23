@@ -120,6 +120,7 @@ final class Resolver
   {
     final List<ArtifactModel> artifactModels =
       model.getArtifacts().stream().filter( ArtifactModel::isVersioned ).collect( Collectors.toList() );
+    artifactModels.addAll( model.getSystemArtifacts() );
     final List<Dependency> dependencies = new ArrayList<>();
     for ( final ArtifactModel artifactModel : artifactModels )
     {

@@ -44,13 +44,37 @@ public final class DependencyGraphEmitter
   @Override
   public boolean visitEnter( @Nonnull final DependencyNode node )
   {
-    final String line = formatIndentation() + formatNode( node );
-    if ( !line.isEmpty() )
+    if ( isSystemArtifact( node ) )
     {
-      _emitter.emitLine( line );
+      return false;
     }
-    _childInfos.add( new ChildInfo( node.getChildren().size() ) );
-    return true;
+    else
+    {
+      final String line = formatIndentation() + formatNode( node );
+      if ( !line.isEmpty() )
+      {
+        _emitter.emitLine( line );
+      }
+      final int size =
+        (int) node.getChildren().stream().filter( a -> !isSystemArtifact( a ) ).count();
+      _childInfos.add( new ChildInfo( size ) );
+      return true;
+    }
+  }
+
+  private boolean isSystemArtifact( @Nonnull final DependencyNode node )
+  {
+    final Dependency dependency = node.getDependency();
+    if ( null != dependency && _model.isSystemArtifact( dependency.getArtifact().getGroupId(),
+                                                        dependency.getArtifact().getArtifactId() ) )
+    {
+      return true;
+    }
+    else
+    {
+      final Artifact artifact = node.getArtifact();
+      return null != artifact && _model.isSystemArtifact( artifact.getGroupId(), artifact.getArtifactId() );
+    }
   }
 
   @Nonnull

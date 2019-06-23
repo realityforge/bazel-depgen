@@ -406,12 +406,14 @@ public abstract class AbstractTest
   {
     assertEquals( record.getArtifacts()
                     .stream()
+                    .filter( a -> !record.getSource().isSystemArtifact( a.getArtifact().getGroupId(),
+                                                                        a.getArtifact().getArtifactId() ) )
                     .map( ArtifactRecord::getKey )
                     .collect( Collectors.joining( "," ) ), expected );
   }
 
   protected final void assertNonSystemArtifactCount( @Nonnull final ApplicationRecord record, final int expectedCount )
   {
-    assertEquals( record.getArtifacts().size(), expectedCount );
+    assertEquals( record.getArtifacts().size(), expectedCount + record.getSource().getSystemArtifacts().size() );
   }
 }
