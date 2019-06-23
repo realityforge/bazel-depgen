@@ -147,7 +147,6 @@ public class RecordUtilTest
 
   @Test
   public void lookupArtifactInRepository_unknown_protocol()
-    throws Exception
   {
     final RemoteRepository repo = new RemoteRepository.Builder( "dir1", "default", "ftp://example.com" ).build();
 
