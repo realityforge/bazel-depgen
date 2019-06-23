@@ -179,10 +179,17 @@ public abstract class AbstractTest
   protected final void writeConfigFile( @Nonnull final Path dir, @Nonnull final String content )
     throws Exception
   {
+    deployDepGenArtifactToLocalRepository( dir );
     writeConfigFile( "repositories:\n" +
                      "  - name: local\n" +
                      "    url: " + dir.toUri() + "\n" +
                      content );
+  }
+
+  protected final void deployDepGenArtifactToLocalRepository( @Nonnull final Path dir )
+    throws Exception
+  {
+    deployArtifactToLocalRepository( dir, DepGenConfig.getCoord() );
   }
 
   protected final void writeConfigFile( @Nonnull final String content )
