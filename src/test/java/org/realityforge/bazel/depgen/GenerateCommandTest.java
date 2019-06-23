@@ -66,7 +66,7 @@ public class GenerateCommandTest
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
-                  "_CONFIG_SHA256 = \"" + model.getConfigSha256()  + "\"\n" +
+                  "_CONFIG_SHA256 = \"" + model.getConfigSha256() + "\"\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
