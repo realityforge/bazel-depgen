@@ -355,7 +355,7 @@ public abstract class AbstractTest
   }
 
   @Nonnull
-  protected final String loadAsString( @Nonnull final Path file )
+  final String loadAsString( @Nonnull final Path file )
     throws IOException
   {
     return new String( Files.readAllBytes( file ), StandardCharsets.ISO_8859_1 );
