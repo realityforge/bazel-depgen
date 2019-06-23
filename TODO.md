@@ -8,11 +8,14 @@ complete as there is too much un-said.
 
 * Fix TODOs in code base.
 
+* Consider defaulting the location of `dependencies.yaml` to `thirdparty/dependencies.yaml` and generating the
+  extension in the *same* directory. This makes it feel like a much more isolated part of the build.
+
 * Generate a more reasonable error message when verify task fails. Probably pointing to task to run
   to regenerate dependencies.
 
-* Refactor tests so that by default they don't call out to bazel except when needed. This should speed
-  up tests. 
+* Add Bazel target/task that will regenerate dependencies. [Mabel](https://github.com/menny/mabel) has a set
+  of `//resolver/..` tasks that may act as inspiration. Ultimately they will just invoke the CLI tool.
 
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
   directory to some central place (i.e. `~/.depgen/repository`)
@@ -36,10 +39,10 @@ complete as there is too much un-said.
 
   `remove [2-part coord] version`
 
-* Consider converting to commandline tool named `bzt`
+* Refactor tests so that by default they don't call out to bazel except when needed. This should speed
+  up tests. 
 
-* Consider defaulting the location of `dependencies.yaml` to `thirdparty/dependencies.yaml` and generating the
-  extension in the *same* directory. This makes it feel like a much more isolated part of the build.
+* Consider converting to commandline tool named `bzt`
 
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
   all the tests pass. It may be possible to enhance [dependabot](https://dependabot.com/) to do this now that it
@@ -57,9 +60,6 @@ complete as there is too much un-said.
 * Add support for `neverlink` on artifacts.
 
 * Support alternative to `http_file` that supports basic authentication.
-
-* Add Bazel target/task that will regenerate dependencies. [Mabel](https://github.com/menny/mabel) has a set
-  of `//resolver/..` tasks that may act as inspiration. Ultimately they will just invoke the CLI tool.
 
 * Look to [bazel-tools](https://github.com/spotify/bazel-tools) and [awesome-bazel](https://github.com/jin/awesome-bazel)
   to see if there is other tools that can be incoporated.
