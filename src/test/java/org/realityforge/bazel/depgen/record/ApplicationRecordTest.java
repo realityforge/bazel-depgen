@@ -1646,15 +1646,14 @@ public class ApplicationRecordTest
 
     final ApplicationRecord record = loadApplicationRecord();
 
-    final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertNonSystemArtifactCount( record, 2 );
     assertNonSystemArtifactList( record, "com.example.app1:core,com.example.app2:core" );
 
-    final ArtifactRecord artifactRecord1 = artifacts.get( 0 );
+    final ArtifactRecord artifactRecord1 = record.getArtifact( "com.example.app1", "core" );
     assertEquals( artifactRecord1.getKey(), "com.example.app1:core" );
     assertTrue( artifactRecord1.shouldExportDeps() );
 
-    final ArtifactRecord artifactRecord2 = artifacts.get( 1 );
+    final ArtifactRecord artifactRecord2 = record.getArtifact( "com.example.app2", "core" );
     assertEquals( artifactRecord2.getKey(), "com.example.app2:core" );
     assertFalse( artifactRecord2.shouldExportDeps() );
   }
