@@ -31,6 +31,9 @@ complete as there is too much un-said.
 
 * Consider converting to commandline tool named `bzt`
 
+* Consider defaulting the location of `dependencies.yaml` to `thirdparty/dependencies.yaml` and generating the
+  extension in the *same* directory. This makes it feel like a much more isolated part of the build.
+
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
   all the tests pass. It may be possible to enhance [dependabot](https://dependabot.com/) to do this now that it
   is owned by Github.
