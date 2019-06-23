@@ -147,7 +147,7 @@ public final class DependencyGraphEmitter
 
     ChildInfo( final int count )
     {
-      this._count = count;
+      _count = count;
     }
 
     String formatIndentation( final boolean end )
