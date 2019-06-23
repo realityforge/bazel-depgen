@@ -9,6 +9,14 @@ complete as there is too much un-said.
 * Refactor tests so that by default they don't call out to bazel except when needed. This should speed
   up tests. 
 
+  - test writeVerifyTarget individually
+  - test generation of whole bazel extension when `verifySha256` is `false`
+  - Generate `BUILD.bazel` in directory of config file if none exists.
+  - append `exports_files(["dependencies.yaml"])` to build fil ein directory of config if file not contains it
+  - Test `java_import` generation when `verifySha256` is `false`
+  - Figure out how to add `data` to j2cl artifacts to support `verifySha256 = true`
+  - consider renaming the hash command to something more sensible?
+
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
   directory to some central place (i.e. `~/.depgen/repository`)
 
