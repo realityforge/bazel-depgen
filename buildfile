@@ -14,6 +14,7 @@ MAVEN_RESOLVER = %w(
   org.apache.httpcomponents:httpclient:jar:4.5.6
   org.apache.maven:maven-resolver-provider:jar:3.5.0
   org.apache.commons:commons-lang3:jar:3.5
+  commons-codec:commons-codec:jar:1.12
   org.apache.maven:maven-model:jar:3.5.0
   org.codehaus.plexus:plexus-utils:jar:3.0.24
   org.codehaus.plexus:plexus-interpolation:jar:1.25
