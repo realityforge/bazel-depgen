@@ -26,9 +26,9 @@ final class GenerateCommand
       throw new IllegalStateException( "Failed to create directory " + dir.toFile() );
     }
 
-    // The tool will only emit the `BUILD.bazel` file if none exist. If one exists then
-    // the tool assumes the user has supplied it or it is an artifact from a previous run.
-    if ( !buildfile.toFile().exists() )
+    // The tool will emit the `BUILD.bazel` file for the package containing the extension
+    // if none exist. If a `BUILD.bazel` exists then the tool assumes the user has supplied
+    // it or it is an artifact from a previous run.
     {
       try ( final StarlarkOutput output = new StarlarkOutput( buildfile ) )
       {
