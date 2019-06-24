@@ -379,8 +379,7 @@ public final class ApplicationRecord
   @Nonnull
   private Path getRelativeConfigPath()
   {
-    final Path configLocation = _source.getConfigLocation();
-    return configLocation.getParent().relativize( _source.getOptions().getWorkspaceDirectory() );
+    return _source.getOptions().getWorkspaceDirectory().relativize( _source.getConfigLocation().getParent() );
   }
 
   void writeTargetMacro( @Nonnull final StarlarkOutput output )
