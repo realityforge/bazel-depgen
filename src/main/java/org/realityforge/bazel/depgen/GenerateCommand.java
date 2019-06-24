@@ -22,7 +22,7 @@ final class GenerateCommand
     final Path extensionFile = options.getExtensionFile();
     final Path dir = extensionFile.getParent();
     final Path extensionBuildfile = dir.resolve( "BUILD.bazel" );
-    final Path configBuildfile = options.getWorkspaceDirectory().resolve( "BUILD.bazel" );
+    final Path configBuildfile = record.getSource().getConfigLocation().getParent().resolve( "BUILD.bazel" );
 
     if ( !dir.toFile().exists() && !dir.toFile().mkdirs() )
     {
