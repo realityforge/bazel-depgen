@@ -35,7 +35,7 @@ public class ApplicationRecordTest
     final ApplicationRecord record = loadApplicationRecord();
 
     assertEquals( record.getSource().getConfigLocation(), getDefaultConfigFile().toAbsolutePath().normalize() );
-    assertEquals( record.getPathFromExtensionToConfig(), Paths.get( "../" + ApplicationConfig.FILENAME ) );
+    assertEquals( record.getPathFromExtensionToConfig(), Paths.get( ApplicationConfig.FILENAME ) );
   }
 
   @Test
@@ -1805,19 +1805,19 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//:dependencies.yml\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
@@ -1865,7 +1865,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.alias(\n" +
@@ -1902,19 +1902,19 @@ public class ApplicationRecordTest
                   "        omit_com_example__myapp = False,\n" +
                   "        omit_org_realityforge_bazel_depgen__bazel_depgen = False):\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//:dependencies.yml\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
@@ -1964,19 +1964,19 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_myapp_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//:dependencies.yml\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
@@ -2023,19 +2023,19 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//:dependencies.yml\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
@@ -2100,19 +2100,19 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//:dependencies.yml\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
@@ -2159,19 +2159,19 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \"@org_realityforge_bazel//:depgen\",\n" +
-                  "            \"//:dependencies.yml\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location @org_realityforge_bazel//:depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        cmd = \"$(JAVA) -jar $(location @org_realityforge_bazel//:depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
@@ -2195,7 +2195,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2246,7 +2246,7 @@ public class ApplicationRecordTest
                   "        omit_com_example__myapp = False,\n" +
                   "        omit_org_realityforge_bazel_depgen__bazel_depgen = False):\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2297,7 +2297,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_myapp_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2345,7 +2345,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2411,7 +2411,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2498,12 +2498,12 @@ public class ApplicationRecordTest
                   "    name = \"verify_config_sha256\",\n" +
                   "    srcs = [\n" +
                   "        \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        \"//:dependencies.yml\",\n" +
+                  "        \"//thirdparty:dependencies.yml\",\n" +
                   "        \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "    ],\n" +
                   "    toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "    outs = [\"command-output.txt\"],\n" +
-                  "    cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "    cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
@@ -2527,12 +2527,12 @@ public class ApplicationRecordTest
                   "    name = \"myapp_verify_config_sha256\",\n" +
                   "    srcs = [\n" +
                   "        \":myapp_bazel_depgen\",\n" +
-                  "        \"//:dependencies.yml\",\n" +
+                  "        \"//thirdparty:dependencies.yml\",\n" +
                   "        \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "    ],\n" +
                   "    toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "    outs = [\"command-output.txt\"],\n" +
-                  "    cmd = \"$(JAVA) -jar $(location :myapp_bazel_depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "    cmd = \"$(JAVA) -jar $(location :myapp_bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
@@ -2554,10 +2554,10 @@ public class ApplicationRecordTest
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
     //@formatter:off
     assertEquals( asString( outputStream ),
-                  "# DO NOT EDIT: File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "\n" +
                   "\"\"\"\n" +
-                  "    Macro rules to load dependencies defined in '../dependencies.yml'.\n" +
+                  "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "    Invoke 'generate_workspace_rules' from a WORKSPACE file.\n" +
                   "    Invoke 'generate_targets' from a BUILD.bazel file.\n" +
@@ -2572,7 +2572,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2600,19 +2600,19 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//:dependencies.yml\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
@@ -2662,10 +2662,10 @@ public class ApplicationRecordTest
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
     //@formatter:off
     assertEquals( asString( outputStream ),
-                  "# DO NOT EDIT: File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "\n" +
                   "\"\"\"\n" +
-                  "    Macro rules to load dependencies defined in '../dependencies.yml'.\n" +
+                  "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "    Invoke 'generate_workspace_rules' from a WORKSPACE file.\n" +
                   "    Invoke 'generate_targets' from a BUILD.bazel file.\n" +
@@ -2677,7 +2677,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2698,7 +2698,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.alias(\n" +
@@ -2716,7 +2716,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void writeDefaultExtensionBuild()
+  public void writeDefaultExtensionBuild_configFileInSameDirectory()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
@@ -2730,23 +2730,25 @@ public class ApplicationRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeDefaultExtensionBuild( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "# File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "# Contents can be edited and will not be overridden.\n" +
                   "package(default_visibility = [\"//visibility:public\"])\n" +
                   "\n" +
                   "load(\"//thirdparty:dependencies.bzl\", \"generate_targets\")\n" +
                   "\n" +
-                  "generate_targets()\n" );
+                  "generate_targets()\n" +
+                  "\n" +
+                  "exports_files([\"dependencies.yml\"])\n" );
   }
 
   @Test
-  public void writeDefaultExtensionBuild_configFileInSameDirectory()
+  public void writeDefaultExtensionBuild_configFileInDifferentDirectory()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir, "options:\n" +
-                          "  extensionFile: dependencies.yaml\n" );
+                          "  extensionFile: somedir/dependencies.bzl\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ApplicationRecord record = loadApplicationRecord();
@@ -2754,15 +2756,13 @@ public class ApplicationRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeDefaultExtensionBuild( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "# Contents can be edited and will not be overridden.\n" +
                   "package(default_visibility = [\"//visibility:public\"])\n" +
                   "\n" +
-                  "load(\"//:dependencies.yaml\", \"generate_targets\")\n" +
+                  "load(\"//thirdparty/somedir:dependencies.bzl\", \"generate_targets\")\n" +
                   "\n" +
-                  "generate_targets()\n" +
-                  "\n" +
-                  "exports_files([\"dependencies.yml\"])\n" );
+                  "generate_targets()\n" );
   }
 
   @Test
@@ -2779,7 +2779,7 @@ public class ApplicationRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeDefaultConfigBuild( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "# File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "# Contents can be edited and will not be overridden.\n" +
                   "package(default_visibility = [\"//visibility:public\"])\n" +
                   "\n" +
@@ -2804,10 +2804,10 @@ public class ApplicationRecordTest
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
     //@formatter:off
     assertEquals( asString( outputStream ),
-                  "# DO NOT EDIT: File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "\n" +
                   "\"\"\"\n" +
-                  "    Macro rules to load dependencies defined in '../dependencies.yml'.\n" +
+                  "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "    Invoke 'generate_workspace_rules' from a WORKSPACE file.\n" +
                   "    Invoke 'generate_targets' from a BUILD.bazel file.\n" +
@@ -2823,7 +2823,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2851,19 +2851,19 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//:dependencies.yml\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
@@ -2923,10 +2923,10 @@ public class ApplicationRecordTest
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
     //@formatter:off
     assertEquals( asString( outputStream ),
-                  "# DO NOT EDIT: File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "\n" +
                   "\"\"\"\n" +
-                  "    Macro rules to load dependencies defined in '../dependencies.yml'.\n" +
+                  "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "    Invoke 'generate_workspace_rules' from a WORKSPACE file.\n" +
                   "    Invoke 'generate_targets' from a BUILD.bazel file.\n" +
@@ -2943,7 +2943,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2985,19 +2985,19 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//:dependencies.yml\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +

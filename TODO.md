@@ -6,9 +6,6 @@ complete as there is too much un-said.
 
 * Fix TODOs in code base.
 
-* Consider defaulting the location of `dependencies.yaml` to `thirdparty/dependencies.yaml` and generating the
-  extension in the *same* directory. This makes it feel like a much more isolated part of the build.
-
 * Generate a more reasonable error message when verify task fails. Probably pointing to task to run
   to regenerate dependencies.
 

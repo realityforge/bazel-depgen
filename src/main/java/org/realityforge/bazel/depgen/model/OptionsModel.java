@@ -20,32 +20,32 @@ public final class OptionsModel
    * Create the OptionsModel from config.
    * All paths are relative to baseDirectory.
    *
-   * @param baseDirectory the directory that paths are relative to.
-   * @param source        the original configuration source.
+   * @param configDirectory the directory that paths are relative to.
+   * @param source          the original configuration source.
    */
   @Nonnull
-  static OptionsModel parse( @Nonnull final Path baseDirectory, @Nonnull final OptionsConfig source )
+  static OptionsModel parse( @Nonnull final Path configDirectory, @Nonnull final OptionsConfig source )
   {
-    final Path workspaceDirectory = deriveWorkspaceDirectory( baseDirectory, source );
-    final Path extensionFile = deriveExtensionFile( workspaceDirectory, source );
+    final Path workspaceDirectory = deriveWorkspaceDirectory( configDirectory, source );
+    final Path extensionFile = deriveExtensionFile( configDirectory, source );
     return new OptionsModel( source, workspaceDirectory, extensionFile );
   }
 
   @Nonnull
-  private static Path deriveWorkspaceDirectory( @Nonnull final Path baseDirectory, @Nonnull final OptionsConfig source )
+  private static Path deriveWorkspaceDirectory( @Nonnull final Path configDirectory,
+                                                @Nonnull final OptionsConfig source )
   {
     final String value = source.getWorkspaceDirectory();
     final String filename = null == value ? OptionsConfig.DEFAULT_WORKSPACE_DIR : value;
-    return baseDirectory.resolve( filename ).toAbsolutePath().normalize();
+    return configDirectory.resolve( filename ).toAbsolutePath().normalize();
   }
 
   @Nonnull
-  private static Path deriveExtensionFile( @Nonnull final Path workspaceDirectory,
-                                           @Nonnull final OptionsConfig source )
+  private static Path deriveExtensionFile( @Nonnull final Path configDirectory, @Nonnull final OptionsConfig source )
   {
     final String value = source.getExtensionFile();
     final String filename = null == value ? OptionsConfig.DEFAULT_EXTENSION_FILE : value;
-    return workspaceDirectory.resolve( filename ).toAbsolutePath().normalize();
+    return configDirectory.resolve( filename ).toAbsolutePath().normalize();
   }
 
   private OptionsModel( @Nonnull final OptionsConfig source,

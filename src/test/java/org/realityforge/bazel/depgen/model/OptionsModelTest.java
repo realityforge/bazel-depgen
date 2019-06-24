@@ -19,7 +19,8 @@ public class OptionsModelTest
 
     final OptionsModel model = OptionsModel.parse( FileUtil.getCurrentDirectory(), source );
     assertEquals( model.getSource(), source );
-    assertEquals( model.getWorkspaceDirectory(), FileUtil.getCurrentDirectory() );
+    assertEquals( model.getWorkspaceDirectory(),
+                  FileUtil.getCurrentDirectory().resolve( ".." ).toAbsolutePath().normalize() );
     assertEquals( model.getExtensionFile(),
                   FileUtil.getCurrentDirectory().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );
     assertEquals( model.getWorkspaceMacroName(), OptionsConfig.DEFAULT_WORKSPACE_MACRO_NAME );
@@ -74,7 +75,7 @@ public class OptionsModelTest
     final OptionsModel model = OptionsModel.parse( thirdpartyDir, source );
     assertEquals( model.getSource(), source );
     assertEquals( model.getWorkspaceDirectory(), dir.normalize() );
-    assertEquals( model.getExtensionFile(), dir.resolve( "dependencies.bzl" ) );
+    assertEquals( model.getExtensionFile(), thirdpartyDir.resolve( "dependencies.bzl" ) );
     assertEquals( model.getWorkspaceMacroName(), "gen_myprj_dependency_rules" );
     assertEquals( model.getTargetMacroName(), "gen_myprj_targets" );
     assertEquals( model.getNamePrefix(), "myprj_" );

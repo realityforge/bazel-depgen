@@ -116,7 +116,7 @@ public abstract class AbstractTest
   @Nonnull
   protected final Path getDefaultConfigFile()
   {
-    return FileUtil.getCurrentDirectory().resolve( ApplicationConfig.FILENAME );
+    return FileUtil.getCurrentDirectory().resolve( "thirdparty" ).resolve( ApplicationConfig.FILENAME );
   }
 
   @Nonnull

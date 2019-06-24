@@ -38,25 +38,27 @@ public class GenerateCommandTest
     assertEquals( handler.toString(), "" );
 
     assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "BUILD.bazel" ) ),
-                  "# File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "# Contents can be edited and will not be overridden.\n" +
                   "package(default_visibility = [\"//visibility:public\"])\n" +
                   "\n" +
-                  "exports_files([\"dependencies.yml\"])\n" );
+                  "exports_files([\"dependencies.yml\"])\nXXXXXThisSHould NOt Exist" );
     assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "thirdparty/BUILD.bazel" ) ),
-                  "# File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "# Contents can be edited and will not be overridden.\n" +
                   "package(default_visibility = [\"//visibility:public\"])\n" +
                   "\n" +
                   "load(\"//thirdparty:dependencies.bzl\", \"generate_targets\")\n" +
                   "\n" +
-                  "generate_targets()\n" );
+                  "generate_targets()\n" +
+                  "\n" +
+                  "exports_files([\"dependencies.yml\"])\n" );
     //@formatter:off
     assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "thirdparty/dependencies.bzl" ) ),
-                  "# DO NOT EDIT: File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "\n" +
                   "\"\"\"\n" +
-                  "    Macro rules to load dependencies defined in '../dependencies.yml'.\n" +
+                  "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "    Invoke 'generate_workspace_rules' from a WORKSPACE file.\n" +
                   "    Invoke 'generate_targets' from a BUILD.bazel file.\n" +
@@ -71,7 +73,7 @@ public class GenerateCommandTest
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -99,19 +101,19 @@ public class GenerateCommandTest
                   "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//:dependencies.yml\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
@@ -174,10 +176,10 @@ public class GenerateCommandTest
     assertEquals( loadAsString( extensionPackage ), "" );
 
     assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "thirdparty/dependencies.bzl" ) ),
-                  "# DO NOT EDIT: File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "\n" +
                   "\"\"\"\n" +
-                  "    Macro rules to load dependencies defined in '../dependencies.yml'.\n" +
+                  "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "    Invoke 'generate_workspace_rules' from a WORKSPACE file.\n" +
                   "    Invoke 'generate_targets' from a BUILD.bazel file.\n" +
@@ -194,7 +196,7 @@ public class GenerateCommandTest
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by '../dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -228,19 +230,19 @@ public class GenerateCommandTest
                   "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by '../dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//:dependencies.yml\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
@@ -277,12 +279,14 @@ public class GenerateCommandTest
 
     writeWorkspace();
     writeConfigFile( dir,
+                     "options:\n" +
+                     "  extensionFile: somedir/dependencies.bzl\n" +
                      "artifacts:\n" +
                      "  - coord: com.example:myapp:1.0\n" );
 
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-    FileUtil.write( FileUtil.getCurrentDirectory().resolve( "thirdparty" ).toString(), "" );
+    FileUtil.write( FileUtil.getCurrentDirectory().resolve( "thirdparty" ).resolve( "somedir" ), "" );
 
     final TestHandler handler = new TestHandler();
     final GenerateCommand command = new GenerateCommand();
