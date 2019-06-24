@@ -15,6 +15,9 @@ complete as there is too much un-said.
 * Change `File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen`
   to include version in comment.
 
+* Remove `... defined in 'dependencies.yml'` in descriptions of generated macros and even the file description
+  if `verifyConfigSha256` is not true.
+
 * Add Bazel target/task that will regenerate dependencies. [Mabel](https://github.com/menny/mabel) has a set
   of `//resolver/..` tasks that may act as inspiration. Ultimately they will just invoke the CLI tool.
 
