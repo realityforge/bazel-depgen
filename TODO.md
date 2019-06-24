@@ -12,6 +12,9 @@ complete as there is too much un-said.
 * Generate a more reasonable error message when verify task fails. Probably pointing to task to run
   to regenerate dependencies.
 
+* Change `File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen`
+  to include version in comment.
+
 * Add Bazel target/task that will regenerate dependencies. [Mabel](https://github.com/menny/mabel) has a set
   of `//resolver/..` tasks that may act as inspiration. Ultimately they will just invoke the CLI tool.
 
