@@ -43,7 +43,7 @@ public class ApplicationModelTest
     assertTrue( repository.cacheLookups() );
     assertEquals( model.getOptions().getWorkspaceDirectory(), FileUtil.getCurrentDirectory() );
     assertEquals( model.getOptions().getExtensionFile(),
-                  FileUtil.getCurrentDirectory().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );
+                  model.getConfigLocation().getParent().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );
     assertEquals( model.getArtifacts().size(), 1 );
     final ArtifactModel artifactModel = model.getArtifacts().get( 0 );
     assertEquals( artifactModel.getGroup(), "com.example" );
