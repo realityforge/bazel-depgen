@@ -197,7 +197,7 @@ public abstract class AbstractTest
   protected final void writeConfigFile( @Nonnull final String content )
     throws IOException
   {
-    FileUtil.write( ApplicationConfig.FILENAME, content );
+    FileUtil.write( getDefaultConfigFile(), content );
   }
 
   final void assertOutputContains( @Nonnull final String output, @Nonnull final String text )
