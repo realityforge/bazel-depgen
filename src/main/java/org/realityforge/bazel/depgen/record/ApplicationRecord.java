@@ -348,12 +348,14 @@ public final class ApplicationRecord
       depgenArtifactLabel = replacement.getTarget( Nature.Java );
     }
 
-    arguments.put( "srcs", Arrays.asList( "\"" + depgenArtifactLabel + "\"", "\"" + configLabel + "\"" ) );
+    arguments.put( "srcs", Arrays.asList( "\"" + depgenArtifactLabel + "\"",
+                                          "\"@bazel_tools//tools/jdk:current_java_runtime\"",
+                                          "\"" + configLabel + "\"" ) );
 
+    arguments.put( "toolchains", Collections.singletonList( "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
     arguments.put( "outs", Collections.singletonList( "\"command-output.txt\"" ) );
 
-    //TODO: Fix raw java command by using toolchain infrastructure ... somehow
-    arguments.put( "cmd", "\"java " +
+    arguments.put( "cmd", "\"$(JAVABASE)/bin/java " +
                           "-jar $(location " + depgenArtifactLabel + ") " +
                           "--config-file $(location " + configLabel + ") " +
                           "--quiet " +
