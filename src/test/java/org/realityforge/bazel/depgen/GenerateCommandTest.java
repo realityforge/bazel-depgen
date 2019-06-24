@@ -37,12 +37,7 @@ public class GenerateCommandTest
     assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
     assertEquals( handler.toString(), "" );
 
-    assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "BUILD.bazel" ) ),
-                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
-                  "# Contents can be edited and will not be overridden.\n" +
-                  "package(default_visibility = [\"//visibility:public\"])\n" +
-                  "\n" +
-                  "exports_files([\"dependencies.yml\"])\nXXXXXThisSHould NOt Exist" );
+    assertFalse( Files.exists( FileUtil.getCurrentDirectory().resolve( "BUILD.bazel" ) ) );
     assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "thirdparty/BUILD.bazel" ) ),
                   "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
                   "# Contents can be edited and will not be overridden.\n" +
