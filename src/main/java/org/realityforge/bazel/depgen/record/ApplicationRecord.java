@@ -349,8 +349,8 @@ public final class ApplicationRecord
     }
 
     arguments.put( "srcs", Arrays.asList( "\"" + depgenArtifactLabel + "\"",
-                                          "\"@bazel_tools//tools/jdk:current_java_runtime\"",
-                                          "\"" + configLabel + "\"" ) );
+                                          "\"" + configLabel + "\"",
+                                          "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
 
     arguments.put( "toolchains", Collections.singletonList( "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
     arguments.put( "outs", Collections.singletonList( "\"command-output.txt\"" ) );

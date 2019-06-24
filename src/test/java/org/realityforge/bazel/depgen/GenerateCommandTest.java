@@ -106,8 +106,8 @@ public class GenerateCommandTest
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "            \"//:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
@@ -235,8 +235,8 @@ public class GenerateCommandTest
                   "        name = \"verify_config_sha256\",\n" +
                   "        srcs = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "            \"//:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
