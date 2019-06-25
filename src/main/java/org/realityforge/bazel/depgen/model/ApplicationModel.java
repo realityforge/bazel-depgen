@@ -188,17 +188,20 @@ public final class ApplicationModel
   }
 
   @Nullable
-  private ArtifactModel findArtifact( @Nonnull final Predicate<ArtifactModel> predicate )
+  private ArtifactModel findApplicationArtifact( @Nonnull final Predicate<ArtifactModel> predicate )
   {
     return getArtifacts()
       .stream()
       .filter( predicate )
       .findAny()
-      .orElse( getSystemArtifacts()
-                 .stream()
-                 .filter( predicate )
-                 .findAny()
-                 .orElse( null ) );
+      .orElse( null );
+  }
+
+  @Nullable
+  private ArtifactModel findArtifact( @Nonnull final Predicate<ArtifactModel> predicate )
+  {
+    final ArtifactModel artifact = findApplicationArtifact( predicate );
+    return null != artifact ? artifact : findSystemArtifact( predicate );
   }
 
   public boolean isSystemArtifact( @Nonnull final String groupId, @Nonnull final String artifactId )
