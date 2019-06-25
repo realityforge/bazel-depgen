@@ -12,9 +12,6 @@ complete as there is too much un-said.
 * Generate a more reasonable error message when verify task fails. Probably pointing to task to run
   to regenerate dependencies.
 
-* Change `File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen`
-  to include version in comment.
-
 * Remove `... defined in 'dependencies.yml'` in descriptions of generated macros and even the file description
   if `verifyConfigSha256` is not true.
 

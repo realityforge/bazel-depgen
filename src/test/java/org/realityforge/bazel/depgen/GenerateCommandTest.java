@@ -39,7 +39,7 @@ public class GenerateCommandTest
 
     assertFalse( Files.exists( FileUtil.getCurrentDirectory().resolve( "BUILD.bazel" ) ) );
     assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "thirdparty/BUILD.bazel" ) ),
-                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "# Contents can be edited and will not be overridden.\n" +
                   "package(default_visibility = [\"//visibility:public\"])\n" +
                   "\n" +
@@ -50,7 +50,7 @@ public class GenerateCommandTest
                   "exports_files([\"dependencies.yml\"])\n" );
     //@formatter:off
     assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "thirdparty/dependencies.bzl" ) ),
-                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
                   "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +
@@ -171,7 +171,7 @@ public class GenerateCommandTest
     assertEquals( loadAsString( extensionPackage ), "" );
 
     assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "thirdparty/dependencies.bzl" ) ),
-                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
                   "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +

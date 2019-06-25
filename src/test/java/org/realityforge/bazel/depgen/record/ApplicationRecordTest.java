@@ -2558,7 +2558,7 @@ public class ApplicationRecordTest
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
     //@formatter:off
     assertEquals( asString( outputStream ),
-                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
                   "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +
@@ -2666,7 +2666,7 @@ public class ApplicationRecordTest
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
     //@formatter:off
     assertEquals( asString( outputStream ),
-                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
                   "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +
@@ -2734,7 +2734,7 @@ public class ApplicationRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeDefaultExtensionBuild( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "# Contents can be edited and will not be overridden.\n" +
                   "package(default_visibility = [\"//visibility:public\"])\n" +
                   "\n" +
@@ -2760,7 +2760,7 @@ public class ApplicationRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeDefaultExtensionBuild( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "# File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "# Contents can be edited and will not be overridden.\n" +
                   "package(default_visibility = [\"//visibility:public\"])\n" +
                   "\n" +
@@ -2783,7 +2783,7 @@ public class ApplicationRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeDefaultConfigBuild( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "# Contents can be edited and will not be overridden.\n" +
                   "package(default_visibility = [\"//visibility:public\"])\n" +
                   "\n" +
@@ -2808,7 +2808,7 @@ public class ApplicationRecordTest
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
     //@formatter:off
     assertEquals( asString( outputStream ),
-                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
                   "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +
@@ -2927,7 +2927,7 @@ public class ApplicationRecordTest
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
     //@formatter:off
     assertEquals( asString( outputStream ),
-                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen\n" +
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
                   "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +
