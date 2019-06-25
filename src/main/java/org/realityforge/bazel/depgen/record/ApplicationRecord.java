@@ -219,7 +219,7 @@ public final class ApplicationRecord
     output.newLine();
 
     output.writeMultilineComment( o -> {
-      o.write( "Macro rules to load dependencies defined in '" + toConfig + "'." );
+      o.write( "Macro rules to load dependencies defined in '" + getPathFromExtensionToConfig() + "'." );
       o.newLine();
       final OptionsModel options = getSource().getOptions();
       o.write( "Invoke '" + options.getWorkspaceMacroName() + "' from a WORKSPACE file." );
