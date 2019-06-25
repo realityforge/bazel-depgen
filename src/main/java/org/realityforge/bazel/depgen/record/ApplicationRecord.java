@@ -48,9 +48,44 @@ public final class ApplicationRecord
     propagateNature( record, Nature.J2cl, Nature.J2cl );
     propagateNature( record, Nature.Plugin, Nature.Java );
     propagateNature( record, Nature.Java, Nature.Java );
-    record.ensureAliasesAreUnique();
     record.getArtifacts().forEach( ArtifactRecord::validate );
+    record.validate();
     return record;
+  }
+
+  private void validate()
+  {
+    ensureAliasesAreUnique();
+    ensureDepgenArtifactHasJavaNature();
+  }
+
+  private void ensureDepgenArtifactHasJavaNature()
+  {
+    final ApplicationModel model = getSource();
+    final OptionsModel options = model.getOptions();
+    if ( options.verifyConfigSha256() )
+    {
+      final ArtifactModel artifact =
+        model.findApplicationArtifact( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
+      if ( null != artifact && !artifact.getNatures( options.getDefaultNature() ).contains( Nature.Java ) )
+      {
+        final String message =
+          "Artifact '" + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "' declared as a " +
+          "dependency but does not declare the Java nature which is required if verifyConfigSha256 option is " +
+          "set to true.";
+        throw new IllegalStateException( message );
+      }
+
+      final ReplacementModel replacement =
+        model.findReplacement( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
+      if ( null != replacement && replacement.getTargets().stream().noneMatch( t -> t.getNature() == Nature.Java ) )
+      {
+        final String message =
+          "Artifact '" + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "' declared as a replace " +
+          "but does not declare the Java nature which is required if verifyConfigSha256 option is set to true.";
+        throw new IllegalStateException( message );
+      }
+    }
   }
 
   private static void propagateNature( @Nonnull final ApplicationRecord record,

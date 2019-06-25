@@ -62,7 +62,6 @@ public final class ApplicationModel
         .map( c -> ReplacementModel.parse( c, optionsModel.getDefaultNature() ) )
         .collect( Collectors.toList() );
 
-    //TODO: Verify that if replacement or artifact present that it has Java nature
     final List<ArtifactModel> systemArtifacts = new ArrayList<>();
     if ( optionsModel.verifyConfigSha256() &&
          artifactModels.stream().noneMatch( a -> DepGenConfig.getGroupId().equals( a.getGroup() ) &&

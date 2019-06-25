@@ -17,6 +17,10 @@ import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
+import org.realityforge.bazel.depgen.model.ArtifactModel;
+import org.realityforge.bazel.depgen.model.ReplacementModel;
+import org.realityforge.bazel.depgen.model.ReplacementTargetModel;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -3087,5 +3091,93 @@ public class ApplicationRecordTest
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:mylib:jar:1.0' declared target for nature 'J2cl' but artifact does not have specified nature." );
+  }
+
+  @Test
+  public void ensureDepgenArtifactReplacementHasJavaNature()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "replacements:\n" +
+                     "  - coord: " + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "\n" +
+                     "    targets:\n" +
+                     "      - target: \":depgen\"\n" );
+
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ApplicationModel model = loadApplicationRecord().getSource();
+
+    final List<ReplacementModel> replacements = model.getReplacements();
+    assertEquals( replacements.size(), 1 );
+    final ReplacementModel replacementModel = replacements.get( 0 );
+    final List<ReplacementTargetModel> targets = replacementModel.getTargets();
+    assertEquals( targets.size(), 1 );
+    final ReplacementTargetModel replacementTarget = targets.get( 0 );
+    assertEquals( replacementTarget.getNature(), Nature.Java );
+    assertEquals( replacementTarget.getTarget(), ":depgen" );
+  }
+
+  @Test
+  public void ensureDepgenArtifactReplacementWithoutJavaNatureGeneratesError()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "replacements:\n" +
+                     "  - coord: " + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "\n" +
+                     "    targets:\n" +
+                     "      - target: \":depgen\"\n" +
+                     "        nature: J2cl\n" );
+
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+
+    assertEquals( exception.getMessage(),
+                  "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a replace but does not declare the Java nature which is required if verifyConfigSha256 option is set to true." );
+  }
+
+  @Test
+  public void ensureDeclaredDepgenArtifactHasJavaNature()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: " + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "\n" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+    final ApplicationModel model = record.getSource();
+
+    final List<ArtifactModel> artifacts = model.getArtifacts();
+    assertEquals( artifacts.size(), 1 );
+    final ArtifactModel artifactModel = artifacts.get( 0 );
+    assertTrue( artifactModel.getNatures( model.getOptions().getDefaultNature() ).contains( Nature.Java ) );
+  }
+
+
+  @Test
+  public void ensureDeclaredDepgenArtifactWithoutJavaNatureGeneratesError()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: " + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "\n" +
+                     "    natures: [J2cl]\n");
+
+    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+
+    assertEquals( exception.getMessage(),
+                  "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a dependency but does not declare the Java nature which is required if verifyConfigSha256 option is set to true." );
   }
 }
