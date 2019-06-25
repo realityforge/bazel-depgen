@@ -68,7 +68,7 @@ public class GenerateCommandTest
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -96,7 +96,7 @@ public class GenerateCommandTest
                   "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies defined in 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -191,7 +191,7 @@ public class GenerateCommandTest
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -225,7 +225,7 @@ public class GenerateCommandTest
                   "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies defined in 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +

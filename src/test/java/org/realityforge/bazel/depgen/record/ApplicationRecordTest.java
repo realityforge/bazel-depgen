@@ -1809,7 +1809,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies defined in 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -1869,7 +1869,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.alias(\n" +
@@ -1906,7 +1906,7 @@ public class ApplicationRecordTest
                   "        omit_com_example__myapp = False,\n" +
                   "        omit_org_realityforge_bazel_depgen__bazel_depgen = False):\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies defined in 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -1968,7 +1968,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_myapp_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies defined in 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2027,7 +2027,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies defined in 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2104,7 +2104,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies defined in 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2163,7 +2163,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies defined in 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2199,7 +2199,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2250,7 +2250,7 @@ public class ApplicationRecordTest
                   "        omit_com_example__myapp = False,\n" +
                   "        omit_org_realityforge_bazel_depgen__bazel_depgen = False):\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2301,7 +2301,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_myapp_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2349,7 +2349,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2415,7 +2415,7 @@ public class ApplicationRecordTest
     assertEquals( asString( outputStream ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2576,7 +2576,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2604,7 +2604,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies defined in 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2669,7 +2669,7 @@ public class ApplicationRecordTest
                   "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
-                  "    Macro rules to load dependencies defined in 'dependencies.yml'.\n" +
+                  "    Macro rules to load dependencies.\n" +
                   "\n" +
                   "    Invoke 'generate_workspace_rules' from a WORKSPACE file.\n" +
                   "    Invoke 'generate_targets' from a BUILD.bazel file.\n" +
@@ -2681,7 +2681,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2702,7 +2702,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.alias(\n" +
@@ -2827,7 +2827,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2855,7 +2855,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies defined in 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2947,7 +2947,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
-                  "        Repository rules macro to load dependencies specified by 'dependencies.yml'.\n" +
+                  "        Repository rules macro to load dependencies defined in 'dependencies.yml'.\n" +
                   "\n" +
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
@@ -2989,7 +2989,7 @@ public class ApplicationRecordTest
                   "\n" +
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
-                  "        Macro to define targets for dependencies specified by 'dependencies.yml'.\n" +
+                  "        Macro to define targets for dependencies defined in 'dependencies.yml'.\n" +
                   "    \"\"\"\n" +
                   "\n" +
                   "    native.genrule(\n" +

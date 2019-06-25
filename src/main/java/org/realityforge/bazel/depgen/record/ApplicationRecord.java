@@ -217,9 +217,10 @@ public final class ApplicationRecord
     output.newLine();
 
     output.writeMultilineComment( o -> {
-      o.write( "Macro rules to load dependencies defined in '" + getPathFromExtensionToConfig() + "'." );
-      o.newLine();
       final OptionsModel options = getSource().getOptions();
+      o.write( "Macro rules to load dependencies" +
+               ( options.verifyConfigSha256() ? " defined in '" + getPathFromExtensionToConfig() + "'" : "" ) + "." );
+      o.newLine();
       o.write( "Invoke '" + options.getWorkspaceMacroName() + "' from a WORKSPACE file." );
       o.write( "Invoke '" + options.getTargetMacroName() + "' from a BUILD.bazel file." );
     } );
@@ -435,7 +436,8 @@ public final class ApplicationRecord
                          .collect( Collectors.toList() ) :
                        Collections.emptyList(), macro -> {
         final String comment =
-          "Macro to define targets for dependencies specified by '" + getPathFromExtensionToConfig() + "'.";
+          "Macro to define targets for dependencies" +
+          ( options.verifyConfigSha256() ? " defined in '" + getPathFromExtensionToConfig() + "'" : "" ) + ".";
         macro.writeMultilineComment( o -> o.write( comment ) );
         if ( getSource().getOptions().verifyConfigSha256() )
         {
@@ -474,9 +476,9 @@ public final class ApplicationRecord
                          .collect( Collectors.toList() ) :
                        Collections.emptyList(), macro -> {
         macro.writeMultilineComment( o -> {
-          o.write( "Repository rules macro to load dependencies specified by '" +
-                   getPathFromExtensionToConfig() +
-                   "'." );
+          o.write( "Repository rules macro to load dependencies" +
+                   ( options.verifyConfigSha256() ? " defined in '" + getPathFromExtensionToConfig() + "'" : "" ) +
+                   "." );
           o.newLine();
           o.write( "Must be run from a WORKSPACE file." );
         } );

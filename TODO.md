@@ -12,9 +12,6 @@ complete as there is too much un-said.
 * Generate a more reasonable error message when verify task fails. Probably pointing to task to run
   to regenerate dependencies.
 
-* Remove `... defined in 'dependencies.yml'` in descriptions of generated macros and even the file description
-  if `verifyConfigSha256` is not true.
-
 * Add Bazel target/task that will regenerate dependencies. [Mabel](https://github.com/menny/mabel) has a set
   of `//resolver/..` tasks that may act as inspiration. Ultimately they will just invoke the CLI tool.
 
