@@ -6,6 +6,11 @@ complete as there is too much un-said.
 
 * Fix TODOs in code base.
 
+* Refactor artifact config so that an artifact can be bound to a particular repository.
+
+* Refactor repository config so that certain repositories can be marked as only checked if
+  explicitly linked from an artifact.
+
 * Generate a more reasonable error message when verify task fails. Probably pointing to task to run
   to regenerate dependencies.
 
