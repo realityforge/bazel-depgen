@@ -162,6 +162,24 @@ public class ApplicationModelTest
   }
 
   @Test
+  public void findApplicationArtifact()
+    throws Exception
+  {
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+
+    final ApplicationModel model = loadApplicationModel();
+    final ArtifactModel artifactModel = model.getArtifacts().get( 0 );
+    assertEquals( artifactModel.toCoord(), "com.example:myapp:jar:1.0" );
+
+    assertEquals( artifactModel, model.findApplicationArtifact( "com.example", "myapp" ) );
+    assertNull( model.findApplicationArtifact( "com.example", "noexist" ) );
+
+    // No find system artifacts
+    assertNull( model.findApplicationArtifact( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() ) );
+  }
+
+  @Test
   public void isSystemArtifact()
     throws Exception
   {

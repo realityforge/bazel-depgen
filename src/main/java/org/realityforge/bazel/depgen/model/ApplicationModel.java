@@ -188,6 +188,12 @@ public final class ApplicationModel
   }
 
   @Nullable
+  public ArtifactModel findApplicationArtifact( @Nonnull final String groupId, @Nonnull final String artifactId )
+  {
+    return findApplicationArtifact( m -> m.getGroup().equals( groupId ) && m.getId().equals( artifactId ) );
+  }
+
+  @Nullable
   private ArtifactModel findApplicationArtifact( @Nonnull final Predicate<ArtifactModel> predicate )
   {
     return getArtifacts()
