@@ -642,7 +642,6 @@ public final class ArtifactRecord
     if ( J2clMode.Library == mode )
     {
       arguments.put( "srcs", Collections.singletonList( "\"" + getQualifiedSourcesLabel() + "\"" ) );
-      //TODO: Add native_srcs that includes the native.js extracted from the artifact?
       if ( null != j2clConfig )
       {
         final List<String> suppress = j2clConfig.getSuppress();
