@@ -48,7 +48,7 @@ public final class ApplicationRecord
     propagateNature( record, Nature.J2cl, Nature.J2cl );
     propagateNature( record, Nature.Plugin, Nature.Java );
     propagateNature( record, Nature.Java, Nature.Java );
-    ensureAliasesAreUnique( record );
+    record.ensureAliasesAreUnique();
     record.getArtifacts().forEach( ArtifactRecord::validate );
     return record;
   }
@@ -96,10 +96,10 @@ public final class ApplicationRecord
     }
   }
 
-  private static void ensureAliasesAreUnique( @Nonnull final ApplicationRecord record )
+  private void ensureAliasesAreUnique()
   {
     final HashMap<String, ArtifactRecord> aliases = new HashMap<>();
-    for ( final ArtifactRecord artifact : record.getArtifacts() )
+    for ( final ArtifactRecord artifact : getArtifacts() )
     {
       for ( final Nature nature : artifact.getNatures() )
       {
