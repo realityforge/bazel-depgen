@@ -10,6 +10,8 @@ complete as there is too much un-said.
 * Add Bazel target/task that will regenerate dependencies. [Mabel](https://github.com/menny/mabel) has a set
   of `//resolver/..` tasks that may act as inspiration. Ultimately they will just invoke the CLI tool.
 
+* Remove ` defined in 'dependencies.yaml'` from macro descriptions altogether.
+
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
   directory to some central place (i.e. `~/.depgen/repository`)
 
