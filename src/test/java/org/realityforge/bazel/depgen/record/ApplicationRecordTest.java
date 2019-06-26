@@ -3179,4 +3179,30 @@ public class ApplicationRecordTest
     assertEquals( exception.getMessage(),
                   "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a dependency but does not declare the Java nature which is required if verifyConfigSha256 option is set to true." );
   }
+
+  @Test
+  public void repository_with_searchByDefault_not_registered()
+    throws Exception
+  {
+    final Path dir1 = FileUtil.createLocalTempDir();
+    final Path dir2 = FileUtil.createLocalTempDir();
+
+    deployDepGenArtifactToLocalRepository( dir1 );
+    writeConfigFile( "repositories:\n" +
+                     "  - name: local1\n" +
+                     "    url: " + dir1.toUri() + "\n" +
+                     "  - name: local2\n" +
+                     "    url: " + dir2.toUri() + "\n" +
+                     "    searchByDefault: false\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+    deployArtifactToLocalRepository( dir1, "com.example:myapp:1.0" );
+    deployArtifactToLocalRepository( dir2, "com.example:myapp:1.0" );
+
+    final List<ArtifactRecord> artifacts = loadApplicationRecord().getArtifacts();
+    assertTrue( artifacts.size() > 1 );
+
+    assertEquals( artifacts.get( 0 ).getUrls(),
+                  Collections.singletonList( dir1.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
+  }
 }
