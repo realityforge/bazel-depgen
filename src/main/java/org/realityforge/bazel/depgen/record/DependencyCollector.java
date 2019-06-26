@@ -3,10 +3,12 @@ package org.realityforge.bazel.depgen.record;
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.DependencyVisitor;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.realityforge.bazel.depgen.Constants;
@@ -65,8 +67,13 @@ final class DependencyCollector
     final DepgenMetadata metadata = DepgenMetadata.fromDirectory( _record.getSource(), file.getParentFile().toPath() );
 
     final String sha256 = metadata.getSha256( artifact.getClassifier(), artifact.getFile() );
+    final List<RemoteRepository> repositories =
+      node.getRepositories()
+        .stream()
+        .filter( r -> _record.getSource().getRepository( r.getId() ).searchByDefault() )
+        .collect( Collectors.toList() );
     final List<String> urls =
-      metadata.getUrls( artifact, node.getRepositories(), _record.getAuthenticationContexts(), _callback );
+      metadata.getUrls( artifact, repositories, _record.getAuthenticationContexts(), _callback );
 
     final String sourceSha256;
     final List<String> sourceUrls;
@@ -79,7 +86,7 @@ final class DependencyCollector
 
       sourceSha256 = metadata.getSha256( sourcesArtifact.getClassifier(), sourcesArtifact.getFile() );
       sourceUrls =
-        metadata.getUrls( sourcesArtifact, node.getRepositories(), _record.getAuthenticationContexts(), _callback );
+        metadata.getUrls( sourcesArtifact, repositories, _record.getAuthenticationContexts(), _callback );
     }
     else
     {

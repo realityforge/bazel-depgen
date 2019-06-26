@@ -12,6 +12,8 @@ public final class RepositoryConfig
   private String url;
   @Nullable
   private Boolean cacheLookups;
+  @Nullable
+  private Boolean searchByDefault;
 
   @Nullable
   public String getName()
@@ -39,6 +41,17 @@ public final class RepositoryConfig
   public Boolean getCacheLookups()
   {
     return cacheLookups;
+  }
+
+  public void setSearchByDefault( @Nonnull final Boolean searchByDefault )
+  {
+    this.searchByDefault = Objects.requireNonNull( searchByDefault );
+  }
+
+  @Nullable
+  public Boolean getSearchByDefault()
+  {
+    return searchByDefault;
   }
 
   public void setCacheLookups( @Nonnull final Boolean cacheLookups )

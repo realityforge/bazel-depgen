@@ -87,6 +87,38 @@ public class RepositoryModelTest
   }
 
   @Test
+  public void parse_implicit_searchByDefault()
+  {
+    final RepositoryConfig source = new RepositoryConfig();
+    source.setName( "example" );
+    source.setUrl( "https://example.com/repo/" );
+
+    assertFalse( RepositoryModel.parse( source ).searchByDefault() );
+  }
+
+  @Test
+  public void parse_explicit_searchByDefault_FALSE()
+  {
+    final RepositoryConfig source = new RepositoryConfig();
+    source.setName( "example" );
+    source.setUrl( "https://example.com/repo/" );
+    source.setSearchByDefault( Boolean.FALSE );
+
+    assertFalse( RepositoryModel.parse( source ).searchByDefault() );
+  }
+
+  @Test
+  public void parse_explicit_searchByDefault_TRUE()
+  {
+    final RepositoryConfig source = new RepositoryConfig();
+    source.setName( "example" );
+    source.setUrl( "https://example.com/repo/" );
+    source.setSearchByDefault( Boolean.TRUE );
+
+    assertFalse( RepositoryModel.parse( source ).searchByDefault() );
+  }
+
+  @Test
   public void parse_missing_url()
   {
     final RepositoryConfig config = new RepositoryConfig();

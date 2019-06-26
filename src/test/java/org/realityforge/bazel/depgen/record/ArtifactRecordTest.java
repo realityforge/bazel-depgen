@@ -1088,6 +1088,31 @@ public class ArtifactRecordTest
                   ")\n" );
   }
 
+  @Test
+  public void repository_with_searchByDefault_not_registered()
+    throws Exception
+  {
+    final Path dir1 = FileUtil.createLocalTempDir();
+    final Path dir2 = FileUtil.createLocalTempDir();
+
+    deployDepGenArtifactToLocalRepository( dir1 );
+    writeConfigFile( "repositories:\n" +
+                     "  - name: local1\n" +
+                     "    url: " + dir1.toUri() + "\n" +
+                     "  - name: local2\n" +
+                     "    url: " + dir2.toUri() + "\n" +
+                     "    searchByDefault: false\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+    deployArtifactToLocalRepository( dir1, "com.example:myapp:1.0" );
+    deployArtifactToLocalRepository( dir2, "com.example:myapp:1.0" );
+
+    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+    assertEquals( artifactRecord.getUrls(),
+                  Collections.singletonList( dir1.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
+  }
+
   @Nonnull
   private ArtifactRecord getArtifactAt( @Nonnull final ApplicationRecord record, final int index )
   {

@@ -41,6 +41,7 @@ public class ApplicationModelTest
     assertEquals( repository.getName(), ApplicationConfig.MAVEN_CENTRAL_NAME );
     assertEquals( repository.getUrl(), ApplicationConfig.MAVEN_CENTRAL_URL );
     assertTrue( repository.cacheLookups() );
+    assertTrue( repository.searchByDefault() );
     assertEquals( model.getOptions().getWorkspaceDirectory(), FileUtil.getCurrentDirectory() );
     assertEquals( model.getOptions().getExtensionFile(),
                   model.getConfigLocation().getParent().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );

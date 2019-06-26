@@ -30,7 +30,8 @@ public class ApplicationConfigTest
       "  - name: central\n" +
       "    url: http://repo1.maven.org/maven2\n" +
       "  - url: https://example.com/repo\n" +
-      "    cacheLookups: false\n" );
+      "    cacheLookups: false\n" +
+      "    searchByDefault: false\n" );
     final ApplicationConfig config = loadApplicationConfig();
     assertNotNull( config );
     assertEquals( config.getConfigLocation(), getDefaultConfigFile() );
@@ -42,10 +43,12 @@ public class ApplicationConfigTest
     assertEquals( repository1.getName(), "central" );
     assertEquals( repository1.getUrl(), "http://repo1.maven.org/maven2" );
     assertNull( repository1.getCacheLookups() );
+    assertNull( repository1.getSearchByDefault() );
     final RepositoryConfig repository2 = repositories.get( 1 );
     assertNull( repository2.getName() );
     assertEquals( repository2.getUrl(), "https://example.com/repo" );
     assertEquals( repository2.getCacheLookups(), Boolean.FALSE );
+    assertEquals( repository2.getSearchByDefault(), Boolean.FALSE );
   }
 
   @Test
@@ -77,6 +80,25 @@ public class ApplicationConfigTest
 
     assertTrue( excludes.contains( "org.realityforge.javax.annotation:javax.annotation" ) );
     assertTrue( excludes.contains( "org.realityforge.braincheck" ) );
+  }
+
+  @Test
+  public void parseDependencyWithRepositories()
+    throws Exception
+  {
+    writeConfigFile( "repositories:\n" +
+                     "  - name: central\n" +
+                     "    url: https://repo1.maven.org/maven2\n" +
+                     "  - name: example\n" +
+                     "    url: https://repo1.example.com/maven2\n" +
+                     "artifacts:\n" +
+                     "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
+                     "    repositories: ['example']\n" );
+    final ApplicationConfig config = loadApplicationConfig();
+    assertNotNull( config );
+    final ArtifactConfig artifact = ensureSingleArtifact( config );
+    assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
+    assertEquals( artifact.getRepositories(), Collections.singletonList( "example" ) );
   }
 
   @Test

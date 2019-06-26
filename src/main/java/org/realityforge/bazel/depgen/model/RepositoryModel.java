@@ -68,4 +68,10 @@ public final class RepositoryModel
     final Boolean cacheLookups = null != _source ? _source.getCacheLookups() : null;
     return cacheLookups == null ? true : cacheLookups;
   }
+
+  public boolean searchByDefault()
+  {
+    final Boolean searchByDefault = null != _source ? _source.getSearchByDefault() : null;
+    return searchByDefault == null ? true : searchByDefault;
+  }
 }
