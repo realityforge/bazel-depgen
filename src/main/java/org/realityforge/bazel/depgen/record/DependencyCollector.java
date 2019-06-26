@@ -14,6 +14,7 @@ import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.realityforge.bazel.depgen.Constants;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.metadata.RecordBuildCallback;
+import org.realityforge.bazel.depgen.model.ArtifactModel;
 
 final class DependencyCollector
   implements DependencyVisitor
@@ -64,10 +65,16 @@ final class DependencyCollector
     final File file = artifact.getFile();
     assert null != file;
 
+    final ArtifactModel model = _record.getSource().findArtifact( artifact.getGroupId(), artifact.getArtifactId() );
     final DepgenMetadata metadata = DepgenMetadata.fromDirectory( _record.getSource(), file.getParentFile().toPath() );
 
     final String sha256 = metadata.getSha256( artifact.getClassifier(), artifact.getFile() );
     final List<RemoteRepository> repositories =
+      null != model && !model.getRepositories().isEmpty() ?
+      node.getRepositories()
+        .stream()
+        .filter( r -> model.getRepositories().contains( r.getId() ) )
+        .collect( Collectors.toList() ) :
       node.getRepositories()
         .stream()
         .filter( r -> _record.getSource().getRepository( r.getId() ).searchByDefault() )

@@ -269,4 +269,23 @@ public class ApplicationModelTest
     final String shaC = ApplicationModel.calculateConfigSha256( config1 );
     assertEquals( shaC, "51547EE556C5AD9452C5F885ED9FC3772B39A66ED0A43152F77EB790127D20C3" );
   }
+
+  @Test
+  public void ensureArtifactRepositoriesAlign()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    repositories: [local, NoExist]\n" );
+
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationModel );
+
+    assertEquals( exception.getMessage(),
+                  "Artifact 'com.example:myapp' declared a repository named 'NoExist' but no such repository is declared in the repository section. Known repositories include: local" );
+  }
 }

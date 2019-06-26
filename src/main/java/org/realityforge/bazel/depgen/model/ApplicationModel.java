@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -125,6 +126,31 @@ public final class ApplicationModel
     _replacements = Objects.requireNonNull( replacements );
     _excludes = Objects.requireNonNull( excludes );
     _repositories = Collections.unmodifiableList( Objects.requireNonNull( repositories ) );
+    ensureArtifactRepositoriesAlign();
+  }
+
+  private void ensureArtifactRepositoriesAlign()
+  {
+    final Set<String> repositoryNames =
+      getRepositories().stream().map( RepositoryModel::getName ).collect( Collectors.toSet() );
+    for ( final ArtifactModel artifact : getArtifacts() )
+    {
+      final List<String> repositories = artifact.getRepositories();
+      if ( !repositories.isEmpty() )
+      {
+        for ( final String repository : repositories )
+        {
+          if ( !repositoryNames.contains( repository ) )
+          {
+            final String message =
+              "Artifact '" + artifact.getGroup() + ":" + artifact.getId() + "' declared a repository named '" +
+              repository + "' but no such repository is declared in the repository section. Known repositories " +
+              "include: " + repositoryNames.stream().sorted().collect( Collectors.joining( ", " ) );
+            throw new IllegalStateException( message );
+          }
+        }
+      }
+    }
   }
 
   @Nonnull

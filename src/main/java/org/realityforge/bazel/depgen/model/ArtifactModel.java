@@ -183,6 +183,13 @@ public final class ArtifactModel
   }
 
   @Nonnull
+  public List<String> getRepositories()
+  {
+    final List<String> repositories = _source.getRepositories();
+    return null == repositories ? Collections.emptyList() : Collections.unmodifiableList( repositories );
+  }
+
+  @Nonnull
   public List<ExcludeModel> getExcludes()
   {
     return _excludes;

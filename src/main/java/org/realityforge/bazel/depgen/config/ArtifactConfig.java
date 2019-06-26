@@ -21,6 +21,8 @@ public final class ArtifactConfig
   @Nullable
   private List<String> excludes;
   @Nullable
+  private List<String> repositories;
+  @Nullable
   private List<String> visibility;
   @Nullable
   private List<Nature> natures;
@@ -93,6 +95,17 @@ public final class ArtifactConfig
   public void setExcludes( @Nonnull final List<String> excludes )
   {
     this.excludes = Objects.requireNonNull( excludes );
+  }
+
+  @Nullable
+  public List<String> getRepositories()
+  {
+    return repositories;
+  }
+
+  public void setRepositories( @Nonnull final List<String> repositories )
+  {
+    this.repositories = Objects.requireNonNull( repositories );
   }
 
   @Nullable

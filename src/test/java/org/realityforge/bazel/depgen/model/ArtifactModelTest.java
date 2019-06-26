@@ -392,4 +392,24 @@ public class ArtifactModelTest
     assertEquals( exception.getMessage(), "The dependency must specify the 'coord' property." );
     assertEquals( exception.getModel(), source );
   }
+
+  @Test
+  public void getRepositories()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    final List<String> repositories = Arrays.asList( "local", "central" );
+    source.setRepositories( repositories );
+
+    assertEquals( ArtifactModel.parse( source ).getRepositories(), repositories );
+  }
+
+  @Test
+  public void getRepositories_defaultValue()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+
+    assertTrue( ArtifactModel.parse( source ).getRepositories().isEmpty() );
+  }
 }

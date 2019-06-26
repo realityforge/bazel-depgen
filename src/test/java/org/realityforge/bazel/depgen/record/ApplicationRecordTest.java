@@ -3181,7 +3181,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void repository_with_searchByDefault_not_registered()
+  public void repository_with_searchByDefault_false()
     throws Exception
   {
     final Path dir1 = FileUtil.createLocalTempDir();
@@ -3204,5 +3204,33 @@ public class ApplicationRecordTest
 
     assertEquals( artifacts.get( 0 ).getUrls(),
                   Collections.singletonList( dir1.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
+  }
+
+  @Test
+  public void repository_with_searchByDefault_false_but_artifact_repositories_include()
+    throws Exception
+  {
+    final Path dir1 = FileUtil.createLocalTempDir();
+    final Path dir2 = FileUtil.createLocalTempDir();
+
+    deployDepGenArtifactToLocalRepository( dir1 );
+    writeConfigFile( "repositories:\n" +
+                     "  - name: local1\n" +
+                     "    url: " + dir1.toUri() + "\n" +
+                     "  - name: local2\n" +
+                     "    url: " + dir2.toUri() + "\n" +
+                     "    searchByDefault: false\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    repositories: [local1, local2]\n");
+    deployArtifactToLocalRepository( dir1, "com.example:myapp:1.0" );
+    deployArtifactToLocalRepository( dir2, "com.example:myapp:1.0" );
+
+    final List<ArtifactRecord> artifacts = loadApplicationRecord().getArtifacts();
+    assertTrue( artifacts.size() > 1 );
+
+    assertEquals( artifacts.get( 0 ).getUrls(),
+                  Arrays.asList( dir1.toUri() + "com/example/myapp/1.0/myapp-1.0.jar",
+                                 dir2.toUri() + "com/example/myapp/1.0/myapp-1.0.jar") );
   }
 }
