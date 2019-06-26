@@ -169,6 +169,12 @@ public final class ApplicationModel
   }
 
   @Nonnull
+  public RepositoryModel getRepository( @Nonnull final String name )
+  {
+    return Objects.requireNonNull( findRepository( name ) );
+  }
+
+  @Nonnull
   public List<ArtifactModel> getArtifacts()
   {
     return _artifacts;
