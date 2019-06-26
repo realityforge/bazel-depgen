@@ -3163,7 +3163,6 @@ public class ApplicationRecordTest
     assertTrue( artifactModel.getNatures( model.getOptions().getDefaultNature() ).contains( Nature.Java ) );
   }
 
-
   @Test
   public void ensureDeclaredDepgenArtifactWithoutJavaNatureGeneratesError()
     throws Exception
@@ -3173,7 +3172,7 @@ public class ApplicationRecordTest
     writeConfigFile( dir,
                      "artifacts:\n" +
                      "  - coord: " + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "\n" +
-                     "    natures: [J2cl]\n");
+                     "    natures: [J2cl]\n" );
 
     final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
 
