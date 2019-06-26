@@ -93,7 +93,7 @@ public class RepositoryModelTest
     source.setName( "example" );
     source.setUrl( "https://example.com/repo/" );
 
-    assertFalse( RepositoryModel.parse( source ).searchByDefault() );
+    assertTrue( RepositoryModel.parse( source ).searchByDefault() );
   }
 
   @Test
@@ -115,7 +115,7 @@ public class RepositoryModelTest
     source.setUrl( "https://example.com/repo/" );
     source.setSearchByDefault( Boolean.TRUE );
 
-    assertFalse( RepositoryModel.parse( source ).searchByDefault() );
+    assertTrue( RepositoryModel.parse( source ).searchByDefault() );
   }
 
   @Test
