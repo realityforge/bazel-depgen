@@ -4,11 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Refactor artifact config so that an artifact can be bound to a particular repository.
-
-* Refactor repository config so that certain repositories can be marked as only checked if
-  explicitly linked from an artifact.
-
 * Generate a more reasonable error message when verify task fails. Probably pointing to task to run
   to regenerate dependencies.
 
