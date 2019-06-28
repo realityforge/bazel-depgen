@@ -480,7 +480,11 @@ public class Main
     if ( !environment.hasConfigFile() )
     {
       final Path dependenciesFile =
-        environment.currentDirectory().resolve( "thirdparty" ).resolve( ApplicationConfig.FILENAME ).toAbsolutePath().normalize();
+        environment.currentDirectory()
+          .resolve( "thirdparty" )
+          .resolve( ApplicationConfig.FILENAME )
+          .toAbsolutePath()
+          .normalize();
       if ( !dependenciesFile.toFile().exists() )
       {
         logger.log( Level.SEVERE,
