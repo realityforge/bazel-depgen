@@ -619,9 +619,15 @@ public final class ArtifactRecord
     }
     if ( shouldDependOnVerify() )
     {
-      arguments.put( "data", Collections.singletonList( "\":" + _application.getSource().getOptions().getNamePrefix() + "verify_config_sha256\"" ) );
+      arguments.put( "data", Collections.singletonList( verifyLabel() ) );
     }
     output.writeCall( "native.java_import", arguments );
+  }
+
+  @Nonnull
+  private String verifyLabel()
+  {
+    return "\":" + _application.getSource().getOptions().getNamePrefix() + "verify_config_sha256\"";
   }
 
   private boolean shouldDependOnVerify()
@@ -662,7 +668,7 @@ public final class ArtifactRecord
       }
       if ( shouldDependOnVerify() )
       {
-        arguments.put( "data", Collections.singletonList( "\":" + _application.getSource().getOptions().getNamePrefix() + "verify_config_sha256\"" ) );
+        arguments.put( "data", Collections.singletonList( verifyLabel() ) );
       }
       output.writeCall( "j2cl_library", arguments );
     }
@@ -673,7 +679,7 @@ public final class ArtifactRecord
       arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
       if ( shouldDependOnVerify() )
       {
-        arguments.put( "data", Collections.singletonList( "\":" + _application.getSource().getOptions().getNamePrefix() + "verify_config_sha256\"" ) );
+        arguments.put( "data", Collections.singletonList( verifyLabel() ) );
       }
       output.writeCall( "j2cl_import", arguments );
     }
