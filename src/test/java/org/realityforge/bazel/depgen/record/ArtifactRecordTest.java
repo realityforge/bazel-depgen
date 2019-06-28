@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
@@ -171,6 +172,29 @@ public class ArtifactRecordTest
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__mylib\"],\n" +
+                  ")\n" );
+  }
+
+  @Test
+  public void emitJavaImport_declaredDepgenArtifact()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir, "artifacts:\n  - coord: " + DepGenConfig.getCoord() + "\n" );
+
+    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
+    // Output does not declare data with verify task included
+    assertEquals( asString( outputStream ),
+                  "native.java_import(\n" +
+                  "    name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
+                  "    srcjar = \"@org_realityforge_bazel_depgen__bazel_depgen__1__sources//file\",\n" +
+                  "    tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
+                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 

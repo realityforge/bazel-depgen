@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
+import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.J2clConfig;
 import org.realityforge.bazel.depgen.config.J2clMode;
@@ -20,7 +21,6 @@ import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.PluginConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
-import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
 import org.realityforge.bazel.depgen.model.ReplacementTargetModel;
 import org.realityforge.bazel.depgen.util.ArtifactUtil;
@@ -632,10 +632,14 @@ public final class ArtifactRecord
 
   private boolean shouldDependOnVerify()
   {
-    return !_application.getSource().isSystemArtifact( getArtifact().getGroupId(), getArtifact().getArtifactId() ) &&
-         _application.getSource().getOptions().verifyConfigSha256() &&
-         getRuntimeDeps().isEmpty() &&
-         getDeps().isEmpty();
+    final ApplicationModel source = _application.getSource();
+    final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
+    return !( DepGenConfig.getGroupId().equals( artifact.getGroupId() ) &&
+              DepGenConfig.getArtifactId().equals( artifact.getArtifactId() ) ) &&
+           !source.isSystemArtifact( artifact.getGroupId(), artifact.getArtifactId() ) &&
+           source.getOptions().verifyConfigSha256() &&
+           getRuntimeDeps().isEmpty() &&
+           getDeps().isEmpty();
   }
 
   void writeJ2clLibrary( @Nonnull final StarlarkOutput output )
