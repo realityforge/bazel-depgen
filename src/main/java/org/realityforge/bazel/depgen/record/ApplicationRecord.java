@@ -371,21 +371,8 @@ public final class ApplicationRecord
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + _source.getOptions().getNamePrefix() + "verify_config_sha256\"" );
-    final String configLabel = "//" + getRelativeConfigPath() + ":" + _source.getConfigLocation().getFileName();
-
-    final ArtifactRecord artifact = findArtifact( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
-    final String depgenArtifactLabel;
-    if ( null != artifact )
-    {
-      depgenArtifactLabel = ":" + artifact.getLabel( Nature.Java );
-    }
-    else
-    {
-      final ReplacementModel replacement =
-        getSource().findReplacement( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
-      assert null != replacement;
-      depgenArtifactLabel = replacement.getTarget( Nature.Java );
-    }
+    final String configLabel = getConfigFileLabel();
+    final String depgenArtifactLabel = getDepgenArtifactLabel();
 
     arguments.put( "srcs", Arrays.asList( "\"" + depgenArtifactLabel + "\"",
                                           "\"" + configLabel + "\"",
@@ -402,6 +389,31 @@ public final class ApplicationRecord
                           "--verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256)" );
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     output.writeCall( "native.genrule", arguments );
+  }
+
+  @Nonnull
+  private String getConfigFileLabel()
+  {
+    return "//" + getRelativeConfigPath() + ":" + _source.getConfigLocation().getFileName();
+  }
+
+  @Nonnull
+  private String getDepgenArtifactLabel()
+  {
+    final ArtifactRecord artifact = findArtifact( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
+    final String depgenArtifactLabel;
+    if ( null != artifact )
+    {
+      depgenArtifactLabel = ":" + artifact.getLabel( Nature.Java );
+    }
+    else
+    {
+      final ReplacementModel replacement =
+        getSource().findReplacement( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
+      assert null != replacement;
+      depgenArtifactLabel = replacement.getTarget( Nature.Java );
+    }
+    return depgenArtifactLabel;
   }
 
   @Nonnull
