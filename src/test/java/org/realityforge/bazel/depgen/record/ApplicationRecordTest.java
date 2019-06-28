@@ -3222,7 +3222,7 @@ public class ApplicationRecordTest
                      "    searchByDefault: false\n" +
                      "artifacts:\n" +
                      "  - coord: com.example:myapp:1.0\n" +
-                     "    repositories: [local1, local2]\n");
+                     "    repositories: [local1, local2]\n" );
     deployArtifactToLocalRepository( dir1, "com.example:myapp:1.0" );
     deployArtifactToLocalRepository( dir2, "com.example:myapp:1.0" );
 
@@ -3231,6 +3231,6 @@ public class ApplicationRecordTest
 
     assertEquals( artifacts.get( 0 ).getUrls(),
                   Arrays.asList( dir1.toUri() + "com/example/myapp/1.0/myapp-1.0.jar",
-                                 dir2.toUri() + "com/example/myapp/1.0/myapp-1.0.jar") );
+                                 dir2.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
   }
 }
