@@ -48,6 +48,8 @@ public class MainTest
                   "\t\tDo not output unless an error occurs.\n" +
                   "\t-v, --verbose\n" +
                   "\t\tVerbose output of differences.\n" +
+                  "\t-d, --directory <argument>\n" +
+                  "\t\tThe directory to run the tool from.\n" +
                   "\t-c, --config-file <argument>\n" +
                   "\t\tThe path to the yaml file containing the dependency configur\n" +
                   "\t\tation. Defaults to 'thirdparty/dependencies.yml'.\n" +
@@ -116,6 +118,50 @@ public class MainTest
     final String output = failToProcessOptions( "--cache-directory", "StoreMeHere", "generate" );
     assertOutputContains( output,
                           "Error: Specified cache directory exists but is not a directory. Specified value: StoreMeHere" );
+  }
+
+  @Test
+  public void processOptions_specifiedDirectoryNotDirectory()
+    throws Exception
+  {
+    writeWorkspace();
+    FileUtil.write( "RunMeHere", "NotADir" );
+
+    final String output = failToProcessOptions( "--directory", "RunMeHere", "generate" );
+    assertOutputContains( output,
+                          "Error: Specified directory is not a directory. Specified value: RunMeHere" );
+  }
+
+  @Test
+  public void processOptions_specifiedDirectoryNoExist()
+    throws Exception
+  {
+    writeWorkspace();
+
+    final String output = failToProcessOptions( "--directory", "RunMeHere", "generate" );
+    assertOutputContains( output,
+                          "Error: Specified directory does not exist. Specified value: RunMeHere" );
+  }
+
+  @Test
+  public void processOptions_specifyDirectory()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    FileUtil.write( dir.resolve( ".bazelrc" ), "build --repository_cache " + FileUtil.createLocalTempDir() + "\n" );
+    FileUtil.write( dir.resolve( "WORKSPACE" ), "" );
+    final Path configFile = dir.resolve( "thirdparty" ).resolve( ApplicationConfig.FILENAME );
+    FileUtil.write( configFile, "" );
+
+    final TestHandler handler = new TestHandler();
+    final Environment environment = newEnvironment( handler );
+    environment.setConfigFile( null );
+    environment.logger().setLevel( Level.INFO );
+    final int exitCode = Main.run( environment, "--directory", dir.toString(), "info", "config-file" );
+    assertEquals( ExitCodes.SUCCESS_EXIT_CODE, exitCode );
+    assertEquals( environment.currentDirectory(), dir );
+    assertEquals( handler.toString(), "config-file=" + configFile );
   }
 
   @Test

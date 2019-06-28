@@ -12,7 +12,7 @@ final class Environment
   @Nullable
   private final Console _console;
   @Nonnull
-  private final Path _currentDirectory;
+  private Path _currentDirectory;
   @Nonnull
   private final Logger _logger;
   @Nullable
@@ -28,7 +28,7 @@ final class Environment
   Environment( @Nullable final Console console, @Nonnull final Path currentDirectory, @Nonnull final Logger logger )
   {
     _console = console;
-    _currentDirectory = Objects.requireNonNull( currentDirectory );
+    setCurrentDirectory( Objects.requireNonNull( currentDirectory ) );
     _logger = Objects.requireNonNull( logger );
   }
 
@@ -36,6 +36,11 @@ final class Environment
   Console console()
   {
     return _console;
+  }
+
+  public void setCurrentDirectory( @Nonnull final Path currentDirectory )
+  {
+    _currentDirectory = Objects.requireNonNull( currentDirectory );
   }
 
   @Nonnull

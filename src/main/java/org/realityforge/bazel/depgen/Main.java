@@ -46,6 +46,7 @@ public class Main
   private static final int QUIET_OPT = 'q';
   private static final int VERBOSE_OPT = 'v';
   private static final int RESET_CACHED_METADATA_OPT = 1;
+  private static final int RUN_DIR_OPT = 'd';
   private static final int CACHE_DIR_OPT = 'r';
   private static final int SETTINGS_FILE_OPT = 's';
   private static final int CONFIG_FILE_OPT = 'c';
@@ -69,6 +70,10 @@ public class Main
                               VERBOSE_OPT,
                               "Verbose output of differences.",
                               new int[]{ QUIET_OPT } ),
+      new CLOptionDescriptor( "directory",
+                              CLOptionDescriptor.ARGUMENT_REQUIRED,
+                              RUN_DIR_OPT,
+                              "The directory to run the tool from." ),
       new CLOptionDescriptor( "config-file",
                               CLOptionDescriptor.ARGUMENT_REQUIRED,
                               CONFIG_FILE_OPT,
@@ -113,7 +118,7 @@ public class Main
     System.exit( run( environment, args ) );
   }
 
-  static int run( @Nonnull final Environment environment, @Nonnull final String[] args )
+  static int run( @Nonnull final Environment environment, @Nonnull final String... args )
   {
     if ( !processOptions( environment, args ) )
     {
@@ -370,6 +375,28 @@ public class Main
       logger.log( Level.SEVERE, "Error: " + parser.getErrorString() );
       return false;
     }
+    // Retrieve run directory first as some of the other options are interpreted relative to current directory
+    for ( final CLOption option : parser.getArguments() )
+    {
+      if( RUN_DIR_OPT == option.getId() )
+      {
+        final String argument = option.getArgument();
+        final Path directory = environment.currentDirectory().resolve( argument ).toAbsolutePath().normalize();
+        if ( !Files.exists( directory ) )
+        {
+          logger.log( Level.SEVERE,
+                      "Error: Specified directory does not exist. Specified value: " + argument );
+          return false;
+        }
+        if ( !Files.isDirectory( directory ) )
+        {
+          logger.log( Level.SEVERE,
+                      "Error: Specified directory is not a directory. Specified value: " + argument );
+          return false;
+        }
+        environment.setCurrentDirectory( directory );
+      }
+    }
     // Get a list of parsed options
     for ( final CLOption option : parser.getArguments() )
     {
@@ -389,6 +416,10 @@ public class Main
             return false;
           }
           environment.setCommand( COMMAND_MAP.get( command ).get() );
+          break;
+        }
+        case RUN_DIR_OPT:
+        {
           break;
         }
         case CONFIG_FILE_OPT:
