@@ -73,8 +73,7 @@ public class Main
                               CLOptionDescriptor.ARGUMENT_REQUIRED,
                               CONFIG_FILE_OPT,
                               "The path to the yaml file containing the dependency configuration. " +
-                              "Defaults to 'thirdparty/" + ApplicationConfig.FILENAME + "' in the " +
-                              "workspace directory." ),
+                              "Defaults to 'thirdparty/" + ApplicationConfig.FILENAME + "'." ),
       new CLOptionDescriptor( "settings-file",
                               CLOptionDescriptor.ARGUMENT_REQUIRED,
                               SETTINGS_FILE_OPT,

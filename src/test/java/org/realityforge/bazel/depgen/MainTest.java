@@ -50,8 +50,7 @@ public class MainTest
                   "\t\tVerbose output of differences.\n" +
                   "\t-c, --config-file <argument>\n" +
                   "\t\tThe path to the yaml file containing the dependency configur\n" +
-                  "\t\tation. Defaults to 'thirdparty/dependencies.yml' in the work\n" +
-                  "\t\tspace directory.\n" +
+                  "\t\tation. Defaults to 'thirdparty/dependencies.yml'.\n" +
                   "\t-s, --settings-file <argument>\n" +
                   "\t\tThe path to the settings.xml used by Maven to extract reposi\n" +
                   "\t\ttory credentials. Defaults to '~/.m2/settings.xml'.\n" +
