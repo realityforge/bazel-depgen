@@ -41,7 +41,7 @@ complete as there is too much un-said.
   `remove [2-part coord] version`
 
 * Refactor tests so that by default they don't call out to bazel except when needed. This should speed
-  up tests. 
+  up tests.
 
 * When an artifact has the `J2cl` nature we should consider whether we analyze the jars and extract any of the
   `*.native.js`, `*.extern.js` or `*.js` files and add them to the `j2cl_library` macro manually.
