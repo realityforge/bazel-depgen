@@ -5,11 +5,7 @@ Unfortunately it is not complete enough for other people to pick work off the li
 complete as there is too much un-said.
 
 * Generate a more reasonable error message when verify task fails. Probably pointing to task to run
-  to regenerate dependencies. See how buildifier macros do this at
-  https://github.com/bazelbuild/buildtools/blob/master/buildifier/def.bzl
-
-* Add Bazel target/task that will regenerate dependencies. [Mabel](https://github.com/menny/mabel) has a set
-  of `//resolver/..` tasks that may act as inspiration. Ultimately they will just invoke the CLI tool.
+  to regenerate dependencies.
 
 * If a depgen artifact is explicitly declared then it MUST have the `all` classifier.
 

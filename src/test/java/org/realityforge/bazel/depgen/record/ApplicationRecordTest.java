@@ -1825,6 +1825,37 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"regenerate_depgen_extension_script\",\n" +
+                  "        srcs = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
+                  "        cmd = \"echo \\\"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) --quiet generate \\\" > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.sh_binary(\n" +
+                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        tags = [\n" +
+                  "            \"local\",\n" +
+                  "            \"manual\",\n" +
+                  "            \"no-cache\",\n" +
+                  "            \"no-remote\",\n" +
+                  "            \"no-sandbox\",\n" +
+                  "        ],\n" +
+                  "        data = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
                   "    native.alias(\n" +
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
@@ -1922,6 +1953,37 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"regenerate_depgen_extension_script\",\n" +
+                  "        srcs = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
+                  "        cmd = \"echo \\\"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) --quiet generate \\\" > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.sh_binary(\n" +
+                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        tags = [\n" +
+                  "            \"local\",\n" +
+                  "            \"manual\",\n" +
+                  "            \"no-cache\",\n" +
+                  "            \"no-remote\",\n" +
+                  "            \"no-sandbox\",\n" +
+                  "        ],\n" +
+                  "        data = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
                   "    if not omit_com_example__myapp:\n" +
                   "        native.alias(\n" +
                   "            name = \"com_example__myapp\",\n" +
@@ -1984,6 +2046,37 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"regenerate_depgen_extension_script\",\n" +
+                  "        srcs = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
+                  "        cmd = \"echo \\\"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) --quiet generate \\\" > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.sh_binary(\n" +
+                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        tags = [\n" +
+                  "            \"local\",\n" +
+                  "            \"manual\",\n" +
+                  "            \"no-cache\",\n" +
+                  "            \"no-remote\",\n" +
+                  "            \"no-sandbox\",\n" +
+                  "        ],\n" +
+                  "        data = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
                   "    native.alias(\n" +
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
@@ -2040,6 +2133,37 @@ public class ApplicationRecordTest
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
                   "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"regenerate_depgen_extension_script\",\n" +
+                  "        srcs = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
+                  "        cmd = \"echo \\\"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) --quiet generate \\\" > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.sh_binary(\n" +
+                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        tags = [\n" +
+                  "            \"local\",\n" +
+                  "            \"manual\",\n" +
+                  "            \"no-cache\",\n" +
+                  "            \"no-remote\",\n" +
+                  "            \"no-sandbox\",\n" +
+                  "        ],\n" +
+                  "        data = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
@@ -2120,6 +2244,37 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"regenerate_depgen_extension_script\",\n" +
+                  "        srcs = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
+                  "        cmd = \"echo \\\"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) --quiet generate \\\" > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.sh_binary(\n" +
+                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        tags = [\n" +
+                  "            \"local\",\n" +
+                  "            \"manual\",\n" +
+                  "            \"no-cache\",\n" +
+                  "            \"no-remote\",\n" +
+                  "            \"no-sandbox\",\n" +
+                  "        ],\n" +
+                  "        data = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
                   "    native.alias(\n" +
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
@@ -2176,6 +2331,37 @@ public class ApplicationRecordTest
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
                   "        cmd = \"$(JAVA) -jar $(location @org_realityforge_bazel//:depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"regenerate_depgen_extension_script\",\n" +
+                  "        srcs = [\n" +
+                  "            \"@org_realityforge_bazel//:depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
+                  "        cmd = \"echo \\\"$(JAVA) -jar $(location @org_realityforge_bazel//:depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) --quiet generate \\\" > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.sh_binary(\n" +
+                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        tags = [\n" +
+                  "            \"local\",\n" +
+                  "            \"manual\",\n" +
+                  "            \"no-cache\",\n" +
+                  "            \"no-remote\",\n" +
+                  "            \"no-sandbox\",\n" +
+                  "        ],\n" +
+                  "        data = [\n" +
+                  "            \"@org_realityforge_bazel//:depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
@@ -2486,6 +2672,65 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void writeRegenerateExtensionTarget()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir, "" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    record.writeRegenerateExtensionTarget( new StarlarkOutput( outputStream ) );
+    assertEquals( asString( outputStream ),
+                  "native.sh_binary(\n" +
+                  "    name = \"regenerate_depgen_extension\",\n" +
+                  "    srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "    tags = [\n" +
+                  "        \"local\",\n" +
+                  "        \"manual\",\n" +
+                  "        \"no-cache\",\n" +
+                  "        \"no-remote\",\n" +
+                  "        \"no-sandbox\",\n" +
+                  "    ],\n" +
+                  "    data = [\n" +
+                  "        \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "        \"//thirdparty:dependencies.yml\",\n" +
+                  "        \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "    ],\n" +
+                  "    visibility = [\"//visibility:private\"],\n" +
+                  ")\n" );
+  }
+
+  @Test
+  public void writeRegenerateExtensionScriptTarget()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir, "" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    record.writeRegenerateExtensionScriptTarget( new StarlarkOutput( outputStream ) );
+    assertEquals( asString( outputStream ),
+                  "native.genrule(\n" +
+                  "    name = \"regenerate_depgen_extension_script\",\n" +
+                  "    srcs = [\n" +
+                  "        \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "        \"//thirdparty:dependencies.yml\",\n" +
+                  "        \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "    ],\n" +
+                  "    toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "    outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
+                  "    cmd = \"echo \\\"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) --quiet generate \\\" > \\\"$@\\\"\",\n" +
+                  "    visibility = [\"//visibility:private\"],\n" +
+                  ")\n" );
+  }
+
+  @Test
   public void writeVerifyTarget()
     throws Exception
   {
@@ -2620,6 +2865,37 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"regenerate_depgen_extension_script\",\n" +
+                  "        srcs = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
+                  "        cmd = \"echo \\\"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) --quiet generate \\\" > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.sh_binary(\n" +
+                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        tags = [\n" +
+                  "            \"local\",\n" +
+                  "            \"manual\",\n" +
+                  "            \"no-cache\",\n" +
+                  "            \"no-remote\",\n" +
+                  "            \"no-sandbox\",\n" +
+                  "        ],\n" +
+                  "        data = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
                   "    native.alias(\n" +
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
@@ -2647,7 +2923,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void writeBazelExtension_where_verifySha256_is_false()
+  public void writeBazelExtension_where_verifyConfigSha256_is_false()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
@@ -2871,6 +3147,37 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"regenerate_depgen_extension_script\",\n" +
+                  "        srcs = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
+                  "        cmd = \"echo \\\"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) --quiet generate \\\" > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.sh_binary(\n" +
+                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        tags = [\n" +
+                  "            \"local\",\n" +
+                  "            \"manual\",\n" +
+                  "            \"no-cache\",\n" +
+                  "            \"no-remote\",\n" +
+                  "            \"no-sandbox\",\n" +
+                  "        ],\n" +
+                  "        data = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
                   "    native.alias(\n" +
                   "        name = \"com_example__myapp-j2cl\",\n" +
                   "        actual = \":com_example__myapp__1_0-j2cl\",\n" +
@@ -3002,6 +3309,37 @@ public class ApplicationRecordTest
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
                   "        outs = [\"command-output.txt\"],\n" +
                   "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"regenerate_depgen_extension_script\",\n" +
+                  "        srcs = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
+                  "        cmd = \"echo \\\"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) --quiet generate \\\" > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.sh_binary(\n" +
+                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        tags = [\n" +
+                  "            \"local\",\n" +
+                  "            \"manual\",\n" +
+                  "            \"no-cache\",\n" +
+                  "            \"no-remote\",\n" +
+                  "            \"no-sandbox\",\n" +
+                  "        ],\n" +
+                  "        data = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +

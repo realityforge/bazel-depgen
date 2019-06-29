@@ -366,6 +366,54 @@ public final class ApplicationRecord
       .orElse( null );
   }
 
+  void writeRegenerateExtensionScriptTarget( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + _source.getOptions().getNamePrefix() + "regenerate_depgen_extension_script\"" );
+    final String configLabel = getConfigFileLabel();
+    final String depgenArtifactLabel = getDepgenArtifactLabel();
+
+    arguments.put( "srcs", Arrays.asList( "\"" + depgenArtifactLabel + "\"",
+                                          "\"" + configLabel + "\"",
+                                          "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
+
+    arguments.put( "toolchains", Collections.singletonList( "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
+    arguments.put( "outs",
+                   Collections.singletonList( "\"" + _source.getOptions().getNamePrefix() +
+                                              "regenerate_depgen_extension_script.sh\"" ) );
+
+    arguments.put( "cmd", "\"echo \\\"$(JAVA) " +
+                          "-jar $(location " + depgenArtifactLabel + ") " +
+                          "--directory \\\\$$BUILD_WORKSPACE_DIRECTORY " +
+                          "--config-file $(location " + configLabel + ") " +
+                          "--quiet " +
+                          "generate \\\" > \\\"$@\\\"\"" );
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    output.writeCall( "native.genrule", arguments );
+  }
+
+  void writeRegenerateExtensionTarget( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + _source.getOptions().getNamePrefix() + "regenerate_depgen_extension\"" );
+    arguments.put( "srcs", Collections.singletonList( "\"" + _source.getOptions().getNamePrefix() +
+                                                      "regenerate_depgen_extension_script\"" ) );
+    arguments.put( "tags",
+                   Arrays.asList( "\"local\"", "\"manual\"", "\"no-cache\"", "\"no-remote\"", "\"no-sandbox\"" ) );
+
+    final String configLabel = getConfigFileLabel();
+    final String depgenArtifactLabel = getDepgenArtifactLabel();
+
+    arguments.put( "data", Arrays.asList( "\"" + depgenArtifactLabel + "\"",
+                                          "\"" + configLabel + "\"",
+                                          "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
+
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    output.writeCall( "native.sh_binary", arguments );
+  }
+
   void writeVerifyTarget( @Nonnull final StarlarkOutput output )
     throws IOException
   {
@@ -451,6 +499,10 @@ public final class ApplicationRecord
         {
           macro.newLine();
           writeVerifyTarget( output );
+          macro.newLine();
+          writeRegenerateExtensionScriptTarget( output );
+          macro.newLine();
+          writeRegenerateExtensionTarget( output );
         }
         for ( final ArtifactRecord artifact : getArtifacts() )
         {
