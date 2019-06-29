@@ -20,6 +20,8 @@ complete as there is too much un-said.
  WARNING: Could not validate integrity of download from .../org/realityforge/bazel/depgen/bazel-depgen/X/bazel-depgen-X-sources.jar: Checksum validation failed, no checksums available
  Transfer Corrupted: org/realityforge/bazel/depgen/bazel-depgen/X/bazel-depgen-X-sources.jar due to org.eclipse.aether.transfer.ChecksumFailureException: Checksum validation failed, no checksums available
 ```
+  Valid behaviour should be to fail if this error occurs. We should also add configuration to repositories to
+  indicate a repository does not support checksums.
 
 * Add `init` command that initializes `dependencies.bzl` from template that includes all the options and
   documentation for each option. Note that the `exportDeps` configuration potentially limits scalability of
