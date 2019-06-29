@@ -54,6 +54,7 @@ define 'bazel-depgen' do
 
   generate_config_resource(project)
 
+  package(:jar)
   package(:sources)
   package(:javadoc)
   package(:jar, :classifier => 'all').tap do |jar|
