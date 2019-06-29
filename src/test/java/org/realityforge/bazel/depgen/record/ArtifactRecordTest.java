@@ -574,9 +574,8 @@ public class ArtifactRecordTest
     assertEquals( asString( outputStream ),
                   "j2cl_library(\n" +
                   "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                  "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
+                  "    srcs = [\"com_example__myapp__1_0__j2cl_library\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -600,10 +599,9 @@ public class ArtifactRecordTest
     assertEquals( asString( outputStream ),
                   "j2cl_library(\n" +
                   "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                  "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
+                  "    srcs = [\"com_example__myapp__1_0__j2cl_library\"],\n" +
                   "    js_suppress = [\"checkDebuggerStatement\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -627,9 +625,8 @@ public class ArtifactRecordTest
     assertEquals( asString( outputStream ),
                   "j2cl_import(\n" +
                   "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                  "    jar = \"@com_example__myapp__1_0//file\",\n" +
+                  "    jar = \"com_example__myapp__1_0__j2cl_library\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -1063,11 +1060,48 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp-j2cl\",\n" +
                   "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
                   ")\n" +
+                  "native.java_import(\n" +
+                  "    name = \"com_example__myapp__1_0__j2cl_library\",\n" +
+                  "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                  "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
+                  "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                  "    visibility = [\"//visibility:private\"],\n" +
+                  "    data = [\":verify_config_sha256\"],\n" +
+                  ")\n" +
+                  "j2cl_library(\n" +
+                  "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "    srcs = [\"com_example__myapp__1_0__j2cl_library\"],\n" +
+                  "    visibility = [\"//visibility:private\"],\n" +
+                  ")\n" );
+  }
+
+  @Test
+  public void writeArtifactTargets_J2cl_no_verify_config_sha256()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  verifyConfigSha256: false\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [J2cl]\n" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    artifactRecord.writeArtifactTargets( new StarlarkOutput( outputStream ) );
+    assertEquals( asString( outputStream ),
+                  "native.alias(\n" +
+                  "    name = \"com_example__myapp-j2cl\",\n" +
+                  "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
+                  ")\n" +
                   "j2cl_library(\n" +
                   "    name = \"com_example__myapp__1_0-j2cl\",\n" +
                   "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" );
   }
 
@@ -1091,11 +1125,18 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp-j2cl\",\n" +
                   "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
                   ")\n" +
-                  "j2cl_library(\n" +
-                  "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                  "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
+                  "native.java_import(\n" +
+                  "    name = \"com_example__myapp__1_0__j2cl_library\",\n" +
+                  "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                  "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
+                  "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    data = [\":verify_config_sha256\"],\n" +
+                  ")\n" +
+                  "j2cl_library(\n" +
+                  "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "    srcs = [\"com_example__myapp__1_0__j2cl_library\"],\n" +
+                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" +
                   "\n" +
                   "native.alias(\n" +

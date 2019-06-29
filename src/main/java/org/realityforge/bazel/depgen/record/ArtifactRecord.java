@@ -34,6 +34,10 @@ public final class ArtifactRecord
    */
   private static final String PLUGIN_LIBRARY_SUFFIX = "__plugin_library";
   /**
+   * The suffix applied to the name of target that imports artifact for use when defining j2cl library.
+   */
+  private static final String J2CL_LIBRARY_SUFFIX = "__j2cl_library";
+  /**
    * The suffix applied to every compile plugin.
    */
   private static final String PLUGIN_SUFFIX = "__plugin";
@@ -651,7 +655,15 @@ public final class ArtifactRecord
     arguments.put( "name", "\"" + getName( Nature.J2cl ) + "\"" );
     if ( J2clMode.Library == mode )
     {
-      arguments.put( "srcs", Collections.singletonList( "\"" + getQualifiedSourcesLabel() + "\"" ) );
+      if ( shouldDependOnVerify() )
+      {
+        arguments.put( "srcs",
+                       Collections.singletonList( "\"" + getName( Nature.Java ) + J2CL_LIBRARY_SUFFIX + "\"" ) );
+      }
+      else
+      {
+        arguments.put( "srcs", Collections.singletonList( "\"" + getQualifiedSourcesLabel() + "\"" ) );
+      }
       if ( null != j2clConfig )
       {
         final List<String> suppress = j2clConfig.getSuppress();
@@ -670,21 +682,20 @@ public final class ArtifactRecord
                          .sorted()
                          .collect( Collectors.toList() ) );
       }
-      if ( shouldDependOnVerify() )
-      {
-        arguments.put( "data", Collections.singletonList( verifyLabel() ) );
-      }
       output.writeCall( "j2cl_library", arguments );
     }
     else
     {
       assert J2clMode.Import == mode;
-      arguments.put( "jar", "\"" + getQualifiedBinaryLabel() + "\"" );
-      arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
       if ( shouldDependOnVerify() )
       {
-        arguments.put( "data", Collections.singletonList( verifyLabel() ) );
+        arguments.put( "jar", "\"" + getName( Nature.Java ) + J2CL_LIBRARY_SUFFIX + "\"" );
       }
+      else
+      {
+        arguments.put( "jar", "\"" + getQualifiedBinaryLabel() + "\"" );
+      }
+      arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
       output.writeCall( "j2cl_import", arguments );
     }
   }
@@ -776,6 +787,10 @@ public final class ArtifactRecord
       else if ( Nature.J2cl == nature )
       {
         emitAlias( output, nature );
+        if ( shouldDependOnVerify() )
+        {
+          emitJavaImport( output, J2CL_LIBRARY_SUFFIX );
+        }
         writeJ2clLibrary( output );
       }
       else //if ( Nature.Plugin == nature )
