@@ -25,7 +25,7 @@ complete as there is too much un-said.
   Valid behaviour should be to fail if this error occurs. We should also add configuration to repositories to
   indicate a repository does not support checksums.
 
-* Cleanup error output like following. Stop duplicating message and remove stacktrac as it is a "known" error and
+* Cleanup error output like following. Stop duplicating message and remove stacktrace as it is a "known" error and
   remove the exception name. This may involve replacing lots of errors in codebase with new exception type such as
   `DepgenException` or `DepgenValidationException` or `DepgenConfigurationException`
 
