@@ -23,6 +23,23 @@ complete as there is too much un-said.
   Valid behaviour should be to fail if this error occurs. We should also add configuration to repositories to
   indicate a repository does not support checksums.
 
+* Cleanup error output like following. Stop duplicating message and remove stacktrac as it is a "known" error and
+  remove the exception name. This may involve replacing lots of errors in codebase with new exception type such as
+  `DepgenException` or `DepgenValidationException` or `DepgenConfigurationException`
+
+```
+java.lang.IllegalStateException: Artifact 'org.realityforge.com.google.jsinterop:base:jar:1.0.0-b2-e6d791f' declared target for nature 'J2cl' but artifact does not have specified nature.
+java.lang.IllegalStateException: Artifact 'org.realityforge.com.google.jsinterop:base:jar:1.0.0-b2-e6d791f' declared target for nature 'J2cl' but artifact does not have specified nature.
+        at org.realityforge.bazel.depgen.record.ArtifactRecord.validate(ArtifactRecord.java:214)
+        at java.util.ArrayList.forEach(ArrayList.java:1257)
+        at org.realityforge.bazel.depgen.record.ApplicationRecord.build(ApplicationRecord.java:51)
+        at org.realityforge.bazel.depgen.Main.loadRecord(Main.java:194)
+        at org.realityforge.bazel.depgen.CommandContextImpl.loadRecord(CommandContextImpl.java:38)
+        at org.realityforge.bazel.depgen.GenerateCommand.run(GenerateCommand.java:20)
+        at org.realityforge.bazel.depgen.Main.run(Main.java:130)
+        at org.realityforge.bazel.depgen.Main.main(Main.java:118)
+```
+
 * Add `init` command that initializes `dependencies.bzl` from template that includes all the options and
   documentation for each option. Note that the `exportDeps` configuration potentially limits scalability of
   builds as it results in deep dependency trees. Consider also generating initial `WORKSPACE` if a walk through
