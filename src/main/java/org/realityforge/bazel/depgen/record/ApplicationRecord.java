@@ -56,10 +56,10 @@ public final class ApplicationRecord
   private void validate()
   {
     ensureAliasesAreUnique();
-    ensureDepgenArtifactHasJavaNature();
+    ensureDeclaredDepgenArtifactIsValid();
   }
 
-  private void ensureDepgenArtifactHasJavaNature()
+  private void ensureDeclaredDepgenArtifactIsValid()
   {
     final ApplicationModel model = getSource();
     final OptionsModel options = model.getOptions();
@@ -71,8 +71,16 @@ public final class ApplicationRecord
       {
         final String message =
           "Artifact '" + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "' declared as a " +
-          "dependency but does not declare the Java nature which is required if verifyConfigSha256 option is " +
+          "dependency but does not declare the Java nature which is required if the verifyConfigSha256 option is " +
           "set to true.";
+        throw new IllegalStateException( message );
+      }
+      if ( null != artifact && !DepGenConfig.getClassifier().equals( artifact.getClassifier() ) )
+      {
+        final String message =
+          "Artifact '" + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "' declared as a " +
+          "dependency but does not specify the classifier '" + DepGenConfig.getClassifier() + "' which is " +
+          "required if the verifyConfigSha256 option is set to true.";
         throw new IllegalStateException( message );
       }
 

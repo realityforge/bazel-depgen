@@ -30,7 +30,7 @@ public final class DepGenConfig
   @Nonnull
   public static String getCoord()
   {
-    return getGroupId() + ":" + getArtifactId() + ":jar:all:" + getVersion();
+    return getGroupId() + ":" + getArtifactId() + ":jar:" + getClassifier() + ":" + getVersion();
   }
 
   @Nonnull
@@ -43,6 +43,12 @@ public final class DepGenConfig
   public static String getArtifactId()
   {
     return Objects.requireNonNull( c_config.getProperty( "id" ) );
+  }
+
+  @Nonnull
+  public static String getClassifier()
+  {
+    return "all";
   }
 
   @Nonnull

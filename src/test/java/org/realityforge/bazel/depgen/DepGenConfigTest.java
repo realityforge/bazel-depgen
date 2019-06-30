@@ -28,6 +28,7 @@ public class DepGenConfigTest
     assertNotNull( DepGenConfig.getVersion() );
     assertNotNull( DepGenConfig.getGroupId() );
     assertNotNull( DepGenConfig.getArtifactId() );
+    assertNotNull( DepGenConfig.getClassifier() );
     assertNotNull( DepGenConfig.getCoord() );
   }
 }

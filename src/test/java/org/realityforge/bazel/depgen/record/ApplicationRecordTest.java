@@ -3504,7 +3504,7 @@ public class ApplicationRecordTest
 
     writeConfigFile( dir,
                      "artifacts:\n" +
-                     "  - coord: " + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "\n" );
+                     "  - coord: " + DepGenConfig.getCoord() + "\n" );
 
     final ApplicationRecord record = loadApplicationRecord();
     final ApplicationModel model = record.getSource();
@@ -3523,13 +3523,29 @@ public class ApplicationRecordTest
 
     writeConfigFile( dir,
                      "artifacts:\n" +
-                     "  - coord: " + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "\n" +
+                     "  - coord: " + DepGenConfig.getCoord() + "\n" +
                      "    natures: [J2cl]\n" );
 
     final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
-                  "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a dependency but does not declare the Java nature which is required if verifyConfigSha256 option is set to true." );
+                  "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a dependency but does not declare the Java nature which is required if the verifyConfigSha256 option is set to true." );
+  }
+
+  @Test
+  public void ensureDeclaredDepgenArtifactWithoutAllClassifierGeneratesError()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: " + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "\n" );
+
+    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+
+    assertEquals( exception.getMessage(),
+                  "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a dependency but does not specify the classifier 'all' which is required if the verifyConfigSha256 option is set to true." );
   }
 
   @Test
