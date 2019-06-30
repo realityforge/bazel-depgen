@@ -540,19 +540,19 @@ public class Main
   static void printUsage( @Nonnull final Environment environment )
   {
     final Logger logger = environment.logger();
-    logger.info( "java " + Main.class.getName() + " [options] [command]" );
-    logger.info( "\tPossible Commands:" );
-    logger.info( "\t\t" + GENERATE_COMMAND + ": Generate the bazel extension from the dependency configuration." );
-    logger.info( "\t\t" + PRINT_GRAPH_COMMAND + ": Compute and print the dependency graph " +
+    logger.severe( "java " + Main.class.getName() + " [options] [command]" );
+    logger.severe( "\tPossible Commands:" );
+    logger.severe( "\t\t" + GENERATE_COMMAND + ": Generate the bazel extension from the dependency configuration." );
+    logger.severe( "\t\t" + PRINT_GRAPH_COMMAND + ": Compute and print the dependency graph " +
                  "for the dependency configuration." );
-    logger.info( "\t\t" + HASH_COMMAND + ": Generate a hash of the content of the dependency configuration." );
-    logger.info( "\t\t" + INFO_COMMAND + ": Print runtime info about the tool." );
-    logger.info( "\tOptions:" );
+    logger.severe( "\t\t" + HASH_COMMAND + ": Generate a hash of the content of the dependency configuration." );
+    logger.severe( "\t\t" + INFO_COMMAND + ": Print runtime info about the tool." );
+    logger.severe( "\tOptions:" );
     final String[] options =
       CLUtil.describeOptions( OPTIONS ).toString().split( System.getProperty( "line.separator" ) );
     for ( final String line : options )
     {
-      logger.info( line );
+      logger.severe( line );
     }
   }
 }

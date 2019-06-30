@@ -31,7 +31,11 @@ public class MainTest
     throws Exception
   {
     final TestHandler handler = new TestHandler();
-    Main.printUsage( newEnvironment( handler ) );
+    final Environment environment = newEnvironment( handler );
+    // We set the level to warning which is equivalent to --quiet so that we know that output
+    // occurs even if the --quiet argument is passed.
+    environment.logger().setLevel( Level.WARNING );
+    Main.printUsage( environment );
     assertEquals( handler.toString(),
                   "java org.realityforge.bazel.depgen.Main [options] [command]\n" +
                   "\tPossible Commands:\n" +

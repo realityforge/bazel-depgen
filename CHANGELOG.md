@@ -4,6 +4,7 @@
 
 * Update the `regenerate_depgen_extension` task so that it does not pass the `--quiet` parameter to the underlying depgen command execution. Passing the `--quiet` flag resulted in some useful messages being omitted from the output when the task was run from the command line which ultimately led to problems identifying the cause of errors.
 * Update the `regenerate_depgen_extension` task so that the user can provide arbitrary parameters to the depgen tool by passing them on the commandline. i.e. `bazel run //thirdparty:regenerate_depgen_extension --  --reset-cached-metadata` will pass `--reset-cached-metadata` to the underlying tool.
+* Fix bug where the output as a result of the `--help` argument was omitted if the tool was also passed the `--quiet` argument.
 
 ### [v0.02](https://github.com/realityforge/bazel-depgen/tree/v0.02) (2019-06-29)
 [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.01...v0.02)

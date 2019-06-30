@@ -9,8 +9,6 @@ complete as there is too much un-said.
 * Generate a more reasonable error message when verify task fails. Probably pointing to task to run
   to regenerate dependencies. i.e. `bazel run //thirdparty:regenerate_depgen_extension --  --reset-cached-metadata`
 
-* `--help` output should occur even when `--quiet` is supplied.
-
 * If a depgen artifact is explicitly declared then it MUST have the `all` classifier.
 
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
