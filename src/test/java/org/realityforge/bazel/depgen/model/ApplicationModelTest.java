@@ -217,7 +217,7 @@ public class ApplicationModelTest
     assertEquals( replacementModel.getId(), "mylib" );
 
     assertEquals( replacementModel, model.findReplacement( "com.example", "mylib" ) );
-    assertNull( model.findArtifact( "com.example", "noexist" ) );
+    assertNull( model.findReplacement( "com.example", "noexist" ) );
   }
 
   @Test
