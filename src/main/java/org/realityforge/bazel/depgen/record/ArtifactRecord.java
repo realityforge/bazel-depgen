@@ -562,7 +562,7 @@ public final class ArtifactRecord
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + getAlias( nature ) + "\"" );
+    arguments.put( "name", asString( getAlias( nature ) ) );
     arguments.put( "actual", "\":" + getName( nature ) + "\"" );
     final ArtifactModel artifactModel = getArtifactModel();
     if ( null != artifactModel )
@@ -571,7 +571,7 @@ public final class ArtifactRecord
       if ( !visibility.isEmpty() )
       {
         arguments.put( "visibility",
-                       visibility.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
+                       visibility.stream().map( this::asString ).collect( Collectors.toList() ) );
       }
     }
     else
@@ -587,10 +587,10 @@ public final class ArtifactRecord
     // nameSuffix is still used so that plugins base library can be satisfied
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + getName( Nature.Java ) + nameSuffix + "\"" );
-    arguments.put( "jars", Collections.singletonList( "\"" + getQualifiedBinaryLabel() + "\"" ) );
+    arguments.put( "jars", Collections.singletonList( asString( getQualifiedBinaryLabel() ) ) );
     if ( null != getSourceSha256() )
     {
-      arguments.put( "srcjar", "\"" + getQualifiedSourcesLabel() + "\"" );
+      arguments.put( "srcjar", asString( getQualifiedSourcesLabel() ) );
     }
     arguments.put( "tags",
                    Collections.singletonList( "\"maven_coordinates=" + getMavenCoordinatesBazelTag() + "\"" ) );
@@ -600,7 +600,7 @@ public final class ArtifactRecord
     {
       arguments.put( "deps",
                      deps.stream()
-                       .map( a -> "\":" + a.getLabel( Nature.Java ) + "\"" )
+                       .map( a -> asString( a.getLabel( Nature.Java ) ) )
                        .sorted()
                        .collect( Collectors.toList() ) );
     }
@@ -609,7 +609,7 @@ public final class ArtifactRecord
     {
       arguments.put( "runtime_deps",
                      runtimeDeps.stream()
-                       .map( a -> "\":" + a.getLabel( Nature.Java ) + "\"" )
+                       .map( a -> asString( a.getLabel( Nature.Java ) ) )
                        .sorted()
                        .collect( Collectors.toList() ) );
     }
@@ -617,7 +617,7 @@ public final class ArtifactRecord
     {
       arguments.put( "exports",
                      deps.stream()
-                       .map( a -> "\":" + a.getLabel( Nature.Java ) + "\"" )
+                       .map( a -> asString( a.getLabel( Nature.Java ) ) )
                        .sorted()
                        .collect( Collectors.toList() ) );
     }
@@ -652,7 +652,7 @@ public final class ArtifactRecord
     final J2clConfig j2clConfig = null != _artifactModel ? _artifactModel.getSource().getJ2cl() : null;
     final J2clMode mode = null != j2clConfig && null != j2clConfig.getMode() ? j2clConfig.getMode() : J2clMode.Library;
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + getName( Nature.J2cl ) + "\"" );
+    arguments.put( "name", asString( getName( Nature.J2cl ) ) );
     if ( J2clMode.Library == mode )
     {
       if ( shouldDependOnVerify() )
@@ -662,14 +662,14 @@ public final class ArtifactRecord
       }
       else
       {
-        arguments.put( "srcs", Collections.singletonList( "\"" + getQualifiedSourcesLabel() + "\"" ) );
+        arguments.put( "srcs", Collections.singletonList( asString( getQualifiedSourcesLabel() ) ) );
       }
       if ( null != j2clConfig )
       {
         final List<String> suppress = j2clConfig.getSuppress();
         if ( null != suppress )
         {
-          arguments.put( "js_suppress", suppress.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
+          arguments.put( "js_suppress", suppress.stream().map( this::asString ).collect( Collectors.toList() ) );
         }
       }
       arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
@@ -678,7 +678,7 @@ public final class ArtifactRecord
       {
         arguments.put( "deps",
                        deps.stream()
-                         .map( a -> "\":" + a.getLabel( Nature.J2cl ) + "\"" )
+                         .map( a -> asString( a.getLabel( Nature.J2cl ) ) )
                          .sorted()
                          .collect( Collectors.toList() ) );
       }
@@ -693,7 +693,7 @@ public final class ArtifactRecord
       }
       else
       {
-        arguments.put( "jar", "\"" + getQualifiedBinaryLabel() + "\"" );
+        arguments.put( "jar", asString( getQualifiedBinaryLabel() ) );
       }
       arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
       output.writeCall( "j2cl_import", arguments );
@@ -704,10 +704,10 @@ public final class ArtifactRecord
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + pluginName( processorClass ) + "\"" );
+    arguments.put( "name", asString( pluginName( processorClass ) ) );
     if ( null != processorClass )
     {
-      arguments.put( "processor_class", "\"" + processorClass + "\"" );
+      arguments.put( "processor_class", asString( processorClass ) );
     }
     if ( null != processorClass && generatesApi() )
     {
@@ -749,18 +749,18 @@ public final class ArtifactRecord
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + getName( Nature.Plugin ) + "\"" );
+    arguments.put( "name", asString( getName( Nature.Plugin ) ) );
     final ArrayList<String> plugins = new ArrayList<>();
     final List<String> processors = getProcessors();
     if ( null == processors )
     {
-      plugins.add( "\"" + pluginName( null ) + "\"" );
+      plugins.add( asString( pluginName( null ) ) );
     }
     else
     {
       for ( final String processor : processors )
       {
-        plugins.add( "\"" + pluginName( processor ) + "\"" );
+        plugins.add( asString( pluginName( processor ) ) );
       }
     }
     arguments.put( "exported_plugins", plugins );
@@ -807,16 +807,16 @@ public final class ArtifactRecord
   {
     assert null == getReplacementModel();
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + getRepository() + "\"" );
+    arguments.put( "name", asString( getRepository() ) );
     final org.eclipse.aether.artifact.Artifact a = getNode().getArtifact();
     assert null != a;
-    arguments.put( "downloaded_file_path", "\"" + ArtifactUtil.artifactToPath( a ) + "\"" );
+    arguments.put( "downloaded_file_path", asString( ArtifactUtil.artifactToPath( a ) ) );
     final String sha256 = getSha256();
     assert null != sha256;
-    arguments.put( "sha256", "\"" + sha256.toLowerCase() + "\"" );
+    arguments.put( "sha256", asString( sha256.toLowerCase() ) );
     final List<String> urls = getUrls();
     assert null != urls && !urls.isEmpty();
-    arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
+    arguments.put( "urls", urls.stream().map( v -> asString( v ) ).collect( Collectors.toList() ) );
     output.writeCall( "http_file", arguments );
   }
 
@@ -828,17 +828,17 @@ public final class ArtifactRecord
     assert null != sourceSha256;
 
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + getSourceRepository() + "\"" );
+    arguments.put( "name", asString( getSourceRepository() ) );
     final org.eclipse.aether.artifact.Artifact a = getNode().getArtifact();
     assert null != a;
 
     final String artifactPath =
       ArtifactUtil.artifactToPath( a.getGroupId(), a.getArtifactId(), a.getVersion(), "sources", "jar" );
-    arguments.put( "downloaded_file_path", "\"" + artifactPath + "\"" );
-    arguments.put( "sha256", "\"" + sourceSha256.toLowerCase() + "\"" );
+    arguments.put( "downloaded_file_path", asString( artifactPath ) );
+    arguments.put( "sha256", asString( sourceSha256.toLowerCase() ) );
     final List<String> urls = getSourceUrls();
     assert null != urls && !urls.isEmpty();
-    arguments.put( "urls", urls.stream().map( v -> "\"" + v + "\"" ).collect( Collectors.toList() ) );
+    arguments.put( "urls", urls.stream().map( this::asString ).collect( Collectors.toList() ) );
     output.writeCall( "http_file", arguments );
   }
 
@@ -852,5 +852,11 @@ public final class ArtifactRecord
   private Nature getDefaultNature()
   {
     return null != getProcessors() ? Nature.Plugin : _application.getSource().getOptions().getDefaultNature();
+  }
+
+  @Nonnull
+  private String asString( @Nonnull final String value )
+  {
+    return "\"" + value + "\"";
   }
 }
