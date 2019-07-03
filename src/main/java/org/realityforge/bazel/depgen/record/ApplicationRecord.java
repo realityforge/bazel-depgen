@@ -464,10 +464,9 @@ public final class ApplicationRecord
     }
     else
     {
-      final ReplacementModel replacement =
-        getSource().findReplacement( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
-      assert null != replacement;
-      depgenArtifactLabel = replacement.getTarget( Nature.Java );
+      return getSource()
+        .getReplacement( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() )
+        .getTarget( Nature.Java );
     }
     return depgenArtifactLabel;
   }
