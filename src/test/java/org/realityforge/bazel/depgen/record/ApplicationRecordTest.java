@@ -1116,6 +1116,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord.getArtifactModel() );
       assertNull( artifactRecord.getReplacementModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
       assertEquals( artifactRecord.getLabel( Nature.Java ), "com_example__myapp" );
       assertEquals( artifactRecord.getDeps().size(), 1 );
       assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
