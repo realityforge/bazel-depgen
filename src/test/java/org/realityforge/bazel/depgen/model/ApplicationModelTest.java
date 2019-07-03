@@ -221,6 +221,27 @@ public class ApplicationModelTest
   }
 
   @Test
+  public void getReplacement()
+    throws Exception
+  {
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "replacements:\n" +
+                     "  - coord: com.example:mylib\n" +
+                     "    targets:\n" +
+                     "      - target: \"@com_example//:mylib\"\n" );
+
+    final ApplicationModel model = loadApplicationModel();
+    assertEquals( model.getReplacements().size(), 1 );
+    final ReplacementModel replacementModel = model.getReplacements().get( 0 );
+    assertEquals( replacementModel.getGroup(), "com.example" );
+    assertEquals( replacementModel.getId(), "mylib" );
+
+    assertEquals( replacementModel, model.getReplacement( "com.example", "mylib" ) );
+    assertThrows( () -> model.getReplacement( "com.example", "noexist" ) );
+  }
+
+  @Test
   public void findRepository()
     throws Exception
   {

@@ -281,6 +281,12 @@ public final class ApplicationModel
     return findReplacement( m -> m.getGroup().equals( groupId ) && m.getId().equals( artifactId ) );
   }
 
+  @Nonnull
+  public ReplacementModel getReplacement( @Nonnull final String groupId, @Nonnull final String artifactId )
+  {
+    return Objects.requireNonNull( findReplacement( groupId, artifactId ) );
+  }
+
   @Nullable
   private ReplacementModel findReplacement( @Nonnull final Predicate<ReplacementModel> predicate )
   {
