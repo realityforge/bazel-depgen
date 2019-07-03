@@ -1,5 +1,7 @@
 # Change Log
 
+### Unreleased
+
 ### [v0.04](https://github.com/realityforge/bazel-depgen/tree/v0.04) (2019-07-04)
 [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.03...v0.04)
 
