@@ -1117,7 +1117,7 @@ public class ApplicationRecordTest
       assertNull( artifactRecord.getReplacementModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
       assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
-      assertEquals( artifactRecord.getLabel( Nature.Java ), "com_example__myapp" );
+      assertEquals( artifactRecord.getLabel( Nature.Java ), ":com_example__myapp" );
       assertEquals( artifactRecord.getDeps().size(), 1 );
       assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
       assertNotNull( artifactRecord.getDeps().get( 0 ).getReplacementModel() );
@@ -2286,7 +2286,7 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        deps = [\":@com_example//:mylib\"],\n" +
+                  "        deps = [\"@com_example//:mylib\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    native.alias(\n" +

@@ -288,7 +288,7 @@ public final class ArtifactRecord
   @Nonnull
   String getLabel( @Nonnull final Nature nature )
   {
-    return null != _replacementModel ? _replacementModel.getTarget( nature ) : getAlias( nature );
+    return null != _replacementModel ? _replacementModel.getTarget( nature ) : ":" + getAlias( nature );
   }
 
   @Nonnull

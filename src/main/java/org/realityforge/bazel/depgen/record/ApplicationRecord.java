@@ -457,10 +457,9 @@ public final class ApplicationRecord
   private String getDepgenArtifactLabel()
   {
     final ArtifactRecord artifact = findArtifact( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
-    final String depgenArtifactLabel;
     if ( null != artifact )
     {
-      depgenArtifactLabel = ":" + artifact.getLabel( Nature.Java );
+      return artifact.getLabel( Nature.Java );
     }
     else
     {
@@ -468,7 +467,6 @@ public final class ApplicationRecord
         .getReplacement( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() )
         .getTarget( Nature.Java );
     }
-    return depgenArtifactLabel;
   }
 
   @Nonnull
