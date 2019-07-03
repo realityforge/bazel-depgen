@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.04](https://github.com/realityforge/bazel-depgen/tree/v0.04) (2019-07-04)
+[Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.03...v0.04)
 
 * Fix a bug where targets for replacements were always prefixed with a `:` character which made it possible to use labels with a path or repository. Now the targets defined in config file must resolve without this prefix but can be any arbitrary label.
 
