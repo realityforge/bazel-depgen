@@ -56,6 +56,8 @@ java.lang.IllegalStateException: Artifact 'org.realityforge.com.google.jsinterop
 
   `remove [2-part coord] version`
 
+* Add `upgrade` command that updates depgen dependency.
+
 * Refactor tests so that by default they don't call out to bazel except when needed. This should speed
   up tests.
 
