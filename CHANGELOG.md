@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.05](https://github.com/realityforge/bazel-depgen/tree/v0.05) (2019-07-04)
+[Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.04...v0.05)
 
 * Generate a more useful error message when the `hash --verify-sha256 ...` command fails and the configuration option `verifyConfigSha256` is `true`. The error message describes the action required to rectify the issue. The error message looks like:
 
