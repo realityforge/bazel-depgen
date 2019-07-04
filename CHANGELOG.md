@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+* Generate a more useful error message when the `hash --verify-sha256 ...` command fails and the configuration option `verifyConfigSha256` is `true`. The error message describes the action required to rectify the issue. The error message looks like:
+
+> Content SHA256: 0A8DBED4B09238126BA5E065EB4E392A1B631FA1A20FCA9AE1DF5AA364F59C96 (Expected 1DF387350EB57FD368BBF68EB397334B6241B5BBA816B67CF10BC69BEC541F07)
+  Depgen generated extension file 'thirdparty/dependencies.bzl' is out of date with the configuration file 'thirdparty/dependencies.yml.
+  Please run command 'bazel run //thirdparty:regenerate_depgen_extension' to update the extension.
+
 ### [v0.04](https://github.com/realityforge/bazel-depgen/tree/v0.04) (2019-07-04)
 [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.03...v0.04)
 

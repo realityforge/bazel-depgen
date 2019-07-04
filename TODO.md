@@ -4,9 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Generate a more reasonable error message when verify task fails. Probably pointing to task to run
-  to regenerate dependencies. i.e. `bazel run //thirdparty:regenerate_depgen_extension --  --reset-cached-metadata`
-
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
   directory to some central place (i.e. `~/.depgen/repository`)
 

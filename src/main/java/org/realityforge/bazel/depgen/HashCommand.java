@@ -1,10 +1,13 @@
 package org.realityforge.bazel.depgen;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.realityforge.bazel.depgen.model.ApplicationModel;
+import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 
@@ -56,7 +59,8 @@ final class HashCommand
 
   int run( @Nonnull final Context context )
   {
-    final String configSha256 = context.loadModel().getConfigSha256();
+    final ApplicationModel model = context.loadModel();
+    final String configSha256 = model.getConfigSha256();
     final Logger logger = context.environment().logger();
     if ( null == _expectedSha256 )
     {
@@ -82,6 +86,19 @@ final class HashCommand
       if ( logger.isLoggable( Level.WARNING ) )
       {
         logger.log( Level.WARNING, "Content SHA256: " + configSha256 + " (Expected " + _expectedSha256 + ")" );
+        final OptionsModel options = model.getOptions();
+        if ( options.verifyConfigSha256() )
+        {
+          final Path pathToExtensionDir = options.getWorkspaceDirectory().relativize( options.getExtensionFile().getParent() );
+          final Path extensionFile = pathToExtensionDir.resolve( options.getExtensionFile().getFileName() );
+          final Path configLocation = pathToExtensionDir.resolve( model.getConfigLocation().getFileName() );
+          logger.log( Level.WARNING,
+                      "Depgen generated extension file '" + extensionFile + "' is out of date with " +
+                      "the configuration file '" + configLocation + "." );
+          logger.log( Level.WARNING,
+                      "Please run command 'bazel run //" + pathToExtensionDir + ":regenerate_depgen_extension' " +
+                      "to update the extension." );
+        }
       }
       return ExitCodes.ERROR_BAD_SHA256_CONFIG_CODE;
     }
