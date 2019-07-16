@@ -286,9 +286,6 @@ public class ResolverTest
 
     assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
     assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.jar" ).toFile().exists() );
-    assertFalse( dir.resolve( "com/example/myapp/1.0/myapp-1.0-sources.jar" ).toFile().exists() );
-
-    assertNull( artifact.getProperties().get( Constants.SOURCE_ARTIFACT_FILENAME ) );
 
     assertNotNull( artifact.getFile() );
     assertEquals( artifact.toString(), "com.example:myapp:jar:1.0" );
