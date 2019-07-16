@@ -32,6 +32,7 @@ public class OptionsModelTest
     assertTrue( model.failOnInvalidPom() );
     assertTrue( model.emitDependencyGraph() );
     assertTrue( model.includeSource() );
+    assertFalse( model.includeExternalAnnotations() );
     assertFalse( model.exportDeps() );
     assertFalse( model.supportDependencyOmit() );
     assertTrue( model.verifyConfigSha256() );
@@ -68,6 +69,7 @@ public class OptionsModelTest
     source.setFailOnInvalidPom( false );
     source.setEmitDependencyGraph( false );
     source.setIncludeSource( false );
+    source.setIncludeExternalAnnotations( true );
     source.setExportDeps( true );
     source.setSupportDependencyOmit( true );
     source.setVerifyConfigSha256( false );
@@ -84,6 +86,7 @@ public class OptionsModelTest
     assertFalse( model.failOnMissingPom() );
     assertFalse( model.failOnInvalidPom() );
     assertFalse( model.includeSource() );
+    assertTrue( model.includeExternalAnnotations() );
     assertTrue( model.exportDeps() );
     assertTrue( model.supportDependencyOmit() );
     assertFalse( model.verifyConfigSha256() );

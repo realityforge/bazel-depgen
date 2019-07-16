@@ -16,6 +16,7 @@ public final class OptionsConfig
   public static final boolean DEFAULT_FAIL_ON_MISSING_POM = true;
   public static final boolean DEFAULT_EMIT_DEPENDENCY_GRAPH = true;
   public static final boolean DEFAULT_INCLUDE_SOURCE = true;
+  public static final boolean DEFAULT_INCLUDE_EXTERNAL_ANNOTATIONS = false;
   public static final boolean DEFAULT_EXPORT_DEPS = false;
   public static final boolean DEFAULT_SUPPORT_DEPENDENCY_OMIT = false;
   public static final boolean DEFAULT_VERIFY_CONFIG_SHA256 = true;
@@ -42,6 +43,8 @@ public final class OptionsConfig
   private Boolean emitDependencyGraph;
   @Nullable
   private Boolean includeSource;
+  @Nullable
+  private Boolean includeExternalAnnotations;
   @Nullable
   private Boolean exportDeps;
   @Nullable
@@ -168,6 +171,17 @@ public final class OptionsConfig
   public void setIncludeSource( @Nonnull final Boolean includeSource )
   {
     this.includeSource = Objects.requireNonNull( includeSource );
+  }
+
+  @Nullable
+  public Boolean getIncludeExternalAnnotations()
+  {
+    return includeExternalAnnotations;
+  }
+
+  public void setIncludeExternalAnnotations( @Nonnull final Boolean includeExternalAnnotations )
+  {
+    this.includeExternalAnnotations = Objects.requireNonNull( includeExternalAnnotations );
   }
 
   @Nullable

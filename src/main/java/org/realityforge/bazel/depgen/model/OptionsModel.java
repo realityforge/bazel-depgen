@@ -139,6 +139,12 @@ public final class OptionsModel
     return null == flag ? OptionsConfig.DEFAULT_INCLUDE_SOURCE : flag;
   }
 
+  public boolean includeExternalAnnotations()
+  {
+    final Boolean flag = _source.getIncludeExternalAnnotations();
+    return null == flag ? OptionsConfig.DEFAULT_INCLUDE_EXTERNAL_ANNOTATIONS : flag;
+  }
+
   public boolean exportDeps()
   {
     final Boolean flag = _source.getExportDeps();
