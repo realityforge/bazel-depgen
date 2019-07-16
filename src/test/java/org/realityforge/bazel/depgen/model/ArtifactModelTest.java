@@ -215,6 +215,32 @@ public class ArtifactModelTest
   }
 
   @Test
+  public void parseArtifactWithIncludeExternalAnnotations()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setIncludeExternalAnnotations( true );
+
+    final ArtifactModel model = ArtifactModel.parse( source );
+    assertEquals( model.getGroup(), "com.example" );
+    assertEquals( model.getId(), "myapp" );
+    assertTrue( model.includeExternalAnnotations( false ) );
+  }
+
+  @Test
+  public void parseArtifactWithNoIncludeExternalAnnotations()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setIncludeExternalAnnotations( false );
+
+    final ArtifactModel model = ArtifactModel.parse( source );
+    assertEquals( model.getGroup(), "com.example" );
+    assertEquals( model.getId(), "myapp" );
+    assertFalse( model.includeExternalAnnotations( true ) );
+  }
+
+  @Test
   public void parseArtifactWithCoordAndExcludes()
   {
     final ArtifactConfig source = new ArtifactConfig();

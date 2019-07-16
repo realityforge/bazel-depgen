@@ -17,6 +17,8 @@ public final class ArtifactConfig
   @Nullable
   private Boolean includeSource;
   @Nullable
+  private Boolean includeExternalAnnotations;
+  @Nullable
   private Boolean exportDeps;
   @Nullable
   private List<String> excludes;
@@ -73,6 +75,17 @@ public final class ArtifactConfig
   public void setIncludeSource( @Nonnull final Boolean includeSource )
   {
     this.includeSource = Objects.requireNonNull( includeSource );
+  }
+
+  @Nullable
+  public Boolean getIncludeExternalAnnotations()
+  {
+    return includeExternalAnnotations;
+  }
+
+  public void setIncludeExternalAnnotations( @Nonnull final Boolean includeExternalAnnotations )
+  {
+    this.includeExternalAnnotations = Objects.requireNonNull( includeExternalAnnotations );
   }
 
   @Nullable

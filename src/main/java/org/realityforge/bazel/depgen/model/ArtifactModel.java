@@ -176,6 +176,12 @@ public final class ArtifactModel
     return null == includeSource ? defaultIncludeSource : includeSource;
   }
 
+  public boolean includeExternalAnnotations( final boolean defaultInclude )
+  {
+    final Boolean include = _source.getIncludeExternalAnnotations();
+    return null == include ? defaultInclude : include;
+  }
+
   public boolean exportDeps( final boolean defaultExportDeps )
   {
     final Boolean exportDeps = _source.getExportDeps();

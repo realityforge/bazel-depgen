@@ -92,6 +92,8 @@ public class ApplicationModelTest
     final ArtifactModel artifactModel = artifacts.get( 0 );
     assertEquals( artifactModel.toCoord(), coord );
     assertTrue( artifactModel.includeSource( true ) );
+    assertTrue( artifactModel.includeExternalAnnotations( true ) );
+    assertFalse( artifactModel.includeExternalAnnotations( false ) );
     assertEquals( artifactModel.getNatures( Nature.J2cl ), Collections.singletonList( Nature.J2cl ) );
     assertTrue( model.getSystemArtifacts().isEmpty() );
   }
