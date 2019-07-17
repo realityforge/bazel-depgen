@@ -98,6 +98,7 @@ final class Resolver
     session.setDependencyManager( new ClassicDependencyManager() );
     final DependencyResult result = resolveDependencies( deriveRootDependencies( model, onInvalidPomFn ) );
     result.getRoot().accept( new SourceDownloaderVisitor( this, model ) );
+    result.getRoot().accept( new ExternalAnnotationsDownloaderVisitor( this, model ) );
     return result;
   }
 

@@ -61,6 +61,10 @@ public final class ArtifactRecord
   @Nullable
   private final List<String> _sourceUrls;
   @Nullable
+  private final String _externalAnnotationSha256;
+  @Nullable
+  private final List<String> _externalAnnotationUrls;
+  @Nullable
   private final List<String> _processors;
   @Nullable
   private List<ArtifactRecord> _depsCache;
@@ -77,6 +81,8 @@ public final class ArtifactRecord
                   @Nullable final List<String> urls,
                   @Nullable final String sourceSha256,
                   @Nullable final List<String> sourceUrls,
+                  @Nullable final String externalAnnotationSha256,
+                  @Nullable final List<String> externalAnnotationUrls,
                   @Nullable final List<String> processors,
                   @Nullable final ArtifactModel artifactModel,
                   @Nullable final ReplacementModel replacementModel )
@@ -84,6 +90,8 @@ public final class ArtifactRecord
     assert ( null == sha256 && null == urls ) || ( null != sha256 && null != urls && !urls.isEmpty() );
     assert ( null == sourceSha256 && null == sourceUrls ) ||
            ( null != sourceSha256 && null != sourceUrls && !sourceUrls.isEmpty() );
+    assert ( null == externalAnnotationSha256 && null == externalAnnotationUrls ) ||
+           ( null != externalAnnotationSha256 && null != externalAnnotationUrls && !externalAnnotationUrls.isEmpty() );
     assert null == artifactModel || null == replacementModel;
     _application = Objects.requireNonNull( application );
     _node = Objects.requireNonNull( node );
@@ -96,6 +104,11 @@ public final class ArtifactRecord
       _artifactModel = artifactModel;
       _sourceSha256 = sourceSha256;
       _sourceUrls = null != sourceUrls ? Collections.unmodifiableList( new ArrayList<>( sourceUrls ) ) : null;
+      _externalAnnotationSha256 = externalAnnotationSha256;
+      _externalAnnotationUrls =
+        null != externalAnnotationUrls ?
+        Collections.unmodifiableList( new ArrayList<>( externalAnnotationUrls ) ) :
+        null;
       _processors = null != processors ? Collections.unmodifiableList( new ArrayList<>( processors ) ) : null;
       if ( null != _natures && null != _processors && !_processors.isEmpty() )
       {
@@ -111,6 +124,8 @@ public final class ArtifactRecord
       _urls = null;
       _sourceSha256 = null;
       _sourceUrls = null;
+      _externalAnnotationSha256 = null;
+      _externalAnnotationUrls = null;
       _processors = null;
       _replacementModel = replacementModel;
       _artifactModel = null;
@@ -426,6 +441,32 @@ public final class ArtifactRecord
   List<String> getSourceUrls()
   {
     return _sourceUrls;
+  }
+
+  /**
+   * Return the sha256 of the external annotations artifact associated with the artifact.
+   * This MAY be non-null when {@link #getReplacementModel()} is non-null and MUST be non-null
+   * if {@link #getExternalAnnotationUrls()} returns a non-null value.
+   *
+   * @return the sha256 of the external annotations artifact associated with the artifact.
+   */
+  @Nullable
+  public String getExternalAnnotationSha256()
+  {
+    return _externalAnnotationSha256;
+  }
+
+  /**
+   * Return the urls that the external annotations artifact can be downloaded from.
+   * This MAY be non-null when {@link #getReplacementModel()} is non-null and MUST be non-null
+   * if {@link #getExternalAnnotationSha256()} returns a non-null value.
+   *
+   * @return the urls.
+   */
+  @Nullable
+  public List<String> getExternalAnnotationUrls()
+  {
+    return _externalAnnotationUrls;
   }
 
   /**

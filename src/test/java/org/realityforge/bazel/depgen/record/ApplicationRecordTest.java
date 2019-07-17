@@ -93,6 +93,131 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void build_artifact_with_annotations()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  includeExternalAnnotations: true\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:annotations:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    assertTrue( record.getSource().getOptions().includeExternalAnnotations() );
+    final List<ArtifactRecord> artifacts = record.getArtifacts();
+    assertNonSystemArtifactCount( record, 1 );
+    final ArtifactRecord artifactRecord = artifacts.get( 0 );
+    assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+    assertEquals( artifactRecord.getExternalAnnotationSha256(),
+                  "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
+    assertEquals( artifactRecord.getExternalAnnotationUrls(),
+                  Collections.singletonList( dir.toUri() + "com/example/myapp/1.0/myapp-1.0-annotations.jar" ) );
+  }
+
+  @Test
+  public void build_artifact_without_annotations_due_to_defaults()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:annotations:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    assertFalse( record.getSource().getOptions().includeExternalAnnotations() );
+    final List<ArtifactRecord> artifacts = record.getArtifacts();
+    assertNonSystemArtifactCount( record, 1 );
+    final ArtifactRecord artifactRecord = artifacts.get( 0 );
+    assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+    assertNull( artifactRecord.getExternalAnnotationSha256() );
+    assertNull( artifactRecord.getExternalAnnotationUrls() );
+  }
+
+  @Test
+  public void build_artifact_without_annotations_due_to_GlobalOverride()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  includeExternalAnnotations: false\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:annotations:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    assertFalse( record.getSource().getOptions().includeExternalAnnotations() );
+    final List<ArtifactRecord> artifacts = record.getArtifacts();
+    assertNonSystemArtifactCount( record, 1 );
+    final ArtifactRecord artifactRecord = artifacts.get( 0 );
+    assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+    assertNull( artifactRecord.getExternalAnnotationSha256() );
+    assertNull( artifactRecord.getExternalAnnotationUrls() );
+  }
+
+  @Test
+  public void build_artifact_without_annotations_due_to_ArtifactOverride()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  includeExternalAnnotations: true\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    includeExternalAnnotations: false\n" );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:annotations:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    assertTrue( record.getSource().getOptions().includeExternalAnnotations() );
+    final List<ArtifactRecord> artifacts = record.getArtifacts();
+    assertNonSystemArtifactCount( record, 1 );
+    final ArtifactRecord artifactRecord = artifacts.get( 0 );
+    assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+    assertNull( artifactRecord.getExternalAnnotationSha256() );
+    assertNull( artifactRecord.getExternalAnnotationUrls() );
+  }
+
+  @Test
+  public void build_artifact_without_annotations_due_to_Missing()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  includeExternalAnnotations: true\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    assertTrue( record.getSource().getOptions().includeExternalAnnotations() );
+    final List<ArtifactRecord> artifacts = record.getArtifacts();
+    assertNonSystemArtifactCount( record, 1 );
+    final ArtifactRecord artifactRecord = artifacts.get( 0 );
+    assertEquals( artifactRecord.getKey(), "com.example:myapp" );
+    assertNull( artifactRecord.getExternalAnnotationSha256() );
+    assertNull( artifactRecord.getExternalAnnotationUrls() );
+  }
+
+  @Test
   public void build_artifact_with_source()
     throws Exception
   {

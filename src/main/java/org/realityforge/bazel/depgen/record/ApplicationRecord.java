@@ -318,7 +318,8 @@ public final class ApplicationRecord
     final String artifactId = node.getArtifact().getArtifactId();
     final ReplacementModel model = _source.findReplacement( groupId, artifactId );
     assert null != model;
-    final ArtifactRecord record = new ArtifactRecord( this, node, null, null, null, null, null, null, model );
+    final ArtifactRecord record =
+      new ArtifactRecord( this, node, null, null, null, null, null, null, null, null, model );
     final String key = record.getKey();
     assert !_artifacts.containsKey( key );
     _artifacts.put( key, record );
@@ -329,13 +330,25 @@ public final class ApplicationRecord
                  @Nonnull final List<String> urls,
                  @Nullable final String sourceSha256,
                  @Nullable final List<String> sourceUrls,
+                 @Nullable final String externalAnnotationSha256,
+                 @Nullable final List<String> externalAnnotationUrls,
                  @Nullable final List<String> processors )
   {
     final String groupId = node.getArtifact().getGroupId();
     final String artifactId = node.getArtifact().getArtifactId();
     final ArtifactModel model = _source.findArtifact( groupId, artifactId );
     final ArtifactRecord record =
-      new ArtifactRecord( this, node, sha256, urls, sourceSha256, sourceUrls, processors, model, null );
+      new ArtifactRecord( this,
+                          node,
+                          sha256,
+                          urls,
+                          sourceSha256,
+                          sourceUrls,
+                          externalAnnotationSha256,
+                          externalAnnotationUrls,
+                          processors,
+                          model,
+                          null );
     final String key = record.getKey();
     final ArtifactRecord existing = _artifacts.get( key );
     if ( null == existing )

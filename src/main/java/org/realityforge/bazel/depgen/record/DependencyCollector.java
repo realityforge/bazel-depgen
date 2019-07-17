@@ -100,10 +100,36 @@ final class DependencyCollector
       sourceSha256 = null;
       sourceUrls = null;
     }
+    final String externalAnnotationSha256;
+    final List<String> externalAnnotationUrls;
+    final String externalAnnotationsFilename =
+      artifact.getProperty( Constants.EXTERNAL_ANNOTATIONS_ARTIFACT_FILENAME, null );
+    if ( null != externalAnnotationsFilename )
+    {
+      final File sourcesFile = new File( externalAnnotationsFilename );
+      final org.eclipse.aether.artifact.Artifact sourcesArtifact =
+        new SubArtifact( artifact, "annotations", "jar" ).setFile( sourcesFile );
+
+      externalAnnotationSha256 = metadata.getSha256( sourcesArtifact.getClassifier(), sourcesArtifact.getFile() );
+      externalAnnotationUrls =
+        metadata.getUrls( sourcesArtifact, repositories, _record.getAuthenticationContexts(), _callback );
+    }
+    else
+    {
+      externalAnnotationSha256 = null;
+      externalAnnotationUrls = null;
+    }
 
     final List<String> processors = metadata.getProcessors( file );
 
-    _record.artifact( node, sha256, urls, sourceSha256, sourceUrls, processors );
+    _record.artifact( node,
+                      sha256,
+                      urls,
+                      sourceSha256,
+                      sourceUrls,
+                      externalAnnotationSha256,
+                      externalAnnotationUrls,
+                      processors );
   }
 
   private boolean hasReplacement( @Nonnull final Dependency dependency )
