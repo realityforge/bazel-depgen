@@ -11,7 +11,6 @@ import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 
-@SuppressWarnings( "Duplicates" )
 final class HashCommand
   extends ConfigurableCommand
 {
