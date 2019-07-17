@@ -57,6 +57,7 @@ final class HashCommand
     return true;
   }
 
+  @Override
   int run( @Nonnull final Context context )
   {
     final ApplicationModel model = context.loadModel();

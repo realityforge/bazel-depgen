@@ -13,6 +13,7 @@ final class PrintGraphCommand
     super( Main.PRINT_GRAPH_COMMAND );
   }
 
+  @Override
   int run( @Nonnull final Context context )
     throws Exception
   {

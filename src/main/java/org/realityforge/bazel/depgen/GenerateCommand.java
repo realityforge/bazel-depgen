@@ -14,6 +14,7 @@ final class GenerateCommand
     super( Main.GENERATE_COMMAND );
   }
 
+  @Override
   int run( @Nonnull final Context context )
     throws Exception
   {

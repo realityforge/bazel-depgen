@@ -37,6 +37,7 @@ final class InfoCommand
     return true;
   }
 
+  @Override
   int run( @Nonnull final Context context )
   {
     printInfo( context, "config-file", () -> context.environment().getConfigFile() );
