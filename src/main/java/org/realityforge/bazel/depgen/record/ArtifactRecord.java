@@ -277,6 +277,12 @@ public final class ArtifactRecord
   }
 
   @Nonnull
+  private String getExternalAnnotationsRepository()
+  {
+    return getRepository() + "__annotations";
+  }
+
+  @Nonnull
   private String getQualifiedSourcesLabel()
   {
     return "@" + getSourceRepository() + "//file";
@@ -878,6 +884,28 @@ public final class ArtifactRecord
     arguments.put( "downloaded_file_path", asString( artifactPath ) );
     arguments.put( "sha256", asString( sourceSha256.toLowerCase() ) );
     final List<String> urls = getSourceUrls();
+    assert null != urls && !urls.isEmpty();
+    arguments.put( "urls", urls.stream().map( this::asString ).collect( Collectors.toList() ) );
+    output.writeCall( "http_file", arguments );
+  }
+
+  void writeArtifactAnnotationsHttpFileRule( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    assert null == getReplacementModel();
+    final String sha256 = getExternalAnnotationSha256();
+    assert null != sha256;
+
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", asString( getExternalAnnotationsRepository() ) );
+    final org.eclipse.aether.artifact.Artifact a = getNode().getArtifact();
+    assert null != a;
+
+    final String artifactPath =
+      ArtifactUtil.artifactToPath( a.getGroupId(), a.getArtifactId(), a.getVersion(), "annotations", "jar" );
+    arguments.put( "downloaded_file_path", asString( artifactPath ) );
+    arguments.put( "sha256", asString( sha256.toLowerCase() ) );
+    final List<String> urls = getExternalAnnotationUrls();
     assert null != urls && !urls.isEmpty();
     arguments.put( "urls", urls.stream().map( this::asString ).collect( Collectors.toList() ) );
     output.writeCall( "http_file", arguments );

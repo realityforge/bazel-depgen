@@ -2540,6 +2540,64 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void writeWorkspaceMacro_externalAnnotationsPresent()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+    final URI uri = dir.toUri();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  includeExternalAnnotations: true\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:annotations:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
+    //@formatter:off
+    assertEquals( asString( outputStream ),
+                  "def generate_workspace_rules():\n" +
+                  "    \"\"\"\n" +
+                  "        Repository rules macro to load dependencies.\n" +
+                  "\n" +
+                  "        Must be run from a WORKSPACE file.\n" +
+                  "    \"\"\"\n" +
+                  "\n" +
+                  "    http_file(\n" +
+                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    http_file(\n" +
+                  "        name = \"com_example__myapp__1_0__sources\",\n" +
+                  "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    http_file(\n" +
+                  "        name = \"com_example__myapp__1_0__annotations\",\n" +
+                  "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-annotations.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-annotations.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    http_file(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "    )\n" );
+    //@formatter:on
+  }
+
+  @Test
   public void writeWorkspaceMacro_omitEnabled()
     throws Exception
   {

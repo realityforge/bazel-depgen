@@ -577,7 +577,7 @@ public final class ApplicationRecord
       } );
   }
 
-  private void writeArtifactHttpRules( @Nonnull final ArtifactRecord artifact, @Nonnull final StarlarkOutput output )
+  void writeArtifactHttpRules( @Nonnull final ArtifactRecord artifact, @Nonnull final StarlarkOutput output )
     throws IOException
   {
     artifact.writeArtifactHttpFileRule( output );
@@ -586,6 +586,11 @@ public final class ApplicationRecord
     {
       output.newLine();
       artifact.writeArtifactSourcesHttpFileRule( output );
+    }
+    if ( null != artifact.getExternalAnnotationSha256() )
+    {
+      output.newLine();
+      artifact.writeArtifactAnnotationsHttpFileRule( output );
     }
   }
 

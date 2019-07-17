@@ -956,6 +956,35 @@ public class ArtifactRecordTest
   }
 
   @Test
+  public void writeArtifactAnnotationsHttpFileRule()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  includeExternalAnnotations: true\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:annotations:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+    final List<String> urls = artifactRecord.getUrls();
+    assertNotNull( urls );
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    artifactRecord.writeArtifactAnnotationsHttpFileRule( new StarlarkOutput( outputStream ) );
+    assertEquals( asString( outputStream ),
+                  "http_file(\n" +
+                  "    name = \"com_example__myapp__1_0__annotations\",\n" +
+                  "    downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-annotations.jar\",\n" +
+                  "    sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "    urls = [\"" + urls.get( 0 ).replace( ".jar", "-annotations.jar" ) + "\"],\n" +
+                  ")\n" );
+  }
+
+  @Test
   public void writeArtifactTargets_Library()
     throws Exception
   {
