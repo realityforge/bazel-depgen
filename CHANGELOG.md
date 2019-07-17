@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.guiceyloops` artifact to version `0.102`.
+* Upgrade the `au.com.stocksoftware.idea.codestyle` artifact to version `1.14`.
+
 ### [v0.05](https://github.com/realityforge/bazel-depgen/tree/v0.05) (2019-07-04)
 [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.04...v0.05)
 
