@@ -577,7 +577,7 @@ public final class ApplicationRecord
       } );
   }
 
-  void writeArtifactHttpRules( @Nonnull final ArtifactRecord artifact, @Nonnull final StarlarkOutput output )
+  private void writeArtifactHttpRules( @Nonnull final ArtifactRecord artifact, @Nonnull final StarlarkOutput output )
     throws IOException
   {
     artifact.writeArtifactHttpFileRule( output );
