@@ -42,11 +42,10 @@ final class Exec
    * @param action           the callback responsible for setting up ProcessBuilder.
    * @param processHandler   the callback passed a process.
    * @param expectedExitCode the expected exitCode of the process.
-   * @return the exitCode.
    */
-  private static int exec( @Nonnull final Consumer<ProcessBuilder> action,
-                           @Nullable final Consumer<Process> processHandler,
-                           @Nullable final Integer expectedExitCode )
+  private static void exec( @Nonnull final Consumer<ProcessBuilder> action,
+                            @Nullable final Consumer<Process> processHandler,
+                            @Nullable final Integer expectedExitCode )
   {
     final ProcessBuilder builder = new ProcessBuilder();
     action.accept( builder );
@@ -63,7 +62,6 @@ final class Exec
         throw new IllegalStateException( "Unexpected exit code for command " + builder.command() + ". " +
                                          "Actual: " + exitCode + " Expected: " + expectedExitCode );
       }
-      return exitCode;
     }
     catch ( final IOException ioe )
     {
