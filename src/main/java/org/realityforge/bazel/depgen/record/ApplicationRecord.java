@@ -582,8 +582,7 @@ public final class ApplicationRecord
   {
     artifact.writeArtifactHttpFileRule( output );
 
-    final String sourceSha256 = artifact.getSourceSha256();
-    if ( null != sourceSha256 )
+    if ( null != artifact.getSourceSha256() )
     {
       output.newLine();
       artifact.writeArtifactSourcesHttpFileRule( output );
