@@ -17,7 +17,8 @@ import org.realityforge.bazel.depgen.model.ApplicationModel;
 abstract class PeerArtifactDownloaderVisitor
   implements DependencyVisitor
 {
-  private Resolver _resolver;
+  @Nonnull
+  private final Resolver _resolver;
   @Nonnull
   private final ApplicationModel _model;
   @Nonnull
