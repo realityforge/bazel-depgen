@@ -44,9 +44,9 @@ final class Exec
    * @param expectedExitCode the expected exitCode of the process.
    * @return the exitCode.
    */
-  static int exec( @Nonnull final Consumer<ProcessBuilder> action,
-                   @Nullable final Consumer<Process> processHandler,
-                   @Nullable final Integer expectedExitCode )
+  private static int exec( @Nonnull final Consumer<ProcessBuilder> action,
+                           @Nullable final Consumer<Process> processHandler,
+                           @Nullable final Integer expectedExitCode )
   {
     final ProcessBuilder builder = new ProcessBuilder();
     action.accept( builder );
