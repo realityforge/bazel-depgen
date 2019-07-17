@@ -90,7 +90,8 @@ final class HashCommand
         final OptionsModel options = model.getOptions();
         if ( options.verifyConfigSha256() )
         {
-          final Path pathToExtensionDir = options.getWorkspaceDirectory().relativize( options.getExtensionFile().getParent() );
+          final Path pathToExtensionDir =
+            options.getWorkspaceDirectory().relativize( options.getExtensionFile().getParent() );
           final Path extensionFile = pathToExtensionDir.resolve( options.getExtensionFile().getFileName() );
           final Path configLocation = pathToExtensionDir.resolve( model.getConfigLocation().getFileName() );
           logger.log( Level.WARNING,
