@@ -28,7 +28,7 @@ final class Environment
   Environment( @Nullable final Console console, @Nonnull final Path currentDirectory, @Nonnull final Logger logger )
   {
     _console = console;
-    setCurrentDirectory( Objects.requireNonNull( currentDirectory ) );
+    _currentDirectory = Objects.requireNonNull( currentDirectory );
     _logger = Objects.requireNonNull( logger );
   }
 
