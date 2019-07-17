@@ -857,7 +857,7 @@ public final class ArtifactRecord
     arguments.put( "sha256", asString( sha256.toLowerCase() ) );
     final List<String> urls = getUrls();
     assert null != urls && !urls.isEmpty();
-    arguments.put( "urls", urls.stream().map( v -> asString( v ) ).collect( Collectors.toList() ) );
+    arguments.put( "urls", urls.stream().map( this::asString ).collect( Collectors.toList() ) );
     output.writeCall( "http_file", arguments );
   }
 
