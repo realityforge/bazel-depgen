@@ -586,8 +586,6 @@ public final class ApplicationRecord
     if ( null != sourceSha256 )
     {
       output.newLine();
-      final List<String> sourceUrls = artifact.getSourceUrls();
-      assert null != sourceUrls && !sourceUrls.isEmpty();
       artifact.writeArtifactSourcesHttpFileRule( output );
     }
   }
