@@ -45,10 +45,10 @@ public final class ArtifactUtil
   }
 
   @Nonnull
-  public static String artifactToLocalFilename( @Nonnull final String artifactId,
-                                                @Nonnull final String version,
-                                                @Nonnull final String classifier,
-                                                @Nonnull final String extension )
+  private static String artifactToLocalFilename( @Nonnull final String artifactId,
+                                                 @Nonnull final String version,
+                                                 @Nonnull final String classifier,
+                                                 @Nonnull final String extension )
   {
     return artifactId + "-" + version + ( classifier.isEmpty() ? "" : "-" + classifier ) + "." + extension;
   }
