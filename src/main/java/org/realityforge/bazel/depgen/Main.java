@@ -378,7 +378,7 @@ public class Main
     // Retrieve run directory first as some of the other options are interpreted relative to current directory
     for ( final CLOption option : parser.getArguments() )
     {
-      if( RUN_DIR_OPT == option.getId() )
+      if ( RUN_DIR_OPT == option.getId() )
       {
         final String argument = option.getArgument();
         final Path directory = environment.currentDirectory().resolve( argument ).toAbsolutePath().normalize();
@@ -545,7 +545,7 @@ public class Main
     logger.severe( "\tPossible Commands:" );
     logger.severe( "\t\t" + GENERATE_COMMAND + ": Generate the bazel extension from the dependency configuration." );
     logger.severe( "\t\t" + PRINT_GRAPH_COMMAND + ": Compute and print the dependency graph " +
-                 "for the dependency configuration." );
+                   "for the dependency configuration." );
     logger.severe( "\t\t" + HASH_COMMAND + ": Generate a hash of the content of the dependency configuration." );
     logger.severe( "\t\t" + INFO_COMMAND + ": Print runtime info about the tool." );
     logger.severe( "\tOptions:" );
