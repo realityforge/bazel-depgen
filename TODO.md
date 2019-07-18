@@ -9,6 +9,8 @@ complete as there is too much un-said.
 
 * Consider trying to get `j2cl_library` to support `data` attribute and remove cruft from generated infrastructure.
 
+* Add command that checks/validates/cleans cache.
+
 * Annotate repositories with configuration to indicate that they may not have valid checksums:. Avoid messages like
 
 ```
