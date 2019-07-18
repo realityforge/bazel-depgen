@@ -175,7 +175,7 @@ public final class StarlarkOutput
 
   @Override
   public void close()
-    throws Exception
+    throws IOException
   {
     _outputStream.close();
   }
