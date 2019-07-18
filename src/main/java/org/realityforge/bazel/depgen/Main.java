@@ -77,8 +77,8 @@ public class Main
       new CLOptionDescriptor( "config-file",
                               CLOptionDescriptor.ARGUMENT_REQUIRED,
                               CONFIG_FILE_OPT,
-                              "The path to the yaml file containing the dependency configuration. " +
-                              "Defaults to 'thirdparty/" + ApplicationConfig.FILENAME + "'." ),
+                              "The path to the yaml file containing the dependency configuration. Defaults" +
+                              " to '" + ApplicationConfig.DEFAULT_MODULE + "/" + ApplicationConfig.FILENAME + "'." ),
       new CLOptionDescriptor( "settings-file",
                               CLOptionDescriptor.ARGUMENT_REQUIRED,
                               SETTINGS_FILE_OPT,
@@ -511,14 +511,15 @@ public class Main
     {
       final Path dependenciesFile =
         environment.currentDirectory()
-          .resolve( "thirdparty" )
+          .resolve( ApplicationConfig.DEFAULT_MODULE )
           .resolve( ApplicationConfig.FILENAME )
           .toAbsolutePath()
           .normalize();
       if ( !dependenciesFile.toFile().exists() )
       {
         logger.log( Level.SEVERE,
-                    "Error: Default config file does not exist: thirdparty/" + ApplicationConfig.FILENAME );
+                    "Error: Default config file does not exist: " +
+                    ApplicationConfig.DEFAULT_MODULE + "/" + ApplicationConfig.FILENAME );
         return false;
       }
       environment.setConfigFile( dependenciesFile );

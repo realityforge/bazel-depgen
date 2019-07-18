@@ -12,6 +12,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 public final class ApplicationConfig
 {
   @Nonnull
+  public static final String DEFAULT_MODULE = "thirdparty";
   public static final String FILENAME = "dependencies.yml";
   public static final String MAVEN_CENTRAL_NAME = "central";
   public static final String MAVEN_CENTRAL_URL = "https://repo.maven.apache.org/maven2/";
