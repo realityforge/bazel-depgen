@@ -26,13 +26,17 @@ public final class ArtifactUtil
                                        @Nonnull final String classifier,
                                        @Nonnull final String extension )
   {
-    return groupId.replaceAll( "\\.", "/" ) +
-           "/" +
-           artifactId +
-           "/" +
-           version +
+    return artifactToDirectory( groupId, artifactId, version ) +
            "/" +
            artifactToLocalFilename( artifactId, version, classifier, extension );
+  }
+
+  @Nonnull
+  public static String artifactToDirectory( @Nonnull final String groupId,
+                                            @Nonnull final String artifactId,
+                                            @Nonnull final String version )
+  {
+    return groupId.replaceAll( "\\.", "/" ) + "/" + artifactId + "/" + version;
   }
 
   @Nonnull
