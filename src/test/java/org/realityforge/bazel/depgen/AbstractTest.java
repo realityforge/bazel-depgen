@@ -25,9 +25,11 @@ import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
+import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
+import org.realityforge.bazel.depgen.util.ArtifactUtil;
 import org.testng.Assert;
 import org.testng.IHookCallBack;
 import org.testng.IHookable;
@@ -192,6 +194,30 @@ public abstract class AbstractTest
     throws Exception
   {
     deployArtifactToLocalRepository( dir, DepGenConfig.getCoord() );
+  }
+
+  final void deployDepGenArtifactToCacheDir( @Nonnull final Path cacheDir )
+    throws Exception
+  {
+    deployDepGenArtifactToLocalRepository( cacheDir );
+    final String directory =
+      ArtifactUtil.artifactToDirectory( DepGenConfig.getGroupId(),
+                                        DepGenConfig.getArtifactId(),
+                                        DepGenConfig.getVersion() );
+    final String artifactPath =
+      ArtifactUtil.artifactToPath( DepGenConfig.getGroupId(),
+                                   DepGenConfig.getArtifactId(),
+                                   DepGenConfig.getVersion(),
+                                   DepGenConfig.getClassifier(),
+                                   "jar" );
+    final Path metaDataFile = cacheDir.resolve( directory ).resolve( DepgenMetadata.FILENAME );
+    FileUtil.write( metaDataFile,
+                    "all.central.url=https://repo.maven.apache.org/maven2/" + artifactPath + "\n" +
+                    "all.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" +
+                    "processors=-\n" +
+                    "sources.central.url=https://repo.maven.apache.org/maven2/" + artifactPath + "\n" +
+                    "sources.present=true\n" +
+                    "sources.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n" );
   }
 
   protected final void writeConfigFile( @Nonnull final String content )
