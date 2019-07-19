@@ -4,6 +4,13 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
+* Init command
+  - fill out template
+  - write changelog entry
+  Note that the `exportDeps` configuration potentially limits scalability of
+  builds as it results in deep dependency trees. Consider also generating initial `WORKSPACE` if a walk through
+  parent directories does not locate one.
+
 * Shutdown bazel servers after test
 
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
@@ -40,13 +47,6 @@ java.lang.IllegalStateException: Artifact 'org.realityforge.com.google.jsinterop
         at org.realityforge.bazel.depgen.Main.run(Main.java:130)
         at org.realityforge.bazel.depgen.Main.main(Main.java:118)
 ```
-
-* Add `init` command that initializes `dependencies.bzl` from template that includes all the options and
-  documentation for each option. Note that the `exportDeps` configuration potentially limits scalability of
-  builds as it results in deep dependency trees. Consider also generating initial `WORKSPACE` if a walk through
-  parent directories does not locate one.
-
-  `init --no-create-workspace`
 
 * Add `add` command that adds a dependency.
 

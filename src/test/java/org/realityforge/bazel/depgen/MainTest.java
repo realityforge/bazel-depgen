@@ -42,6 +42,7 @@ public class MainTest
                   "\t\tgenerate: Generate the bazel extension from the dependency configuration.\n" +
                   "\t\tprint-graph: Compute and print the dependency graph for the dependency configuration.\n" +
                   "\t\thash: Generate a hash of the content of the dependency configuration.\n" +
+                  "\t\tinit: Initialize an empty dependency configuration and workspace infrastructure.\n" +
                   "\t\tinfo: Print runtime info about the tool.\n" +
                   "\tOptions:\n" +
                   "\t--version\n" +

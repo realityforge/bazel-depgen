@@ -96,6 +96,7 @@ public class Main
     };
   static final String GENERATE_COMMAND = "generate";
   static final String PRINT_GRAPH_COMMAND = "print-graph";
+  static final String INIT_COMMAND = "init";
   static final String HASH_COMMAND = "hash";
   static final String INFO_COMMAND = "info";
   private static final Map<String, Supplier<Command>> COMMAND_MAP =
@@ -106,6 +107,7 @@ public class Main
         put( PRINT_GRAPH_COMMAND, PrintGraphCommand::new );
         put( HASH_COMMAND, HashCommand::new );
         put( INFO_COMMAND, InfoCommand::new );
+        put( INIT_COMMAND, InitCommand::new );
       }
     } );
   private static final Set<String> VALID_COMMANDS = Collections.unmodifiableSet( COMMAND_MAP.keySet() );
@@ -547,6 +549,9 @@ public class Main
     logger.severe( "\t\t" + PRINT_GRAPH_COMMAND + ": Compute and print the dependency graph " +
                    "for the dependency configuration." );
     logger.severe( "\t\t" + HASH_COMMAND + ": Generate a hash of the content of the dependency configuration." );
+    logger.severe( "\t\t" +
+                   INIT_COMMAND +
+                   ": Initialize an empty dependency configuration and workspace infrastructure." );
     logger.severe( "\t\t" + INFO_COMMAND + ": Print runtime info about the tool." );
     logger.severe( "\tOptions:" );
     final String[] options =
