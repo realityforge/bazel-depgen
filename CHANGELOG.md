@@ -4,6 +4,7 @@
 
 * Upgrade the `org.realityforge.guiceyloops` artifact to version `0.102`.
 * Upgrade the `au.com.stocksoftware.idea.codestyle` artifact to version `1.14`.
+* Add the `includeExternalAnnotations` configuration to the global configuration and to per-artifact configuration. This configuration controls whether the `annotations` classifier artifact is downloaded. The `annotations` classifier artifacts is used by IntelliJ IDEA to store annotations outside the source code. This is particularly useful for IDEA users so annotations can be added to indicate the language of strings, expected patterns of strings, expected flags for strings etc. These annotations can be added without adding additional IDE-specific dependencies to the source code. If the the `annotations` classifier artifact is not found in the remote repository but the `includeExternalAnnotations` configuration is `true` it is not considered an error and is silently ignored.
 
 ### [v0.05](https://github.com/realityforge/bazel-depgen/tree/v0.05) (2019-07-04)
 [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.04...v0.05)
