@@ -1,1 +1,31 @@
-# Basic Template
+# Initial dependency configuration. Customize as required.
+options:
+  # The relative path to the workspace root directory that
+  # contains the WORKSPACE file. Defaults to '..'
+  workspaceDirectory: ..
+
+  # The name of the generated extension file. Defaults to 'dependencies.bzl'
+  #extensionFile: dependencies.bzl
+
+  # The name of the macro that generates workspace rules and must be invoked from the
+  # WORKSPACE file. Defaults to 'generate_workspace_rules'
+  #workspaceMacroName: generate_workspace_rules
+
+  # The name of the macro that defines targets and must be invoked from a BUILD file.
+  # Defaults to 'generate_targets'
+  #targetMacroName: generate_targets
+
+  # The prefix that is added to any rule, target or macro defined. If the workspaceMacroName
+  # or the targetMacroName configuration is explicitly specified then this setting will no
+  # prefix those names but all other names will be prefixed. Defaults to ''.
+  #namePrefix: ''
+
+  # The tool generates aliases for dependency targets that can be consumed by users of the tool.
+  # Different strategies can be used to name the aliases. the default strategy is 'GroupIdAndArtifactId'
+  # Strategies include:
+  # - GroupIdAndArtifactId: The alias uses both the groupId and artifactId when constructing the alias.
+  #   So the artifact 'org.realityforge.react4j:react4j-core:0.126' has an alias
+  #   'org_realityforge_react4j__react4j_core'
+  # - ArtifactId: The alias uses the artifactId when constructing the alias.
+  #   So the artifact 'org.realityforge.react4j:react4j-core:0.126' has an alias 'react4j_core'
+  #aliasStrategy: GroupIdAndArtifactId
