@@ -29,3 +29,34 @@ options:
   # - ArtifactId: The alias uses the artifactId when constructing the alias.
   #   So the artifact 'org.realityforge.react4j:react4j-core:0.126' has an alias 'react4j_core'
   #aliasStrategy: GroupIdAndArtifactId
+
+  #defaultNature: Java
+
+  # Should the tool fail if it encounters an invalid POM file. Defaults to 'true'.
+  #failOnInvalidPom: true
+
+  # Should the tool fail if a POM file is missing. Defaults to 'true'.
+  #failOnMissingPom: true
+
+  # Should the tool print a dependency graph inside the generated extension file. This dependency
+  # graph is closely modelled on the Maven dependency graph ad is useful when inspecting or debugging
+  # the dependency graph. Defaults to 'true'.
+  #emitDependencyGraph: true
+
+  # Should the tool generate repository rules and targets for 'sources' classifier of the artifacts.
+  # The tool will also link the sources artifact to the binary artifact if the nature allows such
+  # linking. i.e. java_import targets will define the 'srcjar' artifact. Defaults to 'true'.
+  #includeSource: true
+
+  # This configuration setting controls whether the `annotations` classifier artifact is downloaded.
+  # The `annotations` classifier artifacts is used by IntelliJ IDEA to store annotations outside the
+  # source code. This is particularly useful for IDEA users where it allows the IDE to apply additional
+  # validation and provide hints to users of the artifact. If the the `annotations` classifier artifact
+  # is not found in the remote repository but this configuration setting is true, the tool does not
+  # consider it an error and silently ignores this scenario. Defaults to 'false'.
+  #includeExternalAnnotations: false
+
+  # Should the tool generate java_import targets with exports attribute that exports all dependencies.
+  # Exporting dependencies is usually discouraged in Bazel but Maven's model is one such that exportDeps
+  # is the default and thus sometimes it is desirable to enable this feature. Defaults to 'false'.
+  #exportDeps: false
