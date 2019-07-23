@@ -7,7 +7,6 @@ complete as there is too much un-said.
 * Init command
   - fill out template
   - The template should supply `workspaceDirectory` configuration if it is not the default.
-  - write changelog entry
   Note that the `exportDeps` configuration potentially limits scalability of
   builds as it results in deep dependency trees. Consider also generating initial `WORKSPACE` if a walk through
   parent directories does not locate one.
