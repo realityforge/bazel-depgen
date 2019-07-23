@@ -60,3 +60,16 @@ options:
   # Exporting dependencies is usually discouraged in Bazel but Maven's model is one such that exportDeps
   # is the default and thus sometimes it is desirable to enable this feature. Defaults to 'false'.
   #exportDeps: false
+
+  # Some bazel workspaces are intended to be consumed by other projects. In these scenarios it is not
+  # uncommon to want to customize the set of dependencies used. The tool supports this use case by
+  # adding boolean parameters to the macros that direct the macro to skip the declaration of the the
+  # repository rules or targets. There is one parameter per artifact named in the form "omit_[alias]".
+  # Defaults to 'false'.
+  #supportDependencyOmit: false
+
+  # If this setting is set to true then bazel will verify that the content of this configuration file
+  # has not been changed since the bazel extension was generated. If the configuration is out of date
+  # with respect to the generated extension and the build attempts to resolve a target then an error
+  # will be generated. Defaults to 'true'.
+  #verifyConfigSha256: true
