@@ -8,6 +8,8 @@ complete as there is too much un-said.
   - fill out template
   - The template should supply `workspaceDirectory` configuration if it is not the default.
 
+* Rename `defaultNature` to `nature` so it is like all the other defaults.
+
 * Shutdown bazel servers after test
 
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
