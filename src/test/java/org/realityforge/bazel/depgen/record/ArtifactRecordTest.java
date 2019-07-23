@@ -176,6 +176,35 @@ public class ArtifactRecordTest
   }
 
   @Test
+  public void emitJavaImport_simpleArtifact_withExportDeps()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir, "options:\n" +
+                          "  exportDeps: true\n" +
+                          "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+
+    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
+    assertEquals( asString( outputStream ),
+                  "native.java_import(\n" +
+                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                  "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
+                  "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                  "    visibility = [\"//visibility:private\"],\n" +
+                  "    deps = [\":com_example__mylib\"],\n" +
+                  "    exports = [\":com_example__mylib\"],\n" +
+                  ")\n" );
+  }
+
+  @Test
   public void emitJavaImport_declaredDepgenArtifact()
     throws Exception
   {
