@@ -86,3 +86,32 @@ options:
   # with respect to the generated extension and the build attempts to resolve a target then an error
   # will be generated. Defaults to 'true'.
   #verifyConfigSha256: true
+
+# The repositories section configures the repositories that the tool will use when resolving dependencies.
+# If not specified, a repository named "central" with a url "https://repo.maven.apache.org/maven2/" will
+# be configured. The section is an array of repository configurations.
+repositories:
+
+  # Every repository has a symbolic name. These names are used when referring to the repository from
+  # artifact configurations. The name is also used as the key when caching repository+artifact details.
+  # This setting MUST be specified.
+  - name: central
+
+    # The url of the repository. The repository is expected to be laid out using Maven2 layout strategy.
+    # The support url schemes include file, http and https.
+    url: https://repo.maven.apache.org/maven2/
+
+    # Should the tool cache artifact lookups to this repository. If caching is enabled then the results
+    # of the lookup will be stored in the cacheDirectory and successive runs of the tool will not
+    # attempt to access the repository again which speeds up the tool significantly. This is useful when
+    # the artifacts are not changed or removed from the repository as in public repositories such as Maven
+    # central. The tool also caches negative results when looking up artifacts so occasionally it is necessary
+    # to ignore the cached details when an artifact has been added to a repository. In this scenario a separate
+    # command line option is provided. This configuration is primary used for snapshot repositories and other
+    # repositories that can remove or modify artifacts. Defaults to 'true'.
+    #cacheLookups: true
+
+    # Should this repository by searched by default when looking up artifacts. If this configuration is set
+    # to false then only artifacts that explicitly reference this repository will attempt lookups in the
+    # repository. Defaults to 'true'.
+    #searchByDefault: true
