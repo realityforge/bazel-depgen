@@ -1,4 +1,6 @@
 # Initial dependency configuration. Customize as required.
+
+# The options section describes global configuration
 options:
   # The relative path to the workspace root directory that
   # contains the WORKSPACE file. Defaults to '..'
