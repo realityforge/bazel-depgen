@@ -270,7 +270,7 @@ public class ApplicationConfigTest
                      "  targetMacroName: gen_targets\n" +
                      "  namePrefix: magic_\n" +
                      "  aliasStrategy: ArtifactId\n" +
-                     "  nature: J2cl\n" +
+                     "  defaultNature: J2cl\n" +
                      "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
     final ApplicationConfig config = loadApplicationConfig();
     assertNotNull( config );
@@ -284,7 +284,7 @@ public class ApplicationConfigTest
     assertEquals( options.getTargetMacroName(), "gen_targets" );
     assertEquals( options.getNamePrefix(), "magic_" );
     assertEquals( options.getAliasStrategy(), AliasStrategy.ArtifactId );
-    assertEquals( options.getNature(), Nature.J2cl );
+    assertEquals( options.getDefaultNature(), Nature.J2cl );
     assertEquals( options.getFailOnMissingPom(), Boolean.FALSE );
     assertEquals( options.getFailOnInvalidPom(), Boolean.FALSE );
     assertEquals( options.getEmitDependencyGraph(), Boolean.FALSE );
@@ -312,7 +312,7 @@ public class ApplicationConfigTest
     assertNull( options.getTargetMacroName() );
     assertNull( options.getNamePrefix() );
     assertNull( options.getAliasStrategy() );
-    assertNull( options.getNature() );
+    assertNull( options.getDefaultNature() );
     assertNull( options.getFailOnMissingPom() );
     assertNull( options.getFailOnInvalidPom() );
     assertNull( options.getEmitDependencyGraph() );

@@ -768,7 +768,7 @@ public class ApplicationRecordTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir, "options:\n" +
-                          "  nature: J2cl\n" +
+                          "  defaultNature: J2cl\n" +
                           "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
@@ -892,7 +892,7 @@ public class ApplicationRecordTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir, "options:\n" +
-                          "  nature: J2cl\n" +
+                          "  defaultNature: J2cl\n" +
                           "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" +
                           "    natures: [Java]\n" );
@@ -919,7 +919,7 @@ public class ApplicationRecordTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir, "options:\n" +
-                          "  nature: J2cl\n" +
+                          "  defaultNature: J2cl\n" +
                           "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" +
                           "    natures: [Java]\n" +
@@ -941,7 +941,7 @@ public class ApplicationRecordTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir, "options:\n" +
-                          "  nature: J2cl\n" +
+                          "  defaultNature: J2cl\n" +
                           "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" +
                           "    natures: [Plugin]\n" );
@@ -968,7 +968,7 @@ public class ApplicationRecordTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir, "options:\n" +
-                          "  nature: J2cl\n" +
+                          "  defaultNature: J2cl\n" +
                           "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" +
                           "    natures: [Plugin]\n" +
@@ -1886,7 +1886,7 @@ public class ApplicationRecordTest
 
     writeConfigFile( dir,
                      "options:\n" +
-                     "  nature: J2cl\n" +
+                     "  defaultNature: J2cl\n" +
                      "artifacts:\n" +
                      "  - coord: com.example:myapp:1.0\n" );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0" );

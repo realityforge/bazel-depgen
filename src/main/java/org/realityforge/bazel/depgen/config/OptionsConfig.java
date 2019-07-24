@@ -34,7 +34,7 @@ public final class OptionsConfig
   @Nullable
   private AliasStrategy aliasStrategy;
   @Nullable
-  private Nature nature;
+  private Nature defaultNature;
   @Nullable
   private Boolean failOnInvalidPom;
   @Nullable
@@ -119,14 +119,14 @@ public final class OptionsConfig
   }
 
   @Nullable
-  public Nature getNature()
+  public Nature getDefaultNature()
   {
-    return nature;
+    return defaultNature;
   }
 
-  public void setNature( @Nonnull final Nature nature )
+  public void setDefaultNature( @Nonnull final Nature defaultNature )
   {
-    this.nature = Objects.requireNonNull( nature );
+    this.defaultNature = Objects.requireNonNull( defaultNature );
   }
 
   @Nullable

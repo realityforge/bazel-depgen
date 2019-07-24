@@ -288,9 +288,9 @@ public class ApplicationModelTest
     config1.setOptions( options );
     final String shaB = ApplicationModel.calculateConfigSha256( config1 );
     assertEquals( shaB, "EF5CF3CC89EAD37C90FC2CB27F3922F7D7CD7CB63180371E9F737AF7CA8E122E" );
-    options.setNature( Nature.Java );
+    options.setDefaultNature( Nature.Java );
     final String shaC = ApplicationModel.calculateConfigSha256( config1 );
-    assertEquals( shaC, "D9950C320ECA9FFA267CA394D83EBECE61F61C4DD1DAC8E58B85904E6C507F8D" );
+    assertEquals( shaC, "51547EE556C5AD9452C5F885ED9FC3772B39A66ED0A43152F77EB790127D20C3" );
   }
 
   @Test

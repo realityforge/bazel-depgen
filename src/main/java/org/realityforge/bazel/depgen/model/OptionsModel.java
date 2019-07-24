@@ -111,7 +111,7 @@ public final class OptionsModel
   @Nonnull
   public Nature getDefaultNature()
   {
-    final Nature nature = _source.getNature();
+    final Nature nature = _source.getDefaultNature();
     return null == nature ? OptionsConfig.DEFAULT_NATURE : nature;
   }
 

@@ -41,7 +41,7 @@ options:
   #  - Java: artifacts are exposed using 'java_import' rule.
   #  - Plugin: artifact is exposed as a 'java_library' that exports 'java_plugin' rules.
   #  - J2cl: artifact is exposed as a 'j2cl_library' rule.
-  #nature: Java
+  #defaultNature: Java
 
   # Should the tool fail if it encounters an invalid POM file. Defaults to 'true'.
   #failOnInvalidPom: true
