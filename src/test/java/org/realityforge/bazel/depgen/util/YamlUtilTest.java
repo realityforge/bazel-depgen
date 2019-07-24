@@ -18,8 +18,8 @@ public class YamlUtilTest
     // With a few settings
     final ApplicationConfig object = new ApplicationConfig();
     final OptionsConfig options = new OptionsConfig();
-    options.setDefaultNature( Nature.J2cl );
+    options.setNature( Nature.J2cl );
     object.setOptions( options );
-    assertEquals( YamlUtil.asYamlString( object ), "options:\n  defaultNature: J2cl\n" );
+    assertEquals( YamlUtil.asYamlString( object ), "options:\n  nature: J2cl\n" );
   }
 }

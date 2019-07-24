@@ -64,7 +64,7 @@ public class OptionsModelTest
     source.setTargetMacroName( "gen_myprj_targets" );
     source.setNamePrefix( "myprj_" );
     source.setAliasStrategy( AliasStrategy.ArtifactId );
-    source.setDefaultNature( Nature.J2cl );
+    source.setNature( Nature.J2cl );
     source.setFailOnMissingPom( false );
     source.setFailOnInvalidPom( false );
     source.setEmitDependencyGraph( false );

@@ -30,7 +30,7 @@ options:
   #   So the artifact 'org.realityforge.react4j:react4j-core:0.126' has an alias 'react4j_core'
   #aliasStrategy: GroupIdAndArtifactId
 
-  #defaultNature: Java
+  #nature: Java
 
   # Should the tool fail if it encounters an invalid POM file. Defaults to 'true'.
   #failOnInvalidPom: true
