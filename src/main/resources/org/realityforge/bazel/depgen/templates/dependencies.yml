@@ -116,6 +116,14 @@ repositories:
     # repository. Defaults to 'true'.
     #searchByDefault: true
 
+  # The user can specify as many different repositories as required. See below for some other popular repositories.
+  #- name: spring-releases
+  #  url: https://repo.spring.io/release
+  #- name: android
+  #  url: https://dl.google.com/dl/android/maven2
+  #- name: jboss-releases
+  #  url: https://repository.jboss.org/nexus/content/repositories/releases/
+
 # The excludes section identifies artifacts that should never be added to artifact graph. The exclusion occurs
 # during artifact resolution and thus no transitive dependencies of the excluded dependencies are included in
 # the graph. The excludes section is an array of exclusion configuration.
