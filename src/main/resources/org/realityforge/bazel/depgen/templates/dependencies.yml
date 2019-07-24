@@ -115,3 +115,13 @@ repositories:
     # to false then only artifacts that explicitly reference this repository will attempt lookups in the
     # repository. Defaults to 'true'.
     #searchByDefault: true
+
+# The excludes section identifies artifacts that should never be added to artifact graph. The exclusion occurs
+# during artifact resolution and thus no transitive dependencies of the excluded dependencies are included in
+# the graph. The excludes section is an array of exclusion configuration.
+#excludes:
+
+  # Every exclusion is identified by a two part coordinate consisting of a groupId and artifactId
+  # in the form [groupId]:[artifactId]. i.e. the below excludes every artifact with id 'base' in group
+  # 'com.google.jsinterop' regardless of the version, artifact type or classifier.
+  #- coord: com.google.jsinterop:base
