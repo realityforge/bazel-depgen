@@ -30,6 +30,17 @@ options:
   #   So the artifact 'org.realityforge.react4j:react4j-core:0.126' has an alias 'react4j_core'
   #aliasStrategy: GroupIdAndArtifactId
 
+  # Artifacts have 1 or more natures. A nature defines the type of targets that are created for an
+  # artifact. Does the artifact result in a 'j2cl_library', a 'java_library', a 'java_plugin' or something
+  # else. This configuration setting specifies the default nature of any artifacts unless otherwise
+  # specified at the artifact level. If left unspecified the nature is assumed to be 'Java' unless there are
+  # annotation processors defined in the manifest in which case the artifact is assumed to be the 'Plugin' nature.
+  # It should be noted that natures will also impact the nature of the artifacts dependencies. If an artifacts
+  # nature is 'J2cl' then any dependencies are assumed to be of 'J2cl' nature.
+  # Natures include:
+  #  - Java: artifacts are exposed using 'java_import' rule.
+  #  - Plugin: artifact is exposed as a 'java_library' that exports 'java_plugin' rules.
+  #  - J2cl: artifact is exposed as a 'j2cl_library' rule.
   #nature: Java
 
   # Should the tool fail if it encounters an invalid POM file. Defaults to 'true'.
