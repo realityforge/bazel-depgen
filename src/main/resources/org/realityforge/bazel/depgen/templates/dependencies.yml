@@ -124,6 +124,48 @@ repositories:
   #- name: jboss-releases
   #  url: https://repository.jboss.org/nexus/content/repositories/releases/
 
+# The artifacts section defines the artifacts that will be exposed by the generated extension.
+# The section is a list of artifact configurations.
+#artifacts:
+
+  # All artifacts must specify the coords property containing the maven coordinates of the dependency.
+  # They may optional declare one or configuration properties that will change the way the tool treats
+  # the artifact.
+
+  # The artifact coordinates can be defined using a 2-5 parts. The 2-part form declares the groupId
+  # and the artifactId and assumes that another artifact declaration will transitively reference the
+  # artifact. This form is used to customize the configuration of the artifact or to expose the artifact
+  # so that it is visible to other parts of the build. All other forms of the coord indicate a top-level
+  # artifact that forms a root when resolving the dependency graph. The forms are as follows:
+  #   * [groupId]:[artifactId]
+  #   * [groupId]:[artifactId]:[version]
+  #   * [groupId]:[artifactId]:[type]:[version]
+  #   * [groupId]:[artifactId]:[type]:[classifier]:[version]
+
+  #- coord: org.realityforge.react4j:react4j-core:0.126
+
+    # This settings allows per-artifact overrides of the global aliasStrategy configuration.
+    #aliasStrategy: ArtifactId
+
+    # This settings allows per-artifact overrides of the global includeSource configuration.
+    #includeSource: false
+
+    # This settings allows per-artifact overrides of the global includeExternalAnnotations configuration.
+    #includeExternalAnnotations: true
+
+    # This settings allows per-artifact overrides of the global exportDeps configuration.
+    #exportDeps: true
+
+    # This configuration controls whether optional dependencies for this artifact are included when resolving
+    # the dependency graph. Defaults to 'false'.
+    #includeOptional: false
+
+    # Specifies an array of dependency coordinates that are excluded when this artifact. Like the global
+    # configuration setting, excludes are defined as a 2-part [groupId]:[artifactId] coordinate. Unlike
+    # the global configuration setting, the excludes only apply to transitive dependencies of this artifact.
+    #excludes:
+      #- com.google.jsinterop:base
+      #- com.google.jsinterop:jsinterop-annotations
 # The excludes section identifies artifacts that should never be added to artifact graph. The exclusion occurs
 # during artifact resolution and thus no transitive dependencies of the excluded dependencies are included in
 # the graph. The excludes section is an array of exclusion configuration.
