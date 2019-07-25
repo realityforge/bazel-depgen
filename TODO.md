@@ -8,6 +8,8 @@ complete as there is too much un-said.
   - fill out template
   - The template should supply `workspaceDirectory` configuration if it is not the default.
 
+* `exportDeps` - should that be below a java config section both globally and at the artifact level?
+
 * Shutdown bazel servers after test
 
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
