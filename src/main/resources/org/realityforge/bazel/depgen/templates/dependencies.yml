@@ -133,3 +133,23 @@ repositories:
   # in the form [groupId]:[artifactId]. i.e. the below excludes every artifact with id 'base' in group
   # 'com.google.jsinterop' regardless of the version, artifact type or classifier.
   #- coord: com.google.jsinterop:base
+
+# The replacements section identifies artifacts that should be replaced by different targets.
+# This is useful when you want to replace a dependency with a local target or another target.
+# Unlike the excludes section which removes an artifact from the graph, the replacements will
+# keep the dependency but replace it with a different target. The replacement target may be
+# different for different natures and thus it is required that for each nature of the artifact
+# must have a separate replacement target. The replacements section is an array of replacement
+# configurations.
+#replacements:
+
+  # Each replacement is defined by the coordinate of the artifact that it replaces.
+  # and a target per nature.
+  #- coord: com.google.elemental2:elemental2-promise
+  #  targets:
+      # A target is defines a replacement rule for a particular nature
+      #- target: "@com_google_elemental2//:elemental2-dom-j2cl"
+      #  nature: J2cl
+
+      # If a target does not specify a nature then the defaultNature is assumed.
+      #- target: ":org_realityforge_com_google_elemental2__elemental2_promise"
