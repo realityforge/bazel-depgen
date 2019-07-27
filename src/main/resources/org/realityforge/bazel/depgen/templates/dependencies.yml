@@ -166,6 +166,11 @@ repositories:
     #excludes:
       #- com.google.jsinterop:base
       #- com.google.jsinterop:jsinterop-annotations
+
+    # The visibility specifies the visibility of the alias that references the artifact. If not specified
+    # then the alias has no visibility specified and thus has the default visibility of the module.
+    #visibility: ["//visibility:public"]
+
 # The excludes section identifies artifacts that should never be added to artifact graph. The exclusion occurs
 # during artifact resolution and thus no transitive dependencies of the excluded dependencies are included in
 # the graph. The excludes section is an array of exclusion configuration.
