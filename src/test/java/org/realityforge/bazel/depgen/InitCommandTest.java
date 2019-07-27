@@ -65,7 +65,8 @@ public class InitCommandTest
     final Path workspaceFile = environment.currentDirectory().resolve( "WORKSPACE" );
     assertOutputContains( output, "Created WORKSPACE file " + workspaceFile );
 
-    assertEquals( loadAsString( environment.getConfigFile() ), loadTemplate() );
+    assertEquals( loadAsString( environment.getConfigFile() ),
+                  loadTemplate().replace( "workspaceDirectory: ..", "workspaceDirectory: ../.." ) );
     assertTrue( Files.exists( configDirectory.resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) ) );
     assertEquals( loadAsString( workspaceFile ),
                   "workspace(name = \"" + workspaceFile.getParent().getFileName() + "\")\n" +

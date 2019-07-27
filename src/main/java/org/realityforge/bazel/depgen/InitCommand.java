@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -73,6 +74,7 @@ final class InitCommand
     final Environment environment = context.environment();
     final Path configFile = environment.getConfigFile();
     final Logger logger = environment.logger();
+    final Path workspaceDir = environment.currentDirectory();
     if ( Files.exists( configFile ) )
     {
       if ( logger.isLoggable( Level.WARNING ) )
@@ -87,13 +89,13 @@ final class InitCommand
       {
         return ExitCodes.ERROR_INIT_WRITE_FAILED_CODE;
       }
-      else if ( !createConfigFile( logger, configFile ) )
+      else if ( !createConfigFile( logger, configFile, workspaceDir ) )
       {
         return ExitCodes.ERROR_INIT_WRITE_FAILED_CODE;
       }
       else if ( _createWorkspace )
       {
-        final Path workspaceFile = environment.currentDirectory().resolve( "WORKSPACE" );
+        final Path workspaceFile = workspaceDir.resolve( "WORKSPACE" );
         if ( !Files.exists( workspaceFile ) )
         {
           if ( !createWorkspaceFile( logger, workspaceFile, configFile ) )
@@ -142,13 +144,26 @@ final class InitCommand
     return true;
   }
 
-  private boolean createConfigFile( @Nonnull final Logger logger, @Nonnull final Path configFile )
+  private boolean createConfigFile( @Nonnull final Logger logger,
+                                    @Nonnull final Path configFile,
+                                    @Nonnull final Path workspaceDir )
   {
     try
     {
       final InputStream inputStream = getClass().getResourceAsStream( "templates/dependencies.yml" );
       assert null != inputStream;
-      Files.copy( inputStream, configFile );
+      final byte[] data = new byte[ inputStream.available() ];
+      final int count = inputStream.read( data );
+      if ( data.length != count )
+      {
+        throw new IOException( "Failed to ready file fully" );
+      }
+
+      final String outputData =
+        new String( data, StandardCharsets.UTF_8 )
+          .replace( "workspaceDirectory: ..",
+                    "workspaceDirectory: " + configFile.getParent().relativize( workspaceDir ) );
+      Files.write( configFile, outputData.getBytes( StandardCharsets.UTF_8 ) );
     }
     catch ( final IOException e )
     {

@@ -6,7 +6,6 @@ complete as there is too much un-said.
 
 * Init command
   - fill out template
-  - The template should supply `workspaceDirectory` configuration if it is not the default.
 
 * `exportDeps` - should that be below a java config section both globally and at the artifact level?
 
