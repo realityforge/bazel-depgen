@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
@@ -197,8 +198,13 @@ final class InitCommand
       final StarlarkOutput output = new StarlarkOutput( workspaceFile );
       output.write( "workspace(name = \"" + workspaceDirectory.getFileName() + "\")" );
       output.newLine();
-      output.write( "load(\"//" + workspaceDirectory.relativize( configFile ).getParent() + ":" +
-                    configFile.getFileName() + "\", \"generate_workspace_rules\")" );
+      output.write( "load(\"//" +
+                    workspaceDirectory.relativize( configFile ).getParent() +
+                    ":" +
+                    OptionsConfig.DEFAULT_EXTENSION_FILE +
+                    "\", \"" +
+                    OptionsConfig.DEFAULT_WORKSPACE_MACRO_NAME +
+                    "\")" );
       output.newLine();
       output.write( "generate_workspace_rules()" );
       output.close();

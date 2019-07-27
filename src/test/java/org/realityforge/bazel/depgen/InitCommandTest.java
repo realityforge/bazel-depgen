@@ -41,7 +41,7 @@ public class InitCommandTest
     assertEquals( loadAsString( workspaceFile ),
                   "workspace(name = \"" + workspaceFile.getParent().getFileName() + "\")\n" +
                   "\n" +
-                  "load(\"//thirdparty:dependencies.yml\", \"generate_workspace_rules\")\n" +
+                  "load(\"//thirdparty:dependencies.bzl\", \"generate_workspace_rules\")\n" +
                   "\n" +
                   "generate_workspace_rules()\n" );
   }
@@ -71,7 +71,7 @@ public class InitCommandTest
     assertEquals( loadAsString( workspaceFile ),
                   "workspace(name = \"" + workspaceFile.getParent().getFileName() + "\")\n" +
                   "\n" +
-                  "load(\"//subdir/thirdparty:somefile.yaml\", \"generate_workspace_rules\")\n" +
+                  "load(\"//subdir/thirdparty:dependencies.bzl\", \"generate_workspace_rules\")\n" +
                   "\n" +
                   "generate_workspace_rules()\n" );
   }
@@ -113,7 +113,7 @@ public class InitCommandTest
     assertEquals( loadAsString( workspaceFile ),
                   "workspace(name = \"" + workspaceFile.getParent().getFileName() + "\")\n" +
                   "\n" +
-                  "load(\"//thirdparty:dependencies.yml\", \"generate_workspace_rules\")\n" +
+                  "load(\"//thirdparty:dependencies.bzl\", \"generate_workspace_rules\")\n" +
                   "\n" +
                   "generate_workspace_rules()\n" );
   }
