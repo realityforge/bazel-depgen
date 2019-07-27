@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.06](https://github.com/realityforge/bazel-depgen/tree/v0.06) (2019-07-27)
+[Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.05...v0.06)
 
 * Upgrade the `org.realityforge.guiceyloops` artifact to version `0.102`.
 * Upgrade the `au.com.stocksoftware.idea.codestyle` artifact to version `1.14`.
