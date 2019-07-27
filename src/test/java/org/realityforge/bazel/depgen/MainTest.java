@@ -109,7 +109,22 @@ public class MainTest
     writeWorkspace();
 
     final String output = failToProcessOptions( "--config-file", "deps.txt", "generate" );
-    assertOutputContains( output, "Error: Specified config file does not exist. Specified value: deps.txt" );
+    assertOutputContains( output, "Error: Specified config file does not exist. Specified value: " +
+                                  FileUtil.getCurrentDirectory().resolve( "deps.txt" ) );
+  }
+
+  @Test
+  public void processOptions_configFileMissing_initSubCommand()
+    throws Exception
+  {
+    writeWorkspace();
+
+    final TestHandler handler = new TestHandler();
+    final Environment environment = newEnvironment( handler );
+    assertFalse( environment.shouldResetCachedMetadata() );
+    assertTrue( Main.processOptions( environment, "init" ) );
+    assertFalse( environment.getConfigFile().toFile().exists() );
+    assertEquals( handler.toString(), "" );
   }
 
   @Test

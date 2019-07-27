@@ -38,6 +38,12 @@ final class InitCommand
   }
 
   @Override
+  boolean requireConfigFile()
+  {
+    return false;
+  }
+
+  @Override
   boolean processArguments( @Nonnull final Environment environment, @Nonnull final List<CLOption> arguments )
   {
     // Get a list of parsed options

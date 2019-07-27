@@ -36,6 +36,11 @@ abstract class Command
     return _name;
   }
 
+  boolean requireConfigFile()
+  {
+    return true;
+  }
+
   boolean processOptions( @Nonnull final Environment environment, @Nonnull final String... args )
   {
     if ( args.length > 0 )

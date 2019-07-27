@@ -427,14 +427,7 @@ public class Main
         case CONFIG_FILE_OPT:
         {
           final String argument = option.getArgument();
-          final Path configFile = environment.currentDirectory().resolve( argument ).toAbsolutePath().normalize();
-          if ( !configFile.toFile().exists() )
-          {
-            logger.log( Level.SEVERE,
-                        "Error: Specified config file does not exist. Specified value: " + argument );
-            return false;
-          }
-          environment.setConfigFile( configFile );
+          environment.setConfigFile( environment.currentDirectory().resolve( argument ).toAbsolutePath().normalize() );
           break;
         }
         case SETTINGS_FILE_OPT:
@@ -509,22 +502,32 @@ public class Main
       }
     }
 
+    if ( environment.hasConfigFile() && environment.getCommand().requireConfigFile() )
+    {
+      if ( !environment.getConfigFile().toFile().exists() )
+      {
+        logger.log( Level.SEVERE,
+                    "Error: Specified config file does not exist. Specified value: " + environment.getConfigFile() );
+        return false;
+      }
+    }
+
     if ( !environment.hasConfigFile() )
     {
-      final Path dependenciesFile =
+      final Path configFile =
         environment.currentDirectory()
           .resolve( ApplicationConfig.DEFAULT_MODULE )
           .resolve( ApplicationConfig.FILENAME )
           .toAbsolutePath()
           .normalize();
-      if ( !dependenciesFile.toFile().exists() )
+      if ( environment.getCommand().requireConfigFile() && !configFile.toFile().exists() )
       {
         logger.log( Level.SEVERE,
                     "Error: Default config file does not exist: " +
                     ApplicationConfig.DEFAULT_MODULE + "/" + ApplicationConfig.FILENAME );
         return false;
       }
-      environment.setConfigFile( dependenciesFile );
+      environment.setConfigFile( configFile );
     }
 
     if ( !environment.hasSettingsFile() )

@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Fix the `init` command so that it does not require that the config file be present before the command is executed.
+
 ### [v0.06](https://github.com/realityforge/bazel-depgen/tree/v0.06) (2019-07-27)
 [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.05...v0.06)
 
