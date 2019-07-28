@@ -9,6 +9,9 @@ complete as there is too much un-said.
 
 * `exportDeps` - should that be below a java config section both globally and at the artifact level?
 
+* Currently even if an artifact is restricted to a repository it is looked up in all repositories. Figure out a
+  way to restrict it to a specific repository. 
+
 * Shutdown bazel servers after test
 
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
@@ -83,7 +86,9 @@ java.lang.IllegalStateException: Artifact 'org.realityforge.com.google.jsinterop
 
 * Add support for `neverlink` on artifacts.
 
-* Support alternative to `http_file` that supports basic authentication.
+* `http_file` now supports basic authentication via `.netrc`. See if we can figure out a way to align the two
+  `settings.xml` and `.netrc`. Perhaps by moving to `.netrc` exclusively. Then we could also remove names from
+  repositories and cache via url.
 
 * Look to [bazel-tools](https://github.com/spotify/bazel-tools) and [awesome-bazel](https://github.com/jin/awesome-bazel)
   to see if there is other tools that can be incoporated.
