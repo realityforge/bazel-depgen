@@ -171,6 +171,14 @@ repositories:
     # then the alias has no visibility specified and thus has the default visibility of the module.
     #visibility: ["//visibility:public"]
 
+    # An artifact must have 1 or more natures. If an artifact explicitly specifies the natures then it must
+    # specify all natures that are applicable for the artifact. If unspecified then the defaultNature specified
+    # in the options section is applied to the artifact. The 'natures' configuration is an array of natures.
+    #natures:
+      #- Java
+      #- Plugin
+      #- J2cl
+
     # The j2cl section is used to customize the artifact if it has the J2cl nature
     # and should only be present if the artifact has the J2cl nature
     #j2cl:
