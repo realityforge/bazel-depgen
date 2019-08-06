@@ -171,6 +171,21 @@ repositories:
     # then the alias has no visibility specified and thus has the default visibility of the module.
     #visibility: ["//visibility:public"]
 
+    # The j2cl section is used to customize the artifact if it has the J2cl nature
+    # and should only be present if the artifact has the J2cl nature
+    #j2cl:
+
+      # Explicitly suppress some checks in the closure compiler. Providing values with this attribute is
+      # only valid when the mode is 'Library'. See the closure-compiler documentation for a list of valid
+      # values.
+      #suppress: [checkDebuggerStatement]
+
+      # j2cl support two distinct library dependencies. Dependencies that contain only annotation
+      # byte code imported via 'java_import' macro but libraries that need to be transpiled to
+      # javascript need to be defined using the 'java_language'. The valid modes include 'Import'
+      # and 'Library' and defaults to `Library`.
+      #mode: Library
+
     # The plugins section is used to customize the artifact if it has the Plugin nature
     # and should only be present if the artifact has the Plugin nature
     #plugin:
