@@ -171,6 +171,18 @@ repositories:
     # then the alias has no visibility specified and thus has the default visibility of the module.
     #visibility: ["//visibility:public"]
 
+    # The plugins section is used to customize the artifact if it has the Plugin nature
+    # and should only be present if the artifact has the Plugin nature
+    #plugin:
+
+      # Should the tool mark annotation processors as generating API code?
+      # See https://docs.bazel.build/versions/master/be/java.html#java_plugin.generates_api for
+      # a discussion on the performance impact of not setting this. As many annotation processors
+      # generate API code and setting this to false by default would cause these builds to fail,
+      # the tool deliberately takes the opposite default from Bazel and defaults to true.
+      # This can be overridden and changed to false if the annotation processor supports this.
+      #generatesApi: false
+
 # The excludes section identifies artifacts that should never be added to artifact graph. The exclusion occurs
 # during artifact resolution and thus no transitive dependencies of the excluded dependencies are included in
 # the graph. The excludes section is an array of exclusion configuration.
