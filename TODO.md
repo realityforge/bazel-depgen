@@ -10,7 +10,7 @@ complete as there is too much un-said.
 * `exportDeps` - should that be below a java config section both globally and at the artifact level?
 
 * Currently even if an artifact is restricted to a repository it is looked up in all repositories. Figure out a
-  way to restrict it to a specific repository. 
+  way to restrict it to a specific repository.
 
 * Shutdown bazel servers after test
 
