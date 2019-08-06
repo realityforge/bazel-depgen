@@ -17,6 +17,8 @@ complete as there is too much un-said.
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
   directory to some central place (i.e. `~/.depgen/repository`)
 
+* See if we can use aspects rather than data attributes to check generated is uptodate?
+
 * Consider trying to get `j2cl_library` to support `data` attribute and remove cruft from generated infrastructure.
 
 * Add command that checks/validates/cleans cache.
