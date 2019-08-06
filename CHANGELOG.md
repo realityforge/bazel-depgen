@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Expand the configuration created via the `init` sub-command to include all configurations properties currently available.
+
 ### [v0.08](https://github.com/realityforge/bazel-depgen/tree/v0.08) (2019-07-28)
 [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.07...v0.08)
 

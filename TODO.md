@@ -4,9 +4,6 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-* Init command
-  - fill out template
-
 * `exportDeps` - should that be below a java config section both globally and at the artifact level?
 
 * Currently even if an artifact is restricted to a repository it is looked up in all repositories. Figure out a
