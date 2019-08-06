@@ -171,6 +171,13 @@ repositories:
     # then the alias has no visibility specified and thus has the default visibility of the module.
     #visibility: ["//visibility:public"]
 
+    # The repository configuration contains a list of repository names that should be used to resolve
+    # the artifact. If unspecified then the repositories configured in the top level section will be used.
+    # See the documentation above for further details.
+    #repositories:
+      #- central
+      #- spring-releases
+
     # An artifact must have 1 or more natures. If an artifact explicitly specifies the natures then it must
     # specify all natures that are applicable for the artifact. If unspecified then the defaultNature specified
     # in the options section is applied to the artifact. The 'natures' configuration is an array of natures.
