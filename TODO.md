@@ -16,6 +16,9 @@ complete as there is too much un-said.
 
 * Consider trying to get `j2cl_library` to support `data` attribute and remove cruft from generated infrastructure.
 
+* Add parameter like `--reset-cached-metadata` that only resets failed lookups. Useful when mirrors take a while to
+  propagate and repositories are add-only.
+
 * Add command that checks/validates/cleans cache.
 
 * Add `add` command that adds a dependency.
