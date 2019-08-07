@@ -17,7 +17,7 @@ The Maven dependency is:
 <dependency>
   <groupId>org.realityforge.bazel.depgen</groupId>
   <artifactId>bazel-depgen</artifactId>
-  <version>0.08</version>
+  <version>0.09</version>
   <classification>all</classification>
 </dependency>
 ```
