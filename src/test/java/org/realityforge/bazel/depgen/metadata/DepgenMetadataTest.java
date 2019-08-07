@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.DepgenException;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -261,8 +262,8 @@ public class DepgenMetadataTest
 
     assertFalse( file.toFile().exists() );
 
-    final IllegalStateException exception =
-      expectThrows( IllegalStateException.class,
+    final DepgenException exception =
+      expectThrows( DepgenException.class,
                     () -> metadata.getUrls( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
                                             Collections.singletonList( repo1 ),
                                             Collections.emptyMap(),

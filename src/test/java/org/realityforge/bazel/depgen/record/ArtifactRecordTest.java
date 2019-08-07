@@ -182,7 +182,8 @@ public class ArtifactRecordTest
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir, "options:\n" +
-                          "  exportDeps: true\n" +
+                          "  java:\n" +
+                          "    exportDeps: true\n" +
                           "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
@@ -233,7 +234,11 @@ public class ArtifactRecordTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n    exportDeps: true\n" );
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    java:\n" +
+                     "      exportDeps: true\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
 

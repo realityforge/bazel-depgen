@@ -860,7 +860,7 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:base:jar:1.0' does not specify the J2cl nature but is a transitive dependency of 'com.example:myapp:jar:1.0' which has the J2cl nature. This is not a supported scenario." );
@@ -880,7 +880,7 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:mylib:jar:1.0' does not specify the J2cl nature but is a direct dependency of 'com.example:myapp:jar:1.0' which has the J2cl nature. This is not a supported scenario." );
@@ -929,7 +929,7 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:mylib:jar:1.0' does not specify the Java nature but is a direct dependency of 'com.example:myapp:jar:1.0' which has the Java nature. This is not a supported scenario." );
@@ -978,7 +978,7 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:mylib:jar:1.0' does not specify the Java nature but is a direct dependency of 'com.example:myapp:jar:1.0' which has the Plugin nature. This is not a supported scenario." );
@@ -1558,8 +1558,8 @@ public class ApplicationRecordTest
                      "      generatesApi: false\n" );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-    final IllegalStateException exception =
-      expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:myapp:jar:1.0' has specified 'plugin' configuration but does not specify the Plugin nature nor does it contain any annotation processors." );
   }
@@ -1578,8 +1578,8 @@ public class ApplicationRecordTest
                      "      generatesApi: false\n" );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-    final IllegalStateException exception =
-      expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:myapp:jar:1.0' has specified 'plugin.generatesApi' configuration but does not contain any annotation processors." );
   }
@@ -1626,8 +1626,8 @@ public class ApplicationRecordTest
                      "      suppress: [\"checkDebuggerStatement\"]\n" );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-    final IllegalStateException exception =
-      expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:myapp:jar:1.0' has specified 'j2cl.suppress' configuration but specified 'j2cl.mode = Import' which is incompatible with 'j2cl.suppress'." );
   }
@@ -1645,8 +1645,8 @@ public class ApplicationRecordTest
                      "      suppress: [\"checkDebuggerStatement\"]\n" );
     deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-    final IllegalStateException exception =
-      expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:myapp:jar:1.0' has specified 'j2cl' configuration but does not specify the J2cl nature." );
   }
@@ -1731,7 +1731,7 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
     deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
 
-    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
     assertEquals( exception.getMessage(),
                   "Multiple artifacts have the same alias 'core' which is not supported. Change the aliasStrategy option globally or for one of the artifacts 'com.example.app1:core:jar:42.0' and 'com.example.app2:core:jar:37.0'." );
   }
@@ -1781,7 +1781,7 @@ public class ApplicationRecordTest
                      "    natures: [J2cl]\n" );
     deployTempArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
 
-    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
     assertEquals( exception.getMessage(),
                   "Unable to locate the sources classifier artifact for the artifact 'com.example.app1:core:jar:42.0' but the artifact has the J2cl nature which requires that sources be present." );
   }
@@ -1795,7 +1795,8 @@ public class ApplicationRecordTest
     writeConfigFile( dir,
                      "artifacts:\n" +
                      "  - coord: com.example.app1:core:42.0\n" +
-                     "    exportDeps: true\n" +
+                     "    java:\n" +
+                     "      exportDeps: true\n" +
                      "  - coord: com.example.app2:core:37.0\n" );
     deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
     deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
@@ -1822,10 +1823,12 @@ public class ApplicationRecordTest
 
     writeConfigFile( dir,
                      "options:\n" +
-                     "  exportDeps: true\n" +
+                     "  java:\n" +
+                     "    exportDeps: true\n" +
                      "artifacts:\n" +
                      "  - coord: com.example.app1:core:42.0\n" +
-                     "    exportDeps: false\n" +
+                     "    java:\n" +
+                     "      exportDeps: false\n" +
                      "  - coord: com.example.app2:core:37.0\n" );
     deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
     deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
@@ -3617,7 +3620,7 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:mylib:jar:1.0' is a replacement and has a nature of 'Java' but has not declared a replacement target for that nature." );
@@ -3644,7 +3647,7 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:mylib:jar:1.0' declared target for nature 'J2cl' but artifact does not have specified nature." );
@@ -3695,7 +3698,7 @@ public class ApplicationRecordTest
 
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a replace but does not declare the Java nature which is required if verifyConfigSha256 option is set to true." );
@@ -3731,7 +3734,7 @@ public class ApplicationRecordTest
                      "  - coord: " + DepGenConfig.getCoord() + "\n" +
                      "    natures: [J2cl]\n" );
 
-    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a dependency but does not declare the Java nature which is required if the verifyConfigSha256 option is set to true." );
@@ -3747,7 +3750,7 @@ public class ApplicationRecordTest
                      "artifacts:\n" +
                      "  - coord: " + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "\n" );
 
-    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a dependency but does not specify the classifier 'all' which is required if the verifyConfigSha256 option is set to true." );

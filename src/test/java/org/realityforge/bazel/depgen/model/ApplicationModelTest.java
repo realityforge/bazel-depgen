@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.DepGenConfig;
+import org.realityforge.bazel.depgen.DepgenValidationException;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ChecksumPolicy;
 import org.realityforge.bazel.depgen.config.Nature;
@@ -308,7 +309,7 @@ public class ApplicationModelTest
 
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-    final IllegalStateException exception = expectThrows( IllegalStateException.class, this::loadApplicationModel );
+    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationModel );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:myapp' declared a repository named 'NoExist' but no such repository is declared in the repository section. Known repositories include: local" );

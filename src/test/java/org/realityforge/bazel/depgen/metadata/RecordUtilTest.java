@@ -18,6 +18,8 @@ import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.DepgenConfigurationException;
+import org.realityforge.bazel.depgen.DepgenException;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.guiceyloops.server.http.TinyHttpd;
 import org.realityforge.guiceyloops.server.http.TinyHttpdFactory;
@@ -42,8 +44,8 @@ public class RecordUtilTest
     throws Exception
   {
     final Path filename = FileUtil.createLocalTempDir().resolve( "file.txt" );
-    final IllegalStateException exception =
-      expectThrows( IllegalStateException.class, () -> RecordUtil.sha256( filename.toFile() ) );
+    final DepgenException exception =
+      expectThrows( DepgenException.class, () -> RecordUtil.sha256( filename.toFile() ) );
     assertEquals( exception.getMessage(), "Error generating sha256 hash for file " + filename.toFile() );
   }
 
@@ -150,8 +152,8 @@ public class RecordUtilTest
   {
     final RemoteRepository repo = new RemoteRepository.Builder( "dir1", "default", "ftp://example.com" ).build();
 
-    final IllegalStateException exception =
-      expectThrows( IllegalStateException.class,
+    final DepgenConfigurationException exception =
+      expectThrows( DepgenConfigurationException.class,
                     () -> RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
                                                                  repo,
                                                                  Collections.emptyMap() ) );

@@ -378,8 +378,8 @@ public class GenerateCommandTest
 
     try
     {
-      final IllegalStateException exception =
-        expectThrows( IllegalStateException.class, () -> command.run( new Command.Context()
+      final DepgenException exception =
+        expectThrows( DepgenException.class, () -> command.run( new Command.Context()
         {
           @Nonnull
           @Override
