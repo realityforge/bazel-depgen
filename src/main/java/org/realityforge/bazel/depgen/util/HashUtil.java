@@ -3,6 +3,7 @@ package org.realityforge.bazel.depgen.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.annotation.Nonnull;
+import org.realityforge.bazel.depgen.DepgenConfigurationException;
 
 public final class HashUtil
 {
@@ -26,7 +27,7 @@ public final class HashUtil
     }
     catch ( final NoSuchAlgorithmException nsae )
     {
-      throw new IllegalStateException( nsae.getMessage(), nsae );
+      throw new DepgenConfigurationException( nsae.getMessage(), nsae );
     }
   }
 

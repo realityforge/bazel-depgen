@@ -18,6 +18,7 @@ import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
+import org.realityforge.bazel.depgen.DepgenValidationException;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.metadata.RecordBuildCallback;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
@@ -73,7 +74,7 @@ public final class ApplicationRecord
           "Artifact '" + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "' declared as a " +
           "dependency but does not declare the Java nature which is required if the verifyConfigSha256 option is " +
           "set to true.";
-        throw new IllegalStateException( message );
+        throw new DepgenValidationException( message );
       }
       if ( null != artifact && !DepGenConfig.getClassifier().equals( artifact.getClassifier() ) )
       {
@@ -81,7 +82,7 @@ public final class ApplicationRecord
           "Artifact '" + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "' declared as a " +
           "dependency but does not specify the classifier '" + DepGenConfig.getClassifier() + "' which is " +
           "required if the verifyConfigSha256 option is set to true.";
-        throw new IllegalStateException( message );
+        throw new DepgenValidationException( message );
       }
 
       final ReplacementModel replacement =
@@ -91,7 +92,7 @@ public final class ApplicationRecord
         final String message =
           "Artifact '" + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "' declared as a replace " +
           "but does not declare the Java nature which is required if verifyConfigSha256 option is set to true.";
-        throw new IllegalStateException( message );
+        throw new DepgenValidationException( message );
       }
     }
   }
@@ -134,7 +135,7 @@ public final class ApplicationRecord
           targetNature + " nature but is a " + ( root == artifact ? "direct" : "transitive" ) +
           " dependency of '" + root.getArtifact() + "' which has the " +
           rootNature + " nature. This is not a supported scenario.";
-        throw new IllegalStateException( message );
+        throw new DepgenValidationException( message );
       }
     }
   }
@@ -150,10 +151,10 @@ public final class ApplicationRecord
         final ArtifactRecord existing = aliases.get( alias );
         if ( null != existing )
         {
-          throw new IllegalStateException( "Multiple artifacts have the same alias '" + alias + "' which is " +
-                                           "not supported. Change the aliasStrategy option globally or for " +
-                                           "one of the artifacts '" + existing.getArtifact() + "' and '" +
-                                           artifact.getArtifact() + "'." );
+          throw new DepgenValidationException( "Multiple artifacts have the same alias '" + alias + "' which is " +
+                                               "not supported. Change the aliasStrategy option globally or for " +
+                                               "one of the artifacts '" + existing.getArtifact() + "' and '" +
+                                               artifact.getArtifact() + "'." );
         }
         else
         {

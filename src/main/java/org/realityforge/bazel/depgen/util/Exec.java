@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.realityforge.bazel.depgen.DepgenException;
 
 /**
  * Utility methods for invoking native commands.
@@ -59,17 +60,17 @@ final class Exec
       final int exitCode = process.waitFor();
       if ( null != expectedExitCode && exitCode != expectedExitCode )
       {
-        throw new IllegalStateException( "Unexpected exit code for command " + builder.command() + ". " +
-                                         "Actual: " + exitCode + " Expected: " + expectedExitCode );
+        throw new DepgenException( "Unexpected exit code for command " + builder.command() + ". " +
+                                   "Actual: " + exitCode + " Expected: " + expectedExitCode );
       }
     }
     catch ( final IOException ioe )
     {
-      throw new IllegalStateException( "Error starting command " + builder.command(), ioe );
+      throw new DepgenException( "Error starting command " + builder.command(), ioe );
     }
     catch ( final InterruptedException ie )
     {
-      throw new IllegalStateException( "Error waiting for command " + builder.command(), ie );
+      throw new DepgenException( "Error waiting for command " + builder.command(), ie );
     }
   }
 
@@ -91,7 +92,7 @@ final class Exec
     }
     catch ( final IOException ioe )
     {
-      throw new IllegalStateException( ioe );
+      throw new DepgenException( ioe.getMessage(), ioe );
     }
   }
 }

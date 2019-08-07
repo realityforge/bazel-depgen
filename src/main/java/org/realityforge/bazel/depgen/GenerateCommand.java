@@ -27,7 +27,7 @@ final class GenerateCommand
 
     if ( !dir.toFile().exists() && !dir.toFile().mkdirs() )
     {
-      throw new IllegalStateException( "Failed to create directory " + dir.toFile() );
+      throw new DepgenException( "Failed to create directory " + dir.toFile() );
     }
 
     // The tool will emit the `BUILD.bazel` file for the package containing the extension

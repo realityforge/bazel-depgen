@@ -21,6 +21,8 @@ import javax.annotation.Nullable;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.realityforge.bazel.depgen.DepgenConfigurationException;
+import org.realityforge.bazel.depgen.DepgenException;
 import org.realityforge.bazel.depgen.util.ArtifactUtil;
 import org.realityforge.bazel.depgen.util.HashUtil;
 
@@ -39,7 +41,7 @@ final class RecordUtil
     }
     catch ( final IOException ioe )
     {
-      throw new IllegalStateException( "Error generating sha256 hash for file " + file, ioe );
+      throw new DepgenException( "Error generating sha256 hash for file " + file, ioe );
     }
   }
 
@@ -87,7 +89,7 @@ final class RecordUtil
       else
       {
         final String message = "Unsupported repository protocol for " + artifact + " with url " + url + ".";
-        throw new IllegalStateException( message );
+        throw new DepgenConfigurationException( message );
       }
     }
     catch ( final IOException | URISyntaxException ignored )

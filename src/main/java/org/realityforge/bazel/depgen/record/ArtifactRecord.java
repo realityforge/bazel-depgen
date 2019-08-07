@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.DepGenConfig;
+import org.realityforge.bazel.depgen.DepgenValidationException;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.J2clConfig;
 import org.realityforge.bazel.depgen.config.J2clMode;
@@ -144,14 +145,14 @@ public final class ArtifactRecord
         {
           final String message =
             "Artifact '" + getArtifact() + "' has specified 'j2cl' configuration but does not specify the J2cl nature.";
-          throw new IllegalStateException( message );
+          throw new DepgenValidationException( message );
         }
         else if ( null != j2cl.getSuppress() && J2clMode.Import == j2cl.getMode() )
         {
           final String message =
             "Artifact '" + getArtifact() + "' has specified 'j2cl.suppress' configuration but specified " +
             "'j2cl.mode = Import' which is incompatible with 'j2cl.suppress'.";
-          throw new IllegalStateException( message );
+          throw new DepgenValidationException( message );
         }
       }
       final PluginConfig plugin = _artifactModel.getSource().getPlugin();
@@ -162,14 +163,14 @@ public final class ArtifactRecord
           final String message =
             "Artifact '" + getArtifact() + "' has specified 'plugin' configuration but does not specify " +
             "the Plugin nature nor does it contain any annotation processors.";
-          throw new IllegalStateException( message );
+          throw new DepgenValidationException( message );
         }
         else if ( null != plugin.getGeneratesApi() && ( null == _processors || _processors.isEmpty() ) )
         {
           final String message =
             "Artifact '" + getArtifact() + "' has specified 'plugin.generatesApi' configuration but does not " +
             "contain any annotation processors.";
-          throw new IllegalStateException( message );
+          throw new DepgenValidationException( message );
         }
       }
     }
@@ -181,14 +182,14 @@ public final class ArtifactRecord
         final String message =
           "Artifact '" + getArtifact() + "' has specified J2cl nature but the 'includeSource' configuration " +
           "resolves to false.";
-        throw new IllegalStateException( message );
+        throw new DepgenValidationException( message );
       }
       if ( null == _sourceSha256 && null == _replacementModel )
       {
         final String message =
           "Unable to locate the sources classifier artifact for the artifact '" + getArtifact() +
           "' but the artifact has the J2cl nature which requires that sources be present.";
-        throw new IllegalStateException( message );
+        throw new DepgenValidationException( message );
       }
     }
     if ( null == _sourceSha256 &&
@@ -203,7 +204,7 @@ public final class ArtifactRecord
       final String message =
         "Unable to locate source for artifact '" + getArtifact() + "'. Specify the 'includeSource' " +
         "configuration property as 'false' in the artifacts configuration.";
-      throw new IllegalStateException( message );
+      throw new DepgenValidationException( message );
     }
     if ( null != _replacementModel )
     {
@@ -215,7 +216,7 @@ public final class ArtifactRecord
           final String message =
             "Artifact '" + getArtifact() + "' is a replacement and has a nature of '" + nature +
             "' but has not declared a replacement target for that nature.";
-          throw new IllegalStateException( message );
+          throw new DepgenValidationException( message );
         }
       }
       for ( final ReplacementTargetModel target : _replacementModel.getTargets() )
@@ -226,7 +227,7 @@ public final class ArtifactRecord
           final String message =
             "Artifact '" + getArtifact() + "' declared target for nature '" + nature + "' but artifact " +
             "does not have specified nature.";
-          throw new IllegalStateException( message );
+          throw new DepgenValidationException( message );
         }
       }
     }

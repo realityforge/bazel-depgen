@@ -169,6 +169,30 @@ public class Main
       }
       return tse.getExitCode();
     }
+    catch ( final DepgenException e )
+    {
+      final String message = e.getMessage();
+      if ( null != message )
+      {
+        final Logger logger = environment.logger();
+        logger.log( Level.WARNING, message );
+        final Throwable cause = e.getCause();
+        if ( null != cause )
+        {
+          if ( logger.isLoggable( Level.INFO ) )
+          {
+            logger.log( Level.INFO, "Cause: " + cause.toString() );
+            if ( logger.isLoggable( Level.FINE ) )
+            {
+              logger.log( Level.FINE, null, cause );
+            }
+          }
+        }
+      }
+      return e instanceof DepgenValidationException ? ExitCodes.ERROR_CONFIG_VALIDATION_CODE :
+             e instanceof DepgenConfigurationException ? ExitCodes.ERROR_SYSTEM_CONFIGURATION_CODE :
+             ExitCodes.ERROR_RUNTIME_CODE;
+    }
     catch ( final Throwable t )
     {
       environment.logger().log( Level.WARNING, t.toString(), t );

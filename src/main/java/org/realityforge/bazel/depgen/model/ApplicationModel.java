@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.realityforge.bazel.depgen.DepGenConfig;
+import org.realityforge.bazel.depgen.DepgenValidationException;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.ExcludeConfig;
@@ -146,7 +147,7 @@ public final class ApplicationModel
               "Artifact '" + artifact.getGroup() + ":" + artifact.getId() + "' declared a repository named '" +
               repository + "' but no such repository is declared in the repository section. Known repositories " +
               "include: " + repositoryNames.stream().sorted().collect( Collectors.joining( ", " ) );
-            throw new IllegalStateException( message );
+            throw new DepgenValidationException( message );
           }
         }
       }

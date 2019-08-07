@@ -15,6 +15,9 @@ final class ExitCodes
   static final int ERROR_BAD_SHA256_CONFIG_CODE = 10;
   static final int ERROR_DEPENDENCY_CONFIG_PRESENT_CODE = 11;
   static final int ERROR_INIT_WRITE_FAILED_CODE = 12;
+  static final int ERROR_SYSTEM_CONFIGURATION_CODE = 13;
+  static final int ERROR_CONFIG_VALIDATION_CODE = 14;
+  static final int ERROR_RUNTIME_CODE = 15;
 
   private ExitCodes()
   {

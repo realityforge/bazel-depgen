@@ -18,6 +18,7 @@ import javax.annotation.Nullable;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.realityforge.bazel.depgen.DepgenException;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.RepositoryModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
@@ -129,7 +130,7 @@ public final class DepgenMetadata
 
     if ( urls.isEmpty() )
     {
-      throw new IllegalStateException( "Unable to locate artifact " + artifact + " in any repository." );
+      throw new DepgenException( "Unable to locate artifact " + artifact + " in any repository." );
     }
     return urls;
   }

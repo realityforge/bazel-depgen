@@ -969,6 +969,26 @@ public class MainTest
   }
 
   @Test
+  public void run_invalidConfig()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    writeWorkspace();
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:jar:1.0\n" +
+                     "    repositories:\n" +
+                     "      - NotExist\n" );
+
+    final String output = runCommand( ExitCodes.ERROR_CONFIG_VALIDATION_CODE, "--verbose", "generate" );
+    assertEquals( output,
+                  "Artifact 'com.example:myapp' declared a repository named 'NotExist' but no such repository is declared in the repository section. Known repositories include: local" );
+  }
+
+  @Test
   public void run_badArg()
     throws Exception
   {

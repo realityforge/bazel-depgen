@@ -91,7 +91,7 @@ final class ResolverUtil
     final RepositorySystem service = locator.getService( RepositorySystem.class );
     if ( null == service )
     {
-      throw new IllegalStateException( "Unable create RepositorySystem" );
+      throw new DepgenConfigurationException( "Unable create RepositorySystem" );
     }
     return service;
   }

@@ -65,7 +65,7 @@ public final class DepGenConfig
     }
     catch ( final IOException e )
     {
-      throw new IllegalStateException( "Failed to load config.properties", e );
+      throw new DepgenConfigurationException( "Failed to load config.properties", e );
     }
   }
 
