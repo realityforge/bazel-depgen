@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Expand the configuration created via the `init` sub-command to include all configurations properties currently available.
+* Add configuration property to repositories to control the checksum policy. By default a repository is expected to have valid checksums and missing or incorrect checksums will generate an error. The policy can be changed to warn on missing/invalid checksums or to ignore checksums altogether.
 
 ### [v0.08](https://github.com/realityforge/bazel-depgen/tree/v0.08) (2019-07-28)
 [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.07...v0.08)

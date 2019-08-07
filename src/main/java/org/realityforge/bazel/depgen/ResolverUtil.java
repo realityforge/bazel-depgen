@@ -17,6 +17,7 @@ import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
@@ -138,6 +139,7 @@ final class ResolverUtil
           new AuthenticationBuilder().addUsername( server.getUsername() ).addPassword( server.getPassword() ).build();
         builder.setAuthentication( authentication );
       }
+      builder.setReleasePolicy( new RepositoryPolicy( true, null, repository.checksumPolicy().name() ) );
       remoteRepositories.add( builder.build() );
     }
     return remoteRepositories;

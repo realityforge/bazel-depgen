@@ -31,7 +31,8 @@ public class ApplicationConfigTest
       "    url: http://repo1.maven.org/maven2\n" +
       "  - url: https://example.com/repo\n" +
       "    cacheLookups: false\n" +
-      "    searchByDefault: false\n" );
+      "    searchByDefault: false\n" +
+      "    checksumPolicy: warn\n" );
     final ApplicationConfig config = loadApplicationConfig();
     assertNotNull( config );
     assertEquals( config.getConfigLocation(), getDefaultConfigFile() );
@@ -44,11 +45,13 @@ public class ApplicationConfigTest
     assertEquals( repository1.getUrl(), "http://repo1.maven.org/maven2" );
     assertNull( repository1.getCacheLookups() );
     assertNull( repository1.getSearchByDefault() );
+    assertNull( repository1.getChecksumPolicy() );
     final RepositoryConfig repository2 = repositories.get( 1 );
     assertNull( repository2.getName() );
     assertEquals( repository2.getUrl(), "https://example.com/repo" );
     assertEquals( repository2.getCacheLookups(), Boolean.FALSE );
     assertEquals( repository2.getSearchByDefault(), Boolean.FALSE );
+    assertEquals( repository2.getChecksumPolicy(), ChecksumPolicy.warn );
   }
 
   @Test

@@ -14,6 +14,8 @@ public final class RepositoryConfig
   private Boolean cacheLookups;
   @Nullable
   private Boolean searchByDefault;
+  @Nullable
+  private ChecksumPolicy checksumPolicy;
 
   @Nullable
   public String getName()
@@ -57,5 +59,16 @@ public final class RepositoryConfig
   public void setCacheLookups( @Nonnull final Boolean cacheLookups )
   {
     this.cacheLookups = Objects.requireNonNull( cacheLookups );
+  }
+
+  @Nullable
+  public ChecksumPolicy getChecksumPolicy()
+  {
+    return checksumPolicy;
+  }
+
+  public void setChecksumPolicy( @Nullable final ChecksumPolicy checksumPolicy )
+  {
+    this.checksumPolicy = checksumPolicy;
   }
 }

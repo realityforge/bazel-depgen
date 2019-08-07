@@ -14,8 +14,11 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RepositoryPolicy;
+import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
+import org.realityforge.bazel.depgen.config.ChecksumPolicy;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.testng.annotations.Test;
@@ -447,6 +450,152 @@ public class ResolverTest
     final DependencyNode node6 = children1.get( 1 );
     assertEquals( node6.getDependency().toString(), DepGenConfig.getCoord() + " (compile)" );
     assertEquals( node6.getChildren().size(), 0 );
+  }
+
+  @Test
+  public void resolveDependencies_checksumMissing_ChecksumPolicy_fail()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+    final Path artifactDir = dir.resolve( "com" ).resolve( "example" ).resolve( "myapp" ).resolve( "1.0" );
+    Files.delete( artifactDir.resolve( "myapp-1.0.pom.md5" ) );
+    Files.delete( artifactDir.resolve( "myapp-1.0.pom.sha1" ) );
+    Files.delete( artifactDir.resolve( "myapp-1.0.jar.md5" ) );
+    Files.delete( artifactDir.resolve( "myapp-1.0.jar.sha1" ) );
+
+    final TestHandler handler = newHandler();
+
+    final String url = dir.toUri().toString();
+    final RemoteRepository remoteRepository =
+      new RemoteRepository.Builder( "local", "default", url )
+        .setReleasePolicy( new RepositoryPolicy( true, null, ChecksumPolicy.fail.name() ) )
+        .build();
+    final Resolver resolver =
+      ResolverUtil.createResolver( newEnvironment( handler ),
+                                   FileUtil.createLocalTempDir(),
+                                   Collections.singletonList( remoteRepository ),
+                                   true,
+                                   true );
+
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    final ApplicationModel model = loadApplicationModel();
+
+    try
+    {
+      resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> {
+      } );
+      fail( "Unexpected success" );
+    }
+    catch ( final DependencyResolutionException e )
+    {
+      assertEquals( e.getMessage(), "Failed to collect dependencies at com.example:myapp:jar:1.0" );
+    }
+
+    assertEquals( handler.toString(),
+                  "Transfer Failed: com/example/myapp/1.0/myapp-1.0.jar\n" +
+                  "Could not transfer artifact com.example:myapp:jar:1.0 from/to local (" +
+                  url +
+                  "): Checksum validation failed, no checksums available\n" +
+                  "Transfer Failed: com/example/myapp/1.0/myapp-1.0.pom\n" +
+                  "Transfer Failed: com/example/myapp/1.0/myapp-1.0.jar" );
+  }
+
+  @Test
+  public void resolveDependencies_checksumMissing_ChecksumPolicy_Warn()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+    final Path artifactDir = dir.resolve( "com" ).resolve( "example" ).resolve( "myapp" ).resolve( "1.0" );
+    Files.delete( artifactDir.resolve( "myapp-1.0.pom.md5" ) );
+    Files.delete( artifactDir.resolve( "myapp-1.0.pom.sha1" ) );
+    Files.delete( artifactDir.resolve( "myapp-1.0.jar.md5" ) );
+    Files.delete( artifactDir.resolve( "myapp-1.0.jar.sha1" ) );
+
+    final TestHandler handler = newHandler();
+
+    final String url = dir.toUri().toString();
+    final RemoteRepository remoteRepository =
+      new RemoteRepository.Builder( "local", "default", url )
+        .setReleasePolicy( new RepositoryPolicy( true, null, ChecksumPolicy.warn.name() ) )
+        .build();
+    final Resolver resolver =
+      ResolverUtil.createResolver( newEnvironment( handler ),
+                                   FileUtil.createLocalTempDir(),
+                                   Collections.singletonList( remoteRepository ),
+                                   true,
+                                   true );
+
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    final ApplicationModel model = loadApplicationModel();
+
+    final DependencyResult result = resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> fail() );
+
+    assertEquals( handler.toString(),
+                  "Transfer Corrupted: com/example/myapp/1.0/myapp-1.0.jar due to org.eclipse.aether.transfer.ChecksumFailureException: Checksum validation failed, no checksums available\n" +
+                  "Transfer Corrupted: com/example/myapp/1.0/myapp-1.0.pom due to org.eclipse.aether.transfer.ChecksumFailureException: Checksum validation failed, no checksums available" );
+
+    assertTrue( result.getCycles().isEmpty() );
+    assertTrue( result.getCollectExceptions().isEmpty() );
+    final DependencyNode node1 = result.getRoot();
+    assertNotNull( node1 );
+    assertNull( node1.getArtifact() );
+    assertNull( node1.getDependency() );
+    final List<DependencyNode> children1 = node1.getChildren();
+    assertEquals( children1.size(), 1 + model.getSystemArtifacts().size() );
+    final DependencyNode node2 = children1.get( 0 );
+    assertEquals( node2.getArtifact().toString(), "com.example:myapp:jar:1.0" );
+    assertEquals( node2.getChildren().size(), 0 );
+  }
+
+  @Test
+  public void resolveDependencies_checksumMissing_ChecksumPolicy_Ignore()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+    final Path artifactDir = dir.resolve( "com" ).resolve( "example" ).resolve( "myapp" ).resolve( "1.0" );
+    Files.delete( artifactDir.resolve( "myapp-1.0.pom.md5" ) );
+    Files.delete( artifactDir.resolve( "myapp-1.0.pom.sha1" ) );
+    Files.delete( artifactDir.resolve( "myapp-1.0.jar.md5" ) );
+    Files.delete( artifactDir.resolve( "myapp-1.0.jar.sha1" ) );
+
+    final TestHandler handler = newHandler();
+
+    final String url = dir.toUri().toString();
+    final RemoteRepository remoteRepository =
+      new RemoteRepository.Builder( "local", "default", url )
+        .setReleasePolicy( new RepositoryPolicy( true, null, ChecksumPolicy.ignore.name() ) )
+        .build();
+    final Resolver resolver =
+      ResolverUtil.createResolver( newEnvironment( handler ),
+                                   FileUtil.createLocalTempDir(),
+                                   Collections.singletonList( remoteRepository ),
+                                   true,
+                                   true );
+
+    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
+    final ApplicationModel model = loadApplicationModel();
+
+    final DependencyResult result = resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> fail() );
+
+    assertEquals( handler.toString(), "" );
+
+    assertTrue( result.getCycles().isEmpty() );
+    assertTrue( result.getCollectExceptions().isEmpty() );
+    final DependencyNode node1 = result.getRoot();
+    assertNotNull( node1 );
+    assertNull( node1.getArtifact() );
+    assertNull( node1.getDependency() );
+    final List<DependencyNode> children1 = node1.getChildren();
+    assertEquals( children1.size(), 1 + model.getSystemArtifacts().size() );
+    final DependencyNode node2 = children1.get( 0 );
+    assertEquals( node2.getArtifact().toString(), "com.example:myapp:jar:1.0" );
+    assertEquals( node2.getChildren().size(), 0 );
   }
 
   @Test

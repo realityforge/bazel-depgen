@@ -7,6 +7,7 @@ import java.util.List;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
+import org.realityforge.bazel.depgen.config.ChecksumPolicy;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.testng.annotations.Test;
@@ -42,6 +43,7 @@ public class ApplicationModelTest
     assertEquals( repository.getUrl(), ApplicationConfig.MAVEN_CENTRAL_URL );
     assertTrue( repository.cacheLookups() );
     assertTrue( repository.searchByDefault() );
+    assertEquals( repository.checksumPolicy(), ChecksumPolicy.fail );
     assertEquals( model.getOptions().getWorkspaceDirectory(), FileUtil.getCurrentDirectory() );
     assertEquals( model.getOptions().getExtensionFile(),
                   model.getConfigLocation().getParent().resolve( OptionsConfig.DEFAULT_EXTENSION_FILE ) );

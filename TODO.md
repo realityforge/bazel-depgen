@@ -20,17 +20,6 @@ complete as there is too much un-said.
 
 * Add command that checks/validates/cleans cache.
 
-* Annotate repositories with configuration to indicate that they may not have valid checksums:. Avoid messages like
-
-```
- Downloading: .../org/realityforge/bazel/depgen/bazel-depgen/X/bazel-depgen-X-sources.jar
- Jun 28, 2019 11:20:50 PM org.eclipse.aether.internal.impl.WarnChecksumPolicy onTransferChecksumFailure
- WARNING: Could not validate integrity of download from .../org/realityforge/bazel/depgen/bazel-depgen/X/bazel-depgen-X-sources.jar: Checksum validation failed, no checksums available
- Transfer Corrupted: org/realityforge/bazel/depgen/bazel-depgen/X/bazel-depgen-X-sources.jar due to org.eclipse.aether.transfer.ChecksumFailureException: Checksum validation failed, no checksums available
-```
-  Valid behaviour should be to fail if this error occurs. We should also add configuration to repositories to
-  indicate a repository does not support checksums.
-
 * Cleanup error output like following. Stop duplicating message and remove stacktrace as it is a "known" error and
   remove the exception name. This may involve replacing lots of errors in codebase with new exception type such as
   `DepgenException` or `DepgenValidationException` or `DepgenConfigurationException`

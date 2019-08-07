@@ -2,6 +2,7 @@ package org.realityforge.bazel.depgen.model;
 
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
+import org.realityforge.bazel.depgen.config.ChecksumPolicy;
 import org.realityforge.bazel.depgen.config.RepositoryConfig;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -116,6 +117,27 @@ public class RepositoryModelTest
     source.setSearchByDefault( Boolean.TRUE );
 
     assertTrue( RepositoryModel.parse( source ).searchByDefault() );
+  }
+
+  @Test
+  public void parse_implicit_checksumPolicy()
+  {
+    final RepositoryConfig source = new RepositoryConfig();
+    source.setName( "example" );
+    source.setUrl( "https://example.com/repo/" );
+
+    assertEquals( RepositoryModel.parse( source ).checksumPolicy(), ChecksumPolicy.fail );
+  }
+
+  @Test
+  public void parse_explicit_checksumPolicy()
+  {
+    final RepositoryConfig source = new RepositoryConfig();
+    source.setName( "example" );
+    source.setUrl( "https://example.com/repo/" );
+    source.setChecksumPolicy( ChecksumPolicy.ignore );
+
+    assertEquals( RepositoryModel.parse( source ).checksumPolicy(), ChecksumPolicy.ignore );
   }
 
   @Test

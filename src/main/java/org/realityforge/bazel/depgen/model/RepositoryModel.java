@@ -3,6 +3,7 @@ package org.realityforge.bazel.depgen.model;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.realityforge.bazel.depgen.config.ChecksumPolicy;
 import org.realityforge.bazel.depgen.config.RepositoryConfig;
 
 public final class RepositoryModel
@@ -73,5 +74,12 @@ public final class RepositoryModel
   {
     final Boolean searchByDefault = null != _source ? _source.getSearchByDefault() : null;
     return searchByDefault == null ? true : searchByDefault;
+  }
+
+  @Nonnull
+  public ChecksumPolicy checksumPolicy()
+  {
+    final ChecksumPolicy policy = null != _source ? _source.getChecksumPolicy() : null;
+    return policy == null ? ChecksumPolicy.fail : policy;
   }
 }

@@ -116,6 +116,13 @@ repositories:
     # repository. Defaults to 'true'.
     #searchByDefault: true
 
+    # By default a repository is expected to have valid sha1 or md5 checksums and the tool will verify that the
+    # artifacts downloaded during resolve process, match the checksum. Several options are valid:
+    #  - fail: Verify checksums and fail the resolution if they do not match. This is the default.
+    #  - warn: Verify checksums and warn if they do not match.
+    #  - ignore: Do not verify checksums.
+    #checksumPolicy: fail
+
   # The user can specify as many different repositories as required. See below for some other popular repositories.
   #- name: spring-releases
   #  url: https://repo.spring.io/release
