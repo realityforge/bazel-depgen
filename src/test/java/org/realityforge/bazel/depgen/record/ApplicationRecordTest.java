@@ -14,6 +14,7 @@ import java.util.Map;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.DepGenConfig;
+import org.realityforge.bazel.depgen.DepgenValidationException;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
@@ -1648,6 +1649,26 @@ public class ApplicationRecordTest
       expectThrows( IllegalStateException.class, this::loadApplicationRecord );
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:myapp:jar:1.0' has specified 'j2cl' configuration but does not specify the J2cl nature." );
+  }
+
+  @Test
+  public void javaConfigWithoutJavaNature()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [J2cl]\n" +
+                     "    java:\n" +
+                     "      exportDeps: true\n" );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    assertEquals( exception.getMessage(),
+                  "Artifact 'com.example:myapp:jar:1.0' has specified 'java' configuration but does not specify the Java nature." );
   }
 
   @Test

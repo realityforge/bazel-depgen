@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Cleanup the text emitted when a "known" error occurs by removing stack traces and java exception names. The `DepgenException` class and several subclasses have been created to identify "known" error conditions.
+* Move the `exportDeps` configuration property into the `java` section in both the per-artifact and global configuration sections. The configuration does not apply to natures other than `Java`.
 
 ### [v0.09](https://github.com/realityforge/bazel-depgen/tree/v0.09) (2019-08-07)
 [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.08...v0.09)

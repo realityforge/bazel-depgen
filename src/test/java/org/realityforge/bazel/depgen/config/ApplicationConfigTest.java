@@ -227,13 +227,16 @@ public class ApplicationConfigTest
   {
     writeConfigFile( "artifacts:\n" +
                      "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n" +
-                     "    exportDeps: true\n" );
+                     "    java:\n" +
+                     "      exportDeps: true\n" );
     final ApplicationConfig config = loadApplicationConfig();
     assertNotNull( config );
     final ArtifactConfig artifact = ensureSingleArtifact( config );
     assertEquals( artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08" );
-    assertNotNull( artifact.getExportDeps() );
-    assertTrue( artifact.getExportDeps() );
+    final JavaConfig java = artifact.getJava();
+    assertNotNull( java );
+    assertNotNull( java.getExportDeps() );
+    assertTrue( java.getExportDeps() );
   }
 
   @Test
@@ -266,7 +269,6 @@ public class ApplicationConfigTest
                      "  includeSource: false\n" +
                      "  includeExternalAnnotations: true\n" +
                      "  verifyConfigSha256: false\n" +
-                     "  exportDeps: true\n" +
                      "  supportDependencyOmit: true\n" +
                      "  emitDependencyGraph: false\n" +
                      "  workspaceMacroName: workspace_rules\n" +
@@ -274,7 +276,9 @@ public class ApplicationConfigTest
                      "  namePrefix: magic_\n" +
                      "  aliasStrategy: ArtifactId\n" +
                      "  defaultNature: J2cl\n" +
-                     "  extensionFile: workspaceDir/vendor/workspace.bzl\n" );
+                     "  extensionFile: workspaceDir/vendor/workspace.bzl\n" +
+                     "  java:\n" +
+                     "    exportDeps: true\n" );
     final ApplicationConfig config = loadApplicationConfig();
     assertNotNull( config );
 
@@ -293,9 +297,11 @@ public class ApplicationConfigTest
     assertEquals( options.getEmitDependencyGraph(), Boolean.FALSE );
     assertEquals( options.getIncludeSource(), Boolean.FALSE );
     assertEquals( options.getIncludeExternalAnnotations(), Boolean.TRUE );
-    assertEquals( options.getExportDeps(), Boolean.TRUE );
     assertEquals( options.getSupportDependencyOmit(), Boolean.TRUE );
     assertEquals( options.getVerifyConfigSha256(), Boolean.FALSE );
+    final GlobalJavaConfig java = options.getJava();
+    assertNotNull( java );
+    assertEquals( java.getExportDeps(), Boolean.TRUE );
   }
 
   @Test
@@ -321,9 +327,9 @@ public class ApplicationConfigTest
     assertNull( options.getEmitDependencyGraph() );
     assertNull( options.getIncludeSource() );
     assertNull( options.getIncludeExternalAnnotations() );
-    assertNull( options.getExportDeps() );
     assertNull( options.getSupportDependencyOmit() );
     assertNull( options.getVerifyConfigSha256() );
+    assertNull( options.getJava() );
   }
 
   @Test

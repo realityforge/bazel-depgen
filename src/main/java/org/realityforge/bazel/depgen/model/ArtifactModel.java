@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
+import org.realityforge.bazel.depgen.config.JavaConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 
 public final class ArtifactModel
@@ -184,7 +185,8 @@ public final class ArtifactModel
 
   public boolean exportDeps( final boolean defaultExportDeps )
   {
-    final Boolean exportDeps = _source.getExportDeps();
+    final JavaConfig java = _source.getJava();
+    final Boolean exportDeps = null != java ? java.getExportDeps() : null;
     return null == exportDeps ? defaultExportDeps : exportDeps;
   }
 

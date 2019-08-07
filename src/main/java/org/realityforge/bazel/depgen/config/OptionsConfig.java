@@ -46,11 +46,11 @@ public final class OptionsConfig
   @Nullable
   private Boolean includeExternalAnnotations;
   @Nullable
-  private Boolean exportDeps;
-  @Nullable
   private Boolean supportDependencyOmit;
   @Nullable
   private Boolean verifyConfigSha256;
+  @Nullable
+  private GlobalJavaConfig java;
 
   @Nullable
   public String getWorkspaceDirectory()
@@ -185,17 +185,6 @@ public final class OptionsConfig
   }
 
   @Nullable
-  public Boolean getExportDeps()
-  {
-    return exportDeps;
-  }
-
-  public void setExportDeps( @Nonnull final Boolean exportDeps )
-  {
-    this.exportDeps = Objects.requireNonNull( exportDeps );
-  }
-
-  @Nullable
   public Boolean getSupportDependencyOmit()
   {
     return supportDependencyOmit;
@@ -215,5 +204,16 @@ public final class OptionsConfig
   public void setVerifyConfigSha256( @Nonnull final Boolean verifyConfigSha256 )
   {
     this.verifyConfigSha256 = Objects.requireNonNull( verifyConfigSha256 );
+  }
+
+  @Nullable
+  public GlobalJavaConfig getJava()
+  {
+    return java;
+  }
+
+  public void setJava( @Nonnull final GlobalJavaConfig java )
+  {
+    this.java = Objects.requireNonNull( java );
   }
 }

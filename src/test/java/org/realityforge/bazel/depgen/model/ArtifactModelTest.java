@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
+import org.realityforge.bazel.depgen.config.JavaConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -153,7 +154,9 @@ public class ArtifactModelTest
   {
     final ArtifactConfig source = new ArtifactConfig();
     source.setCoord( "com.example:myapp" );
-    source.setExportDeps( true );
+    final JavaConfig java = new JavaConfig();
+    java.setExportDeps( true );
+    source.setJava( java );
 
     final ArtifactModel model = ArtifactModel.parse( source );
     assertEquals( model.getSource(), source );
@@ -168,7 +171,9 @@ public class ArtifactModelTest
   {
     final ArtifactConfig source = new ArtifactConfig();
     source.setCoord( "com.example:myapp" );
-    source.setExportDeps( false );
+    final JavaConfig java = new JavaConfig();
+    java.setExportDeps( false );
+    source.setJava( java );
 
     final ArtifactModel model = ArtifactModel.parse( source );
     assertEquals( model.getSource(), source );

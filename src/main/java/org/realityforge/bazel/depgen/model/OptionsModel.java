@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
+import org.realityforge.bazel.depgen.config.GlobalJavaConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 
@@ -147,7 +148,8 @@ public final class OptionsModel
 
   public boolean exportDeps()
   {
-    final Boolean flag = _source.getExportDeps();
+    final GlobalJavaConfig java = _source.getJava();
+    final Boolean flag = null != java ? java.getExportDeps() : null;
     return null == flag ? OptionsConfig.DEFAULT_EXPORT_DEPS : flag;
   }
 

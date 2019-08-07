@@ -160,9 +160,6 @@ repositories:
     # This settings allows per-artifact overrides of the global includeExternalAnnotations configuration.
     #includeExternalAnnotations: true
 
-    # This settings allows per-artifact overrides of the global exportDeps configuration.
-    #exportDeps: true
-
     # This configuration controls whether optional dependencies for this artifact are included when resolving
     # the dependency graph. Defaults to 'false'.
     #includeOptional: false
@@ -192,6 +189,13 @@ repositories:
       #- Java
       #- Plugin
       #- J2cl
+
+    # The java section is used to customize the artifact if it has the Java nature
+    # and should only be present if the artifact has the Java nature
+    #java:
+
+      # This settings allows per-artifact overrides of the global exportDeps configuration.
+      #exportDeps: true
 
     # The j2cl section is used to customize the artifact if it has the J2cl nature
     # and should only be present if the artifact has the J2cl nature

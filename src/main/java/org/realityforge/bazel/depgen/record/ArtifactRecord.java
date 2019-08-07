@@ -18,6 +18,7 @@ import org.realityforge.bazel.depgen.DepgenValidationException;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
 import org.realityforge.bazel.depgen.config.J2clConfig;
 import org.realityforge.bazel.depgen.config.J2clMode;
+import org.realityforge.bazel.depgen.config.JavaConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.PluginConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
@@ -138,6 +139,16 @@ public final class ArtifactRecord
     final List<Nature> natures = getNatures();
     if ( null != _artifactModel )
     {
+      final JavaConfig java = _artifactModel.getSource().getJava();
+      if ( null != java )
+      {
+        if ( !natures.contains( Nature.Java ) )
+        {
+          final String message =
+            "Artifact '" + getArtifact() + "' has specified 'java' configuration but does not specify the Java nature.";
+          throw new DepgenValidationException( message );
+        }
+      }
       final J2clConfig j2cl = _artifactModel.getSource().getJ2cl();
       if ( null != j2cl )
       {

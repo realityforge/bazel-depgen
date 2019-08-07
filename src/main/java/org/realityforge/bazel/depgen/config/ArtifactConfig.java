@@ -19,8 +19,6 @@ public final class ArtifactConfig
   @Nullable
   private Boolean includeExternalAnnotations;
   @Nullable
-  private Boolean exportDeps;
-  @Nullable
   private List<String> excludes;
   @Nullable
   private List<String> repositories;
@@ -28,6 +26,8 @@ public final class ArtifactConfig
   private List<String> visibility;
   @Nullable
   private List<Nature> natures;
+  @Nullable
+  private JavaConfig java;
   @Nullable
   private J2clConfig j2cl;
   @Nullable
@@ -89,17 +89,6 @@ public final class ArtifactConfig
   }
 
   @Nullable
-  public Boolean getExportDeps()
-  {
-    return exportDeps;
-  }
-
-  public void setExportDeps( @Nonnull final Boolean exportDeps )
-  {
-    this.exportDeps = Objects.requireNonNull( exportDeps );
-  }
-
-  @Nullable
   public List<String> getExcludes()
   {
     return excludes;
@@ -141,6 +130,17 @@ public final class ArtifactConfig
   public void setNatures( @Nonnull final List<Nature> natures )
   {
     this.natures = Collections.unmodifiableList( Objects.requireNonNull( natures ) );
+  }
+
+  @Nullable
+  public JavaConfig getJava()
+  {
+    return java;
+  }
+
+  public void setJava( @Nonnull final JavaConfig java )
+  {
+    this.java = Objects.requireNonNull( java );
   }
 
   @Nullable

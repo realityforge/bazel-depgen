@@ -4,6 +4,7 @@ import gir.io.FileUtil;
 import java.nio.file.Path;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
+import org.realityforge.bazel.depgen.config.GlobalJavaConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.testng.annotations.Test;
@@ -70,9 +71,11 @@ public class OptionsModelTest
     source.setEmitDependencyGraph( false );
     source.setIncludeSource( false );
     source.setIncludeExternalAnnotations( true );
-    source.setExportDeps( true );
     source.setSupportDependencyOmit( true );
     source.setVerifyConfigSha256( false );
+    final GlobalJavaConfig java = new GlobalJavaConfig();
+    java.setExportDeps( true );
+    source.setJava( java );
 
     final OptionsModel model = OptionsModel.parse( thirdpartyDir, source );
     assertEquals( model.getSource(), source );
