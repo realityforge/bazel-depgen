@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.javax.annotation` artifact to version `1.0.1`.
 * Cleanup the text emitted when a "known" error occurs by removing stack traces and java exception names. The `DepgenException` class and several subclasses have been created to identify "known" error conditions.
 * Move the `exportDeps` configuration property into the `java` section in both the per-artifact and global configuration sections. The configuration does not apply to natures other than `Java`.
 
