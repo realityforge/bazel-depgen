@@ -4,6 +4,28 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
+* Consider adding `buildifier` back into the build project. It can either verify that the output bazel files do not
+  generate any warnings by running `buildifier --lint=warn` on any generated file as part of our build process _or_
+  we could run `buildifier --lint=fix` when we output files for a slightly improved forward compatibility?
+
+* Consider adding support for workspace rules for java etc via
+
+```
+   if not omit_rules_java:
+        http_archive(
+            name = "rules_java",
+            strip_prefix = "rules_java-0.1.1",
+            sha256 = "6b753b0c02b7fc1902e39f4f330c5958a42f31ea7832c11c11e5c11306292c27",
+            urls = ["https://github.com/bazelbuild/rules_java/archive/0.1.1.tar.gz"],
+        )
+```
+
+* Start to separate `dependenciez.bzl` according to latest conventions. i.e. put workspace rules in `repositories.bzl`
+  in dependencies directory. Or maybe not as we probably want to be able to explicitly add customized rules. Maybe we
+  generate it there but add configuration to put it elsewhere? After all we are not generating rules but just deps
+
+  See https://docs.bazel.build/versions/master/skylark/deploying.html#dependencies
+
 * Currently even if an artifact is restricted to a repository it is looked up in all repositories. Figure out a
   way to restrict it to a specific repository.
 
