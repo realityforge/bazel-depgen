@@ -64,7 +64,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -92,7 +92,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"zeapp_com_example__myapp__1_0\",\n" +
                   "    jars = [\"@zeapp_com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@zeapp_com_example__myapp__1_0__sources//file\",\n" +
@@ -116,7 +116,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "__library" );
     assertEquals( asString( outputStream ),
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0__library\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -140,7 +140,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -165,7 +165,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -194,7 +194,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -219,7 +219,7 @@ public class ArtifactRecordTest
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     // Output does not declare data with verify task included
     assertEquals( asString( outputStream ),
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "    srcjar = \"@org_realityforge_bazel_depgen__bazel_depgen__1__sources//file\",\n" +
@@ -247,7 +247,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -273,7 +273,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -314,7 +314,7 @@ public class ArtifactRecordTest
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
-                    "native.java_import(\n" +
+                    "java_import(\n" +
                     "    name = \"com_example__myapp__1_0\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                     "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -329,7 +329,7 @@ public class ArtifactRecordTest
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
-                    "native.java_import(\n" +
+                    "java_import(\n" +
                     "    name = \"com_example__mylib__1_0\",\n" +
                     "    jars = [\"@com_example__mylib__1_0//file\"],\n" +
                     "    srcjar = \"@com_example__mylib__1_0__sources//file\",\n" +
@@ -343,7 +343,7 @@ public class ArtifactRecordTest
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
-                    "native.java_import(\n" +
+                    "java_import(\n" +
                     "    name = \"com_example__rta__33_0\",\n" +
                     "    jars = [\"@com_example__rta__33_0//file\"],\n" +
                     "    srcjar = \"@com_example__rta__33_0__sources//file\",\n" +
@@ -524,7 +524,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.emitJavaPlugin( new StarlarkOutput( outputStream ), null );
     assertEquals( asString( outputStream ),
-                  "native.java_plugin(\n" +
+                  "java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__plugin\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
@@ -551,7 +551,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.emitJavaPlugin( new StarlarkOutput( outputStream ), "arez.processor.ArezProcessor" );
     assertEquals( asString( outputStream ),
-                  "native.java_plugin(\n" +
+                  "java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
                   "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    generates_api = True,\n" +
@@ -582,7 +582,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.emitJavaPlugin( new StarlarkOutput( outputStream ), "arez.processor.ArezProcessor" );
     assertEquals( asString( outputStream ),
-                  "native.java_plugin(\n" +
+                  "java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
                   "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
@@ -757,7 +757,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -765,14 +765,14 @@ public class ArtifactRecordTest
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" +
-                  "native.java_plugin(\n" +
+                  "java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
                   "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    generates_api = True,\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                   ")\n" +
-                  "native.java_plugin(\n" +
+                  "java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
                   "    processor_class = \"react4j.processor.ReactProcessor\",\n" +
                   "    generates_api = True,\n" +
@@ -805,7 +805,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -813,7 +813,7 @@ public class ArtifactRecordTest
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" +
-                  "native.java_plugin(\n" +
+                  "java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__plugin\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
@@ -841,7 +841,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -849,7 +849,7 @@ public class ArtifactRecordTest
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" +
-                  "native.java_plugin(\n" +
+                  "java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__plugin\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
@@ -1037,7 +1037,7 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp\",\n" +
                   "    actual = \":com_example__myapp__1_0\",\n" +
                   ")\n" +
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -1071,7 +1071,7 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp\",\n" +
                   "    actual = \":com_example__myapp__1_0\",\n" +
                   ")\n" +
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -1079,14 +1079,14 @@ public class ArtifactRecordTest
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    data = [\":verify_config_sha256\"],\n" +
                   ")\n" +
-                  "native.java_plugin(\n" +
+                  "java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
                   "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    generates_api = True,\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                   ")\n" +
-                  "native.java_plugin(\n" +
+                  "java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
                   "    processor_class = \"react4j.processor.ReactProcessor\",\n" +
                   "    generates_api = True,\n" +
@@ -1123,7 +1123,7 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp-j2cl\",\n" +
                   "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
                   ")\n" +
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0__j2cl_library\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -1188,7 +1188,7 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp-j2cl\",\n" +
                   "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
                   ")\n" +
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0__j2cl_library\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -1206,7 +1206,7 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp\",\n" +
                   "    actual = \":com_example__myapp__1_0\",\n" +
                   ")\n" +
-                  "native.java_import(\n" +
+                  "java_import(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +

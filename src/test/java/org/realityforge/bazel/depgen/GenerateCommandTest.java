@@ -148,7 +148,7 @@ public class GenerateCommandTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    native.java_import(\n" +
+                  "    java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -161,7 +161,7 @@ public class GenerateCommandTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    native.java_import(\n" +
+                  "    java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -309,7 +309,7 @@ public class GenerateCommandTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    native.java_import(\n" +
+                  "    java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -322,7 +322,7 @@ public class GenerateCommandTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    native.java_import(\n" +
+                  "    java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +

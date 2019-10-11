@@ -684,7 +684,7 @@ public final class ArtifactRecord
     {
       arguments.put( "data", Collections.singletonList( verifyLabel() ) );
     }
-    output.writeCall( "native.java_import", arguments );
+    output.writeCall( "java_import", arguments );
   }
 
   @Nonnull
@@ -774,7 +774,7 @@ public final class ArtifactRecord
     }
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     arguments.put( "deps", Collections.singletonList( "\":" + getBaseName() + PLUGIN_LIBRARY_SUFFIX + "\"" ) );
-    output.writeCall( "native.java_plugin", arguments );
+    output.writeCall( "java_plugin", arguments );
   }
 
   @Nonnull
