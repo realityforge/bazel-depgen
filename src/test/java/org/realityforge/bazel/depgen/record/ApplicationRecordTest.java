@@ -3023,6 +3023,7 @@ public class ApplicationRecordTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
@@ -3162,6 +3163,7 @@ public class ApplicationRecordTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -3304,6 +3306,7 @@ public class ApplicationRecordTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
                   "load(\"@com_google_j2cl//build_defs:rules.bzl\", \"j2cl_library\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
@@ -3462,6 +3465,7 @@ public class ApplicationRecordTest
                   "#    \\- com.example:mylib:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
                   "load(\"@com_google_j2cl//build_defs:rules.bzl\", \"j2cl_library\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
@@ -3585,6 +3589,154 @@ public class ApplicationRecordTest
                   "    j2cl_library(\n" +
                   "        name = \"com_example__mylib__1_0-j2cl\",\n" +
                   "        srcs = [\"com_example__mylib__1_0__j2cl_library\"],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.alias(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    )\n" +
+                  "    native.java_import(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
+                  "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" );
+    //@formatter:on
+  }
+
+  @Test
+  public void writeBazelExtension_Plugin()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+    final URI uri = dir.toUri();
+
+    writeConfigFile( dir, "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" +
+                          "    natures: [Plugin]\n" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    record.writeBazelExtension( new StarlarkOutput( outputStream ) );
+    //@formatter:off
+    assertEquals( asString( outputStream ),
+                  "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
+                  "\n" +
+                  "\"\"\"\n" +
+                  "    Macro rules to load dependencies.\n" +
+                  "\n" +
+                  "    Invoke 'generate_workspace_rules' from a WORKSPACE file.\n" +
+                  "    Invoke 'generate_targets' from a BUILD.bazel file.\n" +
+                  "\"\"\"\n" +
+                  "# Dependency Graph Generated from the input data\n" +
+                  "# \\- com.example:myapp:jar:1.0 [compile]\n" +
+                  "\n" +
+                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", \"java_import\", \"java_library\", \"java_plugin\")\n" +
+                  "\n" +
+                  "# SHA256 of the configuration content that generated this file\n" +
+                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
+                  "\n" +
+                  "def generate_workspace_rules():\n" +
+                  "    \"\"\"\n" +
+                  "        Repository rules macro to load dependencies.\n" +
+                  "\n" +
+                  "        Must be run from a WORKSPACE file.\n" +
+                  "    \"\"\"\n" +
+                  "\n" +
+                  "    http_file(\n" +
+                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    http_file(\n" +
+                  "        name = \"com_example__myapp__1_0__sources\",\n" +
+                  "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    http_file(\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "def generate_targets():\n" +
+                  "    \"\"\"\n" +
+                  "        Macro to define targets for dependencies.\n" +
+                  "    \"\"\"\n" +
+                  "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"verify_config_sha256\",\n" +
+                  "        srcs = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"command-output.txt\"],\n" +
+                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"regenerate_depgen_extension_script\",\n" +
+                  "        srcs = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
+                  "        cmd = \"echo \\\"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) \\$$@ generate \\\" > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.sh_binary(\n" +
+                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        tags = [\n" +
+                  "            \"local\",\n" +
+                  "            \"manual\",\n" +
+                  "            \"no-cache\",\n" +
+                  "            \"no-remote\",\n" +
+                  "            \"no-sandbox\",\n" +
+                  "        ],\n" +
+                  "        data = [\n" +
+                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.alias(\n" +
+                  "        name = \"com_example__myapp\",\n" +
+                  "        actual = \":com_example__myapp__1_0\",\n" +
+                  "    )\n" +
+                  "    native.java_import(\n" +
+                  "        name = \"com_example__myapp__1_0__plugin_library\",\n" +
+                  "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                  "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
+                  "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "        data = [\":verify_config_sha256\"],\n" +
+                  "    )\n" +
+                  "    native.java_plugin(\n" +
+                  "        name = \"com_example__myapp__1_0__plugin\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "        deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                  "    )\n" +
+                  "    native.java_library(\n" +
+                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +

@@ -62,6 +62,7 @@ public class GenerateCommandTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"" + model.getConfigSha256() + "\"\n" +
@@ -214,6 +215,7 @@ public class GenerateCommandTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"" +

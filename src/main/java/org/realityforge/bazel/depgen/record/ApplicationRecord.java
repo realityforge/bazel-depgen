@@ -6,10 +6,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -241,6 +243,14 @@ public final class ApplicationRecord
       emittedLoad = true;
       output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
     }
+    final Set<String> javaRules = getJavaRules();
+    if ( !javaRules.isEmpty() )
+    {
+      emittedLoad = true;
+      final String rules =
+        javaRules.stream().sorted().map( r -> "\"" + r + "\"" ).collect( Collectors.joining( ", " ) );
+      output.write( "load(\"@rules_java//java:defs.bzl\", " + rules + ")" );
+    }
     if ( getArtifacts().stream().anyMatch( a -> a.getNatures().contains( Nature.J2cl ) ) )
     {
       emittedLoad = true;
@@ -263,6 +273,27 @@ public final class ApplicationRecord
     output.newLine();
 
     writeTargetMacro( output );
+  }
+
+  @Nonnull
+  private Set<String> getJavaRules()
+  {
+    final Set<String> javaRules = new HashSet<>();
+    for ( final ArtifactRecord artifact : getArtifacts() )
+    {
+      final List<Nature> natures = artifact.getNatures();
+      if ( natures.contains( Nature.Java ) )
+      {
+        javaRules.add( "java_import" );
+      }
+      else if ( natures.contains( Nature.Plugin ) )
+      {
+        javaRules.add( "java_import" );
+        javaRules.add( "java_library" );
+        javaRules.add( "java_plugin" );
+      }
+    }
+    return javaRules;
   }
 
   public void writeDefaultExtensionBuild( @Nonnull final StarlarkOutput output )

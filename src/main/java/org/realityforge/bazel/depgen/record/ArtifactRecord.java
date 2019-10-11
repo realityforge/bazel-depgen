@@ -693,7 +693,7 @@ public final class ArtifactRecord
     return "\":" + _application.getSource().getOptions().getNamePrefix() + "verify_config_sha256\"";
   }
 
-  private boolean shouldDependOnVerify()
+  boolean shouldDependOnVerify()
   {
     final ApplicationModel source = _application.getSource();
     final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
@@ -824,7 +824,7 @@ public final class ArtifactRecord
     }
     arguments.put( "exported_plugins", plugins );
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    output.writeCall( "native.java_library", arguments );
+    output.writeCall( "java_library", arguments );
   }
 
   void writeArtifactTargets( @Nonnull final StarlarkOutput output )

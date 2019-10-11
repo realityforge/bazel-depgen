@@ -779,7 +779,7 @@ public class ArtifactRecordTest
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                   ")\n" +
-                  "native.java_library(\n" +
+                  "java_library(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    exported_plugins = [\n" +
                   "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
@@ -818,7 +818,7 @@ public class ArtifactRecordTest
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                   ")\n" +
-                  "native.java_library(\n" +
+                  "java_library(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
@@ -854,7 +854,7 @@ public class ArtifactRecordTest
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                   ")\n" +
-                  "native.java_library(\n" +
+                  "java_library(\n" +
                   "    name = \"com_example__myapp__1_0-plugin\",\n" +
                   "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
@@ -881,7 +881,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "native.java_library(\n" +
+                  "java_library(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    exported_plugins = [\n" +
                   "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
@@ -907,7 +907,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "native.java_library(\n" +
+                  "java_library(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
@@ -930,7 +930,7 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "native.java_library(\n" +
+                  "java_library(\n" +
                   "    name = \"com_example__myapp__1_0-plugin\",\n" +
                   "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
@@ -1093,7 +1093,7 @@ public class ArtifactRecordTest
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                   ")\n" +
-                  "native.java_library(\n" +
+                  "java_library(\n" +
                   "    name = \"com_example__myapp__1_0\",\n" +
                   "    exported_plugins = [\n" +
                   "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
