@@ -1,6 +1,6 @@
 # Change Log
 
-### Unreleased
+### [v0.10](https://github.com/realityforge/bazel-depgen/tree/v0.10) (2019-10-11) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.09...v0.10)
 
 * Upgrade the `org.realityforge.javax.annotation` artifact to version `1.0.1`.
 * Cleanup the text emitted when a "known" error occurs by removing stack traces and java exception names. The `DepgenException` class and several subclasses have been created to identify "known" error conditions.
