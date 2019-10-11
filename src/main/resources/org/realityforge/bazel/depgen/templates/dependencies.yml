@@ -69,11 +69,6 @@ options:
   # consider it an error and silently ignores this scenario. Defaults to 'false'.
   #includeExternalAnnotations: false
 
-  # Should the tool generate java_import targets with exports attribute that exports all dependencies.
-  # Exporting dependencies is usually discouraged in Bazel but Maven's model is one such that exportDeps
-  # is the default and thus sometimes it is desirable to enable this feature. Defaults to 'false'.
-  #exportDeps: false
-
   # Some bazel workspaces are intended to be consumed by other projects. In these scenarios it is not
   # uncommon to want to customize the set of dependencies used. The tool supports this use case by
   # adding boolean parameters to the macros that direct the macro to skip the declaration of the the
@@ -86,6 +81,14 @@ options:
   # with respect to the generated extension and the build attempts to resolve a target then an error
   # will be generated. Defaults to 'true'.
   #verifyConfigSha256: true
+
+  # The java section is used to customize the defaults for java nature artifacts
+  #java:
+
+    # Should the tool generate java_import targets with exports attribute that exports all dependencies.
+    # Exporting dependencies is usually discouraged in Bazel but Maven's model is one such that exportDeps
+    # is the default and thus sometimes it is desirable to enable this feature. Defaults to 'false'.
+    #exportDeps: false
 
 # The repositories section configures the repositories that the tool will use when resolving dependencies.
 # If not specified, a repository named "central" with a url "https://repo.maven.apache.org/maven2/" will
