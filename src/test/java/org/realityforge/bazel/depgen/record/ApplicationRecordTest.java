@@ -860,7 +860,8 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:base:jar:1.0' does not specify the J2cl nature but is a transitive dependency of 'com.example:myapp:jar:1.0' which has the J2cl nature. This is not a supported scenario." );
@@ -880,7 +881,8 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:mylib:jar:1.0' does not specify the J2cl nature but is a direct dependency of 'com.example:myapp:jar:1.0' which has the J2cl nature. This is not a supported scenario." );
@@ -929,7 +931,8 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:mylib:jar:1.0' does not specify the Java nature but is a direct dependency of 'com.example:myapp:jar:1.0' which has the Java nature. This is not a supported scenario." );
@@ -978,7 +981,8 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:mylib:jar:1.0' does not specify the Java nature but is a direct dependency of 'com.example:myapp:jar:1.0' which has the Plugin nature. This is not a supported scenario." );
@@ -1731,7 +1735,8 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
     deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
 
-    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
     assertEquals( exception.getMessage(),
                   "Multiple artifacts have the same alias 'core' which is not supported. Change the aliasStrategy option globally or for one of the artifacts 'com.example.app1:core:jar:42.0' and 'com.example.app2:core:jar:37.0'." );
   }
@@ -1781,7 +1786,8 @@ public class ApplicationRecordTest
                      "    natures: [J2cl]\n" );
     deployTempArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
 
-    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
     assertEquals( exception.getMessage(),
                   "Unable to locate the sources classifier artifact for the artifact 'com.example.app1:core:jar:42.0' but the artifact has the J2cl nature which requires that sources be present." );
   }
@@ -3734,7 +3740,7 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                   "    )\n" +
-                  "    native.java_library(\n" +
+                  "    java_library(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
@@ -3772,7 +3778,8 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:mylib:jar:1.0' is a replacement and has a nature of 'Java' but has not declared a replacement target for that nature." );
@@ -3799,7 +3806,8 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'com.example:mylib:jar:1.0' declared target for nature 'J2cl' but artifact does not have specified nature." );
@@ -3850,7 +3858,8 @@ public class ApplicationRecordTest
 
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a replace but does not declare the Java nature which is required if verifyConfigSha256 option is set to true." );
@@ -3886,7 +3895,8 @@ public class ApplicationRecordTest
                      "  - coord: " + DepGenConfig.getCoord() + "\n" +
                      "    natures: [J2cl]\n" );
 
-    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a dependency but does not declare the Java nature which is required if the verifyConfigSha256 option is set to true." );
@@ -3902,7 +3912,8 @@ public class ApplicationRecordTest
                      "artifacts:\n" +
                      "  - coord: " + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "\n" );
 
-    final DepgenValidationException exception = expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
 
     assertEquals( exception.getMessage(),
                   "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a dependency but does not specify the classifier 'all' which is required if the verifyConfigSha256 option is set to true." );
