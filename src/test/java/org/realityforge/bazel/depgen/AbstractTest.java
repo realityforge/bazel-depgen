@@ -92,6 +92,7 @@ public abstract class AbstractTest
                                         SettingsUtil.loadSettings( settingsFile, Logger.getAnonymousLogger() ) );
   }
 
+  @Nonnull
   final Environment newEnvironment()
     throws IOException
   {
@@ -105,6 +106,7 @@ public abstract class AbstractTest
     return newEnvironment( createLogger( handler ) );
   }
 
+  @Nonnull
   final Environment newEnvironment( @Nonnull final Logger logger )
     throws IOException
   {
