@@ -4,6 +4,7 @@ import gir.io.FileUtil;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -267,6 +268,58 @@ public class ResolverTest
       ResolverUtil.createResolver( newEnvironment( handler ),
                                    dir,
                                    Collections.singletonList( remoteRepository ),
+                                   true,
+                                   true );
+
+    final ArtifactModel model =
+      new ArtifactModel( new ArtifactConfig(),
+                         "com.example",
+                         "myapp",
+                         null,
+                         null,
+                         "1.0",
+                         Collections.emptyList(),
+                         Collections.emptyList() );
+
+    final AtomicBoolean hasFailed = new AtomicBoolean( false );
+
+    final Artifact artifact = resolver.toArtifact( model, exceptions -> hasFailed.set( true ) );
+
+    assertFalse( hasFailed.get() );
+    assertTrue( handler.getRecords().isEmpty() );
+
+    assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
+    assertTrue( dir.resolve( "com/example/myapp/1.0/myapp-1.0.jar" ).toFile().exists() );
+
+    assertNotNull( artifact.getFile() );
+    assertEquals( artifact.toString(), "com.example:myapp:jar:1.0" );
+  }
+
+  @Test
+  public void toArtifact_missingFromOneRemoteRepository_PresentInOtherRemoteRepository()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+    final Path remoteDir1 = FileUtil.createLocalTempDir();
+    final Path remoteDir2 = FileUtil.createLocalTempDir();
+
+    deployTempArtifactToLocalRepository( remoteDir2, "com.example:myapp:1.0" );
+    assertTrue( remoteDir2.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
+    assertTrue( remoteDir2.resolve( "com/example/myapp/1.0/myapp-1.0.jar" ).toFile().exists() );
+
+    assertFalse( dir.resolve( "com/example/myapp/1.0/myapp-1.0.pom" ).toFile().exists() );
+    assertFalse( dir.resolve( "com/example/myapp/1.0/myapp-1.0.jar" ).toFile().exists() );
+
+    final TestHandler handler = newHandler();
+
+    final RemoteRepository remoteRepository1 =
+      new RemoteRepository.Builder( "local1", "default", remoteDir1.toUri().toString() ).build();
+    final RemoteRepository remoteRepository2 =
+      new RemoteRepository.Builder( "local2", "default", remoteDir2.toUri().toString() ).build();
+    final Resolver resolver =
+      ResolverUtil.createResolver( newEnvironment( handler ),
+                                   dir,
+                                   Arrays.asList( remoteRepository1, remoteRepository2 ),
                                    true,
                                    true );
 
