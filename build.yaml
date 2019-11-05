@@ -15,6 +15,6 @@ artifacts:
 
   snakeyaml: org.yaml:snakeyaml:jar:1.24
 
-  gir: org.realityforge.gir:gir-core:jar:0.10
+  gir: org.realityforge.gir:gir-core:jar:0.11
 
   guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.102
