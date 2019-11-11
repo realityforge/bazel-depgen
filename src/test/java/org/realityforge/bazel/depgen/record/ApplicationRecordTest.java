@@ -2168,6 +2168,102 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void writeTargetMacro_omitEnabled_orderOmitInDeclarationsAlphanumerically()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir, "options:\n" +
+                          "  supportDependencyOmit: true\n" +
+                          "  aliasStrategy: ArtifactId\n" +
+                          "artifacts:\n" +
+                          "  - coord: com.example:myapp:1.0\n" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    record.writeTargetMacro( new StarlarkOutput( outputStream ) );
+    assertEquals( asString( outputStream ),
+                  "def generate_targets(\n" +
+                  "        omit_bazel_depgen = False,\n" +
+                  "        omit_myapp = False):\n" +
+                  "    \"\"\"\n" +
+                  "        Macro to define targets for dependencies.\n" +
+                  "    \"\"\"\n" +
+                  "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"verify_config_sha256\",\n" +
+                  "        srcs = [\n" +
+                  "            \":bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"command-output.txt\"],\n" +
+                  "        cmd = \"$(JAVA) -jar $(location :bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"regenerate_depgen_extension_script\",\n" +
+                  "        srcs = [\n" +
+                  "            \":bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
+                  "        cmd = \"echo \\\"$(JAVA) -jar $(location :bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) \\$$@ generate \\\" > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.sh_binary(\n" +
+                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        tags = [\n" +
+                  "            \"local\",\n" +
+                  "            \"manual\",\n" +
+                  "            \"no-cache\",\n" +
+                  "            \"no-remote\",\n" +
+                  "            \"no-sandbox\",\n" +
+                  "        ],\n" +
+                  "        data = [\n" +
+                  "            \":bazel_depgen\",\n" +
+                  "            \"//thirdparty:dependencies.yml\",\n" +
+                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
+                  "        ],\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    if not omit_myapp:\n" +
+                  "        native.alias(\n" +
+                  "            name = \"myapp\",\n" +
+                  "            actual = \":com_example__myapp__1_0\",\n" +
+                  "        )\n" +
+                  "        java_import(\n" +
+                  "            name = \"com_example__myapp__1_0\",\n" +
+                  "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                  "            srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
+                  "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                  "            visibility = [\"//visibility:private\"],\n" +
+                  "            data = [\":verify_config_sha256\"],\n" +
+                  "        )\n" +
+                  "\n" +
+                  "    if not omit_bazel_depgen:\n" +
+                  "        native.alias(\n" +
+                  "            name = \"bazel_depgen\",\n" +
+                  "            actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        )\n" +
+                  "        java_import(\n" +
+                  "            name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "            jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
+                  "            tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
+                  "            visibility = [\"//visibility:private\"],\n" +
+                  "        )\n" );
+  }
+
+  @Test
   public void writeTargetMacro_macroNameOverride()
     throws Exception
   {

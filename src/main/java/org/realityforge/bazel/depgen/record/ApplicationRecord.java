@@ -541,6 +541,7 @@ public final class ApplicationRecord
                        getArtifacts()
                          .stream()
                          .filter( a -> null == a.getReplacementModel() )
+                         .sorted( Comparator.comparing( ArtifactRecord::getSymbol ) )
                          .map( a -> "omit_" + a.getSymbol() + " = False" )
                          .collect( Collectors.toList() ) :
                        Collections.emptyList(), macro -> {
@@ -582,6 +583,7 @@ public final class ApplicationRecord
                        getArtifacts()
                          .stream()
                          .filter( a -> null == a.getReplacementModel() )
+                         .sorted( Comparator.comparing( ArtifactRecord::getSymbol ) )
                          .map( a -> "omit_" + a.getSymbol() + " = False" )
                          .collect( Collectors.toList() ) :
                        Collections.emptyList(), macro -> {
