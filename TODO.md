@@ -4,6 +4,8 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
+* Add `upgrade` command that updates depgen dependency.
+
 * Consider adding `buildifier` back into the build project. It can either verify that the output bazel files do not
   generate any warnings by running `buildifier --lint=warn` on any generated file as part of our build process _or_
   we could run `buildifier --lint=fix` when we output files for a slightly improved forward compatibility?
@@ -54,8 +56,6 @@ complete as there is too much un-said.
 * Add `update` command that updates the version of a dependency.
 
   `remove [2-part coord] version`
-
-* Add `upgrade` command that updates depgen dependency.
 
 * Refactor tests so that by default they don't call out to bazel except when needed. This should speed
   up tests.
