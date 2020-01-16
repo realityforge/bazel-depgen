@@ -6,6 +6,12 @@ complete as there is too much un-said.
 
 * Add `upgrade` command that updates depgen dependency.
 
+* Optionally run something like [jvm-classpath-validator](https://github.com/or-shachar/jvm-classpath-validator)
+  on produced libraries to verify that the classpaths do not have collisions. A more advanced tool may even go
+  further and generate a list of all java classes in each artifact. Other tools could pick detect when compiles
+  fail due to missing classes and suggest which libraries to add to which modules. For this it may be required to
+  write this tool from scratch.
+
 * Consider adding `buildifier` back into the build project. It can either verify that the output bazel files do not
   generate any warnings by running `buildifier --lint=warn` on any generated file as part of our build process _or_
   we could run `buildifier --lint=fix` when we output files for a slightly improved forward compatibility?
