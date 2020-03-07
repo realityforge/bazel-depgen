@@ -12,6 +12,8 @@ complete as there is too much un-said.
   fail due to missing classes and suggest which libraries to add to which modules. For this it may be required to
   write this tool from scratch.
 
+* Also run unused deps tool?
+
 * Consider adding `buildifier` back into the build project. It can either verify that the output bazel files do not
   generate any warnings by running `buildifier --lint=warn` on any generated file as part of our build process _or_
   we could run `buildifier --lint=fix` when we output files for a slightly improved forward compatibility?
@@ -90,9 +92,44 @@ complete as there is too much un-said.
   `settings.xml` and `.netrc`. Perhaps by moving to `.netrc` exclusively. Then we could also remove names from
   repositories and cache via url.
 
+* Add in the ability to do the outputs from bazel-deps as an external repo
+    - see https://github.com/johnynek/bazel-deps/commit/48fdf7f8bcf3aadfa07f9f7e6f0c9f4247cb0f58
+
 * Look to [bazel-tools](https://github.com/spotify/bazel-tools) and [awesome-bazel](https://github.com/jin/awesome-bazel)
   to see if there is other tools that can be incoporated.
   - Most likely we will want to support a tool like [BUILD_file_generator](https://github.com/bazelbuild/BUILD_file_generator)
     or [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps), both of which scan java files and
     automagically creates `BUILD` files (somehow?) so that there is fine grain dependencies without the heartache.
   - Another option is [exodus](https://github.com/wix/exodus)
+
+https://github.com/thundergolfer/bazel-linting-system
+
+* Also look to tools like [bazel-java-builder-template](https://github.com/salesforce/bazel-java-builder-template)
+  that demonstrate how to build code generation tools.
+
+* Look at [pomgen](https://github.com/salesforce/pomgen) - groups packages into an artifact (i.e. a
+   maven-esque artifact) and groups artifacts into libraries (i.e. multiple artifacts that share a
+   version and probably groupId and are released together)
+
+* Look at training materials in https://github.com/OasisDigital/bazelcon-2019
+
+Figure out how to use
+
+https://docs.bazel.build/versions/master/skylark/lib/globals.html#workspace and
+managed_directories for exposing generated code so IDE can see it
+
+## Bazel Summary
+
+* The basic build unit is a target
+* Targets are instances of rules
+
+Always use `--unused-dependency-checker=ERROR` `--srtict-java-deps=ERROR`
+
+And from https://github.com/spotify/bazel-tools
+
+depfuzz - A tool for removing unused dependencies with a fuzzing strategy.
+expand-macros - A tool for expanding Bazel macros into the rules that they generate.
+format - A tool for formatting all files in the repository according to common style guides.
+unused - A tool for showing source files that are not used in the build.
+sync-deps - A tool for synchronizing third-party dependencies.
+sync-repos - A tool for synchronizing third-party repositories.
