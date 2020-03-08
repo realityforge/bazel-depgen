@@ -16,6 +16,7 @@ public final class ApplicationConfig
   public static final String FILENAME = "dependencies.yml";
   public static final String MAVEN_CENTRAL_NAME = "central";
   public static final String MAVEN_CENTRAL_URL = "https://repo.maven.apache.org/maven2/";
+  @Nullable
   private Path _configLocation;
   @Nullable
   private OptionsConfig options;
@@ -41,12 +42,13 @@ public final class ApplicationConfig
 
   private void setConfigLocation( @Nonnull final Path configLocation )
   {
-    _configLocation = configLocation;
+    _configLocation = Objects.requireNonNull( configLocation );
   }
 
   @Nonnull
   public Path getConfigLocation()
   {
+    assert null != _configLocation;
     return _configLocation;
   }
 
