@@ -94,11 +94,17 @@ public class Main
                               RESET_CACHED_METADATA_OPT,
                               "Recalculate metadata about an artifact." )
     };
+  @Nonnull
   static final String GENERATE_COMMAND = "generate";
+  @Nonnull
   static final String PRINT_GRAPH_COMMAND = "print-graph";
+  @Nonnull
   static final String INIT_COMMAND = "init";
+  @Nonnull
   static final String HASH_COMMAND = "hash";
+  @Nonnull
   static final String INFO_COMMAND = "info";
+  @Nonnull
   private static final Map<String, Supplier<Command>> COMMAND_MAP =
     Collections.unmodifiableMap( new HashMap<String, Supplier<Command>>()
     {
@@ -110,9 +116,10 @@ public class Main
         put( INIT_COMMAND, InitCommand::new );
       }
     } );
+  @Nonnull
   private static final Set<String> VALID_COMMANDS = Collections.unmodifiableSet( COMMAND_MAP.keySet() );
 
-  public static void main( final String[] args )
+  public static void main( @Nonnull final String[] args )
   {
     final Environment environment =
       new Environment( System.console(), Paths.get( "" ).toAbsolutePath(), Logger.getGlobal() );
