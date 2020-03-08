@@ -13,8 +13,11 @@ public final class ApplicationConfig
 {
   @Nonnull
   public static final String DEFAULT_MODULE = "thirdparty";
+  @Nonnull
   public static final String FILENAME = "dependencies.yml";
+  @Nonnull
   public static final String MAVEN_CENTRAL_NAME = "central";
+  @Nonnull
   public static final String MAVEN_CENTRAL_URL = "https://repo.maven.apache.org/maven2/";
   @Nullable
   private Path _configLocation;
