@@ -358,14 +358,14 @@ public class Main
   @Nonnull
   static ApplicationConfig loadConfigFile( @Nonnull final Environment environment )
   {
-    final Path dependenciesFile = environment.getConfigFile();
+    final Path configFile = environment.getConfigFile();
     try
     {
-      return ApplicationConfig.parse( dependenciesFile );
+      return ApplicationConfig.parse( configFile );
     }
     catch ( final Throwable t )
     {
-      throw new TerminalStateException( "Error: Failed to read dependencies file " + dependenciesFile,
+      throw new TerminalStateException( "Error: Failed to read dependencies file " + configFile,
                                         t,
                                         ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE );
     }
