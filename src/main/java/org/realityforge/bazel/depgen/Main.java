@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
@@ -116,8 +115,6 @@ public class Main
         put( INFO_COMMAND, InfoCommand::new );
       }
     } );
-  @Nonnull
-  private static final Set<String> VALID_COMMANDS = Collections.unmodifiableSet( COMMAND_MAP.keySet() );
 
   public static void main( @Nonnull final String[] args )
   {
@@ -438,7 +435,7 @@ public class Main
         case CLOption.TEXT_ARGUMENT:
         {
           final String command = option.getArgument();
-          if ( !VALID_COMMANDS.contains( command ) )
+          if ( !COMMAND_MAP.containsKey( command ) )
           {
             logger.log( Level.SEVERE, "Error: Unknown command: " + command );
             return false;
