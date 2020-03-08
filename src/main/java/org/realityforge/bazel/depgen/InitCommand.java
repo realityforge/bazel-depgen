@@ -35,7 +35,7 @@ final class InitCommand
 
   InitCommand()
   {
-    super( Main.INIT_COMMAND, OPTIONS );
+    super( Main.INIT_COMMAND, "Initialize an empty dependency configuration and workspace infrastructure.", OPTIONS );
   }
 
   @Override

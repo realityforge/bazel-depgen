@@ -11,7 +11,7 @@ final class GenerateCommand
 {
   GenerateCommand()
   {
-    super( Main.GENERATE_COMMAND );
+    super( Main.GENERATE_COMMAND, "Generate the bazel extension from the dependency configuration." );
   }
 
   @Override

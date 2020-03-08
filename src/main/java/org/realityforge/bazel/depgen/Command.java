@@ -24,16 +24,25 @@ abstract class Command
 
   @Nonnull
   private final String _name;
+  @Nonnull
+  private final String _help;
 
-  Command( @Nonnull final String name )
+  Command( @Nonnull final String name, @Nonnull final String help )
   {
     _name = Objects.requireNonNull( name );
+    _help = Objects.requireNonNull( help );
   }
 
   @Nonnull
   String getName()
   {
     return _name;
+  }
+
+  @Nonnull
+  String getHelp()
+  {
+    return _help;
   }
 
   boolean requireConfigFile()

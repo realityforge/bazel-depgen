@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -106,14 +106,14 @@ public class Main
   static final String INFO_COMMAND = "info";
   @Nonnull
   private static final Map<String, Supplier<Command>> COMMAND_MAP =
-    Collections.unmodifiableMap( new HashMap<String, Supplier<Command>>()
+    Collections.unmodifiableMap( new LinkedHashMap<String, Supplier<Command>>()
     {
       {
         put( GENERATE_COMMAND, GenerateCommand::new );
         put( PRINT_GRAPH_COMMAND, PrintGraphCommand::new );
         put( HASH_COMMAND, HashCommand::new );
-        put( INFO_COMMAND, InfoCommand::new );
         put( INIT_COMMAND, InitCommand::new );
+        put( INFO_COMMAND, InfoCommand::new );
       }
     } );
   @Nonnull
@@ -579,14 +579,10 @@ public class Main
     final Logger logger = environment.logger();
     logger.severe( "java " + Main.class.getName() + " [options] [command]" );
     logger.severe( "\tPossible Commands:" );
-    logger.severe( "\t\t" + GENERATE_COMMAND + ": Generate the bazel extension from the dependency configuration." );
-    logger.severe( "\t\t" + PRINT_GRAPH_COMMAND + ": Compute and print the dependency graph " +
-                   "for the dependency configuration." );
-    logger.severe( "\t\t" + HASH_COMMAND + ": Generate a hash of the content of the dependency configuration." );
-    logger.severe( "\t\t" +
-                   INIT_COMMAND +
-                   ": Initialize an empty dependency configuration and workspace infrastructure." );
-    logger.severe( "\t\t" + INFO_COMMAND + ": Print runtime info about the tool." );
+    for ( final Map.Entry<String, Supplier<Command>> entry : COMMAND_MAP.entrySet() )
+    {
+      logger.severe( "\t\t" + entry.getKey() + ": " + entry.getValue().get().getHelp() );
+    }
     logger.severe( "\tOptions:" );
     final String[] options =
       CLUtil.describeOptions( OPTIONS ).toString().split( System.getProperty( "line.separator" ) );

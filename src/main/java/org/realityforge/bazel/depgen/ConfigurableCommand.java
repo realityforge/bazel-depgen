@@ -22,9 +22,11 @@ abstract class ConfigurableCommand
   @Nonnull
   private final CLOptionDescriptor[] _options;
 
-  ConfigurableCommand( @Nonnull final String name, @Nonnull final CLOptionDescriptor[] options )
+  ConfigurableCommand( @Nonnull final String name,
+                       @Nonnull final String help,
+                       @Nonnull final CLOptionDescriptor[] options )
   {
-    super( name );
+    super( name, help );
     _options = new CLOptionDescriptor[ options.length + 1 ];
     _options[ 0 ] = HELP_DESCRIPTOR;
     System.arraycopy( options, 0, _options, 1, options.length );

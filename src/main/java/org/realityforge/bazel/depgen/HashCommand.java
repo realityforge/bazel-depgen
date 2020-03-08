@@ -28,7 +28,7 @@ final class HashCommand
 
   HashCommand()
   {
-    super( Main.HASH_COMMAND, OPTIONS );
+    super( Main.HASH_COMMAND, "Generate a hash of the content of the dependency configuration.", OPTIONS );
   }
 
   @Override

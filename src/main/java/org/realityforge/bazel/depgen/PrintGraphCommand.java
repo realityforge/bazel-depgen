@@ -10,7 +10,7 @@ final class PrintGraphCommand
 {
   PrintGraphCommand()
   {
-    super( Main.PRINT_GRAPH_COMMAND );
+    super( Main.PRINT_GRAPH_COMMAND, "Compute and print the dependency graph for the dependency configuration." );
   }
 
   @Override

@@ -21,7 +21,7 @@ final class InfoCommand
 
   InfoCommand()
   {
-    super( Main.INFO_COMMAND, new CLOptionDescriptor[ 0 ] );
+    super( Main.INFO_COMMAND, "Print runtime info about the tool.", new CLOptionDescriptor[ 0 ] );
   }
 
   @Override
