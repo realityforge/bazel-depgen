@@ -94,25 +94,15 @@ public class Main
                               "Recalculate metadata about an artifact." )
     };
   @Nonnull
-  static final String GENERATE_COMMAND = "generate";
-  @Nonnull
-  static final String PRINT_GRAPH_COMMAND = "print-graph";
-  @Nonnull
-  static final String INIT_COMMAND = "init";
-  @Nonnull
-  static final String HASH_COMMAND = "hash";
-  @Nonnull
-  static final String INFO_COMMAND = "info";
-  @Nonnull
   private static final Map<String, Supplier<Command>> COMMAND_MAP =
     Collections.unmodifiableMap( new LinkedHashMap<String, Supplier<Command>>()
     {
       {
-        put( GENERATE_COMMAND, GenerateCommand::new );
-        put( PRINT_GRAPH_COMMAND, PrintGraphCommand::new );
-        put( HASH_COMMAND, HashCommand::new );
-        put( INIT_COMMAND, InitCommand::new );
-        put( INFO_COMMAND, InfoCommand::new );
+        put( GenerateCommand.COMMAND, GenerateCommand::new );
+        put( PrintGraphCommand.COMMAND, PrintGraphCommand::new );
+        put( HashCommand.COMMAND, HashCommand::new );
+        put( InitCommand.COMMAND, InitCommand::new );
+        put( InfoCommand.COMMAND, InfoCommand::new );
       }
     } );
 

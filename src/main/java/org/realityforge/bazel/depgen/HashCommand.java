@@ -14,6 +14,8 @@ import org.realityforge.getopt4j.CLOptionDescriptor;
 final class HashCommand
   extends ConfigurableCommand
 {
+  @Nonnull
+  static final String COMMAND = "hash";
   private static final int VERIFY_SHA256_OPT = 1;
   private static final CLOptionDescriptor[] OPTIONS = new CLOptionDescriptor[]
     {
@@ -28,7 +30,7 @@ final class HashCommand
 
   HashCommand()
   {
-    super( Main.HASH_COMMAND, "Generate a hash of the content of the dependency configuration.", OPTIONS );
+    super( COMMAND, "Generate a hash of the content of the dependency configuration.", OPTIONS );
   }
 
   @Override

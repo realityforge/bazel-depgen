@@ -8,9 +8,12 @@ import org.realityforge.bazel.depgen.record.ApplicationRecord;
 final class PrintGraphCommand
   extends Command
 {
+  @Nonnull
+  static final String COMMAND = "print-graph";
+
   PrintGraphCommand()
   {
-    super( Main.PRINT_GRAPH_COMMAND, "Compute and print the dependency graph for the dependency configuration." );
+    super( COMMAND, "Compute and print the dependency graph for the dependency configuration." );
   }
 
   @Override

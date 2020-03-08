@@ -17,11 +17,13 @@ final class InfoCommand
   extends ConfigurableCommand
 {
   @Nonnull
+  static final String COMMAND = "info";
+  @Nonnull
   private final Set<String> _outputKeys = new HashSet<>();
 
   InfoCommand()
   {
-    super( Main.INFO_COMMAND, "Print runtime info about the tool.", new CLOptionDescriptor[ 0 ] );
+    super( COMMAND, "Print runtime info about the tool.", new CLOptionDescriptor[ 0 ] );
   }
 
   @Override

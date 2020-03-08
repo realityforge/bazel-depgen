@@ -9,9 +9,12 @@ import org.realityforge.bazel.depgen.util.StarlarkOutput;
 final class GenerateCommand
   extends Command
 {
+  @Nonnull
+  static final String COMMAND = "generate";
+
   GenerateCommand()
   {
-    super( Main.GENERATE_COMMAND, "Generate the bazel extension from the dependency configuration." );
+    super( COMMAND, "Generate the bazel extension from the dependency configuration." );
   }
 
   @Override

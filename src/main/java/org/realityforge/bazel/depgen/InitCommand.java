@@ -17,6 +17,8 @@ import org.realityforge.getopt4j.CLOptionDescriptor;
 final class InitCommand
   extends ConfigurableCommand
 {
+  @Nonnull
+  static final String COMMAND = "init";
   private static final int NO_CREATE_WORKSPACE_OPT = 1;
   private static final int NO_GENERATE_OPT = 2;
   private static final CLOptionDescriptor[] OPTIONS = new CLOptionDescriptor[]
@@ -35,7 +37,7 @@ final class InitCommand
 
   InitCommand()
   {
-    super( Main.INIT_COMMAND, "Initialize an empty dependency configuration and workspace infrastructure.", OPTIONS );
+    super( COMMAND, "Initialize an empty dependency configuration and workspace infrastructure.", OPTIONS );
   }
 
   @Override
