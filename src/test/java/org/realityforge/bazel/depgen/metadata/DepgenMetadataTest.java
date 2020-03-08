@@ -111,7 +111,7 @@ public class DepgenMetadataTest
     Files.write( file, "<default>.sha256=ABCD\n".getBytes( StandardCharsets.ISO_8859_1 ) );
 
     writeConfigFile( FileUtil.getCurrentDirectory(), "" );
-    final ApplicationModel model = ApplicationModel.parse( loadApplicationConfig(), true );
+    final ApplicationModel model = ApplicationModel.load( loadApplicationConfig(), true );
     final DepgenMetadata metadata = DepgenMetadata.fromDirectory( model, dir );
 
     final Path artifact = FileUtil.createLocalTempDir().resolve( "file.dat" );
@@ -479,7 +479,7 @@ public class DepgenMetadataTest
                      "repositories:\n" +
                      "  - name: dir1\n" +
                      "    url: " + uri.toString() + "\n" );
-    final ApplicationModel model = ApplicationModel.parse( loadApplicationConfig(), true );
+    final ApplicationModel model = ApplicationModel.load( loadApplicationConfig(), true );
     final DepgenMetadata metadata = DepgenMetadata.fromDirectory( model, dir );
 
     final RemoteRepository repo1 = new RemoteRepository.Builder( "dir1", "default", uri.toString() ).build();

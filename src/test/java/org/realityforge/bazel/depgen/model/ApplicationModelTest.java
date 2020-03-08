@@ -18,7 +18,7 @@ public class ApplicationModelTest
   extends AbstractTest
 {
   @Test
-  public void parse()
+  public void load()
     throws Exception
   {
     writeConfigFile( "artifacts:\n" +
@@ -30,9 +30,9 @@ public class ApplicationModelTest
                      "    targets:\n" +
                      "      - target: \"@com_example//:alib\"\n" );
     final Path configFile = getDefaultConfigFile();
-    final ApplicationConfig source = ApplicationConfig.parse( configFile );
+    final ApplicationConfig source = ApplicationConfig.load( configFile );
 
-    final ApplicationModel model = ApplicationModel.parse( source, false );
+    final ApplicationModel model = ApplicationModel.load( source, false );
     assertEquals( model.getSource(), source );
     assertFalse( model.shouldResetCachedMetadata() );
     assertEquals( model.getConfigSha256(), "91FA6F7CF42E0E65BAC6B0CA263E220439F61646AA95DA8D0BA085B0C141D8BC" );
@@ -87,8 +87,8 @@ public class ApplicationModelTest
     writeConfigFile( "artifacts:\n" +
                      "  - coord: " + coord + "\n" );
     final Path configFile = getDefaultConfigFile();
-    final ApplicationConfig source = ApplicationConfig.parse( configFile );
-    final ApplicationModel model = ApplicationModel.parse( source, false );
+    final ApplicationConfig source = ApplicationConfig.load( configFile );
+    final ApplicationModel model = ApplicationModel.load( source, false );
 
     final List<ArtifactModel> artifacts = model.getArtifacts();
     assertEquals( artifacts.size(), 1 );
@@ -111,8 +111,8 @@ public class ApplicationModelTest
                      "    targets:\n" +
                      "      - target: \":depgen\"\n" );
     final Path configFile = getDefaultConfigFile();
-    final ApplicationConfig source = ApplicationConfig.parse( configFile );
-    final ApplicationModel model = ApplicationModel.parse( source, false );
+    final ApplicationConfig source = ApplicationConfig.load( configFile );
+    final ApplicationModel model = ApplicationModel.load( source, false );
 
     assertTrue( model.getArtifacts().isEmpty() );
     assertTrue( model.getSystemArtifacts().isEmpty() );
@@ -126,8 +126,8 @@ public class ApplicationModelTest
     writeConfigFile( "options:\n" +
                      "  verifyConfigSha256: false\n" );
     final Path configFile = getDefaultConfigFile();
-    final ApplicationConfig source = ApplicationConfig.parse( configFile );
-    final ApplicationModel model = ApplicationModel.parse( source, false );
+    final ApplicationConfig source = ApplicationConfig.load( configFile );
+    final ApplicationModel model = ApplicationModel.load( source, false );
 
     assertTrue( model.getSystemArtifacts().isEmpty() );
   }

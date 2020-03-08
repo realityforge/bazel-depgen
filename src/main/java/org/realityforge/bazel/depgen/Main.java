@@ -197,7 +197,7 @@ public class Main
   @Nonnull
   static ApplicationModel loadModel( @Nonnull final Environment environment )
   {
-    return ApplicationModel.parse( loadConfigFile( environment ), environment.shouldResetCachedMetadata() );
+    return ApplicationModel.load( loadConfigFile( environment ), environment.shouldResetCachedMetadata() );
   }
 
   @Nonnull
@@ -361,13 +361,13 @@ public class Main
     final Path configFile = environment.getConfigFile();
     try
     {
-      return ApplicationConfig.parse( configFile );
+      return ApplicationConfig.load( configFile );
     }
     catch ( final Throwable t )
     {
-      throw new TerminalStateException( "Error: Failed to read dependencies file " + configFile,
+      throw new TerminalStateException( "Error: Failed to load config file " + configFile,
                                         t,
-                                        ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE );
+                                        ExitCodes.ERROR_LOADING_CONFIG_CODE );
     }
   }
 

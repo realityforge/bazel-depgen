@@ -44,7 +44,7 @@ public final class ApplicationModel
   private final List<RepositoryModel> _repositories;
 
   @Nonnull
-  public static ApplicationModel parse( @Nonnull final ApplicationConfig source, final boolean resetCachedMetadata )
+  public static ApplicationModel load( @Nonnull final ApplicationConfig source, final boolean resetCachedMetadata )
   {
     final String configSha256 = calculateConfigSha256( source );
     final Path baseDirectory = source.getConfigLocation().toAbsolutePath().normalize().getParent();

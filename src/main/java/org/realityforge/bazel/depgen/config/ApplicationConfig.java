@@ -33,7 +33,7 @@ public final class ApplicationConfig
   private List<ExcludeConfig> excludes;
 
   @Nonnull
-  public static ApplicationConfig parse( @Nonnull final Path path )
+  public static ApplicationConfig load( @Nonnull final Path path )
     throws Exception
   {
     final Yaml yaml = new Yaml( new Constructor( ApplicationConfig.class ) );

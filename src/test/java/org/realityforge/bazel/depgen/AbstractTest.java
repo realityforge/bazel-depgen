@@ -154,14 +154,14 @@ public abstract class AbstractTest
   protected final ApplicationModel loadApplicationModel()
     throws Exception
   {
-    return ApplicationModel.parse( loadApplicationConfig(), false );
+    return ApplicationModel.load( loadApplicationConfig(), false );
   }
 
   @Nonnull
   protected final ApplicationConfig loadApplicationConfig()
     throws Exception
   {
-    return ApplicationConfig.parse( getDefaultConfigFile() );
+    return ApplicationConfig.load( getDefaultConfigFile() );
   }
 
   private void writeBazelrc()

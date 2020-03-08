@@ -402,8 +402,8 @@ public class MainTest
     environment.setConfigFile( file );
     final TerminalStateException exception =
       expectThrows( TerminalStateException.class, () -> Main.loadConfigFile( environment ) );
-    assertEquals( exception.getMessage(), "Error: Failed to read dependencies file " + file );
-    assertEquals( exception.getExitCode(), ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE );
+    assertEquals( exception.getMessage(), "Error: Failed to load config file " + file );
+    assertEquals( exception.getExitCode(), ExitCodes.ERROR_LOADING_CONFIG_CODE );
   }
 
   @Test
@@ -948,8 +948,8 @@ public class MainTest
     writeConfigFile( "artifacts: 's\n" +
                      "  - group: org.realityforge.gir\n" );
 
-    final String output = runCommand( ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE, "generate" );
-    assertOutputContains( output, "Error: Failed to read dependencies file " );
+    final String output = runCommand( ExitCodes.ERROR_LOADING_CONFIG_CODE, "generate" );
+    assertOutputContains( output, "Error: Failed to load config file " );
     assertOutputContains( output, "Cause: while scanning a quoted scalar" );
     assertOutputDoesNotContain( output, "\tat org.yaml.snakeyaml.Yaml.load(" );
   }
@@ -962,8 +962,8 @@ public class MainTest
     writeConfigFile( "artifacts: 's\n" +
                      "  - group: org.realityforge.gir\n" );
 
-    final String output = runCommand( ExitCodes.ERROR_PARSING_DEPENDENCIES_CODE, "--verbose", "generate" );
-    assertOutputContains( output, "Error: Failed to read dependencies file " );
+    final String output = runCommand( ExitCodes.ERROR_LOADING_CONFIG_CODE, "--verbose", "generate" );
+    assertOutputContains( output, "Error: Failed to load config file " );
     assertOutputContains( output, "Cause: while scanning a quoted scalar" );
     assertOutputContains( output, "found unexpected end of stream" );
   }
