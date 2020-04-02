@@ -120,6 +120,12 @@ managed_directories for exposing generated code so IDE can see it
 
 * [Cirrus CI](https://cirrus-ci.org/features/) - A CI that has goodish support for bazel caches and free for OS
 
+Other places to look for bazel inspiration
+
+* https://github.com/batfish/batfish/tree/master/skylark
+
+* https://github.com/sgammon/GUST
+
 ## Bazel Summary
 
 * The basic build unit is a target
