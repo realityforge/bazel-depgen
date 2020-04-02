@@ -75,7 +75,7 @@ complete as there is too much un-said.
 
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
   all the tests pass. It may be possible to enhance [dependabot](https://dependabot.com/) to do this now that it
-  is owned by Github.
+  is owned by Github. I can probably hack it together via: https://github.com/dependabot/dependabot-core
 
 * Add nature types for `kotlin`, `raw` (modelled as `files`/`filegroups`), `scala`, `aar`, `j2cl` etc. that
   control how artifacts are defined. Artifacts may support multiple natures.
