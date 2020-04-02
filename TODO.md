@@ -118,6 +118,8 @@ Figure out how to use
 https://docs.bazel.build/versions/master/skylark/lib/globals.html#workspace and
 managed_directories for exposing generated code so IDE can see it
 
+* [Cirrus CI](https://cirrus-ci.org/features/) - A CI that has goodish support for bazel caches and free for OS
+
 ## Bazel Summary
 
 * The basic build unit is a target
