@@ -6,6 +6,8 @@ complete as there is too much un-said.
 
 * Add `upgrade` command that updates depgen dependency.
 
+* Upgrade to Bazel 3.1 - see https://mail.google.com/mail/u/0/#inbox/FMfcgxwHMsVGfMbZWPsxdNxlwjxVQZdK
+
 * Optionally run something like [jvm-classpath-validator](https://github.com/or-shachar/jvm-classpath-validator)
   on produced libraries to verify that the classpaths do not have collisions. A more advanced tool may even go
   further and generate a list of all java classes in each artifact. Other tools could pick detect when compiles
@@ -13,6 +15,8 @@ complete as there is too much un-said.
   write this tool from scratch.
 
 * Also run unused deps tool?
+
+* Re-add licensing back into plugin. See https://docs.google.com/document/u/0/d/1uwBuhAoBNrw8tmFs-NxlssI6VRolidGYdYqagLqHWt8/mobilebasic
 
 * Consider adding `buildifier` back into the build project. It can either verify that the output bazel files do not
   generate any warnings by running `buildifier --lint=warn` on any generated file as part of our build process _or_
