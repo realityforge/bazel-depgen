@@ -126,6 +126,8 @@ Other places to look for bazel inspiration
 
 * https://github.com/sgammon/GUST
 
+* Look at configuration in https://github.com/envoyproxy/envoy/blob/master/.bazelrc
+
 ## Bazel Summary
 
 * The basic build unit is a target
