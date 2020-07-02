@@ -52,7 +52,11 @@ complete as there is too much un-said.
 
 * See if we can use aspects rather than data attributes to check generated is uptodate?
 
+* Use j2cl support described in https://github.com/google/j2cl/issues/38
+
 * Consider trying to get `j2cl_library` to support `data` attribute and remove cruft from generated infrastructure.
+
+* order omits based on omit key rather than underlying artifact key
 
 * Add parameter like `--reset-cached-metadata` that only resets failed lookups. Useful when mirrors take a while to
   propagate and repositories are add-only.
@@ -118,8 +122,11 @@ Where it is unclear why colt is included. Maybe emitting the dependency graph or
     or [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps), both of which scan java files and
     automagically creates `BUILD` files (somehow?) so that there is fine grain dependencies without the heartache.
   - Another option is [exodus](https://github.com/wix/exodus)
+  - Consider a J2CL-CLI project that drives this whole process similar to how [Angular CLI](https://github.com/angular/angular/issues/19058) works.
 
 https://github.com/thundergolfer/bazel-linting-system
+
+* Consider https://github.com/Evertz/bzlgen
 
 * Also look to tools like [bazel-java-builder-template](https://github.com/salesforce/bazel-java-builder-template)
   that demonstrate how to build code generation tools.
