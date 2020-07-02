@@ -57,6 +57,17 @@ complete as there is too much un-said.
 * Add parameter like `--reset-cached-metadata` that only resets failed lookups. Useful when mirrors take a while to
   propagate and repositories are add-only.
 
+* Fix error when unable to resolve to include dependency trace. i.e. We can get an trace like:
+
+```
+INFO: Build completed successfully, 1 total action
+Downloading: https://repo.maven.apache.org/maven2/colt/colt/1.2.0/colt-1.2.0-sources.jar
+Downloading: https://repo.maven.apache.org/maven2/tapestry/tapestry/4.0.2/tapestry-4.0.2-sources.jar
+Unable to locate source for artifact 'colt:colt:jar:1.2.0'. Specify the 'includeSource' configuration property as 'false' in the artifacts configuration.
+```
+
+Where it is unclear why colt is included. Maybe emitting the dependency graph or at least the path to root dependency would give a better explanation.
+
 * Add command that checks/validates/cleans cache.
 
 * Add `add` command that adds a dependency.
