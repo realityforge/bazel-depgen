@@ -1,6 +1,6 @@
 # bazel-depgen: Generate Bazel dependencies
 
-[![Build Status](https://secure.travis-ci.org/realityforge/bazel-depgen.svg?branch=master)](http://travis-ci.org/realityforge/bazel-depgen)
+[![Build Status](https://api.travis-ci.com/realityforge/bazel-depgen.svg?branch=master)](http://travis-ci.com/realityforge/bazel-depgen)
 [<img src="https://img.shields.io/maven-central/v/org.realityforge.bazel.depgen/bazel-depgen.svg?label=latest%20release"/>](https://search.maven.org/search?q=g:org.realityforge.bazel.depgen%20a:bazel-depgen)
 
 ## What is bazel-depgen?
