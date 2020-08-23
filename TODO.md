@@ -116,11 +116,15 @@ Where it is unclear why colt is included. Maybe emitting the dependency graph or
 * Add in the ability to do the outputs from bazel-deps as an external repo
     - see https://github.com/johnynek/bazel-deps/commit/48fdf7f8bcf3aadfa07f9f7e6f0c9f4247cb0f58
 
+* Look at [startup-os](https://github.com/google/startup-os) which shows how to use bazel with googles integrated
+  stack to manage a complete stack. It also integrates checkstyle as well as scanning java to build java_libraries etc.
+
 * Look to [bazel-tools](https://github.com/spotify/bazel-tools) and [awesome-bazel](https://github.com/jin/awesome-bazel)
   to see if there is other tools that can be incoporated.
   - Most likely we will want to support a tool like [BUILD_file_generator](https://github.com/bazelbuild/BUILD_file_generator)
     or [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps), both of which scan java files and
     automagically creates `BUILD` files (somehow?) so that there is fine grain dependencies without the heartache.
+    Also see [ThirdPartyDepsAnalyzer](https://github.com/google/startup-os/blob/b10384644056cc9ac44388a76dbd0a4a8350e76d/tools/build_file_generator/ThirdPartyDepsAnalyzer.java) and friends.
   - Another option is [exodus](https://github.com/wix/exodus)
   - Consider a J2CL-CLI project that drives this whole process similar to how [Angular CLI](https://github.com/angular/angular/issues/19058) works.
 
