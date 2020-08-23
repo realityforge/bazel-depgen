@@ -61,7 +61,7 @@ complete as there is too much un-said.
 * Add parameter like `--reset-cached-metadata` that only resets failed lookups. Useful when mirrors take a while to
   propagate and repositories are add-only.
 
-* Fix error when unable to resolve to include dependency trace. i.e. We can get an trace like:
+* Fix error when unable to resolve to include dependency trace. i.e. We can get a trace like:
 
 ```
 INFO: Build completed successfully, 1 total action
