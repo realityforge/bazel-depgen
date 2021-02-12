@@ -23,7 +23,7 @@ before_install:
     chmod +x "${HOME}/bin/bazel"
 install:
   - rvm install ruby-2.3.1
-  - rvm use 2.3.1
+  - rvm use 2.6.6
   - gem install bundler
   - bundle install
 script: buildr clean package
