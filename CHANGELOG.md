@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `au.com.stocksoftware.idea.codestyle` artifact to version `1.17`.
 * Upgrade the `org.realityforge.guiceyloops` artifact to version `0.106`.
 * Upgrade the `org.realityforge.gir` artifact to version `0.11`.
 * Sort `omit_*` parameters by symbol in macro declarations.
