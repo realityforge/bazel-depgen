@@ -2,6 +2,8 @@ require 'buildr/git_auto_version'
 require 'buildr/gpg'
 require 'buildr/top_level_generate_dir'
 
+Buildr::MavenCentral.define_publish_tasks(:profile_name => 'org.realityforge', :username => 'realityforge')
+
 MAVEN_RESOLVER = %w(
   org.apache.maven.resolver:maven-resolver-api:jar:1.3.3
   org.apache.maven.resolver:maven-resolver-spi:jar:1.3.3
