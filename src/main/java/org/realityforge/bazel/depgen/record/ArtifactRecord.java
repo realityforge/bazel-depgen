@@ -1,6 +1,8 @@
 package org.realityforge.bazel.depgen.record;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -69,6 +71,8 @@ public final class ArtifactRecord
   @Nullable
   private final List<String> _processors;
   @Nullable
+  private final List<String> _jsAssets;
+  @Nullable
   private List<ArtifactRecord> _depsCache;
   @Nullable
   private List<ArtifactRecord> _reverseDepsCache;
@@ -86,6 +90,7 @@ public final class ArtifactRecord
                   @Nullable final String externalAnnotationSha256,
                   @Nullable final List<String> externalAnnotationUrls,
                   @Nullable final List<String> processors,
+                  @Nullable final List<String> jsAssets,
                   @Nullable final ArtifactModel artifactModel,
                   @Nullable final ReplacementModel replacementModel )
   {
@@ -112,6 +117,7 @@ public final class ArtifactRecord
         Collections.unmodifiableList( new ArrayList<>( externalAnnotationUrls ) ) :
         null;
       _processors = null != processors ? Collections.unmodifiableList( new ArrayList<>( processors ) ) : null;
+      _jsAssets = null != jsAssets ? Collections.unmodifiableList( new ArrayList<>( jsAssets ) ) : null;
       if ( null != _natures && null != _processors && !_processors.isEmpty() )
       {
         addNature( Nature.Plugin );
@@ -129,6 +135,7 @@ public final class ArtifactRecord
       _externalAnnotationSha256 = null;
       _externalAnnotationUrls = null;
       _processors = null;
+      _jsAssets = null;
       _replacementModel = replacementModel;
       _artifactModel = null;
     }
@@ -289,6 +296,12 @@ public final class ArtifactRecord
   }
 
   @Nonnull
+  private String getJsSourceRepository()
+  {
+    return getRepository() + "__js_sources";
+  }
+
+  @Nonnull
   private String getExternalAnnotationsRepository()
   {
     return getRepository() + "__annotations";
@@ -298,6 +311,12 @@ public final class ArtifactRecord
   private String getQualifiedSourcesLabel()
   {
     return "@" + getSourceRepository() + "//file";
+  }
+
+  @Nonnull
+  private String getQualifiedJsSourceRepository()
+  {
+    return "@" + getJsSourceRepository() + "//:srcs";
   }
 
   @Nonnull
@@ -524,6 +543,17 @@ public final class ArtifactRecord
     return _processors;
   }
 
+  /**
+   * The names of any js files included in the artifact that should be added to closure compile for J2Cl nature artifacts.
+   *
+   * @return the names of any js files included in the artifact that should be added to closure compile for J2Cl nature artifacts.
+   */
+  @Nullable
+  List<String> getJsAssets()
+  {
+    return _jsAssets;
+  }
+
   @Nonnull
   List<ArtifactRecord> getDeps()
   {
@@ -721,7 +751,13 @@ public final class ArtifactRecord
       }
       else
       {
-        arguments.put( "srcs", Collections.singletonList( asString( getQualifiedSourcesLabel() ) ) );
+        final List<String> srcs = new ArrayList<>();
+        srcs.add( asString( getQualifiedSourcesLabel() ) );
+        if ( null != getJsAssets() )
+        {
+          srcs.add( asString( getQualifiedJsSourceRepository() ) );
+        }
+        arguments.put( "srcs", srcs );
       }
       if ( null != j2clConfig )
       {
@@ -923,6 +959,38 @@ public final class ArtifactRecord
     output.writeCall( "http_file", arguments );
   }
 
+  void writeArtifactJsSourcesHttpFileRule( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    assert null == getReplacementModel();
+    final String sourceSha256 = getSourceSha256();
+    assert null != sourceSha256;
+
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", asString( getJsSourceRepository() ) );
+
+    arguments.put( "sha256", asString( sourceSha256.toLowerCase() ) );
+    final List<String> urls = getSourceUrls();
+    assert null != urls && !urls.isEmpty();
+    arguments.put( "urls", urls.stream().map( this::asString ).collect( Collectors.toList() ) );
+    final List<String> jsAssets = getJsAssets();
+    assert null != jsAssets;
+
+    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    final StarlarkOutput buildContent = new StarlarkOutput( baos );
+    final LinkedHashMap<String, Object> args = new LinkedHashMap<>();
+    args.put( "name", asString( "srcs" ) );
+    args.put( "visibility", Collections.singletonList( asString( "//visibility:public" ) ) );
+    args.put( "src", jsAssets.stream().map( this::asString ).collect( Collectors.toList() ) );
+    buildContent.writeCall( "filegroup", args );
+    buildContent.close();
+    baos.close();
+    final String buildFileContent = new String( baos.toByteArray(), StandardCharsets.UTF_8 );
+
+    arguments.put( "build_file_content", asString( buildFileContent ) );
+    output.writeCall( "http_archive", arguments );
+  }
+
   @Nonnull
   private String deriveSuffix( @Nonnull final Nature nature )
   {
@@ -938,6 +1006,8 @@ public final class ArtifactRecord
   @Nonnull
   private String asString( @Nonnull final String value )
   {
-    return "\"" + value + "\"";
+    return value.contains( "\n" ) ?
+           "\"\"\"\n" + value + ( value.endsWith( "\n" ) ? "" : "\n" ) + "\"\"\"" :
+           "\"" + value + "\"";
   }
 }

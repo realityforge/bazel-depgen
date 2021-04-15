@@ -144,6 +144,15 @@ public final class DepgenMetadata
            Collections.unmodifiableList( Arrays.asList( processors.split( "," ) ) );
   }
 
+  @Nullable
+  public List<String> getJsAssets( @Nonnull final File file )
+  {
+    final String processors = getOrCompute( "js_assets", () -> RecordUtil.readJsAssets( file ) );
+    return SENTINEL.equals( processors ) ?
+           null :
+           Collections.unmodifiableList( Arrays.asList( processors.split( "," ) ) );
+  }
+
   @Nonnull
   private String lookupArtifact( @Nonnull final Artifact artifact,
                                  @Nonnull final RemoteRepository remoteRepository,

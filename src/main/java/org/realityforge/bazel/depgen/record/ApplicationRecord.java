@@ -351,7 +351,7 @@ public final class ApplicationRecord
     final ReplacementModel model = _source.findReplacement( groupId, artifactId );
     assert null != model;
     final ArtifactRecord record =
-      new ArtifactRecord( this, node, null, null, null, null, null, null, null, null, model );
+      new ArtifactRecord( this, node, null, null, null, null, null, null, null, null, null, model );
     final String key = record.getKey();
     assert !_artifacts.containsKey( key );
     _artifacts.put( key, record );
@@ -364,7 +364,8 @@ public final class ApplicationRecord
                  @Nullable final List<String> sourceUrls,
                  @Nullable final String externalAnnotationSha256,
                  @Nullable final List<String> externalAnnotationUrls,
-                 @Nullable final List<String> processors )
+                 @Nullable final List<String> processors,
+                 @Nullable final List<String> jsAssets )
   {
     final String groupId = node.getArtifact().getGroupId();
     final String artifactId = node.getArtifact().getArtifactId();
@@ -379,6 +380,7 @@ public final class ApplicationRecord
                           externalAnnotationSha256,
                           externalAnnotationUrls,
                           processors,
+                          jsAssets,
                           model,
                           null );
     final String key = record.getKey();
@@ -628,6 +630,7 @@ public final class ApplicationRecord
       {
         output.newLine();
       }
+      needsNewLine = true;
       artifact.writeArtifactSourcesHttpFileRule( output );
     }
     if ( null != artifact.getExternalAnnotationSha256() )
@@ -637,6 +640,13 @@ public final class ApplicationRecord
         output.newLine();
       }
       artifact.writeArtifactAnnotationsHttpFileRule( output );
+    }
+    if ( artifact.getNatures().contains( Nature.J2cl ) &&
+         null != artifact.getJsAssets() &&
+         null != artifact.getSourceSha256() )
+    {
+      output.newLine();
+      artifact.writeArtifactJsSourcesHttpFileRule( output );
     }
   }
 

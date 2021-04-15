@@ -639,6 +639,146 @@ public class DepgenMetadataTest
   }
 
   @Test
+  public void getJsAssets_jar_withNoAssets()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+    final Path file = dir.resolve( DepgenMetadata.FILENAME );
+
+    assertFalse( file.toFile().exists() );
+
+    final DepgenMetadata metadata = loadMetadata( dir );
+
+    final Path path = createTempJarFile();
+    final List<String> assets = metadata.getJsAssets( path.toFile() );
+    assertNull( assets );
+
+    assertTrue( file.toFile().exists() );
+
+    assertEquals( loadPropertiesContent( file ), "js_assets=-\n" );
+  }
+
+  @Test
+  public void getJsAssets_jarWithSingleProcessor()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+    final Path file = dir.resolve( DepgenMetadata.FILENAME );
+
+    final DepgenMetadata metadata = loadMetadata( dir );
+
+    final Path path = createJarFile( outputStream -> createJarEntry( outputStream, "com/biz/MyFile.js", "" ) );
+    final List<String> assets = metadata.getJsAssets( path.toFile() );
+    assertNotNull( assets );
+    assertEquals( assets, Collections.singletonList( "com/biz/MyFile.js" ) );
+
+    assertTrue( file.toFile().exists() );
+
+    assertEquals( loadPropertiesContent( file ), "js_assets=com/biz/MyFile.js\n" );
+  }
+
+  @Test
+  public void getJsAssets_jarWithMultipleAsserts()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+    final Path file = dir.resolve( DepgenMetadata.FILENAME );
+
+    final DepgenMetadata metadata = loadMetadata( dir );
+
+    final Path path = createJarFile( outputStream -> {
+      createJarEntry( outputStream, "com/biz/MyFile1.js", "" );
+      createJarEntry( outputStream, "com/biz/MyOtherFile.js", "" );
+      createJarEntry( outputStream, "com/biz/MyBlah.js", "" );
+      createJarEntry( outputStream, "com/biz/public/NotIncludedAsNestedInPublic.js", "" );
+      createJarEntry( outputStream, "com/public/biz/NotIncludedAsNestedDeeplyInPublic.js", "" );
+    } );
+    final List<String> assets = metadata.getJsAssets( path.toFile() );
+    assertNotNull( assets );
+    assertEquals( assets, Arrays.asList( "com/biz/MyBlah.js", "com/biz/MyFile1.js", "com/biz/MyOtherFile.js" ) );
+
+    assertTrue( file.toFile().exists() );
+
+    assertEquals( loadPropertiesContent( file ),
+                  "js_assets=com/biz/MyBlah.js,com/biz/MyFile1.js,com/biz/MyOtherFile.js\n" );
+  }
+
+  @Test
+  public void getJsAssets_cachedProperties_noAssets()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+    final Path file = dir.resolve( DepgenMetadata.FILENAME );
+
+    Files.write( file, "js_assets=-\n".getBytes( StandardCharsets.ISO_8859_1 ) );
+
+    final DepgenMetadata metadata = loadMetadata( dir );
+
+    final Path path = createTempJarFile();
+    final List<String> assets = metadata.getJsAssets( path.toFile() );
+    assertNull( assets );
+
+    assertTrue( file.toFile().exists() );
+
+    assertEquals( loadPropertiesContent( file ), "js_assets=-\n" );
+  }
+
+  @Test
+  public void getJsAssets_cachedProperties_multipleAssets()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+    final Path file = dir.resolve( DepgenMetadata.FILENAME );
+
+    Files.write( file,
+                 "js_assets=com/biz/MyBlah.js,com/biz/MyFile1.js,com/biz/MyOtherFile.js\n"
+                   .getBytes( StandardCharsets.ISO_8859_1 ) );
+
+    final DepgenMetadata metadata = loadMetadata( dir );
+
+    final Path path = createJarFile( "XXXX", "XXX" );
+    final List<String> assets = metadata.getJsAssets( path.toFile() );
+    assertNotNull( assets );
+    assertEquals( assets, Arrays.asList( "com/biz/MyBlah.js", "com/biz/MyFile1.js", "com/biz/MyOtherFile.js" ) );
+
+    assertTrue( file.toFile().exists() );
+
+    assertEquals( loadPropertiesContent( file ),
+                  "js_assets=com/biz/MyBlah.js,com/biz/MyFile1.js,com/biz/MyOtherFile.js\n" );
+  }
+
+  @Test
+  public void js_assets_writeOnlyCacheProperties()
+    throws Exception
+  {
+    // getJsAssets returns null as the actual jar has no assets even though it is recorded in the cache
+    // The file was updated
+    final Path dir = FileUtil.createLocalTempDir();
+    final Path file = dir.resolve( DepgenMetadata.FILENAME );
+
+    Files.write( file,
+                 "js_assets=com/biz/MyBlah.js,com/biz/MyFile1.js,com/biz/MyOtherFile.js\n"
+                   .getBytes( StandardCharsets.ISO_8859_1 ) );
+
+    final HashSet<PosixFilePermission> permissions = new HashSet<>();
+    permissions.add( PosixFilePermission.OWNER_WRITE );
+    Files.setPosixFilePermissions( file, permissions );
+
+    final DepgenMetadata metadata = loadMetadata( dir );
+
+    // getJsAssets returns null as the actual jar has no assets even though it is recorded in the cache
+    assertNull( metadata.getJsAssets( createTempJarFile().toFile() ) );
+
+    permissions.add( PosixFilePermission.OWNER_READ );
+    Files.setPosixFilePermissions( file, permissions );
+
+    assertTrue( file.toFile().exists() );
+
+    // The file was updated
+    assertEquals( loadPropertiesContent( file ), "js_assets=-\n" );
+  }
+
+  @Test
   public void readOnlyCacheProperties()
     throws Exception
   {

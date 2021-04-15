@@ -82,6 +82,7 @@ final class DependencyCollector
     final List<String> urls =
       metadata.getUrls( artifact, repositories, _record.getAuthenticationContexts(), _callback );
 
+    final List<String> jsAssets;
     final String sourceSha256;
     final List<String> sourceUrls;
     final String sourcesFilename = artifact.getProperty( Constants.SOURCE_ARTIFACT_FILENAME, null );
@@ -94,11 +95,13 @@ final class DependencyCollector
       sourceSha256 = metadata.getSha256( sourcesArtifact.getClassifier(), sourcesArtifact.getFile() );
       sourceUrls =
         metadata.getUrls( sourcesArtifact, repositories, _record.getAuthenticationContexts(), _callback );
+      jsAssets = metadata.getJsAssets( sourcesFile );
     }
     else
     {
       sourceSha256 = null;
       sourceUrls = null;
+      jsAssets = null;
     }
     final String externalAnnotationSha256;
     final List<String> externalAnnotationUrls;
@@ -129,7 +132,8 @@ final class DependencyCollector
                       sourceUrls,
                       externalAnnotationSha256,
                       externalAnnotationUrls,
-                      processors );
+                      processors,
+                      jsAssets );
   }
 
   private boolean hasReplacement( @Nonnull final Dependency dependency )

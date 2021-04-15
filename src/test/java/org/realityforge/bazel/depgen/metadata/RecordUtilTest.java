@@ -110,6 +110,60 @@ public final class RecordUtilTest
   }
 
   @Test
+  public void readJsAssets_notAJar()
+    throws Exception
+  {
+    final Path path = FileUtil.createLocalTempDir().resolve( "file.txt" );
+    final String processors = RecordUtil.readJsAssets( path.toFile() );
+    assertEquals( processors, DepgenMetadata.SENTINEL );
+  }
+
+  @Test
+  public void readJsAssets_jarButNoJsAssets()
+    throws Exception
+  {
+    final Path path = createTempJarFile();
+    final String processors = RecordUtil.readJsAssets( path.toFile() );
+    assertEquals( processors, DepgenMetadata.SENTINEL );
+  }
+
+  @Test
+  public void readJsAssets_jarNotReadable()
+    throws Exception
+  {
+    // Remove read permission so that attempting to read metadata generates an IOException
+    final Path path = createTempJarFile();
+    // Remove read permission so that attempting to read metadata generates an IOException
+    Files.setPosixFilePermissions( path, new HashSet<>() );
+    final String processors = RecordUtil.readJsAssets( path.toFile() );
+    assertEquals( processors, DepgenMetadata.SENTINEL );
+  }
+
+  @Test
+  public void readJsAssets_jarSingleJsAsset()
+    throws Exception
+  {
+    final Path path = createJarFile( outputStream -> createJarEntry( outputStream, "com/biz/MyFile.js", "" ) );
+    final String processors = RecordUtil.readJsAssets( path.toFile() );
+    assertEquals( processors, "com/biz/MyFile.js" );
+  }
+
+  @Test
+  public void readJsAssets_jarMultipleAssets()
+    throws Exception
+  {
+    final Path path = createJarFile( outputStream -> {
+      createJarEntry( outputStream, "com/biz/MyFile1.js", "" );
+      createJarEntry( outputStream, "com/biz/MyOtherFile.js", "" );
+      createJarEntry( outputStream, "com/biz/MyBlah.js", "" );
+      createJarEntry( outputStream, "com/biz/public/NotIncludedAsNestedInPublic.js", "" );
+      createJarEntry( outputStream, "com/public/biz/NotIncludedAsNestedDeeplyInPublic.js", "" );
+    } );
+    final String processors = RecordUtil.readJsAssets( path.toFile() );
+    assertEquals( processors, "com/biz/MyBlah.js,com/biz/MyFile1.js,com/biz/MyOtherFile.js" );
+  }
+
+  @Test
   public void lookupArtifactInRepository_file_url()
     throws Exception
   {
