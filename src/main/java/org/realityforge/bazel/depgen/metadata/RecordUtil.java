@@ -101,7 +101,7 @@ final class RecordUtil
   @Nonnull
   static String readAnnotationProcessors( @Nonnull final File file )
   {
-    if ( file.getName().endsWith( ".jar" ) )
+    if ( isJarFile( file ) )
     {
       try
       {
@@ -137,5 +137,10 @@ final class RecordUtil
     }
 
     return DepgenMetadata.SENTINEL;
+  }
+
+  private static boolean isJarFile( @Nonnull final File file )
+  {
+    return file.getName().endsWith( ".jar" );
   }
 }
