@@ -131,7 +131,7 @@ public final class StarlarkOutput
         }
         else if ( value instanceof List )
         {
-          final List arg = (List) value;
+          final List<?> arg = (List<?>) value;
           if ( arg.isEmpty() )
           {
             write( key + " = []," );
