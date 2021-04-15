@@ -212,11 +212,11 @@ public final class DepgenMetadataTest
       loadMetadata( dir,
                     "repositories:\n" +
                     "  - name: dir1\n" +
-                    "    url: " + uri.toString() + "\n" +
+                    "    url: " + uri + "\n" +
                     "  - name: dir2\n" +
-                    "    url: " + dir2.toUri().toString() + "\n" +
+                    "    url: " + dir2.toUri() + "\n" +
                     "  - name: dir3\n" +
-                    "    url: " + dir3.toUri().toString() + "\n" );
+                    "    url: " + dir3.toUri() + "\n" );
 
     assertFalse( file.toFile().exists() );
 
@@ -258,7 +258,7 @@ public final class DepgenMetadataTest
       loadMetadata( dir,
                     "repositories:\n" +
                     "  - name: dir1\n" +
-                    "    url: " + uri.toString() + "\n" );
+                    "    url: " + uri + "\n" );
 
     assertFalse( file.toFile().exists() );
 
@@ -422,7 +422,7 @@ public final class DepgenMetadataTest
       loadMetadata( dir,
                     "repositories:\n" +
                     "  - name: dir1\n" +
-                    "    url: " + uri.toString() + "\n" +
+                    "    url: " + uri + "\n" +
                     "  - name: dir2\n" +
                     "    url: http://b.com\n" +
                     "  - name: dir3\n" +
@@ -478,7 +478,7 @@ public final class DepgenMetadataTest
     writeConfigFile( FileUtil.getCurrentDirectory(),
                      "repositories:\n" +
                      "  - name: dir1\n" +
-                     "    url: " + uri.toString() + "\n" );
+                     "    url: " + uri + "\n" );
     final ApplicationModel model = ApplicationModel.load( loadApplicationConfig(), true );
     final DepgenMetadata metadata = DepgenMetadata.fromDirectory( model, dir );
 
