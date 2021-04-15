@@ -430,7 +430,6 @@ public abstract class AbstractTest
     outputStream.putNextEntry( entry );
     outputStream.write( contents.getBytes( StandardCharsets.UTF_8 ) );
     outputStream.closeEntry();
-    outputStream.close();
   }
 
   @Nonnull
