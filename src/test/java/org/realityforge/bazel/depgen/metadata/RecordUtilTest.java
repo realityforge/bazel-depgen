@@ -90,7 +90,7 @@ public final class RecordUtilTest
   }
 
   @Test
-  public void readAnnotationProcessors_jarWithSingleProcessorAndBlankLInes()
+  public void readAnnotationProcessors_jarWithSingleProcessorAndBlankLines()
     throws Exception
   {
     final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
