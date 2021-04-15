@@ -382,7 +382,7 @@ public final class ArtifactRecord
     {
       final PluginConfig plugin = _artifactModel.getSource().getPlugin();
       final Boolean generatesApi = null == plugin ? null : plugin.getGeneratesApi();
-      return null == generatesApi ? true : generatesApi;
+      return null == generatesApi || generatesApi;
     }
   }
 
