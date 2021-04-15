@@ -7,8 +7,6 @@ jdk:
 rvm:
   - 2.7.2
 before_install:
-- rvm install ruby-2.7.2
-- rvm use 2.7.2
   - |
     if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
       OS=darwin
@@ -24,8 +22,8 @@ before_install:
     wget -O "${HOME}/bin/bazel" "https://github.com/bazelbuild/bazelisk/releases/download/${BAZELISK_VERSION}/bazelisk-${OS}-amd64"
     chmod +x "${HOME}/bin/bazel"
 install:
-- rvm install ruby-2.7.2
-- rvm use 2.7.2
+  - rvm install ruby-2.7.2
+  - rvm use 2.7.2
   - gem install bundler
   - bundle install
 script: buildr clean package
