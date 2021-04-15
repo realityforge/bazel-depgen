@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.11](https://github.com/realityforge/bazel-depgen/tree/v0.11) (2021-04-15) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.10...v0.11)
+
+Changes in this release:
 
 * Upgrade the `au.com.stocksoftware.idea.codestyle` artifact to version `1.17`.
 * Upgrade the `org.realityforge.guiceyloops` artifact to version `0.106`.
