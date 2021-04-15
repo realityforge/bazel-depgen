@@ -130,7 +130,7 @@ Where it is unclear why colt is included. Maybe emitting the dependency graph or
   - Most likely we will want to support a tool like [BUILD_file_generator](https://github.com/bazelbuild/BUILD_file_generator)
     or [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps), both of which scan java files and
     automagically creates `BUILD` files (somehow?) so that there is fine grain dependencies without the heartache.
-    Also see [ThirdPartyDepsAnalyzer](https://github.com/google/startup-os/blob/b10384644056cc9ac44388a76dbd0a4a8350e76d/tools/build_file_generator/ThirdPartyDepsAnalyzer.java) and friends.
+    Also see [ThirdPartyDepsAnalyzer](https://github.com/google/startup-os/blob/b10384644056cc9ac44388a76dbd0a4a8350e76d/tools/build_file_generator/ThirdPartyDepsAnalyzer.java) and friends. (See [migrating-gjf-to-bazel.md](https://github.com/cgrushko/text/blob/master/migrating-gjf-to-bazel.md))
   - Another option is [exodus](https://github.com/wix/exodus)
   - Consider a J2CL-CLI project that drives this whole process similar to how [Angular CLI](https://github.com/angular/angular/issues/19058) works.
 
