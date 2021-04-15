@@ -26,7 +26,7 @@ import org.realityforge.guiceyloops.server.http.TinyHttpdFactory;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
-public class RecordUtilTest
+public final class RecordUtilTest
   extends AbstractTest
 {
   @Test
