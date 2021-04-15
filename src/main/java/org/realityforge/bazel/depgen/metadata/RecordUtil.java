@@ -132,7 +132,7 @@ final class RecordUtil
       }
       catch ( final IOException ignored )
       {
-        //
+        // Fall through
       }
     }
 
