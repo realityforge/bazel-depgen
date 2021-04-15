@@ -12,8 +12,6 @@ https://www.buildbuddy.io/docs/rbe-github-actions
 
 * Add `upgrade` command that updates depgen dependency.
 
-* Upgrade to Bazel 3.1 - see https://mail.google.com/mail/u/0/#inbox/FMfcgxwHMsVGfMbZWPsxdNxlwjxVQZdK
-
 * Use J2CL alikes of `jvm_import_external` & `jvm_maven_import_external` - see https://github.com/google/j2cl/commit/8c188ee68b5c254f730a5a6b9c578af001c60fb2
 
 * Optionally run something like [jvm-classpath-validator](https://github.com/or-shachar/jvm-classpath-validator)
