@@ -642,7 +642,6 @@ public class DepgenMetadataTest
   public void readOnlyCacheProperties()
     throws Exception
   {
-    // getProcessors returns null as the actual jar has no processors even though it is recorded in the cache
     // The file was not updated as it is read-only
     final Path dir = FileUtil.createLocalTempDir();
     final Path file = dir.resolve( DepgenMetadata.FILENAME );
@@ -655,7 +654,6 @@ public class DepgenMetadataTest
 
     final DepgenMetadata metadata = loadMetadata( dir );
 
-    // getProcessors returns null as the actual jar has no processors even though it is recorded in the cache
     assertEquals( metadata.getSha256( "", createTempJarFile().toFile() ),
                   "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
 
