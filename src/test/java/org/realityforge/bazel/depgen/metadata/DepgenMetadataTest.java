@@ -20,7 +20,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
-public class DepgenMetadataTest
+public final class DepgenMetadataTest
   extends AbstractTest
 {
   @Test
