@@ -6,6 +6,7 @@
 * Upgrade the `org.realityforge.guiceyloops` artifact to version `0.106`.
 * Upgrade the `org.realityforge.gir` artifact to version `0.11`.
 * Sort `omit_*` parameters by symbol in macro declarations.
+* Avoid adding a workspace rule for an artifact with no classifier unless the artifact has the "Java" or "Plugin" nature. Artifacts that only have the "J2cl" nature use the `sources` classifier and thus the workspace rule sans classifier is unnecessary.
 
 ### [v0.10](https://github.com/realityforge/bazel-depgen/tree/v0.10) (2019-10-11) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.09...v0.10)
 

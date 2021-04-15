@@ -3581,24 +3581,10 @@ public class ApplicationRecordTest
                   "    \"\"\"\n" +
                   "\n" +
                   "    http_file(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
-                  "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
-                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    http_file(\n" +
-                  "        name = \"com_example__mylib__1_0\",\n" +
-                  "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0.jar\",\n" +
-                  "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_file(\n" +

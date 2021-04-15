@@ -614,16 +614,28 @@ public final class ApplicationRecord
   private void writeArtifactHttpRules( @Nonnull final ArtifactRecord artifact, @Nonnull final StarlarkOutput output )
     throws IOException
   {
-    artifact.writeArtifactHttpFileRule( output );
+    boolean needsNewLine = false;
+    final List<Nature> natures = artifact.getNatures();
+    if ( natures.contains( Nature.Java ) || natures.contains( Nature.Plugin ) )
+    {
+      needsNewLine = true;
+      artifact.writeArtifactHttpFileRule( output );
+    }
 
     if ( null != artifact.getSourceSha256() )
     {
-      output.newLine();
+      if ( needsNewLine )
+      {
+        output.newLine();
+      }
       artifact.writeArtifactSourcesHttpFileRule( output );
     }
     if ( null != artifact.getExternalAnnotationSha256() )
     {
-      output.newLine();
+      if ( needsNewLine )
+      {
+        output.newLine();
+      }
       artifact.writeArtifactAnnotationsHttpFileRule( output );
     }
   }
