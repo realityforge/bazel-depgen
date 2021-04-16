@@ -691,6 +691,7 @@ public final class DepgenMetadataTest
       createJarEntry( outputStream, "com/biz/MyOtherFile.js", "" );
       createJarEntry( outputStream, "com/biz/MyBlah.js", "" );
       createJarEntry( outputStream, "com/biz/public/NotIncludedAsNestedInPublic.js", "" );
+      createJarEntry( outputStream, "com/biz/TheClass.native.js", "" );
       createJarEntry( outputStream, "com/public/biz/NotIncludedAsNestedDeeplyInPublic.js", "" );
     } );
     final List<String> assets = metadata.getJsAssets( path.toFile() );

@@ -3697,6 +3697,7 @@ public class ApplicationRecordTest
       createJarEntry( outputStream, "com/biz/MyOtherFile.js", "" );
       createJarEntry( outputStream, "com/biz/MyBlah.js", "" );
       createJarEntry( outputStream, "com/biz/public/NotIncludedAsNestedInPublic.js", "" );
+      createJarEntry( outputStream, "com/biz/TheClass.native.js", "" );
       createJarEntry( outputStream, "com/public/biz/NotIncludedAsNestedDeeplyInPublic.js", "" );
     } );
     final Path jarFile2 = createJarFile( "foo.js", "" );
@@ -3760,13 +3761,13 @@ public class ApplicationRecordTest
                   "    http_file(\n" +
                   "        name = \"com_example__mylib__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0-sources.jar\",\n" +
-                  "        sha256 = \"761f05a1bd316dbe8443170f5715b55be40aaa2e4173dd4c692af4a3fe44c15d\",\n" +
+                  "        sha256 = \"e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f\",\n" +
                   "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    http_archive(\n" +
                   "        name = \"com_example__mylib__1_0__js_sources\",\n" +
-                  "        sha256 = \"761f05a1bd316dbe8443170f5715b55be40aaa2e4173dd4c692af4a3fe44c15d\",\n" +
+                  "        sha256 = \"e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f\",\n" +
                   "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
                   "        build_file_content = \"\"\"\n" +
                   "filegroup(\n" +

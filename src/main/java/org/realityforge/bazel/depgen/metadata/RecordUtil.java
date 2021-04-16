@@ -154,7 +154,9 @@ final class RecordUtil
               .stream()
               .filter( e -> !e.isDirectory() )
               .map( ZipEntry::getName )
-              .filter( name -> name.endsWith( ".js" ) && !name.contains( "/public/" ) )
+              .filter( name -> name.endsWith( ".js" ) &&
+                               !name.contains( "/public/" ) &&
+                               !name.endsWith( ".native.js" ) )
               .sorted()
               .collect( Collectors.joining( "," ) );
           return assetList.isEmpty() ? DepgenMetadata.SENTINEL : assetList;
