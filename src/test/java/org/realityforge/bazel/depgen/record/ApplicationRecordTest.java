@@ -3768,7 +3768,7 @@ public class ApplicationRecordTest
                   "filegroup(\n" +
                   "    name = \"srcs\",\n" +
                   "    visibility = [\"//visibility:public\"],\n" +
-                  "    src = [\"foo.js\"],\n" +
+                  "    srcs = [\"foo.js\"],\n" +
                   ")\n" +
                   "\"\"\",\n" +
                   "    )\n" +
@@ -3788,7 +3788,7 @@ public class ApplicationRecordTest
                   "filegroup(\n" +
                   "    name = \"srcs\",\n" +
                   "    visibility = [\"//visibility:public\"],\n" +
-                  "    src = [\n" +
+                  "    srcs = [\n" +
                   "        \"com/biz/MyBlah.js\",\n" +
                   "        \"com/biz/MyFile1.js\",\n" +
                   "        \"com/biz/MyOtherFile.js\",\n" +

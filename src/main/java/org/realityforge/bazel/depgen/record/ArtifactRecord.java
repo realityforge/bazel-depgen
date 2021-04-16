@@ -981,7 +981,7 @@ public final class ArtifactRecord
     final LinkedHashMap<String, Object> args = new LinkedHashMap<>();
     args.put( "name", asString( "srcs" ) );
     args.put( "visibility", Collections.singletonList( asString( "//visibility:public" ) ) );
-    args.put( "src", jsAssets.stream().map( this::asString ).collect( Collectors.toList() ) );
+    args.put( "srcs", jsAssets.stream().map( this::asString ).collect( Collectors.toList() ) );
     buildContent.writeCall( "filegroup", args );
     buildContent.close();
     baos.close();
