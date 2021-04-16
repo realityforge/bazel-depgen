@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Fix bug with the generated code when an artifact with the "J2cl" nature contained js assets. The workspace rule `http_archive` was not loaded before it was used.
+
 ### [v0.11](https://github.com/realityforge/bazel-depgen/tree/v0.11) (2021-04-15) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.10...v0.11)
 
 Changes in this release:

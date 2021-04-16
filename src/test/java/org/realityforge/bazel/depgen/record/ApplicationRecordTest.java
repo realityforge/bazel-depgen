@@ -3739,7 +3739,7 @@ public class ApplicationRecordTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "#    \\- com.example:mylib:jar:1.0 [compile]\n" +
                   "\n" +
-                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\", \"http_archive\")\n" +
                   "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
                   "load(\"@com_google_j2cl//build_defs:rules.bzl\", \"j2cl_library\")\n" +
                   "\n" +
