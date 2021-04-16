@@ -93,9 +93,6 @@ Where it is unclear why colt is included. Maybe emitting the dependency graph or
 * Refactor tests so that by default they don't call out to bazel except when needed. This should speed
   up tests.
 
-* When an artifact has the `J2cl` nature we should consider whether we analyze the jars and extract any of the
-  `*.native.js`, `*.extern.js` or `*.js` files and add them to the `j2cl_library` macro manually.
-
 * Consider converting to commandline tool named `bzt`
 
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
