@@ -608,7 +608,7 @@ public class ArtifactRecordTest
     assertEquals( asString( outputStream ),
                   "j2cl_library(\n" +
                   "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                  "    srcs = [\"com_example__myapp__1_0__j2cl_library\"],\n" +
+                  "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
@@ -633,7 +633,7 @@ public class ArtifactRecordTest
     assertEquals( asString( outputStream ),
                   "j2cl_library(\n" +
                   "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                  "    srcs = [\"com_example__myapp__1_0__j2cl_library\"],\n" +
+                  "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "    js_suppress = [\"checkDebuggerStatement\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
@@ -1123,17 +1123,9 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp-j2cl\",\n" +
                   "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
                   ")\n" +
-                  "java_import(\n" +
-                  "    name = \"com_example__myapp__1_0__j2cl_library\",\n" +
-                  "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                  "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
-                  "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
-                  "    data = [\":verify_config_sha256\"],\n" +
-                  ")\n" +
                   "j2cl_library(\n" +
                   "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                  "    srcs = [\"com_example__myapp__1_0__j2cl_library\"],\n" +
+                  "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
@@ -1188,17 +1180,9 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp-j2cl\",\n" +
                   "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
                   ")\n" +
-                  "java_import(\n" +
-                  "    name = \"com_example__myapp__1_0__j2cl_library\",\n" +
-                  "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
-                  "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
-                  "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
-                  "    data = [\":verify_config_sha256\"],\n" +
-                  ")\n" +
                   "j2cl_library(\n" +
                   "    name = \"com_example__myapp__1_0-j2cl\",\n" +
-                  "    srcs = [\"com_example__myapp__1_0__j2cl_library\"],\n" +
+                  "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" +
                   "\n" +

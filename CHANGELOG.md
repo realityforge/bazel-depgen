@@ -4,6 +4,7 @@
 
 * Fix bug with the generated code when an artifact with the "J2cl" nature contained js assets. The workspace rule `http_archive` was not loaded before it was used.
 * Fix bug in the build file snippet when an artifact with the "J2cl" nature contained js assets to use the correct attribute name to record sources in a `filegroup`.
+* Remove `java_import` target created for artifacts with the "J2cl" nature when `verifyConfigSha256` is `true`. This target was unused and did not work as expected.
 
 ### [v0.11](https://github.com/realityforge/bazel-depgen/tree/v0.11) (2021-04-15) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.10...v0.11)
 

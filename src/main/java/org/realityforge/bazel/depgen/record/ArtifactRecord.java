@@ -744,21 +744,13 @@ public final class ArtifactRecord
     arguments.put( "name", asString( getName( Nature.J2cl ) ) );
     if ( J2clMode.Library == mode )
     {
-      if ( shouldDependOnVerify() )
+      final List<String> srcs = new ArrayList<>();
+      srcs.add( asString( getQualifiedSourcesLabel() ) );
+      if ( null != getJsAssets() )
       {
-        arguments.put( "srcs",
-                       Collections.singletonList( "\"" + getName( Nature.Java ) + J2CL_LIBRARY_SUFFIX + "\"" ) );
+        srcs.add( asString( getQualifiedJsSourceRepository() ) );
       }
-      else
-      {
-        final List<String> srcs = new ArrayList<>();
-        srcs.add( asString( getQualifiedSourcesLabel() ) );
-        if ( null != getJsAssets() )
-        {
-          srcs.add( asString( getQualifiedJsSourceRepository() ) );
-        }
-        arguments.put( "srcs", srcs );
-      }
+      arguments.put( "srcs", srcs );
       if ( null != j2clConfig )
       {
         final List<String> suppress = j2clConfig.getSuppress();
@@ -882,10 +874,6 @@ public final class ArtifactRecord
       else if ( Nature.J2cl == nature )
       {
         emitAlias( output, nature );
-        if ( shouldDependOnVerify() )
-        {
-          emitJavaImport( output, J2CL_LIBRARY_SUFFIX );
-        }
         writeJ2clLibrary( output );
       }
       else //if ( Nature.Plugin == nature )
