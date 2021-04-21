@@ -54,7 +54,10 @@ https://www.buildbuddy.io/docs/rbe-github-actions
 * Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
   directory to some central place (i.e. `~/.depgen/repository`)
 
-* See if we can use aspects rather than data attributes to check generated is uptodate?
+* Change the way we check whether the generated bazel extension is up to date.
+  In theory we can add an aspect that will add action to perform check for "uptodate-ness"
+  and this aspect can be activated by adding the appropriate arguments to .bazelrc for the
+  project. See https://app.slack.com/client/TA4K1KQ87/CA31HN1T3/thread/CA31HN1T3-1618552167.172600
 
 * Use j2cl support described in https://github.com/google/j2cl/issues/38
 
