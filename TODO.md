@@ -65,6 +65,9 @@ https://www.buildbuddy.io/docs/rbe-github-actions
 
 * order omits based on omit key rather than underlying artifact key
 
+* Integrate with publishing functionality like
+  https://github.com/bazelbuild/rules_jvm_external#publishing-to-external-repositories
+
 * Add parameter like `--reset-cached-metadata` that only resets failed lookups. Useful when mirrors take a while to
   propagate and repositories are add-only.
 
