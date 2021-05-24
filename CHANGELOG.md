@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Stop adding javascript assets to the generated bazel extension for artifacts that do not have the J2cl nature.
+
 ### [v0.12](https://github.com/realityforge/bazel-depgen/tree/v0.12) (2021-04-16) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.11...v0.12)
 
 Changes in this release:

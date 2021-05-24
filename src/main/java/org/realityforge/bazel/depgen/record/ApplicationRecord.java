@@ -241,7 +241,8 @@ public final class ApplicationRecord
     if ( !getArtifacts().isEmpty() )
     {
       emittedLoad = true;
-      final boolean requiresHttpArchive = getArtifacts().stream().anyMatch( a -> null != a.getJsAssets() );
+      final boolean requiresHttpArchive =
+        getArtifacts().stream().anyMatch( a -> null != a.getJsAssets() && a.getNatures().contains( Nature.J2cl ) );
       output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", " +
                     "\"http_file\"" +
                     ( requiresHttpArchive ? ", \"http_archive\"" : "" ) +
