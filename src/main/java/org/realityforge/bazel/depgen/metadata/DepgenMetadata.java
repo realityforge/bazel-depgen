@@ -147,10 +147,10 @@ public final class DepgenMetadata
   @Nullable
   public List<String> getJsAssets( @Nonnull final File file )
   {
-    final String processors = getOrCompute( "js_assets", () -> RecordUtil.readJsAssets( file ) );
-    return SENTINEL.equals( processors ) ?
+    final String assets = getOrCompute( "js_assets", () -> RecordUtil.readJsAssets( file ) );
+    return SENTINEL.equals( assets ) ?
            null :
-           Collections.unmodifiableList( Arrays.asList( processors.split( "," ) ) );
+           Collections.unmodifiableList( Arrays.asList( assets.split( "," ) ) );
   }
 
   @Nonnull
