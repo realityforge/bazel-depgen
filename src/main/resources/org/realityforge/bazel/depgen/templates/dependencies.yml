@@ -197,12 +197,18 @@ repositories:
     # and should only be present if the artifact has the Java nature
     #java:
 
+      # This setting allows the explicit specification of an alias.
+      #alias: react4j-core-java
+
       # This settings allows per-artifact overrides of the global exportDeps configuration.
       #exportDeps: true
 
     # The j2cl section is used to customize the artifact if it has the J2cl nature
     # and should only be present if the artifact has the J2cl nature
     #j2cl:
+
+      # This setting allows the explicit specification of an alias.
+      #alias: react4j-core-j2cl
 
       # Explicitly suppress some checks in the closure compiler. Providing values with this attribute is
       # only valid when the mode is 'Library'. See the closure-compiler documentation for a list of valid
@@ -218,6 +224,9 @@ repositories:
     # The plugins section is used to customize the artifact if it has the Plugin nature
     # and should only be present if the artifact has the Plugin nature
     #plugin:
+
+      # This setting allows the explicit specification of an alias.
+      #alias: react4j-core-plugin
 
       # Should the tool mark annotation processors as generating API code?
       # See https://docs.bazel.build/versions/master/be/java.html#java_plugin.generates_api for

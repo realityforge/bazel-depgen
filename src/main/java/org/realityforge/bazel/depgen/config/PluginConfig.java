@@ -8,6 +8,8 @@ public final class PluginConfig
 {
   @Nullable
   private Boolean generatesApi;
+  @Nullable
+  private String alias;
 
   @Nullable
   public Boolean getGeneratesApi()
@@ -18,5 +20,16 @@ public final class PluginConfig
   public void setGeneratesApi( @Nonnull final Boolean generatesApi )
   {
     this.generatesApi = Objects.requireNonNull( generatesApi );
+  }
+
+  @Nullable
+  public String getAlias()
+  {
+    return alias;
+  }
+
+  public void setAlias( @Nullable final String alias )
+  {
+    this.alias = alias;
   }
 }

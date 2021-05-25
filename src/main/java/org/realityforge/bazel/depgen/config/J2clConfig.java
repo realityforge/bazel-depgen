@@ -11,6 +11,8 @@ public final class J2clConfig
   private List<String> suppress;
   @Nullable
   private J2clMode mode;
+  @Nullable
+  private String alias;
 
   @Nullable
   public List<String> getSuppress()
@@ -32,5 +34,16 @@ public final class J2clConfig
   public void setMode( @Nonnull final J2clMode mode )
   {
     this.mode = Objects.requireNonNull( mode );
+  }
+
+  @Nullable
+  public String getAlias()
+  {
+    return alias;
+  }
+
+  public void setAlias( @Nullable final String alias )
+  {
+    this.alias = alias;
   }
 }

@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Stop adding javascript assets to the generated bazel extension for artifacts that do not have the J2cl nature.
+* Add an alias configuration setting to the per-artifact j2cl/java/plugin configuration sections that allow the user to override the name of the alias generated in the bazel extension.
 
 ### [v0.12](https://github.com/realityforge/bazel-depgen/tree/v0.12) (2021-04-16) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.11...v0.12)
 

@@ -18,6 +18,7 @@ import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.DepgenValidationException;
 import org.realityforge.bazel.depgen.config.AliasStrategy;
+import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.J2clConfig;
 import org.realityforge.bazel.depgen.config.J2clMode;
 import org.realityforge.bazel.depgen.config.JavaConfig;
@@ -346,7 +347,27 @@ public final class ArtifactRecord
   @Nonnull
   String getAlias( @Nonnull final Nature nature )
   {
-    return getSymbol() + deriveSuffix( nature );
+    String alias = null;
+    if ( null != _artifactModel )
+    {
+      final ArtifactConfig source = _artifactModel.getSource();
+      if ( Nature.Java == nature )
+      {
+        final JavaConfig config = source.getJava();
+        alias = null != config ? config.getAlias() : null;
+      }
+      else if ( Nature.J2cl == nature )
+      {
+        final J2clConfig config = source.getJ2cl();
+        alias = null != config ? config.getAlias() : null;
+      }
+      else if ( Nature.Plugin == nature )
+      {
+        final PluginConfig config = source.getPlugin();
+        alias = null != config ? config.getAlias() : null;
+      }
+    }
+    return null != alias ? alias : getSymbol() + deriveSuffix( nature );
   }
 
   @Nonnull

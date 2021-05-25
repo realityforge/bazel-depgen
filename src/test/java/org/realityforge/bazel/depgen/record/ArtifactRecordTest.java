@@ -460,6 +460,55 @@ public class ArtifactRecordTest
   }
 
   @Test
+  public void emitAlias_aliasOverrides()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [Java, J2cl, Plugin]\n" +
+                     "    java:\n" +
+                     "      alias: myapp-java-a\n" +
+                     "    j2cl:\n" +
+                     "      alias: myapp-j2cl-a\n" +
+                     "    plugin:\n" +
+                     "      alias: myapp-plugin-a\n" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+    {
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.Java );
+      assertEquals( asString( outputStream ),
+                    "native.alias(\n" +
+                    "    name = \"myapp-java-a\",\n" +
+                    "    actual = \":com_example__myapp__1_0\",\n" +
+                    ")\n" );
+    }
+    {
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.J2cl );
+      assertEquals( asString( outputStream ),
+                    "native.alias(\n" +
+                    "    name = \"myapp-j2cl-a\",\n" +
+                    "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
+                    ")\n" );
+    }
+    {
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.Plugin );
+      assertEquals( asString( outputStream ),
+                    "native.alias(\n" +
+                    "    name = \"myapp-plugin-a\",\n" +
+                    "    actual = \":com_example__myapp__1_0-plugin\",\n" +
+                    ")\n" );
+    }
+  }
+
+  @Test
   public void emitAlias_VisibilitySpecified()
     throws Exception
   {
