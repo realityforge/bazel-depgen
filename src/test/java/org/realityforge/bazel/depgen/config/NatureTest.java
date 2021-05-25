@@ -4,7 +4,7 @@ import org.realityforge.bazel.depgen.AbstractTest;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
-public class NatureTest
+public final class NatureTest
   extends AbstractTest
 {
   @Test
