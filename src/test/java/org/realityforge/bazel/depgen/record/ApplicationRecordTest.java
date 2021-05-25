@@ -3879,7 +3879,6 @@ public class ApplicationRecordTest
     //@formatter:on
   }
 
-
   @Test
   public void writeBazelExtension_java_withDependenciesAndJsAssets()
     throws Exception
