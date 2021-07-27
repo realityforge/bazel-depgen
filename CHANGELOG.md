@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.gir` artifact to version `0.12`.
+
 ### [v0.13](https://github.com/realityforge/bazel-depgen/tree/v0.13) (2021-05-25) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.12...v0.13)
 
 Changes in this release:
