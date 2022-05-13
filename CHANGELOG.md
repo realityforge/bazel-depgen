@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.14](https://github.com/realityforge/bazel-depgen/tree/v0.14) (2022-05-13) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.13...v0.14)
+
+Changes in this release:
 
 * Update the `org.realityforge.guiceyloops` artifact to version `0.110`.
 * Update the `org.realityforge.gir` artifact to version `0.12`.
