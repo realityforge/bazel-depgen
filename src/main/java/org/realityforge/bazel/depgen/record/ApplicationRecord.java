@@ -447,7 +447,7 @@ public final class ApplicationRecord
                           "-jar $(location " + depgenArtifactLabel + ") " +
                           "--directory \\\\$$BUILD_WORKSPACE_DIRECTORY " +
                           "--config-file $(location " + configLabel + ") " +
-                          "\\$$@ " +
+                          "\\\\$$@ " +
                           "generate \\\" > \\\"$@\\\"\"" );
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     output.writeCall( "native.genrule", arguments );
