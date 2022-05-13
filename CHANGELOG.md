@@ -4,6 +4,7 @@
 
 * Update the `org.realityforge.guiceyloops` artifact to version `0.110`.
 * Update the `org.realityforge.gir` artifact to version `0.12`.
+* Ensure that the $ is correctly escaped in modern Bazel by adding additional `\` character to the `regenerate_depgen_extension.sh` script.
 
 ### [v0.13](https://github.com/realityforge/bazel-depgen/tree/v0.13) (2021-05-25) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.12...v0.13)
 
