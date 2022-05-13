@@ -6,7 +6,7 @@ complete as there is too much un-said.
 
 Features to steal from ... https://github.com/square/bazel_maven_repository
 
-Also great example of tools that is maintained https://github.com/graknlabs/dependencies
+Also, great example of tools that is maintained https://github.com/graknlabs/dependencies
 
 https://www.buildbuddy.io/docs/rbe-github-actions
 
