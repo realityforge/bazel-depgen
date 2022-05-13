@@ -48,7 +48,7 @@ https://www.buildbuddy.io/docs/rbe-github-actions
 
   See https://docs.bazel.build/versions/master/skylark/deploying.html#dependencies
 
-* Currently even if an artifact is restricted to a repository it is looked up in all repositories. Figure out a
+* Currently, even if an artifact is restricted to a repository it is looked up in all repositories. Figure out a
   way to restrict it to a specific repository.
 
 * Shutdown bazel servers after test
@@ -57,7 +57,7 @@ https://www.buildbuddy.io/docs/rbe-github-actions
   directory to some central place (i.e. `~/.depgen/repository`)
 
 * Change the way we check whether the generated bazel extension is up to date.
-  In theory we can add an aspect that will add action to perform check for "uptodate-ness"
+  In theory, we can add an aspect that will add action to perform check for "uptodate-ness"
   and this aspect can be activated by adding the appropriate arguments to .bazelrc for the
   project. See https://app.slack.com/client/TA4K1KQ87/CA31HN1T3/thread/CA31HN1T3-1618552167.172600
 
@@ -68,7 +68,7 @@ https://www.buildbuddy.io/docs/rbe-github-actions
 
 * Consider trying to get `j2cl_library` to support `data` attribute and remove cruft from generated infrastructure.
 
-* If j2cl artifact already has -j2cl suffix ... then don't add another?
+* If the j2cl artifact already has -j2cl suffix ... then don't add another?
 
 * order omits based on omit key rather than underlying artifact key
 
