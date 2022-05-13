@@ -4,6 +4,8 @@ This document is essentially a list of shorthand notes describing work yet to be
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
+https://github.com/classgraph/classgraph to scan java to generate java build files?
+
 Features to steal from ... https://github.com/square/bazel_maven_repository
 
 Also, great example of tools that is maintained https://github.com/graknlabs/dependencies
