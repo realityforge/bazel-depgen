@@ -2020,7 +2020,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -2033,7 +2033,7 @@ public class ApplicationRecordTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -2067,7 +2067,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -2149,7 +2149,7 @@ public class ApplicationRecordTest
                   "            name = \"com_example__myapp\",\n" +
                   "            actual = \":com_example__myapp__1_0\",\n" +
                   "        )\n" +
-                  "        java_import(\n" +
+                  "        _java_import(\n" +
                   "            name = \"com_example__myapp__1_0\",\n" +
                   "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "            srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -2163,7 +2163,7 @@ public class ApplicationRecordTest
                   "            name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "            actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        )\n" +
-                  "        java_import(\n" +
+                  "        _java_import(\n" +
                   "            name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "            jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "            tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -2245,7 +2245,7 @@ public class ApplicationRecordTest
                   "            name = \"myapp\",\n" +
                   "            actual = \":com_example__myapp__1_0\",\n" +
                   "        )\n" +
-                  "        java_import(\n" +
+                  "        _java_import(\n" +
                   "            name = \"com_example__myapp__1_0\",\n" +
                   "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "            srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -2259,7 +2259,7 @@ public class ApplicationRecordTest
                   "            name = \"bazel_depgen\",\n" +
                   "            actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        )\n" +
-                  "        java_import(\n" +
+                  "        _java_import(\n" +
                   "            name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "            jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "            tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -2337,7 +2337,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -2350,7 +2350,7 @@ public class ApplicationRecordTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -2427,7 +2427,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -2441,7 +2441,7 @@ public class ApplicationRecordTest
                   "        actual = \":com_example__mylib__2_0\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__mylib__2_0\",\n" +
                   "        jars = [\"@com_example__mylib__2_0//file\"],\n" +
                   "        srcjar = \"@com_example__mylib__2_0__sources//file\",\n" +
@@ -2454,7 +2454,7 @@ public class ApplicationRecordTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -2535,7 +2535,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -2548,7 +2548,7 @@ public class ApplicationRecordTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -2646,21 +2646,21 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -2697,28 +2697,28 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__annotations\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-annotations.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-annotations.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -2756,14 +2756,14 @@ public class ApplicationRecordTest
                   "    \"\"\"\n" +
                   "\n" +
                   "    if not omit_com_example__myapp:\n" +
-                  "        http_file(\n" +
+                  "        _http_file(\n" +
                   "            name = \"com_example__myapp__1_0\",\n" +
                   "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "            urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "        )\n" +
                   "\n" +
-                  "        http_file(\n" +
+                  "        _http_file(\n" +
                   "            name = \"com_example__myapp__1_0__sources\",\n" +
                   "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -2771,7 +2771,7 @@ public class ApplicationRecordTest
                   "        )\n" +
                   "\n" +
                   "    if not omit_org_realityforge_bazel_depgen__bazel_depgen:\n" +
-                  "        http_file(\n" +
+                  "        _http_file(\n" +
                   "            name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "            downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -2806,21 +2806,21 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -2854,35 +2854,35 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__mylib__2_0\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/2.0/mylib-2.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/mylib/2.0/mylib-2.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__mylib__2_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/2.0/mylib-2.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/mylib/2.0/mylib-2.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -2920,21 +2920,21 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -3128,8 +3128,8 @@ public class ApplicationRecordTest
                   "# Dependency Graph Generated from the input data\n" +
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
-                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
+                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
@@ -3141,21 +3141,21 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -3215,7 +3215,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -3228,7 +3228,7 @@ public class ApplicationRecordTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -3268,8 +3268,8 @@ public class ApplicationRecordTest
                   "# Dependency Graph Generated from the input data\n" +
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
-                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
+                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -3278,14 +3278,14 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -3301,7 +3301,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -3411,9 +3411,9 @@ public class ApplicationRecordTest
                   "# Dependency Graph Generated from the input data\n" +
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
-                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
-                  "load(\"@com_google_j2cl//build_defs:rules.bzl\", \"j2cl_library\")\n" +
+                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
+                  "load(\"@com_google_j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
@@ -3425,21 +3425,21 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -3499,7 +3499,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp-j2cl\",\n" +
                   "        actual = \":com_example__myapp__1_0-j2cl\",\n" +
                   "    )\n" +
-                  "    j2cl_library(\n" +
+                  "    _j2cl_library(\n" +
                   "        name = \"com_example__myapp__1_0-j2cl\",\n" +
                   "        srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
@@ -3509,7 +3509,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -3522,7 +3522,7 @@ public class ApplicationRecordTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -3562,9 +3562,9 @@ public class ApplicationRecordTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "#    \\- com.example:mylib:jar:1.0 [compile]\n" +
                   "\n" +
-                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
-                  "load(\"@com_google_j2cl//build_defs:rules.bzl\", \"j2cl_library\")\n" +
+                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
+                  "load(\"@com_google_j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
@@ -3576,21 +3576,21 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__mylib__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -3650,7 +3650,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp-j2cl\",\n" +
                   "        actual = \":com_example__myapp__1_0-j2cl\",\n" +
                   "    )\n" +
-                  "    j2cl_library(\n" +
+                  "    _j2cl_library(\n" +
                   "        name = \"com_example__myapp__1_0-j2cl\",\n" +
                   "        srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
@@ -3662,7 +3662,7 @@ public class ApplicationRecordTest
                   "        actual = \":com_example__mylib__1_0-j2cl\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
-                  "    j2cl_library(\n" +
+                  "    _j2cl_library(\n" +
                   "        name = \"com_example__mylib__1_0-j2cl\",\n" +
                   "        srcs = [\"@com_example__mylib__1_0__sources//file\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
@@ -3672,7 +3672,7 @@ public class ApplicationRecordTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -3724,9 +3724,9 @@ public class ApplicationRecordTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "#    \\- com.example:mylib:jar:1.0 [compile]\n" +
                   "\n" +
-                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\", \"http_archive\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
-                  "load(\"@com_google_j2cl//build_defs:rules.bzl\", \"j2cl_library\")\n" +
+                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\", _http_archive = \"http_archive\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
+                  "load(\"@com_google_j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
@@ -3738,14 +3738,14 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_archive(\n" +
+                  "    _http_archive(\n" +
                   "        name = \"com_example__myapp__1_0__js_sources\",\n" +
                   "        sha256 = \"94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
@@ -3758,14 +3758,14 @@ public class ApplicationRecordTest
                   "\"\"\",\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__mylib__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0-sources.jar\",\n" +
                   "        sha256 = \"e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f\",\n" +
                   "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_archive(\n" +
+                  "    _http_archive(\n" +
                   "        name = \"com_example__mylib__1_0__js_sources\",\n" +
                   "        sha256 = \"e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f\",\n" +
                   "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
@@ -3782,7 +3782,7 @@ public class ApplicationRecordTest
                   "\"\"\",\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -3842,7 +3842,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp-j2cl\",\n" +
                   "        actual = \":com_example__myapp__1_0-j2cl\",\n" +
                   "    )\n" +
-                  "    j2cl_library(\n" +
+                  "    _j2cl_library(\n" +
                   "        name = \"com_example__myapp__1_0-j2cl\",\n" +
                   "        srcs = [\n" +
                   "            \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -3857,7 +3857,7 @@ public class ApplicationRecordTest
                   "        actual = \":com_example__mylib__1_0-j2cl\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
-                  "    j2cl_library(\n" +
+                  "    _j2cl_library(\n" +
                   "        name = \"com_example__mylib__1_0-j2cl\",\n" +
                   "        srcs = [\n" +
                   "            \"@com_example__mylib__1_0__sources//file\",\n" +
@@ -3870,7 +3870,7 @@ public class ApplicationRecordTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -3922,8 +3922,8 @@ public class ApplicationRecordTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "#    \\- com.example:mylib:jar:1.0 [compile]\n" +
                   "\n" +
-                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
+                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
@@ -3935,35 +3935,35 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__mylib__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__mylib__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0-sources.jar\",\n" +
                   "        sha256 = \"e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f\",\n" +
                   "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -4023,7 +4023,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -4037,7 +4037,7 @@ public class ApplicationRecordTest
                   "        actual = \":com_example__mylib__1_0\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__mylib__1_0\",\n" +
                   "        jars = [\"@com_example__mylib__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__mylib__1_0__sources//file\",\n" +
@@ -4050,7 +4050,7 @@ public class ApplicationRecordTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -4088,8 +4088,8 @@ public class ApplicationRecordTest
                   "# Dependency Graph Generated from the input data\n" +
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
-                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", \"java_import\", \"java_library\", \"java_plugin\")\n" +
+                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\", _java_library = \"java_library\", _java_plugin = \"java_plugin\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
@@ -4101,21 +4101,21 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -4175,7 +4175,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0__plugin_library\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -4183,12 +4183,12 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
-                  "    java_plugin(\n" +
+                  "    _java_plugin(\n" +
                   "        name = \"com_example__myapp__1_0__plugin\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                   "    )\n" +
-                  "    java_library(\n" +
+                  "    _java_library(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
@@ -4198,7 +4198,7 @@ public class ApplicationRecordTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -4249,9 +4249,9 @@ public class ApplicationRecordTest
                   "# \\- com.example:myapp2:jar:1.0 [compile]\n" +
                   "#    \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
-                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
-                  "load(\"@com_google_j2cl//build_defs:rules.bzl\", \"j2cl_library\")\n" +
+                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
+                  "load(\"@com_google_j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
@@ -4263,35 +4263,35 @@ public class ApplicationRecordTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp2__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp2/1.0/myapp2-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp2/1.0/myapp2-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp2__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp2/1.0/myapp2-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + uri + "com/example/myapp2/1.0/myapp2-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -4351,7 +4351,7 @@ public class ApplicationRecordTest
                   "        name = \"myapp-java-a\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -4364,7 +4364,7 @@ public class ApplicationRecordTest
                   "        name = \"myapp-j2cl-a\",\n" +
                   "        actual = \":com_example__myapp__1_0-j2cl\",\n" +
                   "    )\n" +
-                  "    j2cl_library(\n" +
+                  "    _j2cl_library(\n" +
                   "        name = \"com_example__myapp__1_0-j2cl\",\n" +
                   "        srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
@@ -4374,7 +4374,7 @@ public class ApplicationRecordTest
                   "        name = \"myapp-plugin-a\",\n" +
                   "        actual = \":com_example__myapp__1_0-plugin\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0__plugin_library\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -4382,12 +4382,12 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
-                  "    java_plugin(\n" +
+                  "    _java_plugin(\n" +
                   "        name = \"com_example__myapp__1_0__plugin\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
                   "    )\n" +
-                  "    java_library(\n" +
+                  "    _java_library(\n" +
                   "        name = \"com_example__myapp__1_0-plugin\",\n" +
                   "        exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
@@ -4397,7 +4397,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp2\",\n" +
                   "        actual = \":com_example__myapp2__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp2__1_0\",\n" +
                   "        jars = [\"@com_example__myapp2__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp2__1_0__sources//file\",\n" +
@@ -4410,7 +4410,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp2-j2cl\",\n" +
                   "        actual = \":com_example__myapp2__1_0-j2cl\",\n" +
                   "    )\n" +
-                  "    j2cl_library(\n" +
+                  "    _j2cl_library(\n" +
                   "        name = \"com_example__myapp2__1_0-j2cl\",\n" +
                   "        srcs = [\"@com_example__myapp2__1_0__sources//file\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
@@ -4421,7 +4421,7 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp2-plugin\",\n" +
                   "        actual = \":com_example__myapp2__1_0-plugin\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp2__1_0__plugin_library\",\n" +
                   "        jars = [\"@com_example__myapp2__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp2__1_0__sources//file\",\n" +
@@ -4429,12 +4429,12 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":myapp-java-a\"],\n" +
                   "    )\n" +
-                  "    java_plugin(\n" +
+                  "    _java_plugin(\n" +
                   "        name = \"com_example__myapp2__1_0__plugin\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":com_example__myapp2__1_0__plugin_library\"],\n" +
                   "    )\n" +
-                  "    java_library(\n" +
+                  "    _java_library(\n" +
                   "        name = \"com_example__myapp2__1_0-plugin\",\n" +
                   "        exported_plugins = [\"com_example__myapp2__1_0__plugin\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
@@ -4444,7 +4444,7 @@ public class ApplicationRecordTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +

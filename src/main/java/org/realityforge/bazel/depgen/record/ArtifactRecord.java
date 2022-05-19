@@ -735,7 +735,7 @@ public final class ArtifactRecord
     {
       arguments.put( "data", Collections.singletonList( verifyLabel() ) );
     }
-    output.writeCall( "java_import", arguments );
+    output.writeCall( "_java_import", arguments );
   }
 
   @Nonnull
@@ -790,7 +790,7 @@ public final class ArtifactRecord
                          .sorted()
                          .collect( Collectors.toList() ) );
       }
-      output.writeCall( "j2cl_library", arguments );
+      output.writeCall( "_j2cl_library", arguments );
     }
     else
     {
@@ -804,7 +804,7 @@ public final class ArtifactRecord
         arguments.put( "jar", asString( getQualifiedBinaryLabel() ) );
       }
       arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-      output.writeCall( "j2cl_import", arguments );
+      output.writeCall( "_j2cl_import", arguments );
     }
   }
 
@@ -823,7 +823,7 @@ public final class ArtifactRecord
     }
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     arguments.put( "deps", Collections.singletonList( "\":" + getBaseName() + PLUGIN_LIBRARY_SUFFIX + "\"" ) );
-    output.writeCall( "java_plugin", arguments );
+    output.writeCall( "_java_plugin", arguments );
   }
 
   @Nonnull
@@ -873,7 +873,7 @@ public final class ArtifactRecord
     }
     arguments.put( "exported_plugins", plugins );
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    output.writeCall( "java_library", arguments );
+    output.writeCall( "_java_library", arguments );
   }
 
   void writeArtifactTargets( @Nonnull final StarlarkOutput output )
@@ -921,7 +921,7 @@ public final class ArtifactRecord
     final List<String> urls = getUrls();
     assert null != urls && !urls.isEmpty();
     arguments.put( "urls", urls.stream().map( this::asString ).collect( Collectors.toList() ) );
-    output.writeCall( "http_file", arguments );
+    output.writeCall( "_http_file", arguments );
   }
 
   void writeArtifactSourcesHttpFileRule( @Nonnull final StarlarkOutput output )
@@ -943,7 +943,7 @@ public final class ArtifactRecord
     final List<String> urls = getSourceUrls();
     assert null != urls && !urls.isEmpty();
     arguments.put( "urls", urls.stream().map( this::asString ).collect( Collectors.toList() ) );
-    output.writeCall( "http_file", arguments );
+    output.writeCall( "_http_file", arguments );
   }
 
   void writeArtifactAnnotationsHttpFileRule( @Nonnull final StarlarkOutput output )
@@ -965,7 +965,7 @@ public final class ArtifactRecord
     final List<String> urls = getExternalAnnotationUrls();
     assert null != urls && !urls.isEmpty();
     arguments.put( "urls", urls.stream().map( this::asString ).collect( Collectors.toList() ) );
-    output.writeCall( "http_file", arguments );
+    output.writeCall( "_http_file", arguments );
   }
 
   void writeArtifactJsSourcesHttpFileRule( @Nonnull final StarlarkOutput output )
@@ -997,7 +997,7 @@ public final class ArtifactRecord
     final String buildFileContent = new String( baos.toByteArray(), StandardCharsets.UTF_8 );
 
     arguments.put( "build_file_content", asString( buildFileContent ) );
-    output.writeCall( "http_archive", arguments );
+    output.writeCall( "_http_archive", arguments );
   }
 
   @Nonnull

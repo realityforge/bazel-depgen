@@ -61,8 +61,8 @@ public class GenerateCommandTest
                   "# Dependency Graph Generated from the input data\n" +
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
-                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
+                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"" + model.getConfigSha256() + "\"\n" +
@@ -74,21 +74,21 @@ public class GenerateCommandTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + url + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"" + url + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -148,7 +148,7 @@ public class GenerateCommandTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -161,7 +161,7 @@ public class GenerateCommandTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
@@ -214,8 +214,8 @@ public class GenerateCommandTest
                   "# Dependency Graph Generated from the input data\n" +
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
-                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", \"java_import\")\n" +
+                  "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"" +
@@ -229,7 +229,7 @@ public class GenerateCommandTest
                   "        Must be run from a WORKSPACE file.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -238,7 +238,7 @@ public class GenerateCommandTest
                   "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -247,7 +247,7 @@ public class GenerateCommandTest
                   "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    http_file(\n" +
+                  "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
@@ -309,7 +309,7 @@ public class GenerateCommandTest
                   "        name = \"com_example__myapp\",\n" +
                   "        actual = \":com_example__myapp__1_0\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
@@ -322,7 +322,7 @@ public class GenerateCommandTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "    )\n" +
-                  "    java_import(\n" +
+                  "    _java_import(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +

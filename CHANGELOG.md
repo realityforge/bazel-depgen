@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Use a `_` prefix when importing functions from bazel extension files so that the imported symbol is considered "private" and can not be accessed by downstream consumers.
+
 ### [v0.14](https://github.com/realityforge/bazel-depgen/tree/v0.14) (2022-05-13) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.13...v0.14)
 
 Changes in this release:
