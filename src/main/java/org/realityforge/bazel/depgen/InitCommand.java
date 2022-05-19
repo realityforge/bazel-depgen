@@ -159,10 +159,14 @@ final class InitCommand
   {
     try
     {
-      final InputStream inputStream = getClass().getResourceAsStream( "templates/dependencies.yml" );
-      assert null != inputStream;
-      final byte[] data = new byte[ inputStream.available() ];
-      final int count = inputStream.read( data );
+      final byte[] data;
+      final int count;
+      try ( InputStream inputStream = getClass().getResourceAsStream( "templates/dependencies.yml" ) )
+      {
+        assert null != inputStream;
+        data = new byte[ inputStream.available() ];
+        count = inputStream.read( data );
+      }
       if ( data.length != count )
       {
         throw new IOException( "Failed to ready file fully" );
