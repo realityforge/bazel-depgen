@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.15](https://github.com/realityforge/bazel-depgen/tree/v0.15) (2022-05-20) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.14...v0.15)
+
+Changes in this release:
 
 * Use a `_` prefix when importing functions from bazel extension files so that the imported symbol is considered "private" and can not be accessed by downstream consumers.
 * Change the way we verify the sha256 for `dependencies.yml` configuration file to be a test. This makes it easier to integrate with a more traditional bazel build flow.
