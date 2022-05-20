@@ -1,5 +1,7 @@
 # Change Log
 
+### Unreleased
+
 ### [v0.15](https://github.com/realityforge/bazel-depgen/tree/v0.15) (2022-05-20) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.14...v0.15)
 
 Changes in this release:
