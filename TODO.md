@@ -4,76 +4,22 @@ This document is essentially a list of shorthand notes describing work yet to be
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
-https://github.com/classgraph/classgraph to scan java to generate java build files?
-
-Features to steal from ... https://github.com/square/bazel_maven_repository
-
-Also, great example of tools that is maintained https://github.com/graknlabs/dependencies
-
-https://www.buildbuddy.io/docs/rbe-github-actions
-
 * Add `upgrade` command that updates depgen dependency.
 
-* Use J2CL alikes of `jvm_import_external` & `jvm_maven_import_external` - see https://github.com/google/j2cl/commit/8c188ee68b5c254f730a5a6b9c578af001c60fb2
-
-* Optionally run something like [jvm-classpath-validator](https://github.com/or-shachar/jvm-classpath-validator)
-  on produced libraries to verify that the classpaths do not have collisions. A more advanced tool may even go
-  further and generate a list of all java classes in each artifact. Other tools could pick detect when compiles
-  fail due to missing classes and suggest which libraries to add to which modules. For this it may be required to
-  write this tool from scratch.
-
-* Also run unused deps tool?
-
-* Re-add licensing back into plugin. See https://docs.google.com/document/u/0/d/1uwBuhAoBNrw8tmFs-NxlssI6VRolidGYdYqagLqHWt8/mobilebasic
+* Optionally pass output through [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier).
 
 * Consider adding `buildifier` back into the build project. It can either verify that the output bazel files do not
   generate any warnings by running `buildifier --lint=warn` on any generated file as part of our build process _or_
   we could run `buildifier --lint=fix` when we output files for a slightly improved forward compatibility?
 
-* Consider adding support for workspace rules for java etc via
-
-```
-   if not omit_rules_java:
-        http_archive(
-            name = "rules_java",
-            strip_prefix = "rules_java-0.1.1",
-            sha256 = "6b753b0c02b7fc1902e39f4f330c5958a42f31ea7832c11c11e5c11306292c27",
-            urls = ["https://github.com/bazelbuild/rules_java/archive/0.1.1.tar.gz"],
-        )
-```
-
-* Start to separate `dependenciez.bzl` according to latest conventions. i.e. put workspace rules in `repositories.bzl`
-  in dependencies directory. Or maybe not as we probably want to be able to explicitly add customized rules. Maybe we
-  generate it there but add configuration to put it elsewhere? After all we are not generating rules but just deps
-
-  See https://docs.bazel.build/versions/master/skylark/deploying.html#dependencies
+* Separate `dependenciez.bzl` so that workspace macro goes in `deps.bzl` and target macro into `rules.bzl`?
 
 * Currently, even if an artifact is restricted to a repository it is looked up in all repositories. Figure out a
   way to restrict it to a specific repository.
 
-* Shutdown bazel servers after test
-
-* Read a global `.depgen.rc` so can use specify settings such as `settings.xml` location and the cache
-  directory to some central place (i.e. `~/.depgen/repository`)
-
-* Change the way we check whether the generated bazel extension is up to date.
-  In theory, we can add an aspect that will add action to perform check for "uptodate-ness"
-  and this aspect can be activated by adding the appropriate arguments to .bazelrc for the
-  project. See https://app.slack.com/client/TA4K1KQ87/CA31HN1T3/thread/CA31HN1T3-1618552167.172600
-
-* Add suffix attribute added to each nature config and use that suffix for those artifacts. Default `-j2cl`
-  unless underlying artifact has that suffix and there is no other nature ...
-
-* Use j2cl support described in https://github.com/google/j2cl/issues/38
-
-* Consider trying to get `j2cl_library` to support `data` attribute and remove cruft from generated infrastructure.
-
 * If the j2cl artifact already has -j2cl suffix ... then don't add another?
 
 * order omits based on omit key rather than underlying artifact key
-
-* Integrate with publishing functionality like
-  https://github.com/bazelbuild/rules_jvm_external#publishing-to-external-repositories
 
 * Multiple artifact classifiers from a single coordinate
   - can I get the `test-sources` classifier when also getting the `jar` classifier?
@@ -122,71 +68,27 @@ Where it is unclear why colt is included. Maybe emitting the dependency graph or
   - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
   - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
 
-* Optionally pass output through [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier).
-
-* Add support for managed dependencies which essentially contains a list of artifacts that include version
-
 * Add support for `neverlink` on artifacts.
 
 * `http_file` now supports basic authentication via `.netrc`. See if we can figure out a way to align the two
   `settings.xml` and `.netrc`. Perhaps by moving to `.netrc` exclusively. Then we could also remove names from
   repositories and cache via url.
 
-* Add in the ability to do the outputs from bazel-deps as an external repo
-    - see https://github.com/johnynek/bazel-deps/commit/48fdf7f8bcf3aadfa07f9f7e6f0c9f4247cb0f58
+* Gazelle for java already does some of scanning. Use or copy? https://github.com/bazel-contrib/rules_jvm/tree/main/java/gazelle
+* Optionally run something like [jvm-classpath-validator](https://github.com/or-shachar/jvm-classpath-validator)
+  on produced libraries to verify that the classpaths do not have collisions. A more advanced tool may even go
+  further and generate a list of all java classes in each artifact. Other tools could pick detect when compiles
+  fail due to missing classes and suggest which libraries to add to which modules. For this it may be required to
+  write this tool from scratch.
+- https://github.com/classgraph/classgraph to scan java to generate java build files?
+- Most likely we will want to support a tool like [BUILD_file_generator](https://github.com/bazelbuild/BUILD_file_generator)
+  or [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps), both of which scan java files and
+  automagically creates `BUILD` files (somehow?) so that there is fine grain dependencies without the heartache.
+  Also see [ThirdPartyDepsAnalyzer](https://github.com/google/startup-os/blob/b10384644056cc9ac44388a76dbd0a4a8350e76d/tools/build_file_generator/ThirdPartyDepsAnalyzer.java) and friends. (See [migrating-gjf-to-bazel.md](https://github.com/cgrushko/text/blob/master/migrating-gjf-to-bazel.md))
 
-* Look at [startup-os](https://github.com/google/startup-os) which shows how to use bazel with googles integrated
-  stack to manage a complete stack. It also integrates checkstyle as well as scanning java to build java_libraries etc.
+Places to look for bazel inspiration:
 
-* Look to [bazel-tools](https://github.com/spotify/bazel-tools) and [awesome-bazel](https://github.com/jin/awesome-bazel)
-  to see if there is other tools that can be incoporated.
-  - Most likely we will want to support a tool like [BUILD_file_generator](https://github.com/bazelbuild/BUILD_file_generator)
-    or [tools_jvm_autodeps](https://github.com/cgrushko/tools_jvm_autodeps), both of which scan java files and
-    automagically creates `BUILD` files (somehow?) so that there is fine grain dependencies without the heartache.
-    Also see [ThirdPartyDepsAnalyzer](https://github.com/google/startup-os/blob/b10384644056cc9ac44388a76dbd0a4a8350e76d/tools/build_file_generator/ThirdPartyDepsAnalyzer.java) and friends. (See [migrating-gjf-to-bazel.md](https://github.com/cgrushko/text/blob/master/migrating-gjf-to-bazel.md))
-  - Another option is [exodus](https://github.com/wix/exodus)
-  - Consider a J2CL-CLI project that drives this whole process similar to how [Angular CLI](https://github.com/angular/angular/issues/19058) works.
-
-https://github.com/thundergolfer/bazel-linting-system
-
-* Consider https://github.com/Evertz/bzlgen
-
-* Also look to tools like [bazel-java-builder-template](https://github.com/salesforce/bazel-java-builder-template)
-  that demonstrate how to build code generation tools.
-
-* Look at [pomgen](https://github.com/salesforce/pomgen) - groups packages into an artifact (i.e. a
-   maven-esque artifact) and groups artifacts into libraries (i.e. multiple artifacts that share a
-   version and probably groupId and are released together)
-
-* Look at training materials in https://github.com/OasisDigital/bazelcon-2019
-
-Figure out how to use
-
-https://docs.bazel.build/versions/master/skylark/lib/globals.html#workspace and
-managed_directories for exposing generated code so IDE can see it
-
-* [Cirrus CI](https://cirrus-ci.org/features/) - A CI that has goodish support for bazel caches and free for OS
-
-Other places to look for bazel inspiration
-
-* https://github.com/batfish/batfish/tree/master/skylark
-
-* https://github.com/sgammon/GUST
-
-* Look at configuration in https://github.com/envoyproxy/envoy/blob/master/.bazelrc
-
-## Bazel Summary
-
-* The basic build unit is a target
-* Targets are instances of rules
-
-Always use `--unused-dependency-checker=ERROR` `--srtict-java-deps=ERROR`
-
-And from https://github.com/spotify/bazel-tools
-
-depfuzz - A tool for removing unused dependencies with a fuzzing strategy.
-expand-macros - A tool for expanding Bazel macros into the rules that they generate.
-format - A tool for formatting all files in the repository according to common style guides.
-unused - A tool for showing source files that are not used in the build.
-sync-deps - A tool for synchronizing third-party dependencies.
-sync-repos - A tool for synchronizing third-party repositories.
+* https://github.com/sgammon/elide
+* https://github.com/vaticle/dependencies/tree/master/tool/unuseddeps
+* https://github.com/vaticle/dependencies/tree/master/tool/checkstyle
+* https://github.com/envoyproxy/envoy/blob/master/.bazelrc
