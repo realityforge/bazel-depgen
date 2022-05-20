@@ -495,7 +495,7 @@ public final class ApplicationRecord
                      "\"--verify-sha256\"",
                      "_CONFIG_SHA256"
                    ) );
-    arguments.put( "srcs", Collections.singletonList( "\":verify_config_sha256.sh\"" ) );
+    arguments.put( "srcs", Collections.singletonList( "\":" + _source.verifyTargetName() + ".sh\"" ) );
     arguments.put( "data", Arrays.asList( "\"" + depgenArtifactLabel + "\"",
                                           "\"" + configLabel + "\"",
                                           "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
@@ -509,9 +509,9 @@ public final class ApplicationRecord
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + _source.getOptions().getNamePrefix() + "verify_config_sha256_script\"" );
+    arguments.put( "name", "\"" + _source.verifyTargetName() + "_script\"" );
     arguments.put( "toolchains", Collections.singletonList( "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
-    arguments.put( "outs", Collections.singletonList( "\"verify_config_sha256.sh\"" ) );
+    arguments.put( "outs", Collections.singletonList( "\"" + _source.verifyTargetName() + ".sh\"" ) );
     arguments.put( "cmd",
                    "\"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\"" );
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );

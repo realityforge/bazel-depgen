@@ -3269,7 +3269,7 @@ public class ApplicationRecordTest
                   "        \"--verify-sha256\",\n" +
                   "        _CONFIG_SHA256,\n" +
                   "    ],\n" +
-                  "    srcs = [\":verify_config_sha256.sh\"],\n" +
+                  "    srcs = [\":myapp_verify_config_sha256.sh\"],\n" +
                   "    data = [\n" +
                   "        \":myapp_bazel_depgen\",\n" +
                   "        \"//thirdparty:dependencies.yml\",\n" +
@@ -3298,7 +3298,7 @@ public class ApplicationRecordTest
                   "native.genrule(\n" +
                   "    name = \"myapp_verify_config_sha256_script\",\n" +
                   "    toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "    outs = [\"verify_config_sha256.sh\"],\n" +
+                  "    outs = [\"myapp_verify_config_sha256.sh\"],\n" +
                   "    cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    testonly = True,\n" +
