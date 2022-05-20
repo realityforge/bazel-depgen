@@ -2046,7 +2046,6 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    native.alias(\n" +
@@ -2195,7 +2194,6 @@ public class ApplicationRecordTest
                   "            srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "            visibility = [\"//visibility:private\"],\n" +
-                  "            data = [\":verify_config_sha256\"],\n" +
                   "        )\n" +
                   "\n" +
                   "    if not omit_org_realityforge_bazel_depgen__bazel_depgen:\n" +
@@ -2311,7 +2309,6 @@ public class ApplicationRecordTest
                   "            srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "            visibility = [\"//visibility:private\"],\n" +
-                  "            data = [\":verify_config_sha256\"],\n" +
                   "        )\n" +
                   "\n" +
                   "    if not omit_bazel_depgen:\n" +
@@ -2423,7 +2420,6 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    native.alias(\n" +
@@ -2547,7 +2543,6 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__mylib__2_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:mylib:2.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    native.alias(\n" +
@@ -3451,7 +3446,6 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    native.alias(\n" +
@@ -3765,7 +3759,6 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    native.alias(\n" +
@@ -4353,7 +4346,6 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__mylib__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:mylib:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    native.alias(\n" +
@@ -4511,7 +4503,6 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
                   "    _java_plugin(\n" +
                   "        name = \"com_example__myapp__1_0__plugin\",\n" +
@@ -4707,7 +4698,6 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    native.alias(\n" +
@@ -4730,7 +4720,6 @@ public class ApplicationRecordTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
                   "    _java_plugin(\n" +
                   "        name = \"com_example__myapp__1_0__plugin\",\n" +

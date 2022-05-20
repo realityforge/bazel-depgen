@@ -174,7 +174,6 @@ public class GenerateCommandTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    native.alias(\n" +
@@ -355,7 +354,6 @@ public class GenerateCommandTest
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        data = [\":verify_config_sha256\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    native.alias(\n" +
