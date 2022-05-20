@@ -478,7 +478,7 @@ public final class ApplicationRecord
     throws IOException
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + _source.getOptions().getNamePrefix() + "verify_config_sha256\"" );
+    arguments.put( "name", "\"" + _source.verifyTargetName() + "\"" );
     arguments.put( "size", "\"small\"" );
     final String configLabel = getConfigFileLabel();
     final String depgenArtifactLabel = getDepgenArtifactLabel();

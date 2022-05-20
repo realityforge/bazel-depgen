@@ -288,6 +288,12 @@ public final class ApplicationModel
     return Objects.requireNonNull( findReplacement( groupId, artifactId ) );
   }
 
+  @Nonnull
+  public String verifyTargetName()
+  {
+    return getOptions().getNamePrefix() + "verify_config_sha256";
+  }
+
   @Nullable
   private ReplacementModel findReplacement( @Nonnull final Predicate<ReplacementModel> predicate )
   {
