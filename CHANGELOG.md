@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Use a `_` prefix when importing functions from bazel extension files so that the imported symbol is considered "private" and can not be accessed by downstream consumers.
+* Change the way we verify the sha256 for `dependencies.yml` configuration file to be a test. This makes it easier to integrate with a more traditional bazel build flow.
 
 ### [v0.14](https://github.com/realityforge/bazel-depgen/tree/v0.14) (2022-05-13) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.13...v0.14)
 

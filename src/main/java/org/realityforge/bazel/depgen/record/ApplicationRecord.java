@@ -479,23 +479,43 @@ public final class ApplicationRecord
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + _source.getOptions().getNamePrefix() + "verify_config_sha256\"" );
+    arguments.put( "size", "\"small\"" );
     final String configLabel = getConfigFileLabel();
     final String depgenArtifactLabel = getDepgenArtifactLabel();
 
-    arguments.put( "srcs", Arrays.asList( "\"" + depgenArtifactLabel + "\"",
+    arguments.put( "args",
+                   Arrays.asList(
+                     "\"$(JAVA)\"",
+                     "\"-jar\"",
+                     "\"$(location " + depgenArtifactLabel + ")\"",
+                     "\"--config-file\"",
+                     "\"$(location " + configLabel + ")\"",
+                     "\"--verbose\"",
+                     "\"hash\"",
+                     "\"--verify-sha256\"",
+                     "_CONFIG_SHA256"
+                   ) );
+    arguments.put( "srcs", Collections.singletonList( "\":verify_config_sha256.sh\"" ) );
+    arguments.put( "data", Arrays.asList( "\"" + depgenArtifactLabel + "\"",
                                           "\"" + configLabel + "\"",
                                           "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
-
     arguments.put( "toolchains", Collections.singletonList( "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
-    arguments.put( "outs", Collections.singletonList( "\"command-output.txt\"" ) );
-
-    arguments.put( "cmd", "\"$(JAVA) " +
-                          "-jar $(location " + depgenArtifactLabel + ") " +
-                          "--config-file $(location " + configLabel + ") " +
-                          "--quiet " +
-                          "hash " +
-                          "--verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256)" );
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+
+    output.writeCall( "native.sh_test", arguments );
+  }
+
+  void writeVerifyScriptTarget( @Nonnull final StarlarkOutput output )
+    throws IOException
+  {
+    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+    arguments.put( "name", "\"" + _source.getOptions().getNamePrefix() + "verify_config_sha256_script\"" );
+    arguments.put( "toolchains", Collections.singletonList( "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
+    arguments.put( "outs", Collections.singletonList( "\"verify_config_sha256.sh\"" ) );
+    arguments.put( "cmd",
+                   "\"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\"" );
+    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    arguments.put( "testonly", "True" );
     output.writeCall( "native.genrule", arguments );
   }
 
@@ -557,6 +577,8 @@ public final class ApplicationRecord
         {
           macro.newLine();
           writeVerifyTarget( output );
+          macro.newLine();
+          writeVerifyScriptTarget( output );
           macro.newLine();
           writeRegenerateExtensionScriptTarget( output );
           macro.newLine();

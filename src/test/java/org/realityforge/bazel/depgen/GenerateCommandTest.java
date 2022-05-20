@@ -100,17 +100,37 @@ public class GenerateCommandTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.genrule(\n" +
+                  "    native.sh_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
-                  "        srcs = [\n" +
+                  "        size = \"small\",\n" +
+                  "        args = [\n" +
+                  "            \"$(JAVA)\",\n" +
+                  "            \"-jar\",\n" +
+                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
+                  "            \"--config-file\",\n" +
+                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"--verbose\",\n" +
+                  "            \"hash\",\n" +
+                  "            \"--verify-sha256\",\n" +
+                  "            _CONFIG_SHA256,\n" +
+                  "        ],\n" +
+                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
+                  "        data = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"verify_config_sha256_script\",\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"verify_config_sha256.sh\"],\n" +
+                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -261,17 +281,37 @@ public class GenerateCommandTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.genrule(\n" +
+                  "    native.sh_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
-                  "        srcs = [\n" +
+                  "        size = \"small\",\n" +
+                  "        args = [\n" +
+                  "            \"$(JAVA)\",\n" +
+                  "            \"-jar\",\n" +
+                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
+                  "            \"--config-file\",\n" +
+                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"--verbose\",\n" +
+                  "            \"hash\",\n" +
+                  "            \"--verify-sha256\",\n" +
+                  "            _CONFIG_SHA256,\n" +
+                  "        ],\n" +
+                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
+                  "        data = [\n" +
                   "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "            \"//thirdparty:dependencies.yml\",\n" +
                   "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
                   "        ],\n" +
                   "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"command-output.txt\"],\n" +
-                  "        cmd = \"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --config-file $(location //thirdparty:dependencies.yml) --quiet hash --verify-sha256 %s > \\\"$@\\\"\" % (_CONFIG_SHA256),\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "    )\n" +
+                  "\n" +
+                  "    native.genrule(\n" +
+                  "        name = \"verify_config_sha256_script\",\n" +
+                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        outs = [\"verify_config_sha256.sh\"],\n" +
+                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
+                  "        visibility = [\"//visibility:private\"],\n" +
+                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
