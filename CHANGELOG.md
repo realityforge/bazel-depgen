@@ -3,6 +3,7 @@
 ### Unreleased
 
 * If the `BUILD_WORKSPACE_DIRECTORY` environment variable is present then use the value as the current working directory. This is useful when the command is run via `bazel run ...` as it will use the root repository and thus can modify local source rather than acting on the `execroot` created by bazel which will be removed once the command completes.
+* Reimplement the generated `verify_config_sha256` target as a `java_binary` target.
 
 ### [v0.15](https://github.com/realityforge/bazel-depgen/tree/v0.15) (2022-05-20) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.14...v0.15)
 

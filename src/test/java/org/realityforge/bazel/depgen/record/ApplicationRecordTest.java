@@ -1966,43 +1966,27 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeTargetMacro( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2076,7 +2060,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeTargetMacro( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
                   "        Macro to define targets for dependencies.\n" +
@@ -2111,7 +2095,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeTargetMacro( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "def generate_targets(\n" +
                   "        omit_com_example__myapp = False,\n" +
                   "        omit_org_realityforge_bazel_depgen__bazel_depgen = False):\n" +
@@ -2119,37 +2103,21 @@ public class ApplicationRecordTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2226,7 +2194,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeTargetMacro( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "def generate_targets(\n" +
                   "        omit_bazel_depgen = False,\n" +
                   "        omit_myapp = False):\n" +
@@ -2234,37 +2202,21 @@ public class ApplicationRecordTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2340,43 +2292,27 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeTargetMacro( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "def generate_myapp_targets():\n" +
                   "    \"\"\"\n" +
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2449,43 +2385,27 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeTargetMacro( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2576,43 +2496,27 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeTargetMacro( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2686,43 +2590,27 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeTargetMacro( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "def generate_targets():\n" +
                   "    \"\"\"\n" +
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\"@org_realityforge_bazel//:depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location @org_realityforge_bazel//:depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \"@org_realityforge_bazel//:depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -2772,8 +2660,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
                   "        Repository rules macro to load dependencies.\n" +
@@ -2785,23 +2672,22 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -2823,8 +2709,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
                   "        Repository rules macro to load dependencies.\n" +
@@ -2836,30 +2721,29 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__annotations\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-annotations.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-annotations.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-annotations.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -2879,8 +2763,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "def generate_workspace_rules(\n" +
                   "        omit_com_example__myapp = False,\n" +
                   "        omit_org_realityforge_bazel_depgen__bazel_depgen = False):\n" +
@@ -2895,14 +2778,14 @@ public class ApplicationRecordTest
                   "            name = \"com_example__myapp__1_0\",\n" +
                   "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "            urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "            urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "        )\n" +
                   "\n" +
                   "        _http_file(\n" +
                   "            name = \"com_example__myapp__1_0__sources\",\n" +
                   "            downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "            urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "            urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "        )\n" +
                   "\n" +
                   "    if not omit_org_realityforge_bazel_depgen__bazel_depgen:\n" +
@@ -2910,9 +2793,8 @@ public class ApplicationRecordTest
                   "            name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "            downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "            sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "            urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "            urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "        )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -2932,8 +2814,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "def generate_myapp_workspace_rules():\n" +
                   "    \"\"\"\n" +
                   "        Repository rules macro to load dependencies.\n" +
@@ -2945,23 +2826,22 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -2980,8 +2860,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
                   "        Repository rules macro to load dependencies.\n" +
@@ -2993,37 +2872,36 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__mylib__2_0\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/2.0/mylib-2.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/mylib/2.0/mylib-2.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/mylib/2.0/mylib-2.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__mylib__2_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/2.0/mylib-2.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/mylib/2.0/mylib-2.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/mylib/2.0/mylib-2.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -3046,8 +2924,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
                   "        Repository rules macro to load dependencies.\n" +
@@ -3059,23 +2936,22 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -3093,7 +2969,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeDependencyGraphIfRequired( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "# Dependency Graph Generated from the input data\n" +
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "#    \\- com.example:mylib:jar:2.0 [compile]\n" +
@@ -3117,7 +2993,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeDependencyGraphIfRequired( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ), "" );
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ), "" );
   }
 
   @Test
@@ -3132,7 +3008,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeRegenerateExtensionTarget( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "native.sh_binary(\n" +
                   "    name = \"regenerate_depgen_extension\",\n" +
                   "    srcs = [\"regenerate_depgen_extension_script\"],\n" +
@@ -3164,7 +3040,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeRegenerateExtensionScriptTarget( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "native.genrule(\n" +
                   "    name = \"regenerate_depgen_extension_script\",\n" +
                   "    srcs = [\n" +
@@ -3191,52 +3067,22 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeVerifyTarget( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
-                  "native.sh_test(\n" +
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
+                  "java_test(\n" +
                   "    name = \"verify_config_sha256\",\n" +
                   "    size = \"small\",\n" +
+                  "    runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "    main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "    args = [\n" +
-                  "        \"$(JAVA)\",\n" +
-                  "        \"-jar\",\n" +
-                  "        \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "        \"--config-file\",\n" +
-                  "        \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "        \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "        \"--verbose\",\n" +
                   "        \"hash\",\n" +
                   "        \"--verify-sha256\",\n" +
                   "        _CONFIG_SHA256,\n" +
                   "    ],\n" +
-                  "    srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "    data = [\n" +
-                  "        \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        \"//thirdparty:dependencies.yml\",\n" +
-                  "        \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "    ],\n" +
-                  "    toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "    data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  ")\n" );
-  }
-
-  @Test
-  public void writeVerifyScriptTarget()
-    throws Exception
-  {
-    final Path dir = FileUtil.createLocalTempDir();
-
-    writeConfigFile( dir, "" );
-
-    final ApplicationRecord record = loadApplicationRecord();
-
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    record.writeVerifyScriptTarget( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
-                  "native.genrule(\n" +
-                  "    name = \"verify_config_sha256_script\",\n" +
-                  "    toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "    outs = [\"verify_config_sha256.sh\"],\n" +
-                  "    cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
-                  "    testonly = True,\n" +
                   ")\n" );
   }
 
@@ -3254,54 +3100,22 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeVerifyTarget( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
-                  "native.sh_test(\n" +
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
+                  "java_test(\n" +
                   "    name = \"myapp_verify_config_sha256\",\n" +
                   "    size = \"small\",\n" +
+                  "    runtime_deps = [\":myapp_bazel_depgen\"],\n" +
+                  "    main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "    args = [\n" +
-                  "        \"$(JAVA)\",\n" +
-                  "        \"-jar\",\n" +
-                  "        \"$(location :myapp_bazel_depgen)\",\n" +
                   "        \"--config-file\",\n" +
-                  "        \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "        \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "        \"--verbose\",\n" +
                   "        \"hash\",\n" +
                   "        \"--verify-sha256\",\n" +
                   "        _CONFIG_SHA256,\n" +
                   "    ],\n" +
-                  "    srcs = [\":myapp_verify_config_sha256.sh\"],\n" +
-                  "    data = [\n" +
-                  "        \":myapp_bazel_depgen\",\n" +
-                  "        \"//thirdparty:dependencies.yml\",\n" +
-                  "        \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "    ],\n" +
-                  "    toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "    data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  ")\n" );
-  }
-
-  @Test
-  public void writeVerifyScriptTarget_usingPrefixAndAlternativeAliasStrategy()
-    throws Exception
-  {
-    final Path dir = FileUtil.createLocalTempDir();
-
-    writeConfigFile( dir, "options:\n" +
-                          "  namePrefix: myapp\n" +
-                          "  aliasStrategy: ArtifactId\n" );
-
-    final ApplicationRecord record = loadApplicationRecord();
-
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    record.writeVerifyScriptTarget( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
-                  "native.genrule(\n" +
-                  "    name = \"myapp_verify_config_sha256_script\",\n" +
-                  "    toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "    outs = [\"myapp_verify_config_sha256.sh\"],\n" +
-                  "    cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
-                  "    testonly = True,\n" +
                   ")\n" );
   }
 
@@ -3320,8 +3134,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
@@ -3334,10 +3147,10 @@ public class ApplicationRecordTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\", _java_test = \"java_test\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
-                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
+                  "_CONFIG_SHA256 = \"MYSHA\"\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -3350,21 +3163,21 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "def generate_targets():\n" +
@@ -3372,37 +3185,21 @@ public class ApplicationRecordTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -3458,7 +3255,6 @@ public class ApplicationRecordTest
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -3479,8 +3275,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
@@ -3506,14 +3301,14 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "def generate_targets():\n" +
@@ -3532,7 +3327,6 @@ public class ApplicationRecordTest
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -3549,7 +3343,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeDefaultExtensionBuild( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "# Contents can be edited and will not be overridden.\n" +
                   "package(default_visibility = [\"//visibility:public\"])\n" +
@@ -3575,7 +3369,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeDefaultExtensionBuild( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "# File is auto-generated from ../dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "# Contents can be edited and will not be overridden.\n" +
                   "package(default_visibility = [\"//visibility:public\"])\n" +
@@ -3598,7 +3392,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeDefaultConfigBuild( new StarlarkOutput( outputStream ) );
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "# File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "# Contents can be edited and will not be overridden.\n" +
                   "package(default_visibility = [\"//visibility:public\"])\n" +
@@ -3622,8 +3416,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
@@ -3636,11 +3429,11 @@ public class ApplicationRecordTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\", _java_test = \"java_test\")\n" +
                   "load(\"@com_google_j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
-                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
+                  "_CONFIG_SHA256 = \"MYSHA\"\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -3653,21 +3446,21 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "def generate_targets():\n" +
@@ -3675,37 +3468,21 @@ public class ApplicationRecordTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -3771,7 +3548,6 @@ public class ApplicationRecordTest
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -3791,8 +3567,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
@@ -3806,11 +3581,11 @@ public class ApplicationRecordTest
                   "#    \\- com.example:mylib:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\", _java_test = \"java_test\")\n" +
                   "load(\"@com_google_j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
-                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
+                  "_CONFIG_SHA256 = \"MYSHA\"\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -3823,21 +3598,21 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__mylib__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "def generate_targets():\n" +
@@ -3845,37 +3620,21 @@ public class ApplicationRecordTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -3941,7 +3700,6 @@ public class ApplicationRecordTest
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -3973,8 +3731,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
@@ -3988,11 +3745,11 @@ public class ApplicationRecordTest
                   "#    \\- com.example:mylib:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\", _http_archive = \"http_archive\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\", _java_test = \"java_test\")\n" +
                   "load(\"@com_google_j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
-                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
+                  "_CONFIG_SHA256 = \"MYSHA\"\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -4005,13 +3762,13 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_archive(\n" +
                   "        name = \"com_example__myapp__1_0__js_sources\",\n" +
                   "        sha256 = \"94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "        build_file_content = \"\"\"\n" +
                   "filegroup(\n" +
                   "    name = \"srcs\",\n" +
@@ -4025,13 +3782,13 @@ public class ApplicationRecordTest
                   "        name = \"com_example__mylib__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0-sources.jar\",\n" +
                   "        sha256 = \"e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f\",\n" +
-                  "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_archive(\n" +
                   "        name = \"com_example__mylib__1_0__js_sources\",\n" +
                   "        sha256 = \"e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f\",\n" +
-                  "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
                   "        build_file_content = \"\"\"\n" +
                   "filegroup(\n" +
                   "    name = \"srcs\",\n" +
@@ -4049,7 +3806,7 @@ public class ApplicationRecordTest
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "def generate_targets():\n" +
@@ -4057,37 +3814,21 @@ public class ApplicationRecordTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -4159,7 +3900,6 @@ public class ApplicationRecordTest
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -4191,8 +3931,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
@@ -4206,10 +3945,10 @@ public class ApplicationRecordTest
                   "#    \\- com.example:mylib:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\", _java_test = \"java_test\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
-                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
+                  "_CONFIG_SHA256 = \"MYSHA\"\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -4222,35 +3961,35 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__mylib__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/mylib/1.0/mylib-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__mylib__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0-sources.jar\",\n" +
                   "        sha256 = \"e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f\",\n" +
-                  "        urls = [\"" + uri + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "def generate_targets():\n" +
@@ -4258,37 +3997,21 @@ public class ApplicationRecordTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -4358,7 +4081,6 @@ public class ApplicationRecordTest
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -4377,8 +4099,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
@@ -4391,10 +4112,10 @@ public class ApplicationRecordTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\", _java_library = \"java_library\", _java_plugin = \"java_plugin\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\", _java_library = \"java_library\", _java_plugin = \"java_plugin\", _java_test = \"java_test\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
-                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
+                  "_CONFIG_SHA256 = \"MYSHA\"\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -4407,21 +4128,21 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "def generate_targets():\n" +
@@ -4429,37 +4150,21 @@ public class ApplicationRecordTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -4525,7 +4230,6 @@ public class ApplicationRecordTest
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
@@ -4555,8 +4259,7 @@ public class ApplicationRecordTest
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeBazelExtension( new StarlarkOutput( outputStream ) );
-    //@formatter:off
-    assertEquals( asString( outputStream ),
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
                   "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
@@ -4571,11 +4274,11 @@ public class ApplicationRecordTest
                   "#    \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\", _java_test = \"java_test\")\n" +
                   "load(\"@com_google_j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
-                  "_CONFIG_SHA256 = \"" + record.getSource().getConfigSha256() + "\"\n" +
+                  "_CONFIG_SHA256 = \"MYSHA\"\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -4588,35 +4291,35 @@ public class ApplicationRecordTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp2__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp2/1.0/myapp2-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp2/1.0/myapp2-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp2/1.0/myapp2-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp2__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp2/1.0/myapp2-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "com/example/myapp2/1.0/myapp2-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp2/1.0/myapp2-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" + uri + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "def generate_targets():\n" +
@@ -4624,37 +4327,21 @@ public class ApplicationRecordTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.sh_test(\n" +
+                  "    java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
-                  "            \"$(JAVA)\",\n" +
-                  "            \"-jar\",\n" +
-                  "            \"$(location :org_realityforge_bazel_depgen__bazel_depgen)\",\n" +
                   "            \"--config-file\",\n" +
-                  "            \"$(location //thirdparty:dependencies.yml)\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"hash\",\n" +
                   "            \"--verify-sha256\",\n" +
                   "            _CONFIG_SHA256,\n" +
                   "        ],\n" +
-                  "        srcs = [\":verify_config_sha256.sh\"],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"verify_config_sha256_script\",\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"verify_config_sha256.sh\"],\n" +
-                  "        cmd = \"echo 'java_exe=\\\"$$1\\\" && shift && \\\"$$(rlocation \\\"$${java_exe#external/}\\\")\\\" \\\"$$@\\\"' > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "        testonly = True,\n" +
                   "    )\n" +
                   "\n" +
                   "    native.genrule(\n" +
@@ -4789,7 +4476,6 @@ public class ApplicationRecordTest
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
