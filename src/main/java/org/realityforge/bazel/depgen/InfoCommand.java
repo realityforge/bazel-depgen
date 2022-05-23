@@ -55,15 +55,16 @@ final class InfoCommand
   @Nonnull
   private String getCacheDir( @Nonnull final Context context )
   {
-    if ( context.environment().hasCacheDir() )
+    final Environment environment = context.environment();
+    if ( environment.hasCacheDir() )
     {
-      return context.environment().getCacheDir().toString();
+      return environment.getCacheDir().toString();
     }
-    else if ( Files.exists( context.environment().getConfigFile() ) )
+    else if ( Files.exists( environment.getConfigFile() ) )
     {
       try
       {
-        return Main.getCacheDirectory( context.environment(), context.loadModel() ).toString();
+        return Main.getCacheDirectory( environment, context.loadModel() ).toString();
       }
       catch ( final TerminalStateException tse )
       {
@@ -72,7 +73,7 @@ final class InfoCommand
     }
     else
     {
-      final File repositoryCache = BazelUtil.getOutputBase( context.environment().currentDirectory().toFile() );
+      final File repositoryCache = BazelUtil.getOutputBase( environment.currentDirectory().toFile() );
       if ( null == repositoryCache )
       {
         return "Unknown: Dependency file not present and either Bazel is not present or the WORKSPACE file is mis-configured.";
