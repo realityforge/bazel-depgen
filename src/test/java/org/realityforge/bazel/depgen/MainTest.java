@@ -267,7 +267,8 @@ public class MainTest
     assertTrue( environment.getCommand() instanceof GenerateCommand );
     assertEquals( environment.getConfigFile(), getDefaultConfigFile() );
     assertEquals( environment.getSettingsFile(),
-                  Paths.get( System.getProperty( "user.home" ), ".m2", "settings.xml" )
+                  Paths
+                    .get( System.getProperty( "user.home" ), ".m2", "settings.xml" )
                     .toAbsolutePath()
                     .normalize() );
     assertFalse( environment.hasCacheDir() );
