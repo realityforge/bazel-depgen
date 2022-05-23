@@ -65,7 +65,7 @@ final class SimpleTransferListener
       pad( buffer, pad );
       buffer.append( '\r' );
 
-      console.writer().print( buffer.toString() );
+      console.writer().print( buffer );
     }
   }
 
@@ -135,7 +135,7 @@ final class SimpleTransferListener
       final StringBuilder buffer = new StringBuilder( 64 );
       pad( buffer, lastLength );
       buffer.append( '\r' );
-      console.writer().print( buffer.toString() );
+      console.writer().print( buffer );
     }
   }
 
