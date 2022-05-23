@@ -395,7 +395,7 @@ public class Main
       logger.log( Level.SEVERE, "Error: " + parser.getErrorString() );
       return false;
     }
-    // Retrieve run directory first as some of the other options are interpreted relative to current directory
+    // Retrieve run directory first as some other options are interpreted relative to current directory
     for ( final CLOption option : parser.getArguments() )
     {
       if ( RUN_DIR_OPT == option.getId() )
