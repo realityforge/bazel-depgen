@@ -50,6 +50,11 @@ abstract class Command
     return true;
   }
 
+  boolean mayUseArtifactCache()
+  {
+    return false;
+  }
+
   boolean mayUseRepositoryCache()
   {
     return false;

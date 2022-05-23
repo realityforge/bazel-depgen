@@ -42,8 +42,8 @@ final class InfoCommand
   {
     printInfo( context, "config-file", () -> context.environment().getConfigFile() );
     printInfo( context, "settings-file", () -> context.environment().getSettingsFile() );
-    printInfo( context, "cache-directory", () -> context.environment().getCacheDir() );
     printInfo( context, "reset-cached-metadata", () -> context.environment().shouldResetCachedMetadata() );
+    printInfo( context, "cache-directory", () -> environment.hasCacheDir() ? environment.getCacheDir() : "-" );
     printInfo( context,
                "bazel-repository-cache",
                () -> environment.hasRepositoryCacheDir() ? environment.getRepositoryCacheDir() : "-" );

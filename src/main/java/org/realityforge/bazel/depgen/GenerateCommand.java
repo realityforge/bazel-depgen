@@ -17,6 +17,11 @@ final class GenerateCommand
     super( COMMAND, "Generate the bazel extension from the dependency configuration." );
   }
 
+  boolean mayUseArtifactCache()
+  {
+    return true;
+  }
+
   boolean mayUseRepositoryCache()
   {
     return true;

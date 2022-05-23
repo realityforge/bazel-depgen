@@ -539,7 +539,7 @@ public class Main
       environment.setSettingsFile( settingsFile );
     }
 
-    if ( !environment.hasCacheDir() )
+    if ( !environment.hasCacheDir() && environment.getCommand().mayUseArtifactCache() )
     {
       final File repositoryCache = BazelUtil.getOutputBase( environment.currentDirectory().toFile() );
       if ( null == repositoryCache )
