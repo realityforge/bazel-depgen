@@ -20,7 +20,6 @@ public class BazelUtilTest
 
   @Test
   public void getDefaultRepositoryCache()
-    throws Exception
   {
     // These tests assume that there is no WORKSPACE in parent directory from isolated directory
     // They also assume that bazel is present on build machine
@@ -46,7 +45,6 @@ public class BazelUtilTest
 
   @Test
   public void getRepositoryCache_WORKSPACE_notPresent()
-    throws Exception
   {
     // These tests assume that there is no WORKSPACE in parent directory from isolated directory
     // They also assume that bazel is present on build machine
@@ -67,7 +65,6 @@ public class BazelUtilTest
 
   @Test
   public void getOutputBase_WORKSPACE_notPresent()
-    throws Exception
   {
     final File repositoryCache = BazelUtil.getOutputBase( FileUtil.getCurrentDirectory().toFile() );
     assertNull( repositoryCache );
