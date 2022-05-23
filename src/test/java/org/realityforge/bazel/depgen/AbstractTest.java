@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.deployment.DeployRequest;
@@ -383,6 +384,13 @@ public abstract class AbstractTest
   }
 
   @Nonnull
+  final String loadAsString( @Nonnull final Path file, @Nullable final String sha256, @Nullable final String uri )
+    throws IOException
+  {
+    return cleanContent( loadAsString( file ), sha256, uri );
+  }
+
+  @Nonnull
   final String loadAsString( @Nonnull final Path file )
     throws IOException
   {
@@ -440,6 +448,31 @@ public abstract class AbstractTest
     logger.addHandler( handler );
     logger.setLevel( Level.ALL );
     return logger;
+  }
+
+  @Nonnull
+  protected final String asCleanString( @Nonnull final ByteArrayOutputStream outputStream,
+                                        @Nullable final String sha256,
+                                        @Nullable final String uri )
+  {
+    return cleanContent( asString( outputStream ), sha256, uri );
+  }
+
+  @Nonnull
+  protected final String cleanContent( @Nonnull final String input,
+                                       @Nullable final String sha256,
+                                       @Nullable final String uri )
+  {
+    String content = input;
+    if ( null != sha256 )
+    {
+      content = content.replace( sha256, "MYSHA" );
+    }
+    if ( null != uri )
+    {
+      content = content.replace( uri, "MYURI/" );
+    }
+    return content;
   }
 
   @Nonnull
