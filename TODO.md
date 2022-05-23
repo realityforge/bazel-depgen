@@ -56,7 +56,7 @@ Where it is unclear why colt is included. Maybe emitting the dependency graph or
 
 * Refactor tests so that by default they don't call out to bazel except when needed. This should speed
   up tests. The places where this seems to be used is when we invoke `"bazel info output_base"` and
-  `"bazel info repository_cache"` which sleos down the build substantially.
+  `"bazel info repository_cache"` which slows down the build substantially.
 
 * Consider converting to commandline tool named `bzt`
 
