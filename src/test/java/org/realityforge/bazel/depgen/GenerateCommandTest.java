@@ -106,6 +106,7 @@ public class GenerateCommandTest
                   "        size = \"small\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
+                  "        test_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
@@ -269,6 +270,7 @@ public class GenerateCommandTest
                   "        size = \"small\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
+                  "        test_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +

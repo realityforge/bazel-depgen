@@ -486,6 +486,7 @@ public final class ApplicationRecord
     arguments.put( "size", "\"small\"" );
     arguments.put( "runtime_deps", Collections.singletonList( "\"" + getDepgenArtifactLabel() + "\"" ) );
     arguments.put( "main_class", "\"org.realityforge.bazel.depgen.Main\"" );
+    arguments.put( "test_class", "\"org.realityforge.bazel.depgen.Main\"" );
 
     final String configLabel = getConfigFileLabel();
     arguments.put( "args",
