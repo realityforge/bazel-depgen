@@ -286,6 +286,7 @@ public final class ApplicationRecord
     final Set<String> javaRules = new HashSet<>();
     if ( getSource().getOptions().verifyConfigSha256() )
     {
+      javaRules.add( "java_binary" );
       javaRules.add( "java_test" );
     }
     for ( final ArtifactRecord artifact : getArtifacts() )
@@ -430,52 +431,28 @@ public final class ApplicationRecord
       .orElse( null );
   }
 
-  void writeRegenerateExtensionScriptTarget( @Nonnull final StarlarkOutput output )
-    throws IOException
-  {
-    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + _source.getOptions().getNamePrefix() + "regenerate_depgen_extension_script\"" );
-    final String configLabel = getConfigFileLabel();
-    final String depgenArtifactLabel = getDepgenArtifactLabel();
-
-    arguments.put( "srcs", Arrays.asList( "\"" + depgenArtifactLabel + "\"",
-                                          "\"" + configLabel + "\"",
-                                          "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
-
-    arguments.put( "toolchains", Collections.singletonList( "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
-    arguments.put( "outs",
-                   Collections.singletonList( "\"" + _source.getOptions().getNamePrefix() +
-                                              "regenerate_depgen_extension_script.sh\"" ) );
-
-    arguments.put( "cmd", "\"echo \\\"$(JAVA) " +
-                          "-jar $(location " + depgenArtifactLabel + ") " +
-                          "--directory \\\\$$BUILD_WORKSPACE_DIRECTORY " +
-                          "--config-file $(location " + configLabel + ") " +
-                          "\\\\$$@ " +
-                          "generate \\\" > \\\"$@\\\"\"" );
-    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    output.writeCall( "native.genrule", arguments );
-  }
-
   void writeRegenerateExtensionTarget( @Nonnull final StarlarkOutput output )
     throws IOException
   {
+    final String configLabel = getConfigFileLabel();
+    final String depgenArtifactLabel = getDepgenArtifactLabel();
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + _source.getOptions().getNamePrefix() + "regenerate_depgen_extension\"" );
-    arguments.put( "srcs", Collections.singletonList( "\"" + _source.getOptions().getNamePrefix() +
-                                                      "regenerate_depgen_extension_script\"" ) );
+    arguments.put( "runtime_deps", Collections.singletonList( "\"" + depgenArtifactLabel + "\"" ) );
+    arguments.put( "main_class", "\"org.realityforge.bazel.depgen.Main\"" );
+    arguments.put( "args",
+                   Arrays.asList( "\"--config-file\"",
+                                  "\"$(rootpath " + configLabel + ")\"",
+                                  "\"--verbose\"",
+                                  "\"generate\"" ) );
+
     arguments.put( "tags",
                    Arrays.asList( "\"local\"", "\"manual\"", "\"no-cache\"", "\"no-remote\"", "\"no-sandbox\"" ) );
 
-    final String configLabel = getConfigFileLabel();
-    final String depgenArtifactLabel = getDepgenArtifactLabel();
-
-    arguments.put( "data", Arrays.asList( "\"" + depgenArtifactLabel + "\"",
-                                          "\"" + configLabel + "\"",
-                                          "\"@bazel_tools//tools/jdk:current_java_runtime\"" ) );
+    arguments.put( "data", Collections.singletonList( "\"" + configLabel + "\"" ) );
 
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    output.writeCall( "native.sh_binary", arguments );
+    output.writeCall( "_java_binary", arguments );
   }
 
   void writeVerifyTarget( @Nonnull final StarlarkOutput output )
@@ -561,8 +538,6 @@ public final class ApplicationRecord
         {
           macro.newLine();
           writeVerifyTarget( output );
-          macro.newLine();
-          writeRegenerateExtensionScriptTarget( output );
           macro.newLine();
           writeRegenerateExtensionTarget( output );
         }

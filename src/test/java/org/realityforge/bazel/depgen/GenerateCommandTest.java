@@ -63,7 +63,7 @@ public class GenerateCommandTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\", _java_test = \"java_test\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_binary = \"java_binary\", _java_import = \"java_import\", _java_test = \"java_test\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
                   "_CONFIG_SHA256 = \"MYSHA\"\n" +
@@ -119,22 +119,16 @@ public class GenerateCommandTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"regenerate_depgen_extension_script\",\n" +
-                  "        srcs = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
-                  "        cmd = \"echo \\\"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) \\\\$$@ generate \\\" > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.sh_binary(\n" +
+                  "    _java_binary(\n" +
                   "        name = \"regenerate_depgen_extension\",\n" +
-                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
+                  "        args = [\n" +
+                  "            \"--config-file\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
+                  "            \"--verbose\",\n" +
+                  "            \"generate\",\n" +
+                  "        ],\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -142,11 +136,7 @@ public class GenerateCommandTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
@@ -180,8 +170,6 @@ public class GenerateCommandTest
   {
     final Path dir = FileUtil.createLocalTempDir();
 
-    final String url = dir.toUri().toString();
-
     writeWorkspace();
     writeConfigFile( dir,
                      "artifacts:\n" +
@@ -206,7 +194,9 @@ public class GenerateCommandTest
     // File contents not changed
     assertEquals( loadAsString( extensionPackage ), "" );
 
-    assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "thirdparty/dependencies.bzl" ) ),
+    assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "thirdparty/dependencies.bzl" ),
+                                model.getConfigSha256(),
+                                dir.toUri().toString() ),
                   "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
@@ -219,12 +209,10 @@ public class GenerateCommandTest
                   "# \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", _java_import = \"java_import\", _java_test = \"java_test\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_binary = \"java_binary\", _java_import = \"java_import\", _java_test = \"java_test\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
-                  "_CONFIG_SHA256 = \"" +
-                  model.getConfigSha256() +
-                  "\"\n" +
+                  "_CONFIG_SHA256 = \"MYSHA\"\n" +
                   "\n" +
                   "def generate_workspace_rules():\n" +
                   "    \"\"\"\n" +
@@ -237,27 +225,21 @@ public class GenerateCommandTest
                   "        name = \"com_example__myapp__1_0\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" +
-                  url +
-                  "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"com_example__myapp__1_0__sources\",\n" +
                   "        downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" +
-                  url +
-                  "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "        urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _http_file(\n" +
                   "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
                   "        downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
-                  "        urls = [\"" +
-                  url +
-                  "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" +
                   "\n" +
                   "def generate_targets():\n" +
@@ -283,22 +265,16 @@ public class GenerateCommandTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.genrule(\n" +
-                  "        name = \"regenerate_depgen_extension_script\",\n" +
-                  "        srcs = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
-                  "        toolchains = [\"@bazel_tools//tools/jdk:current_java_runtime\"],\n" +
-                  "        outs = [\"regenerate_depgen_extension_script.sh\"],\n" +
-                  "        cmd = \"echo \\\"$(JAVA) -jar $(location :org_realityforge_bazel_depgen__bazel_depgen) --directory \\\\$$BUILD_WORKSPACE_DIRECTORY --config-file $(location //thirdparty:dependencies.yml) \\\\$$@ generate \\\" > \\\"$@\\\"\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
-                  "\n" +
-                  "    native.sh_binary(\n" +
+                  "    _java_binary(\n" +
                   "        name = \"regenerate_depgen_extension\",\n" +
-                  "        srcs = [\"regenerate_depgen_extension_script\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
+                  "        args = [\n" +
+                  "            \"--config-file\",\n" +
+                  "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
+                  "            \"--verbose\",\n" +
+                  "            \"generate\",\n" +
+                  "        ],\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -306,11 +282,7 @@ public class GenerateCommandTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\n" +
-                  "            \":org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            \"//thirdparty:dependencies.yml\",\n" +
-                  "            \"@bazel_tools//tools/jdk:current_java_runtime\",\n" +
-                  "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
