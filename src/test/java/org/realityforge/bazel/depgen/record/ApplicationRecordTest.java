@@ -3068,7 +3068,7 @@ public class ApplicationRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeVerifyTarget( new StarlarkOutput( outputStream ) );
     assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
-                  "java_test(\n" +
+                  "_java_test(\n" +
                   "    name = \"verify_config_sha256\",\n" +
                   "    size = \"small\",\n" +
                   "    runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
@@ -3101,7 +3101,7 @@ public class ApplicationRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     record.writeVerifyTarget( new StarlarkOutput( outputStream ) );
     assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
-                  "java_test(\n" +
+                  "_java_test(\n" +
                   "    name = \"myapp_verify_config_sha256\",\n" +
                   "    size = \"small\",\n" +
                   "    runtime_deps = [\":myapp_bazel_depgen\"],\n" +
