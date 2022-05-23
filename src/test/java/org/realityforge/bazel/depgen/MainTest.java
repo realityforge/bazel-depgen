@@ -304,8 +304,6 @@ public class MainTest
   public void processOptions_whenCacheDirectoryUnspecifiedAndNotInvokedWIthinWorkspace()
     throws Exception
   {
-    final Path dir = FileUtil.createLocalTempDir();
-
     FileUtil.write( "dependencies2.yml", "" );
 
     final TestHandler handler = new TestHandler();
