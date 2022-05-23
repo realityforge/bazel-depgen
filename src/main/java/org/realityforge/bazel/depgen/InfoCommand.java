@@ -46,7 +46,7 @@ final class InfoCommand
     printInfo( context, "reset-cached-metadata", () -> context.environment().shouldResetCachedMetadata() );
     printInfo( context,
                "bazel-repository-cache",
-               () -> BazelUtil.getRepositoryCache( context.environment().currentDirectory().toFile() ) );
+               () -> environment.hasRepositoryCacheDir() ? environment.getRepositoryCacheDir() : "-" );
     return ExitCodes.SUCCESS_EXIT_CODE;
   }
 

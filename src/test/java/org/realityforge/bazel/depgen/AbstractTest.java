@@ -115,6 +115,7 @@ public abstract class AbstractTest
     environment.setConfigFile( getDefaultConfigFile() );
     environment.setSettingsFile( FileUtil.getCurrentDirectory().resolve( "settings.xml" ) );
     environment.setCacheDir( FileUtil.createLocalTempDir() );
+    environment.setRepositoryCacheDir( FileUtil.createLocalTempDir() );
     return environment;
   }
 

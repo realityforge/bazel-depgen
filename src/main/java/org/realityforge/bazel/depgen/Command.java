@@ -50,6 +50,11 @@ abstract class Command
     return true;
   }
 
+  boolean mayUseRepositoryCache()
+  {
+    return false;
+  }
+
   boolean processOptions( @Nonnull final Environment environment, @Nonnull final String... args )
   {
     if ( args.length > 0 )

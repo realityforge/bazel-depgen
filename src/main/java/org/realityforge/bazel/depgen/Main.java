@@ -230,9 +230,9 @@ public class Main
   static void cacheArtifactsInRepositoryCache( @Nonnull final Environment environment,
                                                @Nonnull final ApplicationRecord record )
   {
-    final Path repositoryCache = BazelUtil.getRepositoryCache( environment.currentDirectory().toFile() );
-    if ( null != repositoryCache )
+    if ( environment.hasRepositoryCacheDir() )
     {
+      final Path repositoryCache = environment.getRepositoryCacheDir();
       // We only attempt to copy into repositoryCache if there is one ... which there
       // always is if there is a local WORKSPACE
       for ( final ArtifactRecord artifact : record.getArtifacts() )
@@ -553,6 +553,15 @@ public class Main
       else
       {
         environment.setCacheDir( repositoryCache.toPath().resolve( ".depgen-cache" ) );
+      }
+    }
+
+    if ( !environment.hasRepositoryCacheDir() && environment.getCommand().mayUseRepositoryCache() )
+    {
+      final Path repositoryCache = BazelUtil.getRepositoryCache( environment.currentDirectory().toFile() );
+      if ( null != repositoryCache )
+      {
+        environment.setRepositoryCacheDir( repositoryCache );
       }
     }
 

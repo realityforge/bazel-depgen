@@ -16,6 +16,11 @@ final class PrintGraphCommand
     super( COMMAND, "Compute and print the dependency graph for the dependency configuration." );
   }
 
+  boolean mayUseRepositoryCache()
+  {
+    return true;
+  }
+
   @Override
   int run( @Nonnull final Context context )
     throws Exception

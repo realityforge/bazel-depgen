@@ -17,6 +17,11 @@ final class GenerateCommand
     super( COMMAND, "Generate the bazel extension from the dependency configuration." );
   }
 
+  boolean mayUseRepositoryCache()
+  {
+    return true;
+  }
+
   @Override
   int run( @Nonnull final Context context )
     throws Exception

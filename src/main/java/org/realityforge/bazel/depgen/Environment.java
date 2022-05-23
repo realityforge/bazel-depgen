@@ -22,6 +22,8 @@ final class Environment
   @Nullable
   private Path _cacheDir;
   @Nullable
+  private Path _repositoryCacheDir;
+  @Nullable
   private Command _command;
   private boolean _resetCachedMetadata;
 
@@ -104,6 +106,23 @@ final class Environment
   void setCacheDir( @Nullable final Path cacheDir )
   {
     _cacheDir = cacheDir;
+  }
+
+  boolean hasRepositoryCacheDir()
+  {
+    return null != _repositoryCacheDir;
+  }
+
+  @Nonnull
+  Path getRepositoryCacheDir()
+  {
+    assert null != _repositoryCacheDir;
+    return _repositoryCacheDir;
+  }
+
+  void setRepositoryCacheDir( @Nullable final Path repositoryCacheDir )
+  {
+    _repositoryCacheDir = repositoryCacheDir;
   }
 
   boolean hasCommand()

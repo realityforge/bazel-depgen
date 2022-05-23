@@ -779,6 +779,7 @@ public class MainTest
     assertFalse( Files.exists( sourceTargetFile ) );
 
     final Environment environment = newEnvironment( handler );
+    environment.setRepositoryCacheDir( repositoryCacheDir );
     Main.cacheArtifactsInRepositoryCache( environment, record );
     assertOutputContains( handler.toString(),
                           "Installed artifact 'com.example:myapp:jar:1.0' into repository cache.\n" +
@@ -819,6 +820,7 @@ public class MainTest
     assertFalse( Files.exists( targetFile ) );
 
     final Environment environment = newEnvironment( handler );
+    environment.setRepositoryCacheDir( repositoryCacheDir );
     Main.cacheArtifactsInRepositoryCache( environment, record );
     assertOutputContains( handler.toString(), "Installed artifact 'com.example:myapp:jar:1.0' into repository cache." );
 
@@ -862,6 +864,7 @@ public class MainTest
     assertFalse( Files.exists( targetFile2 ) );
 
     final Environment environment = newEnvironment( handler );
+    environment.setRepositoryCacheDir( repositoryCacheDir );
     Main.cacheArtifactsInRepositoryCache( environment, record );
     assertEquals( handler.toString(),
                   "Installed artifact 'com.example:myapp:jar:1.0' into repository cache.\n" +
