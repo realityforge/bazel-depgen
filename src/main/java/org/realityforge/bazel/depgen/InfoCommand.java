@@ -40,10 +40,11 @@ final class InfoCommand
   @Override
   int run( @Nonnull final Context context )
   {
-    printInfo( context, "config-file", () -> context.environment().getConfigFile() );
-    printInfo( context, "settings-file", () -> context.environment().getSettingsFile() );
-    printInfo( context, "reset-cached-metadata", () -> context.environment().shouldResetCachedMetadata() );
+    final Environment environment = context.environment();
+    printInfo( context, "config-file", environment::getConfigFile );
+    printInfo( context, "settings-file", environment::getSettingsFile );
     printInfo( context, "cache-directory", () -> environment.hasCacheDir() ? environment.getCacheDir() : "-" );
+    printInfo( context, "reset-cached-metadata", environment::shouldResetCachedMetadata );
     printInfo( context,
                "bazel-repository-cache",
                () -> environment.hasRepositoryCacheDir() ? environment.getRepositoryCacheDir() : "-" );
