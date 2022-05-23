@@ -102,7 +102,7 @@ public class GenerateCommandTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    java_test(\n" +
+                  "    _java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
@@ -266,7 +266,7 @@ public class GenerateCommandTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    java_test(\n" +
+                  "    _java_test(\n" +
                   "        name = \"verify_config_sha256\",\n" +
                   "        size = \"small\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +

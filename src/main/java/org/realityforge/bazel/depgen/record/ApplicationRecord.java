@@ -499,7 +499,7 @@ public final class ApplicationRecord
     arguments.put( "data", Collections.singletonList( "\"" + configLabel + "\"" ) );
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
 
-    output.writeCall( "java_test", arguments );
+    output.writeCall( "_java_test", arguments );
   }
 
   @Nonnull
