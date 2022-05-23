@@ -1,7 +1,5 @@
 package org.realityforge.bazel.depgen;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,45 +42,12 @@ final class InfoCommand
   {
     printInfo( context, "config-file", () -> context.environment().getConfigFile() );
     printInfo( context, "settings-file", () -> context.environment().getSettingsFile() );
-    printInfo( context, "cache-directory", () -> getCacheDir( context ) );
+    printInfo( context, "cache-directory", () -> context.environment().getCacheDir() );
     printInfo( context, "reset-cached-metadata", () -> context.environment().shouldResetCachedMetadata() );
     printInfo( context,
                "bazel-repository-cache",
                () -> BazelUtil.getRepositoryCache( context.environment().currentDirectory().toFile() ) );
     return ExitCodes.SUCCESS_EXIT_CODE;
-  }
-
-  @Nonnull
-  private String getCacheDir( @Nonnull final Context context )
-  {
-    final Environment environment = context.environment();
-    if ( environment.hasCacheDir() )
-    {
-      return environment.getCacheDir().toString();
-    }
-    else if ( Files.exists( environment.getConfigFile() ) )
-    {
-      try
-      {
-        return Main.getCacheDirectory( environment, context.loadModel() ).toString();
-      }
-      catch ( final TerminalStateException tse )
-      {
-        return "Unknown: Dependency file present but either Bazel is not present or the WORKSPACE file is mis-configured.";
-      }
-    }
-    else
-    {
-      final File repositoryCache = BazelUtil.getOutputBase( environment.currentDirectory().toFile() );
-      if ( null == repositoryCache )
-      {
-        return "Unknown: Dependency file not present and either Bazel is not present or the WORKSPACE file is mis-configured.";
-      }
-      else
-      {
-        return repositoryCache.toPath().resolve( ".depgen-cache" ).toString();
-      }
-    }
   }
 
   private void printInfo( @Nonnull final Context context,

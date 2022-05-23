@@ -207,7 +207,7 @@ public class Main
     final ApplicationModel model = loadModel( environment );
     final Resolver resolver =
       ResolverUtil.createResolver( environment,
-                                   getCacheDirectory( environment, model ),
+                                   environment.getCacheDir(),
                                    model,
                                    loadSettings( environment ) );
     final ApplicationRecord record =
@@ -275,30 +275,6 @@ public class Main
       {
         final String message = "Failed to cache artifact '" + label + "' in repository cache.";
         logger.log( Level.WARNING, message, ioe );
-      }
-    }
-  }
-
-  @Nonnull
-  static Path getCacheDirectory( @Nonnull final Environment environment, @Nonnull final ApplicationModel model )
-  {
-    if ( environment.hasCacheDir() )
-    {
-      return environment.getCacheDir();
-    }
-    else
-    {
-      final File repositoryCache = BazelUtil.getOutputBase( model.getOptions().getWorkspaceDirectory().toFile() );
-      if ( null == repositoryCache )
-      {
-        throw new TerminalStateException( "Error: Cache directory not specified and unable to derive default " +
-                                          "directory (Is the bazel command on the path?). Explicitly pass the " +
-                                          "cache directory as an option.",
-                                          ExitCodes.ERROR_INVALID_DEFAULT_CACHE_DIR_CODE );
-      }
-      else
-      {
-        return repositoryCache.toPath().resolve( ".depgen-cache" );
       }
     }
   }
@@ -553,6 +529,23 @@ public class Main
       final Path settingsFile =
         Paths.get( System.getProperty( "user.home" ), ".m2", "settings.xml" ).toAbsolutePath().normalize();
       environment.setSettingsFile( settingsFile );
+    }
+
+    if ( !environment.hasCacheDir() )
+    {
+      final File repositoryCache = BazelUtil.getOutputBase( environment.currentDirectory().toFile() );
+      if ( null == repositoryCache )
+      {
+        logger.log( Level.SEVERE,
+                    "Error: Cache directory not specified and unable to derive default " +
+                    "directory (Is the bazel command on the path?). Explicitly pass the " +
+                    "cache directory as an option." );
+        return false;
+      }
+      else
+      {
+        environment.setCacheDir( repositoryCache.toPath().resolve( ".depgen-cache" ) );
+      }
     }
 
     return true;

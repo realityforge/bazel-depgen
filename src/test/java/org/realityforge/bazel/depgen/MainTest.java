@@ -261,7 +261,6 @@ public class MainTest
     final Environment environment = newEnvironment( handler );
     environment.setConfigFile( null );
     environment.setSettingsFile( null );
-    environment.setCacheDir( null );
     assertTrue( Main.processOptions( environment, "generate" ) );
     assertTrue( environment.hasCommand() );
     assertTrue( environment.getCommand() instanceof GenerateCommand );
@@ -271,7 +270,6 @@ public class MainTest
                     .get( System.getProperty( "user.home" ), ".m2", "settings.xml" )
                     .toAbsolutePath()
                     .normalize() );
-    assertFalse( environment.hasCacheDir() );
   }
 
   @Test
@@ -300,6 +298,24 @@ public class MainTest
     assertTrue( Main.processOptions( environment, "--cache-directory", dir.toString(), "generate" ) );
     assertTrue( environment.hasCacheDir() );
     assertEquals( environment.getCacheDir(), dir );
+  }
+
+  @Test
+  public void processOptions_whenCacheDirectoryUnspecifiedAndNotInvokedWIthinWorkspace()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    FileUtil.write( "dependencies2.yml", "" );
+
+    final TestHandler handler = new TestHandler();
+    final Environment environment = newEnvironment( handler );
+    environment.setCacheDir( null );
+    assertFalse( Main.processOptions( environment, "--config-file", "dependencies2.yml", "generate" ) );
+    assertOutputContains( handler.toString(),
+                          "Error: Cache directory not specified and unable to derive default directory (Is the bazel command on the path?). Explicitly pass the cache directory as an option." );
+
+    assertFalse( environment.hasCacheDir() );
   }
 
   @Test
@@ -633,46 +649,6 @@ public class MainTest
     assertEquals( logger.getHandlers().length, 1 );
     assertEquals( logger.getLevel(), Level.INFO );
     assertFalse( logger.getUseParentHandlers() );
-  }
-
-  @Test
-  public void getCacheDirectory_default()
-    throws Exception
-  {
-    writeWorkspace();
-    writeConfigFile( "" );
-
-    final Path cacheDirectory = Main.getCacheDirectory( newEnvironment(), loadApplicationModel() );
-    assertNotNull( cacheDirectory );
-  }
-
-  @Test
-  public void getCacheDirectory_explicitlySpecified()
-    throws Exception
-  {
-    writeWorkspace();
-    writeConfigFile( "" );
-
-    final Environment environment = newEnvironment();
-    final Path cacheDir = FileUtil.createLocalTempDir();
-    environment.setCacheDir( cacheDir );
-    final Path cacheDirectory = Main.getCacheDirectory( environment, loadApplicationModel() );
-    assertEquals( cacheDirectory, cacheDir );
-  }
-
-  @Test
-  public void getCacheDirectory_outsideWorkspace()
-    throws Exception
-  {
-    writeConfigFile( "" );
-    final Environment environment = newEnvironment();
-    environment.setCacheDir( null );
-    final TerminalStateException exception =
-      expectThrows( TerminalStateException.class,
-                    () -> Main.getCacheDirectory( environment, loadApplicationModel() ) );
-    assertEquals( exception.getMessage(),
-                  "Error: Cache directory not specified and unable to derive default directory (Is the bazel command on the path?). Explicitly pass the cache directory as an option." );
-    assertEquals( exception.getExitCode(), ExitCodes.ERROR_INVALID_DEFAULT_CACHE_DIR_CODE );
   }
 
   @Test
