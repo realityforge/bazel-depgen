@@ -110,6 +110,14 @@ public class Main
   {
     final Environment environment =
       new Environment( System.console(), Paths.get( "" ).toAbsolutePath(), Logger.getGlobal() );
+    // The BUILD_WORKSPACE_DIRECTORY environment variable is specified by bazel when
+    // a binary is run using "bazel run ...". This is what we *should* be using as current directory
+    // by default when running within bazel
+    final String workspaceDirectory = System.getenv( "BUILD_WORKSPACE_DIRECTORY" );
+    if ( null != workspaceDirectory )
+    {
+      environment.setCurrentDirectory( Paths.get( workspaceDirectory ) );
+    }
     setupLogger( environment );
     System.exit( run( environment, args ) );
   }
