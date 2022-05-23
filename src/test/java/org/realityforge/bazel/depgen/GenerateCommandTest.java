@@ -51,7 +51,6 @@ public class GenerateCommandTest
     assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "thirdparty/dependencies.bzl" ),
                                 model.getConfigSha256(),
                                 url ),
-                  //@formatter:off
                   "# DO NOT EDIT: File is auto-generated from dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
                   "\n" +
                   "\"\"\"\n" +
@@ -172,7 +171,6 @@ public class GenerateCommandTest
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
-    //@formatter:on
   }
 
   @Test
