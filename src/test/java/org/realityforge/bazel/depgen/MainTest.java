@@ -137,7 +137,7 @@ public class MainTest
 
     final String output = failToProcessOptions( "--cache-directory", "StoreMeHere", "generate" );
     assertOutputContains( output,
-                          "Error: Specified cache directory exists but is not a directory. Specified value: StoreMeHere" );
+                          "Error: Specified cache directory exists but is not a directory. Specified value: StoreMeHere" );
   }
 
   @Test

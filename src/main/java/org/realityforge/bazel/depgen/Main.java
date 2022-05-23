@@ -470,7 +470,7 @@ public class Main
           if ( dir.exists() && !dir.isDirectory() )
           {
             logger.log( Level.SEVERE,
-                        "Error: Specified cache directory exists but is not a directory. Specified value: " +
+                        "Error: Specified cache directory exists but is not a directory. Specified value: " +
                         argument );
             return false;
           }
