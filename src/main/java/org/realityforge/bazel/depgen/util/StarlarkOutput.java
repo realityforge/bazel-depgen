@@ -129,6 +129,14 @@ public final class StarlarkOutput
         {
           write( key + " = None," );
         }
+        else if ( Boolean.TRUE == value )
+        {
+          write( key + " = True," );
+        }
+        else if ( Boolean.FALSE == value )
+        {
+          write( key + " = False," );
+        }
         else if ( value instanceof List )
         {
           final List<?> arg = (List<?>) value;

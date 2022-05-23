@@ -156,6 +156,8 @@ public class StarlarkOutputTest
         arguments.put( "name", "'com_biz__myartifact'" );
         arguments.put( "actual", "':com_biz__myartifact_42'" );
         arguments.put( "visibility", Collections.singletonList( "'//visibility:public'" ) );
+        arguments.put( "make_peace", Boolean.TRUE );
+        arguments.put( "make_war", Boolean.FALSE );
         output.writeCall( "myFunction", arguments );
         output.decIndent();
       } );
@@ -165,6 +167,8 @@ public class StarlarkOutputTest
                        "        name = 'com_biz__myartifact',\n" +
                        "        actual = ':com_biz__myartifact_42',\n" +
                        "        visibility = ['//visibility:public'],\n" +
+                       "        make_peace = True,\n" +
+                       "        make_war = False,\n" +
                        "    )\n" );
   }
 
