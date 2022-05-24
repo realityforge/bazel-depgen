@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,9 +28,9 @@ public final class StarlarkOutput
   private int _indent;
 
   public StarlarkOutput( @Nonnull final Path extensionFile )
-    throws FileNotFoundException
+    throws IOException
   {
-    this( new FileOutputStream( extensionFile.toFile() ) );
+    this( Files.newOutputStream( extensionFile.toFile().toPath() ) );
   }
 
   public StarlarkOutput( @Nonnull final OutputStream outputStream )
