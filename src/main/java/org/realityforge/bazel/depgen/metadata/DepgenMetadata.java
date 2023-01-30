@@ -42,7 +42,7 @@ public final class DepgenMetadata
   @Nonnull
   private final Path _file;
   @Nullable
-  private Properties _properties;
+  private OrderedProperties _properties;
 
   @Nonnull
   public static DepgenMetadata fromDirectory( @Nonnull final ApplicationModel model, @Nonnull final Path dir )
@@ -218,7 +218,7 @@ public final class DepgenMetadata
   {
     if ( null == _properties )
     {
-      final Properties properties = new OrderedProperties();
+      final OrderedProperties properties = new OrderedProperties();
       if ( _file.toFile().exists() && _file.toFile().isFile() )
       {
         try

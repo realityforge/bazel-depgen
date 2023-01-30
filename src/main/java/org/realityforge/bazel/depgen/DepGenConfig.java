@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 import javax.annotation.Nonnull;
+import org.realityforge.bazel.depgen.util.OrderedProperties;
 
 public final class DepGenConfig
 {
@@ -59,7 +60,7 @@ public final class DepGenConfig
 
     try
     {
-      final Properties properties = new Properties();
+      final OrderedProperties properties = new OrderedProperties();
       properties.load( inputStream );
       return properties;
     }
