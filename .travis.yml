@@ -1,9 +1,11 @@
 # Since Bazel 0.25, PY3 is the default Python version. Make sure Travis has it.
-language: python3
+language: java
 jdk:
   - openjdk17
 rvm:
   - 2.7.2
+python:
+  - 3.9
 before_install:
   - |
     if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
