@@ -1,7 +1,7 @@
 package org.realityforge.bazel.depgen;
 
 import gir.io.FileUtil;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
@@ -330,7 +330,7 @@ public class GenerateCommandTest
     final TestHandler handler = new TestHandler();
     final GenerateCommand command = new GenerateCommand();
 
-    assertThrows( FileNotFoundException.class, () -> command.run( new CommandContextImpl( newEnvironment() ) ) );
+    assertThrows( IOException.class, () -> command.run( new CommandContextImpl( newEnvironment() ) ) );
     assertEquals( handler.toString(), "" );
   }
 
