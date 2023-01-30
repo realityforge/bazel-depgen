@@ -38,8 +38,8 @@ MAVEN_RESOLVER = %w(
 desc 'bazel-depgen: Generate Bazel dependency scripts by traversing Maven repositories'
 define 'bazel-depgen' do
   project.group = 'org.realityforge.bazel.depgen'
-  compile.options.source = '1.8'
-  compile.options.target = '1.8'
+  compile.options.source = '17'
+  compile.options.target = '17'
   compile.options.lint = 'all'
 
   project.version = ENV['PRODUCT_VERSION'] if ENV['PRODUCT_VERSION']

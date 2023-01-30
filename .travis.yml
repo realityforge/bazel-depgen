@@ -3,7 +3,7 @@ dist: trusty
 # Since Bazel 0.25, PY3 is the default Python version. Make sure Travis has it.
 language: python3
 jdk:
-  - oraclejdk8
+  - openjdk17
 rvm:
   - 2.7.2
 before_install:
