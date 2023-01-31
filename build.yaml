@@ -17,4 +17,4 @@ artifacts:
 
   gir: org.realityforge.gir:gir-core:jar:0.12
 
-  guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.112
+  guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.113

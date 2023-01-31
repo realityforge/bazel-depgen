@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Update the `org.realityforge.guiceyloops` artifact to version `0.112`.
+* Update the `org.realityforge.guiceyloops` artifact to version `0.113`.
 * Update the java version required to `17`.
 
 ### [v0.17](https://github.com/realityforge/bazel-depgen/tree/v0.17) (2022-05-24) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.16...v0.17)
