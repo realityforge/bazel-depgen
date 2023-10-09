@@ -35,9 +35,9 @@ options:
   # Artifacts have 1 or more natures. A nature defines the type of targets that are created for an
   # artifact. Does the artifact result in a 'j2cl_library', a 'java_library', a 'java_plugin' or something
   # else. This configuration setting specifies the default nature of any artifacts unless otherwise
-  # specified at the artifact level. If left unspecified the nature is assumed to be 'Java' unless there are
-  # annotation processors defined in the manifest in which case the artifact is assumed to be the 'Plugin' nature.
-  # It should be noted that natures will also impact the nature of the artifacts dependencies. If an artifacts
+  # specified at the artifact level. If left unspecified, the nature is assumed to be 'Java' unless there are
+  # annotation processors defined in the manifest, in which case the artifact is assumed to be the 'Plugin' nature.
+  # It should be noted that nature will also impact the nature of the artifacts dependencies. If an artifact
   # nature is 'J2cl' then any dependencies are assumed to be of 'J2cl' nature.
   # Natures include:
   #  - Java: artifacts are exposed using 'java_import' rule.
@@ -45,10 +45,10 @@ options:
   #  - J2cl: artifact is exposed as a 'j2cl_library' rule.
   #defaultNature: Java
 
-  # Should the tool fail if it encounters an invalid POM file. Defaults to 'true'.
+  # Should the tool fail if it encounters an invalid POM file? Defaults to 'true'.
   #failOnInvalidPom: true
 
-  # Should the tool fail if a POM file is missing. Defaults to 'true'.
+  # Should the tool fail if a POM file is missing? Defaults to 'true'.
   #failOnMissingPom: true
 
   # Should the tool print a dependency graph inside the generated extension file. This dependency
@@ -56,22 +56,22 @@ options:
   # the dependency graph. Defaults to 'true'.
   #emitDependencyGraph: true
 
-  # Should the tool generate repository rules and targets for 'sources' classifier of the artifacts.
-  # The tool will also link the sources artifact to the binary artifact if the nature allows such
+  # Should the tool generate repository rules and targets for 'sources' classifier of the artifacts?
+  # The tool will also link the source artifact to the binary artifact if the nature allows such
   # linking. i.e. java_import targets will define the 'srcjar' artifact. Defaults to 'true'.
   #includeSource: true
 
   # This configuration setting controls whether the `annotations` classifier artifact is downloaded.
   # The `annotations` classifier artifacts is used by IntelliJ IDEA to store annotations outside the
   # source code. This is particularly useful for IDEA users where it allows the IDE to apply additional
-  # validation and provide hints to users of the artifact. If the the `annotations` classifier artifact
-  # is not found in the remote repository but this configuration setting is true, the tool does not
+  # validation and provide hints to users of the artifact. If the `annotations` classifier artifact
+  # is not found in the remote repository, but this configuration setting is true, the tool does not
   # consider it an error and silently ignores this scenario. Defaults to 'false'.
   #includeExternalAnnotations: false
 
-  # Some bazel workspaces are intended to be consumed by other projects. In these scenarios it is not
+  # Some bazel workspaces are intended to be consumed by other projects. In these scenarios, it is not
   # uncommon to want to customize the set of dependencies used. The tool supports this use case by
-  # adding boolean parameters to the macros that direct the macro to skip the declaration of the the
+  # adding boolean parameters to the macros that direct the macro to skip the declaration of the
   # repository rules or targets. There is one parameter per artifact named in the form "omit_[alias]".
   # Defaults to 'false'.
   #supportDependencyOmit: false
@@ -86,7 +86,7 @@ options:
   #java:
 
     # Should the tool generate java_import targets with exports attribute that exports all dependencies.
-    # Exporting dependencies is usually discouraged in Bazel but Maven's model is one such that exportDeps
+    # Exporting dependencies is usually discouraged in Bazel, but Maven's model is one such that exportDeps
     # is the default and thus sometimes it is desirable to enable this feature. Defaults to 'false'.
     #exportDeps: false
 
@@ -104,23 +104,23 @@ repositories:
     # The support url schemes include file, http and https.
     url: https://repo.maven.apache.org/maven2/
 
-    # Should the tool cache artifact lookups to this repository. If caching is enabled then the results
+    # Should the tool cache artifact lookups to this repository. If caching is enabled, then the results
     # of the lookup will be stored in the cacheDirectory and successive runs of the tool will not
     # attempt to access the repository again which speeds up the tool significantly. This is useful when
     # the artifacts are not changed or removed from the repository as in public repositories such as Maven
-    # central. The tool also caches negative results when looking up artifacts so occasionally it is necessary
-    # to ignore the cached details when an artifact has been added to a repository. In this scenario a separate
+    # central. The tool also caches negative results when looking up artifacts, so occasionally it is necessary
+    # to ignore the cached details when an artifact has been added to a repository. In this scenario, a separate
     # command line option is provided. This configuration is primary used for snapshot repositories and other
     # repositories that can remove or modify artifacts. Defaults to 'true'.
     #cacheLookups: true
 
-    # Should this repository by searched by default when looking up artifacts. If this configuration is set
-    # to false then only artifacts that explicitly reference this repository will attempt lookups in the
+    # Should this repository be searched by default when looking up artifacts? If this configuration is set
+    # to false, then only artifacts that explicitly reference this repository will attempt lookups in the
     # repository. Defaults to 'true'.
     #searchByDefault: true
 
-    # By default a repository is expected to have valid sha1 or md5 checksums and the tool will verify that the
-    # artifacts downloaded during resolve process, match the checksum. Several options are valid:
+    # By default, a repository is expected to have valid sha1 or md5 checksums, and the tool will verify that the
+    # artifacts downloaded during a resolve process, match the checksum. Several options are valid:
     #  - fail: Verify checksums and fail the resolution if they do not match. This is the default.
     #  - warn: Verify checksums and warn if they do not match.
     #  - ignore: Do not verify checksums.
@@ -139,7 +139,7 @@ repositories:
 #artifacts:
 
   # All artifacts must specify the coords property containing the maven coordinates of the dependency.
-  # They may optional declare one or configuration properties that will change the way the tool treats
+  # They may optionally declare one or configuration properties that will change the way the tool treats
   # the artifact.
 
   # The artifact coordinates can be defined using a 2-5 parts. The 2-part form declares the groupId
@@ -154,13 +154,13 @@ repositories:
 
   #- coord: org.realityforge.react4j:react4j-core:0.126
 
-    # This settings allows per-artifact overrides of the global aliasStrategy configuration.
+    # This setting allows per-artifact overrides of the global aliasStrategy configuration.
     #aliasStrategy: ArtifactId
 
-    # This settings allows per-artifact overrides of the global includeSource configuration.
+    # This setting allows per-artifact overrides of the global includeSource configuration.
     #includeSource: false
 
-    # This settings allows per-artifact overrides of the global includeExternalAnnotations configuration.
+    # This setting allows per-artifact overrides of the global includeExternalAnnotations configuration.
     #includeExternalAnnotations: true
 
     # This configuration controls whether optional dependencies for this artifact are included when resolving
@@ -179,7 +179,7 @@ repositories:
     #visibility: ["//visibility:public"]
 
     # The repository configuration contains a list of repository names that should be used to resolve
-    # the artifact. If unspecified then the repositories configured in the top level section will be used.
+    # the artifact. If unspecified, then the repositories configured in the top level section will be used.
     # See the documentation above for further details.
     #repositories:
       #- central
@@ -200,7 +200,7 @@ repositories:
       # This setting allows the explicit specification of an alias.
       #alias: react4j-core-java
 
-      # This settings allows per-artifact overrides of the global exportDeps configuration.
+      # This setting allows per-artifact overrides of the global exportDeps configuration.
       #exportDeps: true
 
     # The j2cl section is used to customize the artifact if it has the J2cl nature
@@ -237,7 +237,7 @@ repositories:
       #generatesApi: false
 
 # The excludes section identifies artifacts that should never be added to artifact graph. The exclusion occurs
-# during artifact resolution and thus no transitive dependencies of the excluded dependencies are included in
+# during artifact resolution, and thus no transitive dependencies of the excluded dependencies are included in
 # the graph. The excludes section is an array of exclusion configuration.
 #excludes:
 
@@ -250,7 +250,7 @@ repositories:
 # This is useful when you want to replace a dependency with a local target or another target.
 # Unlike the excludes section which removes an artifact from the graph, the replacements will
 # keep the dependency but replace it with a different target. The replacement target may be
-# different for different natures and thus it is required that for each nature of the artifact
+# different for different natures, and thus it is required that each nature of the artifact
 # must have a separate replacement target. The replacements section is an array of replacement
 # configurations.
 #replacements:
@@ -259,7 +259,7 @@ repositories:
   # and a target per nature.
   #- coord: com.google.elemental2:elemental2-promise
   #  targets:
-      # A target is defines a replacement rule for a particular nature
+      # A target defines a replacement rule for a particular nature
       #- target: "@com_google_elemental2//:elemental2-dom-j2cl"
       #  nature: J2cl
 
