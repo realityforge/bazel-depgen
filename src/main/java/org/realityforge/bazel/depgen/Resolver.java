@@ -150,11 +150,28 @@ final class Resolver
                            model.getVersion() );
     try
     {
+      final List<String> repositories = model.getRepositories();
+      final List<RemoteRepository> remoteRepositories;
+      if ( repositories.isEmpty() )
+      {
+        remoteRepositories = _repositories;
+      }
+      else
+      {
+        remoteRepositories = new ArrayList<>();
+        for ( RemoteRepository remoteRepository : _repositories )
+        {
+          if ( repositories.contains( remoteRepository.getId() ) )
+          {
+            remoteRepositories.add( remoteRepository );
+          }
+        }
+      }
       final ArtifactResult artifactResult =
-        _system.resolveArtifact( _session, new ArtifactRequest( artifact, _repositories, null ) );
+        _system.resolveArtifact( _session, new ArtifactRequest( artifact, remoteRepositories, null ) );
 
       final ArtifactDescriptorRequest request =
-        new ArtifactDescriptorRequest( artifactResult.getArtifact(), _repositories, null );
+        new ArtifactDescriptorRequest( artifactResult.getArtifact(), remoteRepositories, null );
 
       final ArtifactDescriptorResult result = _system.readArtifactDescriptor( _session, request );
       final List<Exception> exceptions = result.getExceptions();
