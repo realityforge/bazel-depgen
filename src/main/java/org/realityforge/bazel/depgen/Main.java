@@ -295,7 +295,7 @@ public class Main
   {
     final Logger logger = environment.logger();
     final DependencyResult result = resolver.resolveDependencies( model, ( artifactModel, exceptions ) -> {
-      // If we get here then the listener has already emitted a warning message so just need to exit
+      // If we get here then the listener has already emitted a warning message, so just need to exit
       // We can only get here if either failOnMissingPom or failOnInvalidPom is true and an error occurred
       throw new TerminalStateException( ExitCodes.ERROR_INVALID_POM_CODE );
     } );
