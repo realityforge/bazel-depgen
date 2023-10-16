@@ -90,6 +90,17 @@ public final class RecordUtilTest
   }
 
   @Test
+  public void readAnnotationProcessors_jarWithSingleProcessorAndCOmments()
+    throws Exception
+  {
+    final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
+                                     " # Copyright some megacorp!\n" +
+                                     "react4j.processor.ReactProcessor\n" );
+    final String processors = RecordUtil.readAnnotationProcessors( path.toFile() );
+    assertEquals( processors, "react4j.processor.ReactProcessor" );
+  }
+
+  @Test
   public void readAnnotationProcessors_jarWithSingleProcessorAndBlankLines()
     throws Exception
   {

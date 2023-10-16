@@ -127,7 +127,7 @@ final class RecordUtil
                 while ( null != ( line = reader.readLine() ) )
                 {
                   final String l = line.trim();
-                  if ( !l.isEmpty() )
+                  if ( !l.isEmpty() && !l.startsWith( "#" ) )
                   {
                     processors.add( l );
                   }
