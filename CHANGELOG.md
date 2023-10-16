@@ -6,6 +6,7 @@
 * Update the java version required to `17`.
 * Remove several typos in `dependencies.yml`
 * Ensure that the resolver will resolve an artifacts based on the set of explicitly listed repositories.
+* Add support for explicitly storing credentials in the repository url.
 
 ### [v0.17](https://github.com/realityforge/bazel-depgen/tree/v0.17) (2022-05-24) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.16...v0.17)
 

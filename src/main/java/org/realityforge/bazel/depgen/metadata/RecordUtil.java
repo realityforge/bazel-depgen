@@ -74,6 +74,13 @@ final class RecordUtil
             connection.setRequestProperty( "Authorization", "Basic " + encoded );
           }
         }
+        else if ( null != url.getUserInfo() )
+        {
+          final String userInfo = url.getUserInfo();
+          final String encoded =
+            Base64.getEncoder().encodeToString( userInfo.getBytes( StandardCharsets.UTF_8 ) );
+          connection.setRequestProperty( "Authorization", "Basic " + encoded );
+        }
         connection.connect();
         final int responseCode = connection.getResponseCode();
         if ( 200 == responseCode )

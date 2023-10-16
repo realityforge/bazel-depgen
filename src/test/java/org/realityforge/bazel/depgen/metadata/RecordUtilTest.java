@@ -312,6 +312,55 @@ public final class RecordUtilTest
   }
 
   @Test
+  public void lookupArtifactInRepository_authenticated_http_url_with_creds_in_url()
+    throws Exception
+  {
+    final String username = "root";
+    final String password = "secret";
+    emitSettings( "my-repo", username, password );
+
+    final Path dir = FileUtil.createLocalTempDir();
+    deployDepGenArtifactToLocalRepository( dir );
+
+    final HttpServer server = serveDirectoryWithBasicAuth( dir, username, password );
+
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    server.start();
+    try
+    {
+      final InetSocketAddress address = server.getAddress();
+      final String repositoryUrl =
+        "http://" +
+        username +
+        ":" +
+        password +
+        "@" +
+        address.getAddress().getCanonicalHostName() +
+        ":" +
+        address.getPort() +
+        "/";
+
+      writeConfigFile( "repositories:\n" +
+                       "  - name: my-repo\n" +
+                       "    url: " + repositoryUrl + "\n" );
+      final ApplicationRecord record = loadApplicationRecord();
+
+      final String url =
+        RecordUtil.lookupArtifactInRepository( new DefaultArtifact( "com.example:myapp:jar:1.0" ),
+                                               record.getNode().getRepositories().get( 0 ),
+                                               record.getAuthenticationContexts() );
+      assertNotNull( url );
+      assertTrue( url.startsWith( repositoryUrl ) );
+      assertTrue( url.endsWith( "com/example/myapp/1.0/myapp-1.0.jar" ) );
+    }
+    finally
+    {
+      server.stop( 1 );
+    }
+  }
+
+  @Test
   public void lookupArtifactInRepository_authenticated_http_url_missing()
     throws Exception
   {
