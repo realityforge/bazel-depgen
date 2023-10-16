@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Start to fix support for storing explicit credentials in the url.
+
 ### [v0.18](https://github.com/realityforge/bazel-depgen/tree/v0.18) (2023-10-16) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.17...v0.18)
 
 Changes in this release:

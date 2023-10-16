@@ -90,7 +90,7 @@ public final class RecordUtilTest
   }
 
   @Test
-  public void readAnnotationProcessors_jarWithSingleProcessorAndCOmments()
+  public void readAnnotationProcessors_jarWithSingleProcessorAndComments()
     throws Exception
   {
     final Path path = createJarFile( "META-INF/services/javax.annotation.processing.Processor",
@@ -328,7 +328,6 @@ public final class RecordUtilTest
   {
     final String username = "root";
     final String password = "secret";
-    emitSettings( "my-repo", username, password );
 
     final Path dir = FileUtil.createLocalTempDir();
     deployDepGenArtifactToLocalRepository( dir );
@@ -351,6 +350,8 @@ public final class RecordUtilTest
         ":" +
         address.getPort() +
         "/";
+      final String repositoryUrlSansAuth =
+        "http://" + address.getAddress().getCanonicalHostName() + ":" + address.getPort() + "/";
 
       writeConfigFile( "repositories:\n" +
                        "  - name: my-repo\n" +
@@ -362,7 +363,7 @@ public final class RecordUtilTest
                                                record.getNode().getRepositories().get( 0 ),
                                                record.getAuthenticationContexts() );
       assertNotNull( url );
-      assertTrue( url.startsWith( repositoryUrl ) );
+      assertTrue( url.startsWith( repositoryUrlSansAuth ) );
       assertTrue( url.endsWith( "com/example/myapp/1.0/myapp-1.0.jar" ) );
     }
     finally

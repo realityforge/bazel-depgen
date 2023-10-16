@@ -56,7 +56,16 @@ final class RecordUtil
       final String repoUrl = remoteRepository.getUrl();
       final URI uri =
         new URI( repoUrl + ( repoUrl.endsWith( "/" ) ? "" : "/" ) + ArtifactUtil.artifactToPath( artifact ) );
-      final URL url = uri.toURL();
+
+      final URI uriSansAuth =
+        new URI( uri.getScheme(),
+                 null,
+                 uri.getHost(),
+                 uri.getPort(),
+                 uri.getPath(),
+                 uri.getQuery(),
+                 uri.getFragment() );
+      final URL url = uriSansAuth.toURL();
       final String protocol = url.getProtocol();
       if ( "http".equals( protocol ) || "https".equals( protocol ) )
       {
@@ -74,9 +83,9 @@ final class RecordUtil
             connection.setRequestProperty( "Authorization", "Basic " + encoded );
           }
         }
-        else if ( null != url.getUserInfo() )
+        else if ( null != uri.getUserInfo() )
         {
-          final String userInfo = url.getUserInfo();
+          final String userInfo = uri.getUserInfo();
           final String encoded =
             Base64.getEncoder().encodeToString( userInfo.getBytes( StandardCharsets.UTF_8 ) );
           connection.setRequestProperty( "Authorization", "Basic " + encoded );
