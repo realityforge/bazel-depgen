@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.18](https://github.com/realityforge/bazel-depgen/tree/v0.18) (2023-10-16) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.17...v0.18)
+
+Changes in this release:
 
 * Update the `org.realityforge.guiceyloops` artifact to version `0.113`.
 * Update the java version required to `17`.
