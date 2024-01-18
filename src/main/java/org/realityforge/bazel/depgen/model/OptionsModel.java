@@ -3,7 +3,7 @@ package org.realityforge.bazel.depgen.model;
 import java.nio.file.Path;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import org.realityforge.bazel.depgen.config.AliasStrategy;
+import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.GlobalJavaConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
@@ -103,10 +103,10 @@ public final class OptionsModel
   }
 
   @Nonnull
-  public AliasStrategy getAliasStrategy()
+  public NameStrategy getNameStrategy()
   {
-    final AliasStrategy strategy = _source.getAliasStrategy();
-    return null == strategy ? OptionsConfig.DEFAULT_ALIAS_STRATEGY : strategy;
+    final NameStrategy strategy = _source.getNameStrategy();
+    return null == strategy ? OptionsConfig.DEFAULT_NAME_STRATEGY : strategy;
   }
 
   @Nonnull

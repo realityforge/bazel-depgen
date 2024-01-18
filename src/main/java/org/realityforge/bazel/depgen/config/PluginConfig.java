@@ -9,7 +9,7 @@ public final class PluginConfig
   @Nullable
   private Boolean generatesApi;
   @Nullable
-  private String alias;
+  private String name;
 
   @Nullable
   public Boolean getGeneratesApi()
@@ -23,13 +23,13 @@ public final class PluginConfig
   }
 
   @Nullable
-  public String getAlias()
+  public String getName()
   {
-    return alias;
+    return name;
   }
 
-  public void setAlias( @Nullable final String alias )
+  public void setName( @Nullable final String name )
   {
-    this.alias = alias;
+    this.name = name;
   }
 }

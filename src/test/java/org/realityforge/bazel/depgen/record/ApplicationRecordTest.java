@@ -1666,14 +1666,14 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void getAlias_withAliasStrategy()
+  public void getName_withNameStrategy()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir,
                      "options:\n" +
-                     "  aliasStrategy: ArtifactId\n" +
+                     "  nameStrategy: ArtifactId\n" +
                      "artifacts:\n" +
                      "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
@@ -1687,7 +1687,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void getAlias_withAliasStrategyAndPrefix()
+  public void getName_withNameStrategyAndPrefix()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
@@ -1695,7 +1695,7 @@ public class ApplicationRecordTest
     writeConfigFile( dir,
                      "options:\n" +
                      "  namePrefix: gwt_\n" +
-                     "  aliasStrategy: ArtifactId\n" +
+                     "  nameStrategy: ArtifactId\n" +
                      "artifacts:\n" +
                      "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
@@ -1709,14 +1709,14 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void loadWhereDuplicateAliasesExist()
+  public void loadWhereDuplicateNamesExist()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir,
                      "options:\n" +
-                     "  aliasStrategy: ArtifactId\n" +
+                     "  nameStrategy: ArtifactId\n" +
                      "artifacts:\n" +
                      "  - coord: com.example.app1:core:42.0\n" +
                      "  - coord: com.example.app2:core:37.0\n" );
@@ -1726,21 +1726,21 @@ public class ApplicationRecordTest
     final DepgenValidationException exception =
       expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
     assertEquals( exception.getMessage(),
-                  "Multiple artifacts have the same alias 'core' which is not supported. Change the aliasStrategy option globally or for one of the artifacts 'com.example.app1:core:jar:42.0' and 'com.example.app2:core:jar:37.0'." );
+                  "Multiple artifacts have the same name 'core' which is not supported. Change the nameStrategy option globally or for one of the artifacts 'com.example.app1:core:jar:42.0' and 'com.example.app2:core:jar:37.0'." );
   }
 
   @Test
-  public void loadWhereDuplicateAliasesWorkedAroundViaExplicitAlias()
+  public void loadWhereDuplicateNamesWorkedAroundViaExplicitNames()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir,
                      "options:\n" +
-                     "  aliasStrategy: ArtifactId\n" +
+                     "  nameStrategy: ArtifactId\n" +
                      "artifacts:\n" +
                      "  - coord: com.example.app1:core:42.0\n" +
-                     "    aliasStrategy: GroupIdAndArtifactId\n" +
+                     "    nameStrategy: GroupIdAndArtifactId\n" +
                      "  - coord: com.example.app2:core:37.0\n" );
     deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
     deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
@@ -2124,7 +2124,7 @@ public class ApplicationRecordTest
 
     writeConfigFile( dir, "options:\n" +
                           "  supportDependencyOmit: true\n" +
-                          "  aliasStrategy: ArtifactId\n" +
+                          "  nameStrategy: ArtifactId\n" +
                           "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
@@ -2913,14 +2913,14 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void writeVerifyTarget_usingPrefixAndAlternativeAliasStrategy()
+  public void writeVerifyTarget_usingPrefixAndAlternativeNameStrategy()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir, "options:\n" +
                           "  namePrefix: myapp\n" +
-                          "  aliasStrategy: ArtifactId\n" );
+                          "  nameStrategy: ArtifactId\n" );
 
     final ApplicationRecord record = loadApplicationRecord();
 
@@ -3920,7 +3920,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void writeBazelExtension_withAliasAndMultipleNatures()
+  public void writeBazelExtension_withNamesAndMultipleNatures()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
@@ -3931,11 +3931,11 @@ public class ApplicationRecordTest
                      "  - coord: com.example:myapp:1.0\n" +
                      "    natures: [Java, J2cl, Plugin]\n" +
                      "    java:\n" +
-                     "      alias: myapp-java-a\n" +
+                     "      name: myapp-java-a\n" +
                      "    j2cl:\n" +
-                     "      alias: myapp-j2cl-a\n" +
+                     "      name: myapp-j2cl-a\n" +
                      "    plugin:\n" +
-                     "      alias: myapp-plugin-a\n" +
+                     "      name: myapp-plugin-a\n" +
                      "  - coord: com.example:myapp2:1.0\n" +
                      "    natures: [Java, J2cl, Plugin]\n" );
 

@@ -58,7 +58,7 @@ public final class ApplicationRecord
 
   private void validate()
   {
-    ensureAliasesAreUnique();
+    ensureNamesAreUnique();
     ensureDeclaredDepgenArtifactIsValid();
   }
 
@@ -142,25 +142,25 @@ public final class ApplicationRecord
     }
   }
 
-  private void ensureAliasesAreUnique()
+  private void ensureNamesAreUnique()
   {
-    final HashMap<String, ArtifactRecord> aliases = new HashMap<>();
+    final HashMap<String, ArtifactRecord> names = new HashMap<>();
     for ( final ArtifactRecord artifact : getArtifacts() )
     {
       for ( final Nature nature : artifact.getNatures() )
       {
-        final String alias = artifact.getName( nature );
-        final ArtifactRecord existing = aliases.get( alias );
+        final String name = artifact.getName( nature );
+        final ArtifactRecord existing = names.get( name );
         if ( null != existing )
         {
-          throw new DepgenValidationException( "Multiple artifacts have the same alias '" + alias + "' which is " +
-                                               "not supported. Change the aliasStrategy option globally or for " +
+          throw new DepgenValidationException( "Multiple artifacts have the same name '" + name + "' which is " +
+                                               "not supported. Change the nameStrategy option globally or for " +
                                                "one of the artifacts '" + existing.getArtifact() + "' and '" +
                                                artifact.getArtifact() + "'." );
         }
         else
         {
-          aliases.put( alias, artifact );
+          names.put( name, artifact );
         }
       }
     }

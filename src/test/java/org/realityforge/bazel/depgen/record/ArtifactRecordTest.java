@@ -8,7 +8,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.DepGenConfig;
-import org.realityforge.bazel.depgen.config.AliasStrategy;
+import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 import org.testng.annotations.Test;
@@ -368,7 +368,7 @@ public class ArtifactRecordTest
   }
 
   @Test
-  public void getAliasStrategy_implicit()
+  public void getNameStrategy_implicit()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
@@ -378,62 +378,62 @@ public class ArtifactRecordTest
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
-    assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.GroupIdAndArtifactId );
+    assertEquals( artifactRecord.getNameStrategy(), NameStrategy.GroupIdAndArtifactId );
     assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
   }
 
   @Test
-  public void getAliasStrategy_locallySpecified_GroupIdAndArtifactId()
+  public void getNameStrategy_locallySpecified_GroupIdAndArtifactId()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir, "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" +
-                          "    aliasStrategy: GroupIdAndArtifactId\n" );
+                          "    nameStrategy: GroupIdAndArtifactId\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
-    assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.GroupIdAndArtifactId );
+    assertEquals( artifactRecord.getNameStrategy(), NameStrategy.GroupIdAndArtifactId );
     assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
   }
 
   @Test
-  public void getAliasStrategy_locallySpecified_ArtifactId()
+  public void getNameStrategy_locallySpecified_ArtifactId()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir,
                      "options:\n" +
-                     "  aliasStrategy: ArtifactId\n" +
+                     "  nameStrategy: ArtifactId\n" +
                      "artifacts:\n" +
                      "  - coord: com.example:myapp:1.0\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
-    assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.ArtifactId );
+    assertEquals( artifactRecord.getNameStrategy(), NameStrategy.ArtifactId );
     assertEquals( artifactRecord.getName( Nature.Java ), "myapp" );
   }
 
   @Test
-  public void getAliasStrategy_globallySpecified_ArtifactId()
+  public void getNameStrategy_globallySpecified_ArtifactId()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir, "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" +
-                          "    aliasStrategy: ArtifactId\n" );
+                          "    nameStrategy: ArtifactId\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
-    assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.ArtifactId );
+    assertEquals( artifactRecord.getNameStrategy(), NameStrategy.ArtifactId );
     assertEquals( artifactRecord.getName( Nature.Java ), "myapp" );
   }
 
   @Test
-  public void emitAlias_aliasOverrides()
+  public void emitJavaImport_nameOverrides()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
@@ -443,11 +443,11 @@ public class ArtifactRecordTest
                      "  - coord: com.example:myapp:1.0\n" +
                      "    natures: [Java, J2cl, Plugin]\n" +
                      "    java:\n" +
-                     "      alias: myapp-java-a\n" +
+                     "      name: myapp-java-a\n" +
                      "    j2cl:\n" +
-                     "      alias: myapp-j2cl-a\n" +
+                     "      name: myapp-j2cl-a\n" +
                      "    plugin:\n" +
-                     "      alias: myapp-plugin-a\n" );
+                     "      name: myapp-plugin-a\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );

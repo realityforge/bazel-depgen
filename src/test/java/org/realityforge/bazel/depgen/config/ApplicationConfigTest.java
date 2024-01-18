@@ -180,21 +180,21 @@ public class ApplicationConfigTest
   }
 
   @Test
-  public void artifactWithAliasStrategy()
+  public void artifactWithNameStrategy()
     throws Exception
   {
     writeConfigFile( "artifacts:\n" +
                      "  - coord: org.realityforge.arez:arez-core:0.138\n" +
-                     "    aliasStrategy: ArtifactId\n" );
+                     "    nameStrategy: ArtifactId\n" );
     final ApplicationConfig config = loadApplicationConfig();
     assertNotNull( config );
     final ArtifactConfig artifact = ensureSingleArtifact( config );
     assertEquals( artifact.getCoord(), "org.realityforge.arez:arez-core:0.138" );
-    assertEquals( artifact.getAliasStrategy(), AliasStrategy.ArtifactId );
+    assertEquals( artifact.getNameStrategy(), NameStrategy.ArtifactId );
   }
 
   @Test
-  public void artifactWithoutAliasStrategy()
+  public void artifactWithoutNameStrategy()
     throws Exception
   {
     writeConfigFile( "artifacts:\n" +
@@ -203,7 +203,7 @@ public class ApplicationConfigTest
     assertNotNull( config );
     final ArtifactConfig artifact = ensureSingleArtifact( config );
     assertEquals( artifact.getCoord(), "org.realityforge.arez:arez-core:0.138" );
-    assertNull( artifact.getAliasStrategy() );
+    assertNull( artifact.getNameStrategy() );
   }
 
   @Test
@@ -274,7 +274,7 @@ public class ApplicationConfigTest
                      "  workspaceMacroName: workspace_rules\n" +
                      "  targetMacroName: gen_targets\n" +
                      "  namePrefix: magic_\n" +
-                     "  aliasStrategy: ArtifactId\n" +
+                     "  nameStrategy: ArtifactId\n" +
                      "  defaultNature: J2cl\n" +
                      "  extensionFile: workspaceDir/vendor/workspace.bzl\n" +
                      "  java:\n" +
@@ -290,7 +290,7 @@ public class ApplicationConfigTest
     assertEquals( options.getWorkspaceMacroName(), "workspace_rules" );
     assertEquals( options.getTargetMacroName(), "gen_targets" );
     assertEquals( options.getNamePrefix(), "magic_" );
-    assertEquals( options.getAliasStrategy(), AliasStrategy.ArtifactId );
+    assertEquals( options.getNameStrategy(), NameStrategy.ArtifactId );
     assertEquals( options.getDefaultNature(), Nature.J2cl );
     assertEquals( options.getFailOnMissingPom(), Boolean.FALSE );
     assertEquals( options.getFailOnInvalidPom(), Boolean.FALSE );
@@ -320,7 +320,7 @@ public class ApplicationConfigTest
     assertNull( options.getWorkspaceMacroName() );
     assertNull( options.getTargetMacroName() );
     assertNull( options.getNamePrefix() );
-    assertNull( options.getAliasStrategy() );
+    assertNull( options.getNameStrategy() );
     assertNull( options.getDefaultNature() );
     assertNull( options.getFailOnMissingPom() );
     assertNull( options.getFailOnInvalidPom() );

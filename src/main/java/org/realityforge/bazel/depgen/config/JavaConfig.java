@@ -7,7 +7,7 @@ public final class JavaConfig
   @Nullable
   private Boolean exportDeps;
   @Nullable
-  private String alias;
+  private String name;
 
   @Nullable
   public Boolean getExportDeps()
@@ -21,13 +21,13 @@ public final class JavaConfig
   }
 
   @Nullable
-  public String getAlias()
+  public String getName()
   {
-    return alias;
+    return name;
   }
 
-  public void setAlias( @Nullable final String alias )
+  public void setName( @Nullable final String name )
   {
-    this.alias = alias;
+    this.name = name;
   }
 }

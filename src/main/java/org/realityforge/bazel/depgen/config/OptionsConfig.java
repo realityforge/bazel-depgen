@@ -11,7 +11,7 @@ public final class OptionsConfig
   public static final String DEFAULT_WORKSPACE_MACRO_NAME = "generate_workspace_rules";
   public static final String DEFAULT_TARGET_MACRO_NAME = "generate_targets";
   public static final String DEFAULT_NAME_PREFIX = "";
-  public static final AliasStrategy DEFAULT_ALIAS_STRATEGY = AliasStrategy.GroupIdAndArtifactId;
+  public static final NameStrategy DEFAULT_NAME_STRATEGY = NameStrategy.GroupIdAndArtifactId;
   public static final boolean DEFAULT_FAIL_ON_INVALID_POM = true;
   public static final boolean DEFAULT_FAIL_ON_MISSING_POM = true;
   public static final boolean DEFAULT_EMIT_DEPENDENCY_GRAPH = true;
@@ -32,7 +32,7 @@ public final class OptionsConfig
   @Nullable
   private String namePrefix;
   @Nullable
-  private AliasStrategy aliasStrategy;
+  private NameStrategy _nameStrategy;
   @Nullable
   private Nature defaultNature;
   @Nullable
@@ -108,14 +108,14 @@ public final class OptionsConfig
   }
 
   @Nullable
-  public AliasStrategy getAliasStrategy()
+  public NameStrategy getNameStrategy()
   {
-    return aliasStrategy;
+    return _nameStrategy;
   }
 
-  public void setAliasStrategy( @Nonnull final AliasStrategy aliasStrategy )
+  public void setNameStrategy( @Nonnull final NameStrategy nameStrategy )
   {
-    this.aliasStrategy = Objects.requireNonNull( aliasStrategy );
+    this._nameStrategy = Objects.requireNonNull( nameStrategy );
   }
 
   @Nullable

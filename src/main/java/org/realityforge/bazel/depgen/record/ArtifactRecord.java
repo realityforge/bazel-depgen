@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.DepgenValidationException;
-import org.realityforge.bazel.depgen.config.AliasStrategy;
+import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.J2clConfig;
 import org.realityforge.bazel.depgen.config.J2clMode;
@@ -261,8 +261,8 @@ public final class ArtifactRecord
   String getSymbol()
   {
     final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
-    final AliasStrategy aliasStrategy = getAliasStrategy();
-    if ( AliasStrategy.GroupIdAndArtifactId == aliasStrategy )
+    final NameStrategy nameStrategy = getNameStrategy();
+    if ( NameStrategy.GroupIdAndArtifactId == nameStrategy )
     {
       return getNamePrefix() +
              BazelUtil.cleanNamePart( artifact.getGroupId() ) +
@@ -271,7 +271,7 @@ public final class ArtifactRecord
     }
     else
     {
-      assert AliasStrategy.ArtifactId == aliasStrategy;
+      assert NameStrategy.ArtifactId == nameStrategy;
       return getNamePrefix() + BazelUtil.cleanNamePart( artifact.getArtifactId() );
     }
   }
@@ -346,27 +346,27 @@ public final class ArtifactRecord
       if ( Nature.Java == nature )
       {
         final JavaConfig config = source.getJava();
-        name = null != config ? config.getAlias() : null;
+        name = null != config ? config.getName() : null;
       }
       else if ( Nature.J2cl == nature )
       {
         final J2clConfig config = source.getJ2cl();
-        name = null != config ? config.getAlias() : null;
+        name = null != config ? config.getName() : null;
       }
       else if ( Nature.Plugin == nature )
       {
         final PluginConfig config = source.getPlugin();
-        name = null != config ? config.getAlias() : null;
+        name = null != config ? config.getName() : null;
       }
     }
     return null != name ? name : getSymbol() + deriveSuffix( nature );
   }
 
   @Nonnull
-  AliasStrategy getAliasStrategy()
+  NameStrategy getNameStrategy()
   {
-    final AliasStrategy aliasStrategy = null != _artifactModel ? _artifactModel.getSource().getAliasStrategy() : null;
-    return null == aliasStrategy ? _application.getSource().getOptions().getAliasStrategy() : aliasStrategy;
+    final NameStrategy nameStrategy = null != _artifactModel ? _artifactModel.getSource().getNameStrategy() : null;
+    return null == nameStrategy ? _application.getSource().getOptions().getNameStrategy() : nameStrategy;
   }
 
   @Nonnull
@@ -658,11 +658,6 @@ public final class ArtifactRecord
     final DependencyNode node = getNode();
     final org.eclipse.aether.artifact.Artifact artifact = node.getDependency().getArtifact();
     return groupId.equals( artifact.getGroupId() ) && artifactId.equals( artifact.getArtifactId() );
-  }
-
-  void emitAlias( @Nonnull final StarlarkOutput output, @Nonnull final Nature nature )
-    throws IOException
-  {
   }
 
   void emitJavaImport( @Nonnull final StarlarkOutput output, @Nonnull final String nameSuffix )

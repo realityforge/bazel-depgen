@@ -22,15 +22,15 @@ options:
   # prefix those names but all other names will be prefixed. Defaults to ''.
   #namePrefix: ''
 
-  # The tool generates aliases for dependency targets that can be consumed by users of the tool.
-  # Different strategies can be used to name the aliases. the default strategy is 'GroupIdAndArtifactId'
+  # The tool generates name for dependency targets that can be consumed by users of the tool.
+  # Different strategies can be used to generate the names. the default strategy is 'GroupIdAndArtifactId'
   # Strategies include:
-  # - GroupIdAndArtifactId: The alias uses both the groupId and artifactId when constructing the alias.
-  #   So the artifact 'org.realityforge.react4j:react4j-core:0.126' has an alias
+  # - GroupIdAndArtifactId: The name uses both the groupId and artifactId when constructing the name.
+  #   So the artifact 'org.realityforge.react4j:react4j-core:0.126' has a name
   #   'org_realityforge_react4j__react4j_core'
-  # - ArtifactId: The alias uses the artifactId when constructing the alias.
-  #   So the artifact 'org.realityforge.react4j:react4j-core:0.126' has an alias 'react4j_core'
-  #aliasStrategy: GroupIdAndArtifactId
+  # - ArtifactId: The name uses the artifactId when constructing the name.
+  #   So the artifact 'org.realityforge.react4j:react4j-core:0.126' has a name 'react4j_core'
+  #nameStrategy: GroupIdAndArtifactId
 
   # Artifacts have 1 or more natures. A nature defines the type of targets that are created for an
   # artifact. Does the artifact result in a 'j2cl_library', a 'java_library', a 'java_plugin' or something
@@ -72,7 +72,7 @@ options:
   # Some bazel workspaces are intended to be consumed by other projects. In these scenarios, it is not
   # uncommon to want to customize the set of dependencies used. The tool supports this use case by
   # adding boolean parameters to the macros that direct the macro to skip the declaration of the
-  # repository rules or targets. There is one parameter per artifact named in the form "omit_[alias]".
+  # repository rules or targets. There is one parameter per artifact named in the form "omit_[name]".
   # Defaults to 'false'.
   #supportDependencyOmit: false
 
@@ -154,8 +154,8 @@ repositories:
 
   #- coord: org.realityforge.react4j:react4j-core:0.126
 
-    # This setting allows per-artifact overrides of the global aliasStrategy configuration.
-    #aliasStrategy: ArtifactId
+    # This setting allows per-artifact overrides of the global nameStrategy configuration.
+    #nameStrategy: ArtifactId
 
     # This setting allows per-artifact overrides of the global includeSource configuration.
     #includeSource: false
@@ -174,8 +174,8 @@ repositories:
       #- com.google.jsinterop:base
       #- com.google.jsinterop:jsinterop-annotations
 
-    # The visibility specifies the visibility of the alias that references the artifact. If not specified
-    # then the alias has no visibility specified and thus has the default visibility of the module.
+    # The visibility specifies the visibility of the target that references the artifact. If not specified
+    # then the target has no visibility specified and thus has the default visibility of the module.
     #visibility: ["//visibility:public"]
 
     # The repository configuration contains a list of repository names that should be used to resolve
@@ -197,8 +197,8 @@ repositories:
     # and should only be present if the artifact has the Java nature
     #java:
 
-      # This setting allows the explicit specification of an alias.
-      #alias: react4j-core-java
+      # This setting allows the explicit specification of an name.
+      #name: react4j-core-java
 
       # This setting allows per-artifact overrides of the global exportDeps configuration.
       #exportDeps: true
@@ -207,8 +207,8 @@ repositories:
     # and should only be present if the artifact has the J2cl nature
     #j2cl:
 
-      # This setting allows the explicit specification of an alias.
-      #alias: react4j-core-j2cl
+      # This setting allows the explicit specification of an name.
+      #name: react4j-core-j2cl
 
       # Explicitly suppress some checks in the closure compiler. Providing values with this attribute is
       # only valid when the mode is 'Library'. See the closure-compiler documentation for a list of valid
@@ -225,8 +225,8 @@ repositories:
     # and should only be present if the artifact has the Plugin nature
     #plugin:
 
-      # This setting allows the explicit specification of an alias.
-      #alias: react4j-core-plugin
+      # This setting allows the explicit specification of an name.
+      #name: react4j-core-plugin
 
       # Should the tool mark annotation processors as generating API code?
       # See https://docs.bazel.build/versions/master/be/java.html#java_plugin.generates_api for

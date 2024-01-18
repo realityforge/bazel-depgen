@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 public final class ArtifactConfig
 {
   @Nullable
-  private AliasStrategy aliasStrategy;
+  private NameStrategy _nameStrategy;
   @Nullable
   private String coord;
   @Nullable
@@ -34,14 +34,14 @@ public final class ArtifactConfig
   private PluginConfig plugin;
 
   @Nullable
-  public AliasStrategy getAliasStrategy()
+  public NameStrategy getNameStrategy()
   {
-    return aliasStrategy;
+    return _nameStrategy;
   }
 
-  public void setAliasStrategy( @Nonnull final AliasStrategy aliasStrategy )
+  public void setNameStrategy( @Nonnull final NameStrategy nameStrategy )
   {
-    this.aliasStrategy = Objects.requireNonNull( aliasStrategy );
+    this._nameStrategy = Objects.requireNonNull( nameStrategy );
   }
 
   @Nullable

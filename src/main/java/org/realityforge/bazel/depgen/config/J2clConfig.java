@@ -12,7 +12,7 @@ public final class J2clConfig
   @Nullable
   private J2clMode mode;
   @Nullable
-  private String alias;
+  private String name;
 
   @Nullable
   public List<String> getSuppress()
@@ -37,13 +37,13 @@ public final class J2clConfig
   }
 
   @Nullable
-  public String getAlias()
+  public String getName()
   {
-    return alias;
+    return name;
   }
 
-  public void setAlias( @Nullable final String alias )
+  public void setName( @Nullable final String name )
   {
-    this.alias = alias;
+    this.name = name;
   }
 }
