@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-### [v0.19](https://github.com/realityforge/bazel-depgen/tree/v0.19) (2024-01-18) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.18...v0.19)
+### [v0.19](https://github.com/realityforge/bazel-depgen/tree/v0.19) (2024-01-18) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.18...v0.19)
 
 Changes in this release:
 
@@ -11,7 +11,7 @@ Changes in this release:
   if the "real" library is visibility:private and only the alias is public.
 * Rename aliasStrategy to nameStrategy in the configuration and documentation.
 
-### [v0.18](https://github.com/realityforge/bazel-depgen/tree/v0.18) (2023-10-16) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.17...v0.18)
+### [v0.18](https://github.com/realityforge/bazel-depgen/tree/v0.18) (2023-10-16) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.17...v0.18)
 
 Changes in this release:
 
@@ -22,13 +22,13 @@ Changes in this release:
 * Add support for explicitly storing credentials in the repository url.
 * Skip comments that appear in the `META-INF/services/javax.annotation.processing.Processor` service definition file.
 
-### [v0.17](https://github.com/realityforge/bazel-depgen/tree/v0.17) (2022-05-24) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.16...v0.17)
+### [v0.17](https://github.com/realityforge/bazel-depgen/tree/v0.17) (2022-05-24) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.16...v0.17)
 
 Changes in this release:
 
 * Replace the `test_class=...` parameter to java_test macro with `use_testrunner = False` as it is the "correct" approach and it avoids unnecessary work by the Bazel runtime.
 
-### [v0.16](https://github.com/realityforge/bazel-depgen/tree/v0.16) (2022-05-23) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.15...v0.16)
+### [v0.16](https://github.com/realityforge/bazel-depgen/tree/v0.16) (2022-05-23) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.15...v0.16)
 
 Changes in this release:
 
@@ -37,7 +37,7 @@ Changes in this release:
 * Reimplement the generated `regenerate_depgen_extension` target as a `java_binary` target.
 * Derive the repository cache directory a single time rather than once per artifact by caching the derivation at application startup.
 
-### [v0.15](https://github.com/realityforge/bazel-depgen/tree/v0.15) (2022-05-20) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.14...v0.15)
+### [v0.15](https://github.com/realityforge/bazel-depgen/tree/v0.15) (2022-05-20) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.14...v0.15)
 
 Changes in this release:
 
@@ -45,7 +45,7 @@ Changes in this release:
 * Change the way we verify the sha256 for `dependencies.yml` configuration file to be a test. This makes it easier to integrate with a more traditional bazel build flow.
 * Eliminate the "data" attribute on library rules as it was only partially successful in triggering verification of sha256 on use. Instead, rely upon the generated test target.
 
-### [v0.14](https://github.com/realityforge/bazel-depgen/tree/v0.14) (2022-05-13) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.13...v0.14)
+### [v0.14](https://github.com/realityforge/bazel-depgen/tree/v0.14) (2022-05-13) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.13...v0.14)
 
 Changes in this release:
 
@@ -53,14 +53,14 @@ Changes in this release:
 * Update the `org.realityforge.gir` artifact to version `0.12`.
 * Ensure that the $ is correctly escaped in modern Bazel by adding additional `\` character to the `regenerate_depgen_extension.sh` script.
 
-### [v0.13](https://github.com/realityforge/bazel-depgen/tree/v0.13) (2021-05-25) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.12...v0.13)
+### [v0.13](https://github.com/realityforge/bazel-depgen/tree/v0.13) (2021-05-25) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.12...v0.13)
 
 Changes in this release:
 
 * Stop adding javascript assets to the generated bazel extension for artifacts that do not have the J2cl nature.
 * Add an alias configuration setting to the per-artifact j2cl/java/plugin configuration sections that allow the user to override the name of the alias generated in the bazel extension.
 
-### [v0.12](https://github.com/realityforge/bazel-depgen/tree/v0.12) (2021-04-16) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.11...v0.12)
+### [v0.12](https://github.com/realityforge/bazel-depgen/tree/v0.12) (2021-04-16) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.11...v0.12)
 
 Changes in this release:
 
@@ -69,7 +69,7 @@ Changes in this release:
 * Remove `java_import` target created for artifacts with the "J2cl" nature when `verifyConfigSha256` is `true`. This target was unused and did not work as expected.
 * Avoid adding `*.native.js` files to the fileset added to `j2cl_library` target as the J2cl infrastructure already detects and handles files with this naming pattern.
 
-### [v0.11](https://github.com/realityforge/bazel-depgen/tree/v0.11) (2021-04-15) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.10...v0.11)
+### [v0.11](https://github.com/realityforge/bazel-depgen/tree/v0.11) (2021-04-15) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.10...v0.11)
 
 Changes in this release:
 
