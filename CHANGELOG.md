@@ -3,6 +3,8 @@
 ### Unreleased
 
 * Start to fix support for storing explicit credentials in the url.
+* Remove usage of aliasing as it inhibits bazels ability to provide hints on which dependencies to add to a target
+  if the "real" library is visibility:private and only the alias is public.
 
 ### [v0.18](https://github.com/realityforge/bazel-depgen/tree/v0.18) (2023-10-16) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.17...v0.18)
 

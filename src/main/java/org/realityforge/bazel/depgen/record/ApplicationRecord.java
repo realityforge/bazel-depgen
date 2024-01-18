@@ -149,7 +149,7 @@ public final class ApplicationRecord
     {
       for ( final Nature nature : artifact.getNatures() )
       {
-        final String alias = artifact.getAlias( nature );
+        final String alias = artifact.getName( nature );
         final ArtifactRecord existing = aliases.get( alias );
         if ( null != existing )
         {

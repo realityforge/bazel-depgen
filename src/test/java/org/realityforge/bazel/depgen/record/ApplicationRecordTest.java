@@ -80,8 +80,7 @@ public class ApplicationRecordTest
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertNotNull( artifactRecord.getArtifactModel() );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-    assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
-    assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
+    assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
     assertTrue( artifactRecord.generatesApi() );
     assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
     assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
@@ -240,8 +239,7 @@ public class ApplicationRecordTest
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertNotNull( artifactRecord.getArtifactModel() );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-    assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
-    assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
+    assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
     assertTrue( artifactRecord.generatesApi() );
     assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
     assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
@@ -351,8 +349,7 @@ public class ApplicationRecordTest
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
-    assertEquals( artifactRecord.getName( Nature.Java ), "myapp_com_example__myapp__1_0" );
-    assertEquals( artifactRecord.getAlias( Nature.Java ), "myapp_com_example__myapp" );
+    assertEquals( artifactRecord.getName( Nature.Java ), "myapp_com_example__myapp" );
     assertTrue( artifactRecord.generatesApi() );
     assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
   }
@@ -375,8 +372,7 @@ public class ApplicationRecordTest
     final List<ArtifactRecord> artifacts = record.getArtifacts();
     assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
-    assertEquals( artifactRecord.getName( Nature.Java ), "myapp_com_example__myapp__1_0" );
-    assertEquals( artifactRecord.getAlias( Nature.Java ), "myapp_com_example__myapp" );
+    assertEquals( artifactRecord.getName( Nature.Java ), "myapp_com_example__myapp" );
     assertTrue( artifactRecord.generatesApi() );
     assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
   }
@@ -451,8 +447,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord );
       assertNotNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
-      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
       assertNull( artifactRecord.getProcessors() );
@@ -472,8 +467,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord );
       assertNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:mylib" );
-      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__mylib__1_0" );
-      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__mylib" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__mylib" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
       assertNull( artifactRecord.getProcessors() );
@@ -490,8 +484,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord );
       assertNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:rtA" );
-      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__rta__33_0" );
-      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__rta" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__rta" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtA:33.0" );
       assertNull( artifactRecord.getProcessors() );
@@ -507,8 +500,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord );
       assertNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:rtB" );
-      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__rtb__2_0" );
-      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__rtb" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__rtb" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtB:2.0" );
       assertNull( artifactRecord.getProcessors() );
@@ -545,8 +537,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord );
       assertNotNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
-      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
       assertNull( artifactRecord.getProcessors() );
@@ -578,8 +569,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord );
       assertNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:mylib" );
-      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__mylib__1_0" );
-      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__mylib" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__mylib" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
       assertNull( artifactRecord.getProcessors() );
@@ -632,8 +622,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord );
       assertNotNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
-      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
       assertNull( artifactRecord.getProcessors() );
@@ -665,8 +654,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord );
       assertNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:mylib" );
-      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__mylib__1_0" );
-      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__mylib" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__mylib" );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:mylib:1.0" );
       assertNull( artifactRecord.getProcessors() );
@@ -1101,8 +1089,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord );
       assertNotNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
-      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
       assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
@@ -1116,8 +1103,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord );
       assertNull( artifactRecord.getArtifactModel() );
       assertEquals( artifactRecord.getKey(), "com.example:rtA" );
-      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__rta__33_0" );
-      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__rta" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__rta" );
       assertEquals( artifactRecord.getNatures(), Collections.singletonList( Nature.Java ) );
       assertTrue( artifactRecord.generatesApi() );
       assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:rtA:33.0" );
@@ -1250,7 +1236,7 @@ public class ApplicationRecordTest
       assertNotNull( artifactRecord.getArtifactModel() );
       assertNull( artifactRecord.getReplacementModel() );
       assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-      assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
+      assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
       assertEquals( artifactRecord.getLabel( Nature.Java ), ":com_example__myapp" );
       assertEquals( artifactRecord.getDeps().size(), 1 );
       assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:mylib" );
@@ -1697,8 +1683,7 @@ public class ApplicationRecordTest
     assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-    assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
-    assertEquals( artifactRecord.getAlias( Nature.Java ), "myapp" );
+    assertEquals( artifactRecord.getName( Nature.Java ), "myapp" );
   }
 
   @Test
@@ -1720,8 +1705,7 @@ public class ApplicationRecordTest
     assertNonSystemArtifactCount( record, 1 );
     final ArtifactRecord artifactRecord = artifacts.get( 0 );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
-    assertEquals( artifactRecord.getName( Nature.Java ), "gwt_com_example__myapp__1_0" );
-    assertEquals( artifactRecord.getAlias( Nature.Java ), "gwt_myapp" );
+    assertEquals( artifactRecord.getName( Nature.Java ), "gwt_myapp" );
   }
 
   @Test
@@ -1769,13 +1753,11 @@ public class ApplicationRecordTest
 
     final ArtifactRecord artifactRecord1 = artifacts.get( 0 );
     assertEquals( artifactRecord1.getKey(), "com.example.app1:core" );
-    assertEquals( artifactRecord1.getName( Nature.Java ), "com_example_app1__core__42_0" );
-    assertEquals( artifactRecord1.getAlias( Nature.Java ), "com_example_app1__core" );
+    assertEquals( artifactRecord1.getName( Nature.Java ), "com_example_app1__core" );
 
     final ArtifactRecord artifactRecord2 = artifacts.get( 1 );
     assertEquals( artifactRecord2.getKey(), "com.example.app2:core" );
-    assertEquals( artifactRecord2.getName( Nature.Java ), "com_example_app2__core__37_0" );
-    assertEquals( artifactRecord2.getAlias( Nature.Java ), "core" );
+    assertEquals( artifactRecord2.getName( Nature.Java ), "core" );
   }
 
   @Test
@@ -2011,27 +1993,17 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        name = \"com_example__myapp\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -2057,16 +2029,11 @@ public class ApplicationRecordTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        name = \"com_example__myapp\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -2134,28 +2101,18 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    if not omit_com_example__myapp:\n" +
-                  "        native.alias(\n" +
-                  "            name = \"com_example__myapp\",\n" +
-                  "            actual = \":com_example__myapp__1_0\",\n" +
-                  "        )\n" +
                   "        _java_import(\n" +
-                  "            name = \"com_example__myapp__1_0\",\n" +
+                  "            name = \"com_example__myapp\",\n" +
                   "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "            srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "            visibility = [\"//visibility:private\"],\n" +
                   "        )\n" +
                   "\n" +
                   "    if not omit_org_realityforge_bazel_depgen__bazel_depgen:\n" +
-                  "        native.alias(\n" +
-                  "            name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "            actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "        )\n" +
                   "        _java_import(\n" +
-                  "            name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "            name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "            jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "            tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "            visibility = [\"//visibility:private\"],\n" +
                   "        )\n" );
   }
 
@@ -2224,28 +2181,18 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    if not omit_myapp:\n" +
-                  "        native.alias(\n" +
-                  "            name = \"myapp\",\n" +
-                  "            actual = \":com_example__myapp__1_0\",\n" +
-                  "        )\n" +
                   "        _java_import(\n" +
-                  "            name = \"com_example__myapp__1_0\",\n" +
+                  "            name = \"myapp\",\n" +
                   "            jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "            srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "            tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "            visibility = [\"//visibility:private\"],\n" +
                   "        )\n" +
                   "\n" +
                   "    if not omit_bazel_depgen:\n" +
-                  "        native.alias(\n" +
-                  "            name = \"bazel_depgen\",\n" +
-                  "            actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "        )\n" +
                   "        _java_import(\n" +
-                  "            name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "            name = \"bazel_depgen\",\n" +
                   "            jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "            tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "            visibility = [\"//visibility:private\"],\n" +
                   "        )\n" );
   }
 
@@ -2310,27 +2257,17 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        name = \"com_example__myapp\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -2394,41 +2331,26 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        name = \"com_example__myapp\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":com_example__mylib\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__mylib\",\n" +
-                  "        actual = \":com_example__mylib__2_0\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__mylib__2_0\",\n" +
+                  "        name = \"com_example__mylib\",\n" +
                   "        jars = [\"@com_example__mylib__2_0//file\"],\n" +
                   "        srcjar = \"@com_example__mylib__2_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:mylib:2.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -2496,28 +2418,18 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        name = \"com_example__myapp\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\"@com_example//:mylib\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -3139,27 +3051,17 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        name = \"com_example__myapp\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -3222,16 +3124,11 @@ public class ApplicationRecordTest
                   "        Macro to define targets for dependencies.\n" +
                   "    \"\"\"\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        name = \"com_example__myapp\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -3413,37 +3310,22 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp-j2cl\",\n" +
-                  "        actual = \":com_example__myapp__1_0-j2cl\",\n" +
-                  "    )\n" +
                   "    _j2cl_library(\n" +
-                  "        name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "        name = \"com_example__myapp-j2cl\",\n" +
                   "        srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        name = \"com_example__myapp\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -3556,37 +3438,22 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp-j2cl\",\n" +
-                  "        actual = \":com_example__myapp__1_0-j2cl\",\n" +
-                  "    )\n" +
                   "    _j2cl_library(\n" +
-                  "        name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "        name = \"com_example__myapp-j2cl\",\n" +
                   "        srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":com_example__mylib-j2cl\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__mylib-j2cl\",\n" +
-                  "        actual = \":com_example__mylib__1_0-j2cl\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
                   "    _j2cl_library(\n" +
-                  "        name = \"com_example__mylib__1_0-j2cl\",\n" +
+                  "        name = \"com_example__mylib-j2cl\",\n" +
                   "        srcs = [\"@com_example__mylib__1_0__sources//file\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -3741,27 +3608,17 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp-j2cl\",\n" +
-                  "        actual = \":com_example__myapp__1_0-j2cl\",\n" +
-                  "    )\n" +
                   "    _j2cl_library(\n" +
-                  "        name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "        name = \"com_example__myapp-j2cl\",\n" +
                   "        srcs = [\n" +
                   "            \"@com_example__myapp__1_0__sources//file\",\n" +
                   "            \"@com_example__myapp__1_0__js_sources//:srcs\",\n" +
                   "        ],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":com_example__mylib-j2cl\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__mylib-j2cl\",\n" +
-                  "        actual = \":com_example__mylib__1_0-j2cl\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
                   "    _j2cl_library(\n" +
-                  "        name = \"com_example__mylib__1_0-j2cl\",\n" +
+                  "        name = \"com_example__mylib-j2cl\",\n" +
                   "        srcs = [\n" +
                   "            \"@com_example__mylib__1_0__sources//file\",\n" +
                   "            \"@com_example__mylib__1_0__js_sources//:srcs\",\n" +
@@ -3769,15 +3626,10 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -3915,41 +3767,26 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        name = \"com_example__myapp\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":com_example__mylib\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__mylib\",\n" +
-                  "        actual = \":com_example__mylib__1_0\",\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__mylib__1_0\",\n" +
+                  "        name = \"com_example__mylib\",\n" +
                   "        jars = [\"@com_example__mylib__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__mylib__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:mylib:1.0\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -4059,37 +3896,26 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0__plugin_library\",\n" +
+                  "        name = \"com_example__myapp__plugin_library\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "    _java_plugin(\n" +
                   "        name = \"com_example__myapp__1_0__plugin\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                  "        deps = [\":com_example__myapp__plugin_library\"],\n" +
                   "    )\n" +
                   "    _java_library(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        name = \"com_example__myapp\",\n" +
                   "        exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -4227,106 +4053,69 @@ public class ApplicationRecordTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
+                  "    _java_import(\n" +
                   "        name = \"myapp-java-a\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
-                  "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"myapp-j2cl-a\",\n" +
-                  "        actual = \":com_example__myapp__1_0-j2cl\",\n" +
-                  "    )\n" +
                   "    _j2cl_library(\n" +
-                  "        name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "        name = \"myapp-j2cl-a\",\n" +
                   "        srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"myapp-plugin-a\",\n" +
-                  "        actual = \":com_example__myapp__1_0-plugin\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0__plugin_library\",\n" +
+                  "        name = \"myapp-java-a__plugin_library\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "    _java_plugin(\n" +
                   "        name = \"com_example__myapp__1_0__plugin\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                  "        deps = [\":myapp-java-a__plugin_library\"],\n" +
                   "    )\n" +
                   "    _java_library(\n" +
-                  "        name = \"com_example__myapp__1_0-plugin\",\n" +
+                  "        name = \"myapp-plugin-a\",\n" +
                   "        exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp2\",\n" +
-                  "        actual = \":com_example__myapp2__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp2__1_0\",\n" +
+                  "        name = \"com_example__myapp2\",\n" +
                   "        jars = [\"@com_example__myapp2__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp2__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp2:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":myapp-java-a\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp2-j2cl\",\n" +
-                  "        actual = \":com_example__myapp2__1_0-j2cl\",\n" +
-                  "    )\n" +
                   "    _j2cl_library(\n" +
-                  "        name = \"com_example__myapp2__1_0-j2cl\",\n" +
+                  "        name = \"com_example__myapp2-j2cl\",\n" +
                   "        srcs = [\"@com_example__myapp2__1_0__sources//file\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":myapp-j2cl-a\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp2-plugin\",\n" +
-                  "        actual = \":com_example__myapp2__1_0-plugin\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp2__1_0__plugin_library\",\n" +
+                  "        name = \"com_example__myapp2__plugin_library\",\n" +
                   "        jars = [\"@com_example__myapp2__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp2__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp2:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":myapp-java-a\"],\n" +
                   "    )\n" +
                   "    _java_plugin(\n" +
                   "        name = \"com_example__myapp2__1_0__plugin\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
-                  "        deps = [\":com_example__myapp2__1_0__plugin_library\"],\n" +
+                  "        deps = [\":com_example__myapp2__plugin_library\"],\n" +
                   "    )\n" +
                   "    _java_library(\n" +
-                  "        name = \"com_example__myapp2__1_0-plugin\",\n" +
+                  "        name = \"com_example__myapp2-plugin\",\n" +
                   "        exported_plugins = [\"com_example__myapp2__1_0__plugin\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 

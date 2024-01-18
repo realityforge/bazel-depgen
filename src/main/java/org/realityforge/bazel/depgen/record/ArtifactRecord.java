@@ -319,12 +319,6 @@ public final class ArtifactRecord
   }
 
   @Nonnull
-  String getName( @Nonnull final Nature nature )
-  {
-    return getBaseName() + deriveSuffix( nature );
-  }
-
-  @Nonnull
   String getBaseName()
   {
     final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
@@ -339,33 +333,33 @@ public final class ArtifactRecord
   @Nonnull
   String getLabel( @Nonnull final Nature nature )
   {
-    return null != _replacementModel ? _replacementModel.getTarget( nature ) : ":" + getAlias( nature );
+    return null != _replacementModel ? _replacementModel.getTarget( nature ) : ":" + getName( nature );
   }
 
   @Nonnull
-  String getAlias( @Nonnull final Nature nature )
+  String getName( @Nonnull final Nature nature )
   {
-    String alias = null;
+    String name = null;
     if ( null != _artifactModel )
     {
       final ArtifactConfig source = _artifactModel.getSource();
       if ( Nature.Java == nature )
       {
         final JavaConfig config = source.getJava();
-        alias = null != config ? config.getAlias() : null;
+        name = null != config ? config.getAlias() : null;
       }
       else if ( Nature.J2cl == nature )
       {
         final J2clConfig config = source.getJ2cl();
-        alias = null != config ? config.getAlias() : null;
+        name = null != config ? config.getAlias() : null;
       }
       else if ( Nature.Plugin == nature )
       {
         final PluginConfig config = source.getPlugin();
-        alias = null != config ? config.getAlias() : null;
+        name = null != config ? config.getAlias() : null;
       }
     }
-    return null != alias ? alias : getSymbol() + deriveSuffix( nature );
+    return null != name ? name : getSymbol() + deriveSuffix( nature );
   }
 
   @Nonnull
@@ -669,24 +663,6 @@ public final class ArtifactRecord
   void emitAlias( @Nonnull final StarlarkOutput output, @Nonnull final Nature nature )
     throws IOException
   {
-    final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", asString( getAlias( nature ) ) );
-    arguments.put( "actual", "\":" + getName( nature ) + "\"" );
-    final ArtifactModel artifactModel = getArtifactModel();
-    if ( null != artifactModel )
-    {
-      final List<String> visibility = artifactModel.getVisibility();
-      if ( !visibility.isEmpty() )
-      {
-        arguments.put( "visibility",
-                       visibility.stream().map( this::asString ).collect( Collectors.toList() ) );
-      }
-    }
-    else
-    {
-      arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    }
-    output.writeCall( "native.alias", arguments );
   }
 
   void emitJavaImport( @Nonnull final StarlarkOutput output, @Nonnull final String nameSuffix )
@@ -702,7 +678,20 @@ public final class ArtifactRecord
     }
     arguments.put( "tags",
                    Collections.singletonList( "\"maven_coordinates=" + getMavenCoordinatesBazelTag() + "\"" ) );
-    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    final ArtifactModel artifactModel = getArtifactModel();
+    if ( null != artifactModel )
+    {
+      final List<String> visibility = artifactModel.getVisibility();
+      if ( !visibility.isEmpty() )
+      {
+        arguments.put( "visibility",
+                       visibility.stream().map( this::asString ).collect( Collectors.toList() ) );
+      }
+    }
+    else
+    {
+      arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    }
     final List<ArtifactRecord> deps = getDeps();
     if ( !deps.isEmpty() )
     {
@@ -756,7 +745,20 @@ public final class ArtifactRecord
           arguments.put( "js_suppress", suppress.stream().map( this::asString ).collect( Collectors.toList() ) );
         }
       }
-      arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+      final ArtifactModel artifactModel = getArtifactModel();
+      if ( null != artifactModel )
+      {
+        final List<String> visibility = artifactModel.getVisibility();
+        if ( !visibility.isEmpty() )
+        {
+          arguments.put( "visibility",
+                         visibility.stream().map( this::asString ).collect( Collectors.toList() ) );
+        }
+      }
+      else
+      {
+        arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+      }
       final List<ArtifactRecord> deps = getDeps();
       if ( !deps.isEmpty() )
       {
@@ -772,7 +774,13 @@ public final class ArtifactRecord
     {
       assert J2clMode.Import == mode;
       arguments.put( "jar", asString( getQualifiedBinaryLabel() ) );
-      arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+      final ArtifactModel artifactModel = getArtifactModel();
+      final List<String> visibility = artifactModel.getVisibility();
+      if ( !visibility.isEmpty() )
+      {
+        arguments.put( "visibility",
+                       visibility.stream().map( this::asString ).collect( Collectors.toList() ) );
+      }
       output.writeCall( "_j2cl_import", arguments );
     }
   }
@@ -791,7 +799,7 @@ public final class ArtifactRecord
       arguments.put( "generates_api", "True" );
     }
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
-    arguments.put( "deps", Collections.singletonList( "\":" + getBaseName() + PLUGIN_LIBRARY_SUFFIX + "\"" ) );
+    arguments.put( "deps", Collections.singletonList( "\":" + getName( Nature.Java ) + PLUGIN_LIBRARY_SUFFIX + "\"" ) );
     output.writeCall( "_java_plugin", arguments );
   }
 
@@ -841,7 +849,20 @@ public final class ArtifactRecord
       }
     }
     arguments.put( "exported_plugins", plugins );
-    arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    final ArtifactModel artifactModel = getArtifactModel();
+    if ( null != artifactModel )
+    {
+      final List<String> visibility = artifactModel.getVisibility();
+      if ( !visibility.isEmpty() )
+      {
+        arguments.put( "visibility",
+                       visibility.stream().map( this::asString ).collect( Collectors.toList() ) );
+      }
+    }
+    else
+    {
+      arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    }
     output.writeCall( "_java_library", arguments );
   }
 
@@ -858,18 +879,15 @@ public final class ArtifactRecord
       }
       if ( Nature.Java == nature )
       {
-        emitAlias( output, nature );
         emitJavaImport( output, "" );
       }
       else if ( Nature.J2cl == nature )
       {
-        emitAlias( output, nature );
         writeJ2clLibrary( output );
       }
       else //if ( Nature.Plugin == nature )
       {
         assert Nature.Plugin == nature;
-        emitAlias( output, nature );
         writePluginLibrary( output );
       }
     }

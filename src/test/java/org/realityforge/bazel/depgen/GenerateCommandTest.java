@@ -140,27 +140,17 @@ public class GenerateCommandTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        name = \"com_example__myapp\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 
@@ -286,27 +276,17 @@ public class GenerateCommandTest
                   "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"com_example__myapp\",\n" +
-                  "        actual = \":com_example__myapp__1_0\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"com_example__myapp__1_0\",\n" +
+                  "        name = \"com_example__myapp\",\n" +
                   "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" +
                   "\n" +
-                  "    native.alias(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
-                  "        actual = \":org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
-                  "    )\n" +
                   "    _java_import(\n" +
-                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "        name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "        jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "        tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "        visibility = [\"//visibility:private\"],\n" +
                   "    )\n" );
   }
 

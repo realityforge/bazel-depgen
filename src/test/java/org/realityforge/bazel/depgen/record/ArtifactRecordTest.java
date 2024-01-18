@@ -33,8 +33,7 @@ public class ArtifactRecordTest
     assertNotNull( artifactRecord.getArtifactModel() );
     assertEquals( artifactRecord.getKey(), "com.example:myapp" );
     assertEquals( artifactRecord.getBaseName(), "com_example__myapp__1_0" );
-    assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
-    assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
+    assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
     assertTrue( artifactRecord.generatesApi() );
     assertEquals( artifactRecord.getMavenCoordinatesBazelTag(), "com.example:myapp:1.0" );
     assertEquals( artifactRecord.getSha256(), "E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4" );
@@ -65,14 +64,42 @@ public class ArtifactRecordTest
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
+
+  @Test
+  public void emitJavaImport_simpleArtifact_visibilitySpecified()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    visibility: ['//some/package:__pkg__', '//other/package:__subpackages__']\n" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
+    assertEquals( asString( outputStream ),
+                  "_java_import(\n" +
+                  "    name = \"com_example__myapp\",\n" +
+                  "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                  "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
+                  "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                  "    visibility = [\n" +
+                  "        \"//some/package:__pkg__\",\n" +
+                  "        \"//other/package:__subpackages__\",\n" +
+                  "    ],\n" +
+                  ")\n" );
+  }
   @Test
   public void emitJavaImport_simpleArtifact_withNamePrefix()
     throws Exception
@@ -92,11 +119,10 @@ public class ArtifactRecordTest
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
                   "_java_import(\n" +
-                  "    name = \"zeapp_com_example__myapp__1_0\",\n" +
+                  "    name = \"zeapp_com_example__myapp\",\n" +
                   "    jars = [\"@zeapp_com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@zeapp_com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -115,11 +141,10 @@ public class ArtifactRecordTest
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "__library" );
     assertEquals( asString( outputStream ),
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0__library\",\n" +
+                  "    name = \"com_example__myapp__library\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -138,11 +163,10 @@ public class ArtifactRecordTest
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -162,11 +186,10 @@ public class ArtifactRecordTest
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__mylib\"],\n" +
                   ")\n" );
   }
@@ -191,11 +214,10 @@ public class ArtifactRecordTest
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__mylib\"],\n" +
                   "    exports = [\":com_example__mylib\"],\n" +
                   ")\n" );
@@ -216,11 +238,10 @@ public class ArtifactRecordTest
     // Output does not declare data with verify task included
     assertEquals( asString( outputStream ),
                   "_java_import(\n" +
-                  "    name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n" +
                   "    jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n" +
                   "    srcjar = \"@org_realityforge_bazel_depgen__bazel_depgen__1__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -244,11 +265,10 @@ public class ArtifactRecordTest
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__mylib\"],\n" +
                   "    exports = [\":com_example__mylib\"],\n" +
                   ")\n" );
@@ -270,11 +290,10 @@ public class ArtifactRecordTest
     artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
     assertEquals( asString( outputStream ),
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   "    runtime_deps = [\":com_example__mylib\"],\n" +
                   ")\n" );
   }
@@ -311,11 +330,10 @@ public class ArtifactRecordTest
       artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "_java_import(\n" +
-                    "    name = \"com_example__myapp__1_0\",\n" +
+                    "    name = \"com_example__myapp\",\n" +
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                     "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                    "    visibility = [\"//visibility:private\"],\n" +
                     "    deps = [\":com_example__mylib\"],\n" +
                     "    runtime_deps = [\":com_example__rta\"],\n" +
                     ")\n" );
@@ -326,7 +344,7 @@ public class ArtifactRecordTest
       artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "_java_import(\n" +
-                    "    name = \"com_example__mylib__1_0\",\n" +
+                    "    name = \"com_example__mylib\",\n" +
                     "    jars = [\"@com_example__mylib__1_0//file\"],\n" +
                     "    srcjar = \"@com_example__mylib__1_0__sources//file\",\n" +
                     "    tags = [\"maven_coordinates=com.example:mylib:1.0\"],\n" +
@@ -340,7 +358,7 @@ public class ArtifactRecordTest
       artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
                     "_java_import(\n" +
-                    "    name = \"com_example__rta__33_0\",\n" +
+                    "    name = \"com_example__rta\",\n" +
                     "    jars = [\"@com_example__rta__33_0//file\"],\n" +
                     "    srcjar = \"@com_example__rta__33_0__sources//file\",\n" +
                     "    tags = [\"maven_coordinates=com.example:rtA:33.0\"],\n" +
@@ -361,7 +379,7 @@ public class ArtifactRecordTest
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
     assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.GroupIdAndArtifactId );
-    assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
+    assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
   }
 
   @Test
@@ -377,7 +395,7 @@ public class ArtifactRecordTest
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
     assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.GroupIdAndArtifactId );
-    assertEquals( artifactRecord.getAlias( Nature.Java ), "com_example__myapp" );
+    assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
   }
 
   @Test
@@ -395,7 +413,7 @@ public class ArtifactRecordTest
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
     assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.ArtifactId );
-    assertEquals( artifactRecord.getAlias( Nature.Java ), "myapp" );
+    assertEquals( artifactRecord.getName( Nature.Java ), "myapp" );
   }
 
   @Test
@@ -411,47 +429,7 @@ public class ArtifactRecordTest
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
     assertEquals( artifactRecord.getAliasStrategy(), AliasStrategy.ArtifactId );
-    assertEquals( artifactRecord.getAlias( Nature.Java ), "myapp" );
-  }
-
-  @Test
-  public void emitAlias()
-    throws Exception
-  {
-    final Path dir = FileUtil.createLocalTempDir();
-
-    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
-
-    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
-
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.Java );
-    assertEquals( asString( outputStream ),
-                  "native.alias(\n" +
-                  "    name = \"com_example__myapp\",\n" +
-                  "    actual = \":com_example__myapp__1_0\",\n" +
-                  ")\n" );
-  }
-
-  @Test
-  public void emitAlias_natureSupplied()
-    throws Exception
-  {
-    final Path dir = FileUtil.createLocalTempDir();
-
-    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
-
-    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
-
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.J2cl );
-    assertEquals( asString( outputStream ),
-                  "native.alias(\n" +
-                  "    name = \"com_example__myapp-j2cl\",\n" +
-                  "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
-                  ")\n" );
+    assertEquals( artifactRecord.getName( Nature.Java ), "myapp" );
   }
 
   @Test
@@ -476,80 +454,37 @@ public class ArtifactRecordTest
 
     {
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.Java );
+      artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
-                    "native.alias(\n" +
+                    "_java_import(\n" +
                     "    name = \"myapp-java-a\",\n" +
-                    "    actual = \":com_example__myapp__1_0\",\n" +
+                    "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
+                    "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     ")\n" );
     }
     {
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.J2cl );
+      artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
-                    "native.alias(\n" +
-                    "    name = \"myapp-j2cl-a\",\n" +
-                    "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
+                    "_java_import(\n" +
+                    "    name = \"myapp-java-a\",\n" +
+                    "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
+                    "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     ")\n" );
     }
     {
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.Plugin );
+      artifactRecord.emitJavaImport( new StarlarkOutput( outputStream ), "" );
       assertEquals( asString( outputStream ),
-                    "native.alias(\n" +
-                    "    name = \"myapp-plugin-a\",\n" +
-                    "    actual = \":com_example__myapp__1_0-plugin\",\n" +
+                    "_java_import(\n" +
+                    "    name = \"myapp-java-a\",\n" +
+                    "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                    "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
+                    "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                     ")\n" );
     }
-  }
-
-  @Test
-  public void emitAlias_VisibilitySpecified()
-    throws Exception
-  {
-    final Path dir = FileUtil.createLocalTempDir();
-
-    writeConfigFile( dir,
-                     "artifacts:\n" +
-                     "  - coord: com.example:myapp:1.0\n" +
-                     "    visibility: ['//some/package:__pkg__', '//other/package:__subpackages__']\n" );
-    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
-
-    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
-
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.Java );
-    assertEquals( asString( outputStream ),
-                  "native.alias(\n" +
-                  "    name = \"com_example__myapp\",\n" +
-                  "    actual = \":com_example__myapp__1_0\",\n" +
-                  "    visibility = [\n" +
-                  "        \"//some/package:__pkg__\",\n" +
-                  "        \"//other/package:__subpackages__\",\n" +
-                  "    ],\n" +
-                  ")\n" );
-  }
-
-  @Test
-  public void emitAlias_forUndeclaredDependency()
-    throws Exception
-  {
-    final Path dir = FileUtil.createLocalTempDir();
-
-    writeConfigFile( dir, "artifacts:\n  - coord: com.example:myapp:1.0\n" );
-    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
-    deployArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
-
-    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 1 );
-
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    artifactRecord.emitAlias( new StarlarkOutput( outputStream ), Nature.Java );
-    assertEquals( asString( outputStream ),
-                  "native.alias(\n" +
-                  "    name = \"com_example__mylib\",\n" +
-                  "    actual = \":com_example__mylib__1_0\",\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
-                  ")\n" );
   }
 
   @Test
@@ -571,7 +506,7 @@ public class ArtifactRecordTest
                   "_java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__plugin\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                  "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" );
   }
 
@@ -600,7 +535,7 @@ public class ArtifactRecordTest
                   "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    generates_api = True,\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                  "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" );
   }
 
@@ -630,7 +565,7 @@ public class ArtifactRecordTest
                   "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
                   "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                  "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" );
   }
 
@@ -651,9 +586,8 @@ public class ArtifactRecordTest
     artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
                   "_j2cl_library(\n" +
-                  "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "    name = \"com_example__myapp-j2cl\",\n" +
                   "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -676,10 +610,9 @@ public class ArtifactRecordTest
     artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
                   "_j2cl_library(\n" +
-                  "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "    name = \"com_example__myapp-j2cl\",\n" +
                   "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
                   "    js_suppress = [\"checkDebuggerStatement\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -702,9 +635,8 @@ public class ArtifactRecordTest
     artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
                   "_j2cl_import(\n" +
-                  "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "    name = \"com_example__myapp-j2cl\",\n" +
                   "    jar = \"@com_example__myapp__1_0//file\",\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -726,9 +658,8 @@ public class ArtifactRecordTest
     artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
                   "_j2cl_library(\n" +
-                  "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "    name = \"com_example__myapp-j2cl\",\n" +
                   "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__mylib-j2cl\"],\n" +
                   ")\n" );
   }
@@ -755,9 +686,8 @@ public class ArtifactRecordTest
     artifactRecord.writeJ2clLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
                   "_j2cl_library(\n" +
-                  "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "    name = \"com_example__myapp-j2cl\",\n" +
                   "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\n" +
                   "        \":com_example__mylib-j2cl\",\n" +
                   "        \":com_example__mylib2-j2cl\",\n" +
@@ -802,33 +732,31 @@ public class ArtifactRecordTest
     artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
+                  "    name = \"com_example__myapp__plugin_library\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
                   "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    generates_api = True,\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                  "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
                   "    processor_class = \"react4j.processor.ReactProcessor\",\n" +
                   "    generates_api = True,\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                  "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
                   "_java_library(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    exported_plugins = [\n" +
                   "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
                   "        \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
                   "    ],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -849,21 +777,19 @@ public class ArtifactRecordTest
     artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
+                  "    name = \"com_example__myapp__plugin_library\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__plugin\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                  "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
                   "_java_library(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -884,21 +810,19 @@ public class ArtifactRecordTest
     artifactRecord.writePluginLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
+                  "    name = \"com_example__myapp__plugin_library\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__plugin\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                  "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
                   "_java_library(\n" +
-                  "    name = \"com_example__myapp__1_0-plugin\",\n" +
+                  "    name = \"com_example__myapp-plugin\",\n" +
                   "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -923,12 +847,11 @@ public class ArtifactRecordTest
     artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
                   "_java_library(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    exported_plugins = [\n" +
                   "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
                   "        \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
                   "    ],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -949,9 +872,8 @@ public class ArtifactRecordTest
     artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
                   "_java_library(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -972,9 +894,8 @@ public class ArtifactRecordTest
     artifactRecord.writeJavaPluginLibrary( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
                   "_java_library(\n" +
-                  "    name = \"com_example__myapp__1_0-plugin\",\n" +
+                  "    name = \"com_example__myapp-plugin\",\n" +
                   "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -1074,16 +995,11 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.writeArtifactTargets( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "native.alias(\n" +
-                  "    name = \"com_example__myapp\",\n" +
-                  "    actual = \":com_example__myapp__1_0\",\n" +
-                  ")\n" +
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -1107,38 +1023,32 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.writeArtifactTargets( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "native.alias(\n" +
-                  "    name = \"com_example__myapp\",\n" +
-                  "    actual = \":com_example__myapp__1_0\",\n" +
-                  ")\n" +
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0__plugin_library\",\n" +
+                  "    name = \"com_example__myapp__plugin_library\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
                   "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    generates_api = True,\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                  "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
                   "    name = \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
                   "    processor_class = \"react4j.processor.ReactProcessor\",\n" +
                   "    generates_api = True,\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
-                  "    deps = [\":com_example__myapp__1_0__plugin_library\"],\n" +
+                  "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
                   "_java_library(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    exported_plugins = [\n" +
                   "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
                   "        \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
                   "    ],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -1158,14 +1068,9 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.writeArtifactTargets( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "native.alias(\n" +
-                  "    name = \"com_example__myapp-j2cl\",\n" +
-                  "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
-                  ")\n" +
                   "_j2cl_library(\n" +
-                  "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "    name = \"com_example__myapp-j2cl\",\n" +
                   "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -1188,14 +1093,9 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.writeArtifactTargets( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "native.alias(\n" +
-                  "    name = \"com_example__myapp-j2cl\",\n" +
-                  "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
-                  ")\n" +
                   "_j2cl_library(\n" +
-                  "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "    name = \"com_example__myapp-j2cl\",\n" +
                   "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
@@ -1215,26 +1115,16 @@ public class ArtifactRecordTest
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     artifactRecord.writeArtifactTargets( new StarlarkOutput( outputStream ) );
     assertEquals( asString( outputStream ),
-                  "native.alias(\n" +
-                  "    name = \"com_example__myapp-j2cl\",\n" +
-                  "    actual = \":com_example__myapp__1_0-j2cl\",\n" +
-                  ")\n" +
                   "_j2cl_library(\n" +
-                  "    name = \"com_example__myapp__1_0-j2cl\",\n" +
+                  "    name = \"com_example__myapp-j2cl\",\n" +
                   "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" +
                   "\n" +
-                  "native.alias(\n" +
-                  "    name = \"com_example__myapp\",\n" +
-                  "    actual = \":com_example__myapp__1_0\",\n" +
-                  ")\n" +
                   "_java_import(\n" +
-                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    name = \"com_example__myapp\",\n" +
                   "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                   "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                  "    visibility = [\"//visibility:private\"],\n" +
                   ")\n" );
   }
 
