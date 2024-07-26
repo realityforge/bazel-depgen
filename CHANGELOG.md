@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.javax.annotation` artifact to version `1.1.1`.
+
 ### [v0.19](https://github.com/realityforge/bazel-depgen/tree/v0.19) (2024-01-18) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.18...v0.19)
 
 Changes in this release:
