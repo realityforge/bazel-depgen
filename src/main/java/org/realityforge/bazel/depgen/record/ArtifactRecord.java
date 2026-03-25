@@ -37,10 +37,6 @@ public final class ArtifactRecord
    */
   private static final String PLUGIN_LIBRARY_SUFFIX = "__plugin_library";
   /**
-   * The suffix applied to the name of target that imports artifact for use when defining j2cl library.
-   */
-  private static final String J2CL_LIBRARY_SUFFIX = "__j2cl_library";
-  /**
    * The suffix applied to every compile plugin.
    */
   private static final String PLUGIN_SUFFIX = "__plugin";
