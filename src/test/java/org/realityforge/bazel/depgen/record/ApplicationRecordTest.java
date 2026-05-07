@@ -1726,7 +1726,7 @@ public class ApplicationRecordTest
     final DepgenValidationException exception =
       expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
     assertEquals( exception.getMessage(),
-                  "Multiple artifacts have the same name 'core' which is not supported. Change the nameStrategy option globally or for one of the artifacts 'com.example.app1:core:jar:42.0' and 'com.example.app2:core:jar:37.0'." );
+                  "Multiple emitted targets have the same name 'core' which is not supported. Adjust naming configuration or explicit names for artifact 'com.example.app1:core:jar:42.0' public Java target and artifact 'com.example.app2:core:jar:37.0' public Java target." );
   }
 
   @Test
@@ -1758,6 +1758,117 @@ public class ApplicationRecordTest
     final ArtifactRecord artifactRecord2 = artifacts.get( 1 );
     assertEquals( artifactRecord2.getKey(), "com.example.app2:core" );
     assertEquals( artifactRecord2.getName( Nature.Java ), "core" );
+  }
+
+  @Test
+  public void loadWhereTargetNameCollidesWithHelperTarget()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  nameStrategy: ArtifactId\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:verify-config-sha256:1.0\n" );
+    deployArtifactToLocalRepository( dir, "com.example:verify-config-sha256:1.0" );
+
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    assertEquals( exception.getMessage(),
+                  "Multiple emitted targets have the same name 'verify_config_sha256' which is not supported. Adjust naming configuration or explicit names for built-in helper target 'verify_config_sha256' and artifact 'com.example:verify-config-sha256:jar:1.0' public Java target." );
+  }
+
+  @Test
+  public void loadWherePrefixedTargetNameCollidesWithHelperTarget()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  namePrefix: myapp\n" +
+                     "  nameStrategy: ArtifactId\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:verify-config-sha256:1.0\n" );
+    deployArtifactToLocalRepository( dir, "com.example:verify-config-sha256:1.0" );
+
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    assertEquals( exception.getMessage(),
+                  "Multiple emitted targets have the same name 'myapp_verify_config_sha256' which is not supported. Adjust naming configuration or explicit names for built-in helper target 'myapp_verify_config_sha256' and artifact 'com.example:verify-config-sha256:jar:1.0' public Java target." );
+  }
+
+  @Test
+  public void loadWhereRepositoryCollisionIgnoresNonEmittedFamilyMember()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  nameStrategy: GroupIdAndArtifactIdAndVersion\n" +
+                     "  repositoryNameStrategy: GroupIdAndArtifactId\n" +
+                     "artifacts:\n" +
+                     "  - coord: foo.bar:baz:1.0\n" +
+                     "    includeSource: false\n" +
+                     "  - coord: foo_bar:baz:sources\n" +
+                     "    repositoryNameStrategy: GroupIdAndArtifactIdAndVersion\n" );
+    deployArtifactToLocalRepository( dir, "foo.bar:baz:1.0" );
+    deployArtifactToLocalRepository( dir, "foo_bar:baz:sources" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+    assertNonSystemArtifactCount( record, 2 );
+    assertNonSystemArtifactList( record, "foo.bar:baz,foo_bar:baz" );
+  }
+
+  @Test
+  public void loadWhereRepositoryCollisionExists()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  nameStrategy: GroupIdAndArtifactIdAndVersion\n" +
+                     "  repositoryNameStrategy: GroupIdAndArtifactId\n" +
+                     "artifacts:\n" +
+                     "  - coord: foo.bar:baz:1.0\n" +
+                     "  - coord: foo_bar:baz:sources\n" +
+                     "    repositoryNameStrategy: GroupIdAndArtifactIdAndVersion\n" );
+    deployArtifactToLocalRepository( dir, "foo.bar:baz:1.0" );
+    deployArtifactToLocalRepository( dir, "foo_bar:baz:sources" );
+
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    assertEquals( exception.getMessage(),
+                  "Multiple emitted repositories have the same name 'foo_bar__baz__sources' which is not supported. Adjust repository naming configuration for artifact 'foo.bar:baz:jar:1.0' sources repository and artifact 'foo_bar:baz:jar:sources' binary repository." );
+  }
+
+  @Test
+  public void loadWhereReplacementDoesNotTriggerEmittedNameCollision()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  nameStrategy: ArtifactId\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example.app1:core:42.0\n" +
+                     "  - coord: com.example.app2:user:1.0\n" +
+                     "replacements:\n" +
+                     "  - coord: com.example.app2:core\n" +
+                     "    targets:\n" +
+                     "      - target: \"@vendor//:core\"\n" );
+    deployArtifactToLocalRepository( dir, "com.example.app1:core:42.0" );
+    deployArtifactToLocalRepository( dir, "com.example.app2:user:1.0", "com.example.app2:core:37.0" );
+    deployArtifactToLocalRepository( dir, "com.example.app2:core:37.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+    assertNonSystemArtifactCount( record, 3 );
+    assertNonSystemArtifactList( record, "com.example.app1:core,com.example.app2:core,com.example.app2:user" );
+    assertNotNull( record.getArtifact( "com.example.app2", "core" ).getReplacementModel() );
   }
 
   @Test
@@ -3903,13 +4014,13 @@ public class ApplicationRecordTest
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    )\n" +
                   "    _java_plugin(\n" +
-                  "        name = \"com_example__myapp__1_0__plugin\",\n" +
+                  "        name = \"com_example__myapp__plugin\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":com_example__myapp__plugin_library\"],\n" +
                   "    )\n" +
                   "    _java_library(\n" +
                   "        name = \"com_example__myapp\",\n" +
-                  "        exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
+                  "        exported_plugins = [\"com_example__myapp__plugin\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +
@@ -4072,13 +4183,13 @@ public class ApplicationRecordTest
                   "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   "    )\n" +
                   "    _java_plugin(\n" +
-                  "        name = \"com_example__myapp__1_0__plugin\",\n" +
+                  "        name = \"myapp-java-a__plugin\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":myapp-java-a__plugin_library\"],\n" +
                   "    )\n" +
                   "    _java_library(\n" +
                   "        name = \"myapp-plugin-a\",\n" +
-                  "        exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
+                  "        exported_plugins = [\"myapp-java-a__plugin\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +
@@ -4103,13 +4214,13 @@ public class ApplicationRecordTest
                   "        deps = [\":myapp-java-a\"],\n" +
                   "    )\n" +
                   "    _java_plugin(\n" +
-                  "        name = \"com_example__myapp2__1_0__plugin\",\n" +
+                  "        name = \"com_example__myapp2__plugin\",\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
                   "        deps = [\":com_example__myapp2__plugin_library\"],\n" +
                   "    )\n" +
                   "    _java_library(\n" +
                   "        name = \"com_example__myapp2-plugin\",\n" +
-                  "        exported_plugins = [\"com_example__myapp2__1_0__plugin\"],\n" +
+                  "        exported_plugins = [\"com_example__myapp2__plugin\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +

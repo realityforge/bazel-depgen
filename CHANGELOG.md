@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Add configurable repository naming strategies separate from target naming, including explicit per-artifact
+  repository-name overrides and emitted-name collision validation.
 * Update the `org.realityforge.javax.annotation` artifact to version `1.1.1`.
 * Update the bazel version tested against to `8.6.0`.
 

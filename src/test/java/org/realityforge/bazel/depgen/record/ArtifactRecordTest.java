@@ -379,7 +379,9 @@ public class ArtifactRecordTest
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
     assertEquals( artifactRecord.getNameStrategy(), NameStrategy.GroupIdAndArtifactId );
+    assertEquals( artifactRecord.getRepositoryNameStrategy(), NameStrategy.GroupIdAndArtifactIdAndVersion );
     assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
+    assertEquals( artifactRecord.getRepositoryBaseName(), "com_example__myapp__1_0" );
   }
 
   @Test
@@ -414,22 +416,62 @@ public class ArtifactRecordTest
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
     assertEquals( artifactRecord.getNameStrategy(), NameStrategy.ArtifactId );
     assertEquals( artifactRecord.getName( Nature.Java ), "myapp" );
+    assertEquals( artifactRecord.getRepositoryBaseName(), "com_example__myapp__1_0" );
   }
 
   @Test
-  public void getNameStrategy_globallySpecified_ArtifactId()
+  public void getNameStrategy_locallySpecified_GroupIdAndArtifactIdAndVersion()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
 
     writeConfigFile( dir, "artifacts:\n" +
                           "  - coord: com.example:myapp:1.0\n" +
-                          "    nameStrategy: ArtifactId\n" );
+                          "    nameStrategy: GroupIdAndArtifactIdAndVersion\n" );
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
-    assertEquals( artifactRecord.getNameStrategy(), NameStrategy.ArtifactId );
-    assertEquals( artifactRecord.getName( Nature.Java ), "myapp" );
+    assertEquals( artifactRecord.getNameStrategy(), NameStrategy.GroupIdAndArtifactIdAndVersion );
+    assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp__1_0" );
+  }
+
+  @Test
+  public void getRepositoryNameStrategy_globallySpecified_ArtifactId()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  repositoryNameStrategy: ArtifactId\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+    assertEquals( artifactRecord.getNameStrategy(), NameStrategy.GroupIdAndArtifactId );
+    assertEquals( artifactRecord.getRepositoryNameStrategy(), NameStrategy.ArtifactId );
+    assertEquals( artifactRecord.getName( Nature.Java ), "com_example__myapp" );
+    assertEquals( artifactRecord.getRepositoryBaseName(), "myapp" );
+  }
+
+  @Test
+  public void getRepositoryBaseName_explicitRepositoryNameBypassesPrefix()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  namePrefix: myapp\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    repositoryName: custom_repo\n" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+    assertEquals( artifactRecord.getName( Nature.Java ), "myapp_com_example__myapp" );
+    assertEquals( artifactRecord.getRepositoryBaseName(), "custom_repo" );
   }
 
   @Test
@@ -504,7 +546,7 @@ public class ArtifactRecordTest
     artifactRecord.emitJavaPlugin( new StarlarkOutput( outputStream ), null );
     assertEquals( asString( outputStream ),
                   "_java_plugin(\n" +
-                  "    name = \"com_example__myapp__1_0__plugin\",\n" +
+                  "    name = \"com_example__myapp__plugin\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" );
@@ -531,7 +573,7 @@ public class ArtifactRecordTest
     artifactRecord.emitJavaPlugin( new StarlarkOutput( outputStream ), "arez.processor.ArezProcessor" );
     assertEquals( asString( outputStream ),
                   "_java_plugin(\n" +
-                  "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
+                  "    name = \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n" +
                   "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    generates_api = True,\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
@@ -562,7 +604,7 @@ public class ArtifactRecordTest
     artifactRecord.emitJavaPlugin( new StarlarkOutput( outputStream ), "arez.processor.ArezProcessor" );
     assertEquals( asString( outputStream ),
                   "_java_plugin(\n" +
-                  "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
+                  "    name = \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n" +
                   "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__plugin_library\"],\n" +
@@ -707,8 +749,8 @@ public class ArtifactRecordTest
     final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
 
     assertEquals( artifactRecord.pluginName( "arez.processor.ArezProcessor" ),
-                  "com_example__myapp__1_0__arez_processor_arezprocessor__plugin" );
-    assertEquals( artifactRecord.pluginName( null ), "com_example__myapp__1_0__plugin" );
+                  "com_example__myapp__arez_processor_arezprocessor__plugin" );
+    assertEquals( artifactRecord.pluginName( null ), "com_example__myapp__plugin" );
   }
 
   @Test
@@ -738,14 +780,14 @@ public class ArtifactRecordTest
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
-                  "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
+                  "    name = \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n" +
                   "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    generates_api = True,\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
-                  "    name = \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
+                  "    name = \"com_example__myapp__react4j_processor_reactprocessor__plugin\",\n" +
                   "    processor_class = \"react4j.processor.ReactProcessor\",\n" +
                   "    generates_api = True,\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
@@ -754,8 +796,8 @@ public class ArtifactRecordTest
                   "_java_library(\n" +
                   "    name = \"com_example__myapp\",\n" +
                   "    exported_plugins = [\n" +
-                  "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
-                  "        \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
+                  "        \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n" +
+                  "        \"com_example__myapp__react4j_processor_reactprocessor__plugin\",\n" +
                   "    ],\n" +
                   ")\n" );
   }
@@ -783,13 +825,13 @@ public class ArtifactRecordTest
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
-                  "    name = \"com_example__myapp__1_0__plugin\",\n" +
+                  "    name = \"com_example__myapp__plugin\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
                   "_java_library(\n" +
                   "    name = \"com_example__myapp\",\n" +
-                  "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
+                  "    exported_plugins = [\"com_example__myapp__plugin\"],\n" +
                   ")\n" );
   }
 
@@ -816,13 +858,13 @@ public class ArtifactRecordTest
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
-                  "    name = \"com_example__myapp__1_0__plugin\",\n" +
+                  "    name = \"com_example__myapp__plugin\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
                   "_java_library(\n" +
                   "    name = \"com_example__myapp-plugin\",\n" +
-                  "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
+                  "    exported_plugins = [\"com_example__myapp__plugin\"],\n" +
                   ")\n" );
   }
 
@@ -849,8 +891,8 @@ public class ArtifactRecordTest
                   "_java_library(\n" +
                   "    name = \"com_example__myapp\",\n" +
                   "    exported_plugins = [\n" +
-                  "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
-                  "        \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
+                  "        \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n" +
+                  "        \"com_example__myapp__react4j_processor_reactprocessor__plugin\",\n" +
                   "    ],\n" +
                   ")\n" );
   }
@@ -873,7 +915,7 @@ public class ArtifactRecordTest
     assertEquals( asString( outputStream ),
                   "_java_library(\n" +
                   "    name = \"com_example__myapp\",\n" +
-                  "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
+                  "    exported_plugins = [\"com_example__myapp__plugin\"],\n" +
                   ")\n" );
   }
 
@@ -895,7 +937,7 @@ public class ArtifactRecordTest
     assertEquals( asString( outputStream ),
                   "_java_library(\n" +
                   "    name = \"com_example__myapp-plugin\",\n" +
-                  "    exported_plugins = [\"com_example__myapp__1_0__plugin\"],\n" +
+                  "    exported_plugins = [\"com_example__myapp__plugin\"],\n" +
                   ")\n" );
   }
 
@@ -1030,14 +1072,14 @@ public class ArtifactRecordTest
                   "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
-                  "    name = \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
+                  "    name = \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n" +
                   "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    generates_api = True,\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
-                  "    name = \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
+                  "    name = \"com_example__myapp__react4j_processor_reactprocessor__plugin\",\n" +
                   "    processor_class = \"react4j.processor.ReactProcessor\",\n" +
                   "    generates_api = True,\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
@@ -1046,8 +1088,8 @@ public class ArtifactRecordTest
                   "_java_library(\n" +
                   "    name = \"com_example__myapp\",\n" +
                   "    exported_plugins = [\n" +
-                  "        \"com_example__myapp__1_0__arez_processor_arezprocessor__plugin\",\n" +
-                  "        \"com_example__myapp__1_0__react4j_processor_reactprocessor__plugin\",\n" +
+                  "        \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n" +
+                  "        \"com_example__myapp__react4j_processor_reactprocessor__plugin\",\n" +
                   "    ],\n" +
                   ")\n" );
   }

@@ -6,7 +6,10 @@ import java.util.List;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.JavaConfig;
+import org.realityforge.bazel.depgen.config.J2clConfig;
+import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.Nature;
+import org.realityforge.bazel.depgen.config.PluginConfig;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -181,6 +184,111 @@ public class ArtifactModelTest
     assertEquals( model.getId(), "myapp" );
     assertEquals( model.getType(), "jar" );
     assertFalse( model.exportDeps( true ) );
+  }
+
+  @Test
+  public void parseArtifactWithRepositoryName()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setRepositoryName( "myapp_repo" );
+
+    final ArtifactModel model = ArtifactModel.parse( source );
+    assertEquals( model.getSource(), source );
+    assertEquals( model.getGroup(), "com.example" );
+    assertEquals( model.getId(), "myapp" );
+    assertEquals( model.getSource().getRepositoryName(), "myapp_repo" );
+  }
+
+  @Test
+  public void parseArtifactWithRepositoryNameAndStrategy()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setRepositoryName( "myapp_repo" );
+    source.setRepositoryNameStrategy( NameStrategy.ArtifactId );
+
+    final InvalidModelException exception =
+      expectThrows( InvalidModelException.class, () -> ArtifactModel.parse( source ) );
+    assertEquals( exception.getMessage(),
+                  "The dependency must not specify both the 'repositoryName' and 'repositoryNameStrategy' properties." );
+    assertEquals( exception.getModel(), source );
+  }
+
+  @Test
+  public void parseArtifactWithInvalidRepositoryName()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setRepositoryName( "MyApp" );
+
+    final InvalidModelException exception =
+      expectThrows( InvalidModelException.class, () -> ArtifactModel.parse( source ) );
+    assertEquals( exception.getMessage(),
+                  "The dependency repositoryName 'MyApp' must match the pattern '[a-z][a-z0-9_]*'." );
+    assertEquals( exception.getModel(), source );
+  }
+
+  @Test
+  public void parseArtifactWithRepositoryNameContainingDoubleUnderscore()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    source.setRepositoryName( "my__app" );
+
+    final InvalidModelException exception =
+      expectThrows( InvalidModelException.class, () -> ArtifactModel.parse( source ) );
+    assertEquals( exception.getMessage(),
+                  "The dependency repositoryName 'my__app' must not contain '__'." );
+    assertEquals( exception.getModel(), source );
+  }
+
+  @Test
+  public void parseArtifactWithInvalidJavaName()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    final JavaConfig java = new JavaConfig();
+    java.setName( "my__java" );
+    source.setJava( java );
+
+    final InvalidModelException exception =
+      expectThrows( InvalidModelException.class, () -> ArtifactModel.parse( source ) );
+    assertEquals( exception.getMessage(),
+                  "The dependency java.name property must not contain '__'." );
+    assertEquals( exception.getModel(), source );
+  }
+
+  @Test
+  public void parseArtifactWithInvalidJ2clName()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    final J2clConfig j2cl = new J2clConfig();
+    j2cl.setName( "my__j2cl" );
+    source.setJ2cl( j2cl );
+
+    final InvalidModelException exception =
+      expectThrows( InvalidModelException.class, () -> ArtifactModel.parse( source ) );
+    assertEquals( exception.getMessage(),
+                  "The dependency j2cl.name property must not contain '__'." );
+    assertEquals( exception.getModel(), source );
+  }
+
+  @Test
+  public void parseArtifactWithInvalidPluginName()
+  {
+    final ArtifactConfig source = new ArtifactConfig();
+    source.setCoord( "com.example:myapp" );
+    final PluginConfig plugin = new PluginConfig();
+    plugin.setName( "my__plugin" );
+    source.setPlugin( plugin );
+
+    final InvalidModelException exception =
+      expectThrows( InvalidModelException.class, () -> ArtifactModel.parse( source ) );
+    assertEquals( exception.getMessage(),
+                  "The dependency plugin.name property must not contain '__'." );
+    assertEquals( exception.getModel(), source );
   }
 
   @Test

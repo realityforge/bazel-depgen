@@ -16,11 +16,11 @@ import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.realityforge.bazel.depgen.DepgenValidationException;
-import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.J2clConfig;
 import org.realityforge.bazel.depgen.config.J2clMode;
 import org.realityforge.bazel.depgen.config.JavaConfig;
+import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.PluginConfig;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
@@ -256,26 +256,38 @@ public final class ArtifactRecord
   @Nonnull
   String getSymbol()
   {
+    return getTargetSymbol();
+  }
+
+  @Nonnull
+  private String getTargetSymbol()
+  {
     final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
     final NameStrategy nameStrategy = getNameStrategy();
-    if ( NameStrategy.GroupIdAndArtifactId == nameStrategy )
+    if ( NameStrategy.ArtifactId == nameStrategy )
     {
-      return getNamePrefix() +
-             BazelUtil.cleanNamePart( artifact.getGroupId() ) +
-             "__" +
-             BazelUtil.cleanNamePart( artifact.getArtifactId() );
+      return getNamePrefix() + BazelUtil.cleanNamePart( artifact.getArtifactId() );
     }
     else
     {
-      assert NameStrategy.ArtifactId == nameStrategy;
-      return getNamePrefix() + BazelUtil.cleanNamePart( artifact.getArtifactId() );
+      final StringBuilder sb = new StringBuilder();
+      sb.append( getNamePrefix() );
+      sb.append( BazelUtil.cleanNamePart( artifact.getGroupId() ) );
+      sb.append( BazelUtil.COMPONENT_SEPARATOR );
+      sb.append( BazelUtil.cleanNamePart( artifact.getArtifactId() ) );
+      if ( NameStrategy.GroupIdAndArtifactIdAndVersion == nameStrategy )
+      {
+        sb.append( BazelUtil.COMPONENT_SEPARATOR );
+        sb.append( BazelUtil.cleanNamePart( artifact.getVersion() ) );
+      }
+      return sb.toString();
     }
   }
 
   @Nonnull
   private String getRepository()
   {
-    return getBaseName();
+    return getRepositoryBaseName();
   }
 
   @Nonnull
@@ -317,13 +329,40 @@ public final class ArtifactRecord
   @Nonnull
   String getBaseName()
   {
-    final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
-    return getNamePrefix() +
-           BazelUtil.cleanNamePart( artifact.getGroupId() ) +
-           "__" +
-           BazelUtil.cleanNamePart( artifact.getArtifactId() ) +
-           "__" +
-           BazelUtil.cleanNamePart( artifact.getVersion() );
+    return getRepositoryBaseName();
+  }
+
+  @Nonnull
+  String getRepositoryBaseName()
+  {
+    final String repositoryName = null != _artifactModel ? _artifactModel.getSource().getRepositoryName() : null;
+    if ( null != repositoryName )
+    {
+      return repositoryName;
+    }
+    else
+    {
+      final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
+      final NameStrategy nameStrategy = getRepositoryNameStrategy();
+      if ( NameStrategy.ArtifactId == nameStrategy )
+      {
+        return getNamePrefix() + BazelUtil.cleanNamePart( artifact.getArtifactId() );
+      }
+      else
+      {
+        final StringBuilder sb = new StringBuilder();
+        sb.append( getNamePrefix() );
+        sb.append( BazelUtil.cleanNamePart( artifact.getGroupId() ) );
+        sb.append( BazelUtil.COMPONENT_SEPARATOR );
+        sb.append( BazelUtil.cleanNamePart( artifact.getArtifactId() ) );
+        if ( NameStrategy.GroupIdAndArtifactIdAndVersion == nameStrategy )
+        {
+          sb.append( BazelUtil.COMPONENT_SEPARATOR );
+          sb.append( BazelUtil.cleanNamePart( artifact.getVersion() ) );
+        }
+        return sb.toString();
+      }
+    }
   }
 
   @Nonnull
@@ -363,6 +402,16 @@ public final class ArtifactRecord
   {
     final NameStrategy nameStrategy = null != _artifactModel ? _artifactModel.getSource().getNameStrategy() : null;
     return null == nameStrategy ? _application.getSource().getOptions().getNameStrategy() : nameStrategy;
+  }
+
+  @Nonnull
+  NameStrategy getRepositoryNameStrategy()
+  {
+    final NameStrategy nameStrategy =
+      null != _artifactModel ? _artifactModel.getSource().getRepositoryNameStrategy() : null;
+    return null == nameStrategy ?
+           _application.getSource().getOptions().getRepositoryNameStrategy() :
+           nameStrategy;
   }
 
   @Nonnull
@@ -431,6 +480,74 @@ public final class ArtifactRecord
   public org.eclipse.aether.artifact.Artifact getArtifact()
   {
     return _node.getArtifact();
+  }
+
+  @Nonnull
+  LinkedHashMap<String, String> getEmittedRepositoryNames()
+  {
+    final LinkedHashMap<String, String> names = new LinkedHashMap<>();
+    if ( null == getReplacementModel() )
+    {
+      final String artifactName = "artifact '" + getArtifact() + "'";
+      final List<Nature> natures = getNatures();
+      if ( natures.contains( Nature.Java ) || natures.contains( Nature.Plugin ) )
+      {
+        names.put( getRepository(), artifactName + " binary repository" );
+      }
+      if ( null != getSourceSha256() )
+      {
+        names.put( getSourceRepository(), artifactName + " sources repository" );
+      }
+      if ( null != getExternalAnnotationSha256() )
+      {
+        names.put( getExternalAnnotationsRepository(), artifactName + " annotations repository" );
+      }
+      if ( natures.contains( Nature.J2cl ) && null != getJsAssets() && null != getSourceSha256() )
+      {
+        names.put( getJsSourceRepository(), artifactName + " js sources repository" );
+      }
+    }
+    return names;
+  }
+
+  @Nonnull
+  LinkedHashMap<String, String> getEmittedPublicTargetNames()
+  {
+    final LinkedHashMap<String, String> names = new LinkedHashMap<>();
+    if ( null == getReplacementModel() )
+    {
+      final String artifactName = "artifact '" + getArtifact() + "'";
+      for ( final Nature nature : getNatures() )
+      {
+        names.put( getName( nature ), artifactName + " public " + nature + " target" );
+      }
+    }
+    return names;
+  }
+
+  @Nonnull
+  LinkedHashMap<String, String> getEmittedPrivateTargetNames()
+  {
+    final LinkedHashMap<String, String> names = new LinkedHashMap<>();
+    if ( null == getReplacementModel() && getNatures().contains( Nature.Plugin ) )
+    {
+      final String artifactName = "artifact '" + getArtifact() + "'";
+      names.put( getName( Nature.Java ) + PLUGIN_LIBRARY_SUFFIX, artifactName + " private plugin library target" );
+      final List<String> processors = getProcessors();
+      if ( null == processors )
+      {
+        names.put( pluginName( null ), artifactName + " private plugin target" );
+      }
+      else
+      {
+        for ( final String processor : processors )
+        {
+          names.put( pluginName( processor ),
+                     artifactName + " private plugin target for processor '" + processor + "'" );
+        }
+      }
+    }
+    return names;
   }
 
   @Nonnull
@@ -797,8 +914,8 @@ public final class ArtifactRecord
   @Nonnull
   String pluginName( @Nullable final String processorClass )
   {
-    return getBaseName() +
-           ( null == processorClass ? "" : BazelUtil.cleanNamePart( "__" + processorClass ) ) +
+    return getName( Nature.Java ) +
+           ( null == processorClass ? "" : BazelUtil.cleanNamePart( BazelUtil.COMPONENT_SEPARATOR + processorClass ) ) +
            PLUGIN_SUFFIX;
   }
 

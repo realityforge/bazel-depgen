@@ -12,6 +12,7 @@ public final class OptionsConfig
   public static final String DEFAULT_TARGET_MACRO_NAME = "generate_targets";
   public static final String DEFAULT_NAME_PREFIX = "";
   public static final NameStrategy DEFAULT_NAME_STRATEGY = NameStrategy.GroupIdAndArtifactId;
+  public static final NameStrategy DEFAULT_REPOSITORY_NAME_STRATEGY = NameStrategy.GroupIdAndArtifactIdAndVersion;
   public static final boolean DEFAULT_FAIL_ON_INVALID_POM = true;
   public static final boolean DEFAULT_FAIL_ON_MISSING_POM = true;
   public static final boolean DEFAULT_EMIT_DEPENDENCY_GRAPH = true;
@@ -33,6 +34,8 @@ public final class OptionsConfig
   private String namePrefix;
   @Nullable
   private NameStrategy _nameStrategy;
+  @Nullable
+  private NameStrategy _repositoryNameStrategy;
   @Nullable
   private Nature defaultNature;
   @Nullable
@@ -116,6 +119,17 @@ public final class OptionsConfig
   public void setNameStrategy( @Nonnull final NameStrategy nameStrategy )
   {
     this._nameStrategy = Objects.requireNonNull( nameStrategy );
+  }
+
+  @Nullable
+  public NameStrategy getRepositoryNameStrategy()
+  {
+    return _repositoryNameStrategy;
+  }
+
+  public void setRepositoryNameStrategy( @Nonnull final NameStrategy repositoryNameStrategy )
+  {
+    this._repositoryNameStrategy = Objects.requireNonNull( repositoryNameStrategy );
   }
 
   @Nullable

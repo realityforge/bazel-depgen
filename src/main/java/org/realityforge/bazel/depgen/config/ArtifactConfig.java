@@ -9,7 +9,11 @@ import javax.annotation.Nullable;
 public final class ArtifactConfig
 {
   @Nullable
-  private NameStrategy _nameStrategy;
+  private NameStrategy nameStrategy;
+  @Nullable
+  private NameStrategy repositoryNameStrategy;
+  @Nullable
+  private String repositoryName;
   @Nullable
   private String coord;
   @Nullable
@@ -36,12 +40,34 @@ public final class ArtifactConfig
   @Nullable
   public NameStrategy getNameStrategy()
   {
-    return _nameStrategy;
+    return nameStrategy;
   }
 
   public void setNameStrategy( @Nonnull final NameStrategy nameStrategy )
   {
-    this._nameStrategy = Objects.requireNonNull( nameStrategy );
+    this.nameStrategy = Objects.requireNonNull( nameStrategy );
+  }
+
+  @Nullable
+  public NameStrategy getRepositoryNameStrategy()
+  {
+    return repositoryNameStrategy;
+  }
+
+  public void setRepositoryNameStrategy( @Nonnull final NameStrategy repositoryNameStrategy )
+  {
+    this.repositoryNameStrategy = Objects.requireNonNull( repositoryNameStrategy );
+  }
+
+  @Nullable
+  public String getRepositoryName()
+  {
+    return repositoryName;
+  }
+
+  public void setRepositoryName( @Nonnull final String repositoryName )
+  {
+    this.repositoryName = Objects.requireNonNull( repositoryName );
   }
 
   @Nullable

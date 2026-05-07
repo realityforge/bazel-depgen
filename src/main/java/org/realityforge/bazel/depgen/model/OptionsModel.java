@@ -7,6 +7,7 @@ import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.GlobalJavaConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
+import org.realityforge.bazel.depgen.util.BazelUtil;
 
 public final class OptionsModel
 {
@@ -27,9 +28,20 @@ public final class OptionsModel
   @Nonnull
   static OptionsModel parse( @Nonnull final Path configDirectory, @Nonnull final OptionsConfig source )
   {
+    validateNamePrefix( source );
     final Path workspaceDirectory = deriveWorkspaceDirectory( configDirectory, source );
     final Path extensionFile = deriveExtensionFile( configDirectory, source );
     return new OptionsModel( source, workspaceDirectory, extensionFile );
+  }
+
+  private static void validateNamePrefix( @Nonnull final OptionsConfig source )
+  {
+    final String namePrefix = source.getNamePrefix();
+    if ( null != namePrefix && namePrefix.contains( BazelUtil.COMPONENT_SEPARATOR ) )
+    {
+      throw new InvalidModelException( "The options.namePrefix property must not contain '" +
+                                       BazelUtil.COMPONENT_SEPARATOR + "'.", source );
+    }
   }
 
   @Nonnull
@@ -107,6 +119,13 @@ public final class OptionsModel
   {
     final NameStrategy strategy = _source.getNameStrategy();
     return null == strategy ? OptionsConfig.DEFAULT_NAME_STRATEGY : strategy;
+  }
+
+  @Nonnull
+  public NameStrategy getRepositoryNameStrategy()
+  {
+    final NameStrategy strategy = _source.getRepositoryNameStrategy();
+    return null == strategy ? OptionsConfig.DEFAULT_REPOSITORY_NAME_STRATEGY : strategy;
   }
 
   @Nonnull

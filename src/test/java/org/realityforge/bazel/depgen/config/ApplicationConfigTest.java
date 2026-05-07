@@ -207,6 +207,22 @@ public class ApplicationConfigTest
   }
 
   @Test
+  public void artifactWithRepositoryNamingConfig()
+    throws Exception
+  {
+    writeConfigFile( "artifacts:\n" +
+                     "  - coord: org.realityforge.arez:arez-core:0.138\n" +
+                     "    repositoryNameStrategy: ArtifactId\n" +
+                     "    repositoryName: arez_core\n" );
+    final ApplicationConfig config = loadApplicationConfig();
+    assertNotNull( config );
+    final ArtifactConfig artifact = ensureSingleArtifact( config );
+    assertEquals( artifact.getCoord(), "org.realityforge.arez:arez-core:0.138" );
+    assertEquals( artifact.getRepositoryNameStrategy(), NameStrategy.ArtifactId );
+    assertEquals( artifact.getRepositoryName(), "arez_core" );
+  }
+
+  @Test
   public void parseDependencyWithIncludeOptional()
     throws Exception
   {
@@ -275,6 +291,7 @@ public class ApplicationConfigTest
                      "  targetMacroName: gen_targets\n" +
                      "  namePrefix: magic_\n" +
                      "  nameStrategy: ArtifactId\n" +
+                     "  repositoryNameStrategy: ArtifactId\n" +
                      "  defaultNature: J2cl\n" +
                      "  extensionFile: workspaceDir/vendor/workspace.bzl\n" +
                      "  java:\n" +
@@ -291,6 +308,7 @@ public class ApplicationConfigTest
     assertEquals( options.getTargetMacroName(), "gen_targets" );
     assertEquals( options.getNamePrefix(), "magic_" );
     assertEquals( options.getNameStrategy(), NameStrategy.ArtifactId );
+    assertEquals( options.getRepositoryNameStrategy(), NameStrategy.ArtifactId );
     assertEquals( options.getDefaultNature(), Nature.J2cl );
     assertEquals( options.getFailOnMissingPom(), Boolean.FALSE );
     assertEquals( options.getFailOnInvalidPom(), Boolean.FALSE );
@@ -321,6 +339,7 @@ public class ApplicationConfigTest
     assertNull( options.getTargetMacroName() );
     assertNull( options.getNamePrefix() );
     assertNull( options.getNameStrategy() );
+    assertNull( options.getRepositoryNameStrategy() );
     assertNull( options.getDefaultNature() );
     assertNull( options.getFailOnMissingPom() );
     assertNull( options.getFailOnInvalidPom() );

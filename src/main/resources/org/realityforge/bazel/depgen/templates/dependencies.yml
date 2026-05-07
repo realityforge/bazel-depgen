@@ -32,6 +32,16 @@ options:
   #   So the artifact 'org.realityforge.react4j:react4j-core:0.126' has a name 'react4j_core'
   #nameStrategy: GroupIdAndArtifactId
 
+  # The tool generates repository base names separately from target names. The default strategy is
+  # 'GroupIdAndArtifactIdAndVersion' to preserve existing repository naming compatibility.
+  # Strategies include:
+  # - GroupIdAndArtifactIdAndVersion: The name uses the groupId, artifactId and version.
+  #   So the artifact 'org.realityforge.react4j:react4j-core:0.126' has a repository base name
+  #   'org_realityforge_react4j__react4j_core__0_126'
+  # - GroupIdAndArtifactId: The name uses both the groupId and artifactId.
+  # - ArtifactId: The name uses the artifactId.
+  #repositoryNameStrategy: GroupIdAndArtifactIdAndVersion
+
   # Artifacts have 1 or more natures. A nature defines the type of targets that are created for an
   # artifact. Does the artifact result in a 'j2cl_library', a 'java_library', a 'java_plugin' or something
   # else. This configuration setting specifies the default nature of any artifacts unless otherwise
@@ -156,6 +166,13 @@ repositories:
 
     # This setting allows per-artifact overrides of the global nameStrategy configuration.
     #nameStrategy: ArtifactId
+
+    # This setting allows per-artifact overrides of the global repositoryNameStrategy configuration.
+    #repositoryNameStrategy: ArtifactId
+
+    # This setting allows the explicit specification of a repository base name. This value is absolute,
+    # is not prefixed by namePrefix and must match [a-z][a-z0-9_]*.
+    #repositoryName: react4j_core
 
     # This setting allows per-artifact overrides of the global includeSource configuration.
     #includeSource: false

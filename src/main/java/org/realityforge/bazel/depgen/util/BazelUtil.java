@@ -9,6 +9,9 @@ import javax.annotation.Nullable;
 
 public final class BazelUtil
 {
+  @Nonnull
+  public static final String COMPONENT_SEPARATOR = "__";
+
   private BazelUtil()
   {
   }

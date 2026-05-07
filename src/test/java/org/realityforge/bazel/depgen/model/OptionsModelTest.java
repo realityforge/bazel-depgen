@@ -28,6 +28,7 @@ public class OptionsModelTest
     assertEquals( model.getTargetMacroName(), OptionsConfig.DEFAULT_TARGET_MACRO_NAME );
     assertEquals( model.getNamePrefix(), OptionsConfig.DEFAULT_NAME_PREFIX );
     assertEquals( model.getNameStrategy(), OptionsConfig.DEFAULT_NAME_STRATEGY );
+    assertEquals( model.getRepositoryNameStrategy(), OptionsConfig.DEFAULT_REPOSITORY_NAME_STRATEGY );
     assertEquals( model.getDefaultNature(), OptionsConfig.DEFAULT_NATURE );
     assertTrue( model.failOnMissingPom() );
     assertTrue( model.failOnInvalidPom() );
@@ -52,6 +53,19 @@ public class OptionsModelTest
   }
 
   @Test
+  public void parseWithInvalidNamePrefix()
+  {
+    final OptionsConfig source = new OptionsConfig();
+    source.setNamePrefix( "my__prj" );
+
+    final InvalidModelException exception =
+      expectThrows( InvalidModelException.class,
+                    () -> OptionsModel.parse( FileUtil.getCurrentDirectory(), source ) );
+    assertEquals( exception.getMessage(), "The options.namePrefix property must not contain '__'." );
+    assertEquals( exception.getModel(), source );
+  }
+
+  @Test
   public void parse()
     throws Exception
   {
@@ -65,6 +79,7 @@ public class OptionsModelTest
     source.setTargetMacroName( "gen_myprj_targets" );
     source.setNamePrefix( "myprj_" );
     source.setNameStrategy( NameStrategy.ArtifactId );
+    source.setRepositoryNameStrategy( NameStrategy.ArtifactId );
     source.setDefaultNature( Nature.J2cl );
     source.setFailOnMissingPom( false );
     source.setFailOnInvalidPom( false );
@@ -85,6 +100,7 @@ public class OptionsModelTest
     assertEquals( model.getTargetMacroName(), "gen_myprj_targets" );
     assertEquals( model.getNamePrefix(), "myprj_" );
     assertEquals( model.getNameStrategy(), NameStrategy.ArtifactId );
+    assertEquals( model.getRepositoryNameStrategy(), NameStrategy.ArtifactId );
     assertEquals( model.getDefaultNature(), Nature.J2cl );
     assertFalse( model.failOnMissingPom() );
     assertFalse( model.failOnInvalidPom() );

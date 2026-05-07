@@ -58,7 +58,8 @@ public final class ApplicationRecord
 
   private void validate()
   {
-    ensureNamesAreUnique();
+    ensureEmittedTargetNamesAreUnique();
+    ensureEmittedRepositoryNamesAreUnique();
     ensureDeclaredDepgenArtifactIsValid();
   }
 
@@ -142,27 +143,82 @@ public final class ApplicationRecord
     }
   }
 
-  private void ensureNamesAreUnique()
+  private void ensureEmittedTargetNamesAreUnique()
   {
-    final HashMap<String, ArtifactRecord> names = new HashMap<>();
+    final HashMap<String, String> names = new HashMap<>();
+    if ( getSource().getOptions().verifyConfigSha256() )
+    {
+      final String verifyTargetName = getSource().verifyTargetName();
+      ensureUniqueEmittedTargetName( names,
+                                     verifyTargetName,
+                                     "built-in helper target '" + verifyTargetName + "'" );
+      final String regenerateExtensionTargetName = getRegenerateExtensionTargetName();
+      ensureUniqueEmittedTargetName( names,
+                                     regenerateExtensionTargetName,
+                                     "built-in helper target '" + regenerateExtensionTargetName + "'" );
+    }
     for ( final ArtifactRecord artifact : getArtifacts() )
     {
-      for ( final Nature nature : artifact.getNatures() )
+      if ( null == artifact.getReplacementModel() )
       {
-        final String name = artifact.getName( nature );
-        final ArtifactRecord existing = names.get( name );
-        if ( null != existing )
+        for ( final Map.Entry<String, String> entry : artifact.getEmittedPublicTargetNames().entrySet() )
         {
-          throw new DepgenValidationException( "Multiple artifacts have the same name '" + name + "' which is " +
-                                               "not supported. Change the nameStrategy option globally or for " +
-                                               "one of the artifacts '" + existing.getArtifact() + "' and '" +
-                                               artifact.getArtifact() + "'." );
+          ensureUniqueEmittedTargetName( names, entry.getKey(), entry.getValue() );
         }
-        else
+        for ( final Map.Entry<String, String> entry : artifact.getEmittedPrivateTargetNames().entrySet() )
         {
-          names.put( name, artifact );
+          ensureUniqueEmittedTargetName( names, entry.getKey(), entry.getValue() );
         }
       }
+    }
+  }
+
+  private void ensureEmittedRepositoryNamesAreUnique()
+  {
+    final HashMap<String, String> names = new HashMap<>();
+    for ( final ArtifactRecord artifact : getArtifacts() )
+    {
+      if ( null == artifact.getReplacementModel() )
+      {
+        for ( final Map.Entry<String, String> entry : artifact.getEmittedRepositoryNames().entrySet() )
+        {
+          ensureUniqueEmittedRepositoryName( names, entry.getKey(), entry.getValue() );
+        }
+      }
+    }
+  }
+
+  private void ensureUniqueEmittedTargetName( @Nonnull final Map<String, String> names,
+                                              @Nonnull final String name,
+                                              @Nonnull final String description )
+  {
+    final String existing = names.get( name );
+    if ( null != existing )
+    {
+      throw new DepgenValidationException( "Multiple emitted targets have the same name '" + name + "' which is " +
+                                           "not supported. Adjust naming configuration or explicit names for " +
+                                           existing + " and " + description + "." );
+    }
+    else
+    {
+      names.put( name, description );
+    }
+  }
+
+  private void ensureUniqueEmittedRepositoryName( @Nonnull final Map<String, String> names,
+                                                  @Nonnull final String name,
+                                                  @Nonnull final String description )
+  {
+    final String existing = names.get( name );
+    if ( null != existing )
+    {
+      throw new DepgenValidationException( "Multiple emitted repositories have the same name '" + name + "' which is " +
+                                           "not supported. Adjust repository naming configuration for " +
+                                           existing + " and " + description + "." );
+    }
+    else
+    {
+      names.put( name, description );
     }
   }
 
@@ -437,7 +493,7 @@ public final class ApplicationRecord
     final String configLabel = getConfigFileLabel();
     final String depgenArtifactLabel = getDepgenArtifactLabel();
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
-    arguments.put( "name", "\"" + _source.getOptions().getNamePrefix() + "regenerate_depgen_extension\"" );
+    arguments.put( "name", "\"" + getRegenerateExtensionTargetName() + "\"" );
     arguments.put( "runtime_deps", Collections.singletonList( "\"" + depgenArtifactLabel + "\"" ) );
     arguments.put( "main_class", "\"org.realityforge.bazel.depgen.Main\"" );
     arguments.put( "args",
@@ -478,6 +534,12 @@ public final class ApplicationRecord
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
 
     output.writeCall( "_java_test", arguments );
+  }
+
+  @Nonnull
+  private String getRegenerateExtensionTargetName()
+  {
+    return _source.getOptions().getNamePrefix() + "regenerate_depgen_extension";
   }
 
   @Nonnull

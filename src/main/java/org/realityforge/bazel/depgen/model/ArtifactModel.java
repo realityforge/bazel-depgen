@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.JavaConfig;
 import org.realityforge.bazel.depgen.config.Nature;
+import org.realityforge.bazel.depgen.util.BazelUtil;
 
 public final class ArtifactModel
 {
+  @Nonnull
+  private static final Pattern REPOSITORY_NAME_PATTERN = Pattern.compile( "[a-z][a-z0-9_]*" );
   @Nonnull
   private final ArtifactConfig _source;
   @Nonnull
@@ -33,6 +37,9 @@ public final class ArtifactModel
   @Nonnull
   public static ArtifactModel parse( @Nonnull final ArtifactConfig source )
   {
+    validateRepositoryNamingConfig( source );
+    validateUserSpecifiedTargetNames( source );
+
     final String coord = source.getCoord();
     final String group;
     final String id;
@@ -96,6 +103,47 @@ public final class ArtifactModel
       Collections.unmodifiableList( new ArrayList<>( visibility ) );
 
     return new ArtifactModel( source, group, id, type, classifier, version, aexcludes, avisibility );
+  }
+
+  private static void validateRepositoryNamingConfig( @Nonnull final ArtifactConfig source )
+  {
+    final String repositoryName = source.getRepositoryName();
+    if ( null != repositoryName )
+    {
+      if ( null != source.getRepositoryNameStrategy() )
+      {
+        throw new InvalidModelException( "The dependency must not specify both the 'repositoryName' and " +
+                                         "'repositoryNameStrategy' properties.", source );
+      }
+      else if ( repositoryName.contains( BazelUtil.COMPONENT_SEPARATOR ) )
+      {
+        throw new InvalidModelException( "The dependency repositoryName '" + repositoryName +
+                                         "' must not contain '" + BazelUtil.COMPONENT_SEPARATOR + "'.", source );
+      }
+      else if ( !REPOSITORY_NAME_PATTERN.matcher( repositoryName ).matches() )
+      {
+        throw new InvalidModelException( "The dependency repositoryName '" + repositoryName +
+                                         "' must match the pattern '[a-z][a-z0-9_]*'.", source );
+      }
+    }
+  }
+
+  private static void validateUserSpecifiedTargetNames( @Nonnull final ArtifactConfig source )
+  {
+    validateNameOverride( "java.name", null != source.getJava() ? source.getJava().getName() : null, source );
+    validateNameOverride( "j2cl.name", null != source.getJ2cl() ? source.getJ2cl().getName() : null, source );
+    validateNameOverride( "plugin.name", null != source.getPlugin() ? source.getPlugin().getName() : null, source );
+  }
+
+  private static void validateNameOverride( @Nonnull final String fieldName,
+                                            @Nullable final String name,
+                                            @Nonnull final ArtifactConfig source )
+  {
+    if ( null != name && name.contains( BazelUtil.COMPONENT_SEPARATOR ) )
+    {
+      throw new InvalidModelException( "The dependency " + fieldName + " property must not contain '" +
+                                       BazelUtil.COMPONENT_SEPARATOR + "'.", source );
+    }
   }
 
   public ArtifactModel( @Nonnull final ArtifactConfig source,
