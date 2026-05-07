@@ -41,7 +41,6 @@ define 'bazel-depgen' do
   compile.options.source = '17'
   compile.options.target = '17'
   compile.options.lint = 'all'
-  compile.with.options[:other] = %w(-Xdoclint:-missing)
 
   project.version = ENV['PRODUCT_VERSION'] if ENV['PRODUCT_VERSION']
 
