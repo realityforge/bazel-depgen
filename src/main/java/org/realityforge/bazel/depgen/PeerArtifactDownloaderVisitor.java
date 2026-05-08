@@ -2,17 +2,20 @@ package org.realityforge.bazel.depgen;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.DependencyVisitor;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
+import org.realityforge.bazel.depgen.model.ArtifactModel;
 
 abstract class PeerArtifactDownloaderVisitor
   implements DependencyVisitor
@@ -78,12 +81,17 @@ abstract class PeerArtifactDownloaderVisitor
     }
     final DepgenMetadata metadata = DepgenMetadata.fromDirectory( _model, file.getParentFile().toPath() );
     final SubArtifact peerArtifact = toPeerArtifact( artifact );
+    final ArtifactModel artifactModel = _model.findArtifact( artifact.getGroupId(), artifact.getArtifactId() );
+    final List<RemoteRepository> repositories =
+      null != artifactModel && !artifactModel.getRepositories().isEmpty() ?
+      _resolver.getRepositories( artifactModel ) :
+      node.getRepositories();
     try
     {
       final ArtifactResult sourceArtifactResult =
         _resolver.getSystem()
           .resolveArtifact( _resolver.getSession(),
-                            new ArtifactRequest( peerArtifact, _resolver.getRepositories(), null ) );
+                            new ArtifactRequest( peerArtifact, repositories, null ) );
       final HashMap<String, String> properties = new HashMap<>( artifact.getProperties() );
       properties.put( _filenameKey, sourceArtifactResult.getArtifact().getFile().getAbsolutePath() );
       metadata.updateProperty( _metadataProperty, "true" );

@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* Respect `searchByDefault: false` during artifact resolution, transitive dependency collection, and peer
+  artifact downloads unless an artifact explicitly opts into the repository.
+
 ### [v0.21](https://github.com/realityforge/bazel-depgen/tree/v0.21) (2026-05-08) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.20...v0.21)
 
 Changes in this release:

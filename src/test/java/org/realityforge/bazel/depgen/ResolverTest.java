@@ -348,6 +348,86 @@ public class ResolverTest
   }
 
   @Test
+  public void toArtifact_repositoryWithSearchByDefaultFalse_isNotSearchedByDefault()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+    final Path remoteDir1 = FileUtil.createLocalTempDir();
+    final Path remoteDir2 = FileUtil.createLocalTempDir();
+
+    deployTempArtifactToLocalRepository( remoteDir2, "com.example:myapp:1.0" );
+
+    final TestHandler handler = newHandler();
+    final RemoteRepository remoteRepository1 =
+      new RemoteRepository.Builder( "local1", "default", remoteDir1.toUri().toString() ).build();
+    final RemoteRepository remoteRepository2 =
+      new RemoteRepository.Builder( "local2", "default", remoteDir2.toUri().toString() ).build();
+    final Resolver resolver =
+      ResolverUtil.createResolver( newEnvironment( handler ),
+                                   dir,
+                                   Arrays.asList( remoteRepository1, remoteRepository2 ),
+                                   Collections.singletonList( remoteRepository1 ),
+                                   true,
+                                   true );
+
+    final ArtifactModel model =
+      new ArtifactModel( new ArtifactConfig(),
+                         "com.example",
+                         "myapp",
+                         null,
+                         null,
+                         "1.0",
+                         Collections.emptyList(),
+                         Collections.emptyList() );
+
+    final AtomicBoolean hasFailed = new AtomicBoolean( false );
+    final Artifact artifact = resolver.toArtifact( model, exceptions -> hasFailed.set( true ) );
+
+    assertTrue( hasFailed.get() );
+    final ArrayList<LogRecord> records = handler.getRecords();
+    assertEquals( records.size(), 1 );
+    assertTrue( records.get( 0 ).getMessage().startsWith( "Could not find artifact com.example:myapp:jar:1.0" ) );
+    assertNull( artifact.getFile() );
+  }
+
+  @Test
+  public void toArtifact_repositoryWithSearchByDefaultFalse_isSearchedWhenArtifactExplicitlyIncludesRepository()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+    final Path remoteDir1 = FileUtil.createLocalTempDir();
+    final Path remoteDir2 = FileUtil.createLocalTempDir();
+
+    deployTempArtifactToLocalRepository( remoteDir2, "com.example:myapp:1.0" );
+
+    final TestHandler handler = newHandler();
+    final RemoteRepository remoteRepository1 =
+      new RemoteRepository.Builder( "local1", "default", remoteDir1.toUri().toString() ).build();
+    final RemoteRepository remoteRepository2 =
+      new RemoteRepository.Builder( "local2", "default", remoteDir2.toUri().toString() ).build();
+    final Resolver resolver =
+      ResolverUtil.createResolver( newEnvironment( handler ),
+                                   dir,
+                                   Arrays.asList( remoteRepository1, remoteRepository2 ),
+                                   Collections.singletonList( remoteRepository1 ),
+                                   true,
+                                   true );
+
+    final ArtifactConfig config = new ArtifactConfig();
+    config.setCoord( "com.example:myapp:1.0" );
+    config.setRepositories( Collections.singletonList( "local2" ) );
+    final ArtifactModel model = ArtifactModel.parse( config );
+
+    final AtomicBoolean hasFailed = new AtomicBoolean( false );
+    final Artifact artifact = resolver.toArtifact( model, exceptions -> hasFailed.set( true ) );
+
+    assertFalse( hasFailed.get() );
+    assertTrue( handler.getRecords().isEmpty() );
+    assertNotNull( artifact.getFile() );
+    assertEquals( artifact.toString(), "com.example:myapp:jar:1.0" );
+  }
+
+  @Test
   public void toArtifact()
     throws Exception
   {

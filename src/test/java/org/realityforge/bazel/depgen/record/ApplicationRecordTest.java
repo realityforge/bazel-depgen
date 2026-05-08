@@ -4443,4 +4443,91 @@ public class ApplicationRecordTest
                   Arrays.asList( dir1.toUri() + "com/example/myapp/1.0/myapp-1.0.jar",
                                  dir2.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
   }
+
+  @Test
+  public void repository_with_searchByDefault_false_and_explicit_repository_contains_transitive_dependency()
+    throws Exception
+  {
+    final Path dir1 = FileUtil.createLocalTempDir();
+    final Path dir2 = FileUtil.createLocalTempDir();
+
+    deployDepGenArtifactToLocalRepository( dir1 );
+    writeConfigFile( "repositories:\n" +
+                     "  - name: local1\n" +
+                     "    url: " + dir1.toUri() + "\n" +
+                     "  - name: local2\n" +
+                     "    url: " + dir2.toUri() + "\n" +
+                     "    searchByDefault: false\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    repositories: [local2]\n" );
+    deployArtifactToLocalRepository( dir2, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+    deployArtifactToLocalRepository( dir2, "com.example:mylib:1.0" );
+
+    final List<ArtifactRecord> artifacts = loadApplicationRecord().getArtifacts();
+    assertTrue( artifacts.size() > 2 );
+
+    final ArtifactRecord myapp =
+      artifacts.stream().filter( a -> a.getKey().equals( "com.example:myapp" ) ).findAny().orElseThrow();
+    final ArtifactRecord mylib =
+      artifacts.stream().filter( a -> a.getKey().equals( "com.example:mylib" ) ).findAny().orElseThrow();
+    assertEquals( myapp.getUrls(),
+                  Collections.singletonList( dir2.toUri() + "com/example/myapp/1.0/myapp-1.0.jar" ) );
+    assertEquals( mylib.getUrls(),
+                  Collections.singletonList( dir2.toUri() + "com/example/mylib/1.0/mylib-1.0.jar" ) );
+  }
+
+  @Test
+  public void repository_with_searchByDefault_false_does_not_download_sources_by_default()
+    throws Exception
+  {
+    final Path dir1 = FileUtil.createLocalTempDir();
+    final Path dir2 = FileUtil.createLocalTempDir();
+
+    deployDepGenArtifactToLocalRepository( dir1 );
+    writeConfigFile( "repositories:\n" +
+                     "  - name: local1\n" +
+                     "    url: " + dir1.toUri() + "\n" +
+                     "  - name: local2\n" +
+                     "    url: " + dir2.toUri() + "\n" +
+                     "    searchByDefault: false\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+    deployTempArtifactToLocalRepository( dir1, "com.example:myapp:1.0" );
+    deployTempArtifactToLocalRepository( dir2, "com.example:myapp:jar:sources:1.0" );
+
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    assertEquals( exception.getMessage(),
+                  "Unable to locate source for artifact 'com.example:myapp:jar:1.0'. Specify the " +
+                  "'includeSource' configuration property as 'false' in the artifacts configuration." );
+  }
+
+  @Test
+  public void repository_with_searchByDefault_false_but_artifact_repositories_include_download_sources()
+    throws Exception
+  {
+    final Path dir1 = FileUtil.createLocalTempDir();
+    final Path dir2 = FileUtil.createLocalTempDir();
+
+    deployDepGenArtifactToLocalRepository( dir1 );
+    writeConfigFile( "repositories:\n" +
+                     "  - name: local1\n" +
+                     "    url: " + dir1.toUri() + "\n" +
+                     "  - name: local2\n" +
+                     "    url: " + dir2.toUri() + "\n" +
+                     "    searchByDefault: false\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    repositories: [local1, local2]\n" );
+    deployTempArtifactToLocalRepository( dir1, "com.example:myapp:1.0" );
+    deployTempArtifactToLocalRepository( dir2, "com.example:myapp:jar:sources:1.0" );
+
+    final List<ArtifactRecord> artifacts = loadApplicationRecord().getArtifacts();
+    assertTrue( artifacts.size() > 1 );
+
+    final ArtifactRecord artifactRecord = artifacts.get( 0 );
+    assertEquals( artifactRecord.getSourceUrls(),
+                  Collections.singletonList( dir2.toUri() + "com/example/myapp/1.0/myapp-1.0-sources.jar" ) );
+  }
 }

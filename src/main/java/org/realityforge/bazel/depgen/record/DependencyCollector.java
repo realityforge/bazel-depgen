@@ -75,10 +75,7 @@ final class DependencyCollector
         .stream()
         .filter( r -> model.getRepositories().contains( r.getId() ) )
         .collect( Collectors.toList() ) :
-      node.getRepositories()
-        .stream()
-        .filter( r -> _record.getSource().getRepository( r.getId() ).searchByDefault() )
-        .collect( Collectors.toList() );
+      node.getRepositories();
     final List<String> urls =
       metadata.getUrls( artifact, repositories, _record.getAuthenticationContexts(), _callback );
 

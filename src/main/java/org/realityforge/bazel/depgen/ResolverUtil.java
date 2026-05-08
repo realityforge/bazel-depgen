@@ -46,11 +46,33 @@ final class ResolverUtil
                                   @Nonnull final Settings settings )
   {
     final OptionsModel options = model.getOptions();
+    final List<RemoteRepository> repositories = ResolverUtil.getRemoteRepositories( model.getRepositories(), settings );
+    final List<RemoteRepository> defaultRepositories =
+      ResolverUtil.getRemoteRepositories( model.getRepositories()
+                                            .stream()
+                                            .filter( RepositoryModel::searchByDefault )
+                                            .toList(),
+                                          settings );
     return createResolver( environment,
                            cacheDir,
-                           ResolverUtil.getRemoteRepositories( model.getRepositories(), settings ),
+                           repositories,
+                           defaultRepositories,
                            options.failOnMissingPom(),
                            options.failOnInvalidPom() );
+  }
+
+  @Nonnull
+  static Resolver createResolver( @Nonnull final Environment environment,
+                                  @Nonnull final Path cacheDir,
+                                  @Nonnull final List<RemoteRepository> repositories,
+                                  @Nonnull final List<RemoteRepository> defaultRepositories,
+                                  final boolean failOnMissingPom,
+                                  final boolean failOnInvalidPom )
+  {
+    final RepositorySystem system = newRepositorySystem( environment );
+    final RepositorySystemSession session =
+      newRepositorySystemSession( system, cacheDir, environment, failOnMissingPom, failOnInvalidPom );
+    return new Resolver( environment, system, session, repositories, defaultRepositories );
   }
 
   @Nonnull
@@ -60,10 +82,12 @@ final class ResolverUtil
                                   final boolean failOnMissingPom,
                                   final boolean failOnInvalidPom )
   {
-    final RepositorySystem system = newRepositorySystem( environment );
-    final RepositorySystemSession session =
-      newRepositorySystemSession( system, cacheDir, environment, failOnMissingPom, failOnInvalidPom );
-    return new Resolver( environment, system, session, repositories );
+    return createResolver( environment,
+                           cacheDir,
+                           repositories,
+                           repositories,
+                           failOnMissingPom,
+                           failOnInvalidPom );
   }
 
   @Nonnull
