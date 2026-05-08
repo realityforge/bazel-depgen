@@ -236,13 +236,13 @@ public abstract class AbstractTest
     FileUtil.write( getDefaultConfigFile(), content );
   }
 
-  final void assertOutputContains( @Nonnull final String output, @Nonnull final String text )
+  protected final void assertOutputContains( @Nonnull final String output, @Nonnull final String text )
   {
     assertTrue( output.contains( text ),
                 "Expected output\n---\n" + output + "\n---\nto contain text\n---\n" + text + "\n---\n" );
   }
 
-  final void assertOutputDoesNotContain( @Nonnull final String output, @Nonnull final String text )
+  protected final void assertOutputDoesNotContain( @Nonnull final String output, @Nonnull final String text )
   {
     assertFalse( output.contains( text ),
                  "Expected output\n---\n" + output + "\n---\nto not contain text\n---\n" + text + "\n---\n" );

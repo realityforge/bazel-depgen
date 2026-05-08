@@ -114,7 +114,7 @@ final class Resolver
     final DefaultRepositorySystemSession session = (DefaultRepositorySystemSession) _session;
     final ArrayList<Exclusion> exclusions = ResolverUtil.deriveGlobalExclusions( model );
     session.setDependencySelector( new AndDependencySelector( new ExclusionDependencySelector( exclusions ),
-                                                              new ReplacementDependencySelector( model ),
+                                                              new CompileAndRuntimeDependencySelector(),
                                                               new OptionalDependencySelector( model ) ) );
     session.setDependencyTraverser( new FatArtifactTraverser() );
     session.setDependencyManager( new ClassicDependencyManager() );

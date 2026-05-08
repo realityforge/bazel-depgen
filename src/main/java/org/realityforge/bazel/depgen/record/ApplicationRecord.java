@@ -71,7 +71,13 @@ public final class ApplicationRecord
     {
       final ArtifactModel artifact =
         model.findApplicationArtifact( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
-      if ( null != artifact && !artifact.getNatures( options.getDefaultNature() ).contains( Nature.Java ) )
+      final ReplacementModel replacement =
+        model.findReplacement( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
+      final boolean javaProvidedByArtifact =
+        null == artifact || artifact.getNatures( options.getDefaultNature() ).contains( Nature.Java );
+      final boolean javaProvidedByReplacement =
+        null != replacement && null != replacement.findTarget( Nature.Java );
+      if ( !javaProvidedByArtifact && !javaProvidedByReplacement )
       {
         final String message =
           "Artifact '" + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "' declared as a " +
@@ -79,22 +85,14 @@ public final class ApplicationRecord
           "set to true.";
         throw new DepgenValidationException( message );
       }
-      if ( null != artifact && !DepGenConfig.getClassifier().equals( artifact.getClassifier() ) )
+      if ( null != artifact &&
+           !javaProvidedByReplacement &&
+           !DepGenConfig.getClassifier().equals( artifact.getClassifier() ) )
       {
         final String message =
           "Artifact '" + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "' declared as a " +
           "dependency but does not specify the classifier '" + DepGenConfig.getClassifier() + "' which is " +
           "required if the verifyConfigSha256 option is set to true.";
-        throw new DepgenValidationException( message );
-      }
-
-      final ReplacementModel replacement =
-        model.findReplacement( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
-      if ( null != replacement && replacement.getTargets().stream().noneMatch( t -> t.getNature() == Nature.Java ) )
-      {
-        final String message =
-          "Artifact '" + DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId() + "' declared as a replace " +
-          "but does not declare the Java nature which is required if verifyConfigSha256 option is set to true.";
         throw new DepgenValidationException( message );
       }
     }
@@ -106,7 +104,9 @@ public final class ApplicationRecord
   {
     for ( final ArtifactRecord artifact : record.getArtifacts() )
     {
-      if ( null != artifact.getArtifactModel() && artifact.getNatures().contains( rootNature ) )
+      if ( null != artifact.getArtifactModel() &&
+           artifact.getNatures().contains( rootNature ) &&
+           !artifact.isNatureReplaced( rootNature ) )
       {
         checkTransitiveNature( artifact, artifact, rootNature, targetNature );
       }
@@ -124,7 +124,7 @@ public final class ApplicationRecord
       {
         if ( dependency.addNature( targetNature ) )
         {
-          if ( null == dependency.getReplacementModel() )
+          if ( !dependency.isNatureReplaced( targetNature ) )
           {
             checkTransitiveNature( root, dependency, rootNature, targetNature );
           }
@@ -159,7 +159,7 @@ public final class ApplicationRecord
     }
     for ( final ArtifactRecord artifact : getArtifacts() )
     {
-      if ( null == artifact.getReplacementModel() )
+      if ( artifact.emitsTargets() )
       {
         for ( final Map.Entry<String, String> entry : artifact.getEmittedPublicTargetNames().entrySet() )
         {
@@ -178,7 +178,7 @@ public final class ApplicationRecord
     final HashMap<String, String> names = new HashMap<>();
     for ( final ArtifactRecord artifact : getArtifacts() )
     {
-      if ( null == artifact.getReplacementModel() )
+      if ( artifact.emitsRepositoryRules() )
       {
         for ( final Map.Entry<String, String> entry : artifact.getEmittedRepositoryNames().entrySet() )
         {
@@ -324,12 +324,11 @@ public final class ApplicationRecord
     }
     for ( final ArtifactRecord artifact : getArtifacts() )
     {
-      final List<Nature> natures = artifact.getNatures();
-      if ( natures.contains( Nature.Java ) )
+      if ( artifact.shouldEmitNatureTarget( Nature.Java ) )
       {
         javaRules.add( "java_import" );
       }
-      else if ( natures.contains( Nature.Plugin ) )
+      if ( artifact.shouldEmitNatureTarget( Nature.Plugin ) )
       {
         javaRules.add( "java_import" );
         javaRules.add( "java_library" );
@@ -423,19 +422,6 @@ public final class ApplicationRecord
     writeDirectTargets( output );
   }
 
-  void replacement( @Nonnull final DependencyNode node )
-  {
-    final String groupId = node.getArtifact().getGroupId();
-    final String artifactId = node.getArtifact().getArtifactId();
-    final ReplacementModel model = _source.findReplacement( groupId, artifactId );
-    assert null != model;
-    final ArtifactRecord record =
-      new ArtifactRecord( this, node, null, null, null, null, null, null, null, null, null, model );
-    final String key = record.getKey();
-    assert !_artifacts.containsKey( key );
-    _artifacts.put( key, record );
-  }
-
   void artifact( @Nonnull final DependencyNode node,
                  @Nonnull final String sha256,
                  @Nonnull final List<String> urls,
@@ -449,6 +435,7 @@ public final class ApplicationRecord
     final String groupId = node.getArtifact().getGroupId();
     final String artifactId = node.getArtifact().getArtifactId();
     final ArtifactModel model = _source.findArtifact( groupId, artifactId );
+    final ReplacementModel replacementModel = _source.findReplacement( groupId, artifactId );
     final ArtifactRecord record =
       new ArtifactRecord( this,
                           node,
@@ -461,7 +448,7 @@ public final class ApplicationRecord
                           processors,
                           jsAssets,
                           model,
-                          null );
+                          replacementModel );
     final String key = record.getKey();
     final ArtifactRecord existing = _artifacts.get( key );
     if ( null == existing )
@@ -609,7 +596,7 @@ public final class ApplicationRecord
                        supportDependencyOmit ?
                        getArtifacts()
                          .stream()
-                         .filter( a -> null == a.getReplacementModel() )
+                         .filter( ArtifactRecord::emitsTargets )
                          .sorted( Comparator.comparing( ArtifactRecord::getSymbol ) )
                          .map( a -> "omit_" + a.getSymbol() + " = False" )
                          .collect( Collectors.toList() ) :
@@ -624,7 +611,7 @@ public final class ApplicationRecord
         }
         for ( final ArtifactRecord artifact : getArtifacts() )
         {
-          if ( null == artifact.getReplacementModel() )
+          if ( artifact.emitsTargets() )
           {
             macro.newLine();
             if ( supportDependencyOmit )
@@ -649,7 +636,7 @@ public final class ApplicationRecord
                        supportDependencyOmit ?
                        getArtifacts()
                          .stream()
-                         .filter( a -> null == a.getReplacementModel() )
+                         .filter( ArtifactRecord::emitsRepositoryRules )
                          .sorted( Comparator.comparing( ArtifactRecord::getSymbol ) )
                          .map( a -> "omit_" + a.getSymbol() + " = False" )
                          .collect( Collectors.toList() ) :
@@ -662,7 +649,7 @@ public final class ApplicationRecord
 
         for ( final ArtifactRecord artifact : getArtifacts() )
         {
-          if ( null == artifact.getReplacementModel() )
+          if ( artifact.emitsRepositoryRules() )
           {
             macro.newLine();
             if ( supportDependencyOmit )
@@ -682,14 +669,13 @@ public final class ApplicationRecord
     throws IOException
   {
     boolean needsNewLine = false;
-    final List<Nature> natures = artifact.getNatures();
-    if ( natures.contains( Nature.Java ) || natures.contains( Nature.Plugin ) )
+    if ( artifact.emitsBinaryRepositoryRule() )
     {
       needsNewLine = true;
       artifact.writeArtifactHttpFileRule( output );
     }
 
-    if ( null != artifact.getSourceSha256() )
+    if ( null != artifact.getSourceSha256() && artifact.emitsSourceRepositoryRule() )
     {
       if ( needsNewLine )
       {
@@ -698,19 +684,22 @@ public final class ApplicationRecord
       needsNewLine = true;
       artifact.writeArtifactSourcesHttpFileRule( output );
     }
-    if ( null != artifact.getExternalAnnotationSha256() )
+    if ( null != artifact.getExternalAnnotationSha256() && artifact.emitsAnnotationsRepositoryRule() )
     {
       if ( needsNewLine )
       {
         output.newLine();
       }
+      needsNewLine = true;
       artifact.writeArtifactAnnotationsHttpFileRule( output );
     }
-    if ( artifact.getNatures().contains( Nature.J2cl ) &&
-         null != artifact.getJsAssets() &&
-         null != artifact.getSourceSha256() )
+    if ( artifact.emitsJsSourceRepositoryRule() )
     {
-      output.newLine();
+      if ( needsNewLine )
+      {
+        output.newLine();
+      }
+      needsNewLine = true;
       artifact.writeArtifactJsSourcesHttpFileRule( output );
     }
   }
@@ -770,7 +759,7 @@ public final class ApplicationRecord
   private void writeRepositoryRuleLoadsIfRequired( @Nonnull final StarlarkOutput output, final boolean includeLoads )
     throws IOException
   {
-    if ( includeLoads && !getArtifacts().isEmpty() )
+    if ( includeLoads && getArtifacts().stream().anyMatch( ArtifactRecord::emitsRepositoryRules ) )
     {
       output.write( "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", " +
                     "_http_file = \"http_file\"" +
@@ -782,7 +771,7 @@ public final class ApplicationRecord
   private void writeRepositoryRuleUseRepoBindingsIfRequired( @Nonnull final StarlarkOutput output )
     throws IOException
   {
-    if ( !getArtifacts().isEmpty() )
+    if ( getArtifacts().stream().anyMatch( ArtifactRecord::emitsRepositoryRules ) )
     {
       output.write( "_http_file = use_repo_rule(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")" );
       if ( requiresHttpArchive() )
@@ -808,7 +797,7 @@ public final class ApplicationRecord
           javaRules.stream().sorted().map( r -> "_" + r + " = \"" + r + "\"" ).collect( Collectors.joining( ", " ) );
         output.write( "load(\"@rules_java//java:defs.bzl\", " + rules + ")" );
       }
-      if ( getArtifacts().stream().anyMatch( a -> a.getNatures().contains( Nature.J2cl ) ) )
+      if ( getArtifacts().stream().anyMatch( a -> a.shouldEmitNatureTarget( Nature.J2cl ) ) )
       {
         emittedLoad = true;
         output.write( "load(\"@com_google_j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")" );
@@ -822,7 +811,7 @@ public final class ApplicationRecord
 
   private boolean requiresHttpArchive()
   {
-    return getArtifacts().stream().anyMatch( a -> null != a.getJsAssets() && a.getNatures().contains( Nature.J2cl ) );
+    return getArtifacts().stream().anyMatch( a -> null != a.getJsAssets() && a.shouldEmitNatureTarget( Nature.J2cl ) );
   }
 
   private void emitGeneratedSectionComment( @Nonnull final StarlarkOutput output )
@@ -846,7 +835,7 @@ public final class ApplicationRecord
 
     for ( final ArtifactRecord artifact : getArtifacts() )
     {
-      if ( null == artifact.getReplacementModel() )
+      if ( artifact.emitsTargets() )
       {
         output.newLine();
         artifact.writeArtifactTargets( output );
@@ -860,7 +849,7 @@ public final class ApplicationRecord
     int count = 0;
     for ( final ArtifactRecord artifact : getArtifacts() )
     {
-      if ( null == artifact.getReplacementModel() )
+      if ( artifact.emitsRepositoryRules() )
       {
         if ( 0 != count++ )
         {

@@ -141,7 +141,7 @@ public final class DependencyGraphEmitter
       null != d ? _model.findReplacement( d.getArtifact().getGroupId(), d.getArtifact().getArtifactId() ) : null;
     if ( null != replacementModel )
     {
-      buffer.append( " REPLACED BY " );
+      buffer.append( " TARGET OVERRIDES " );
       buffer.append( replacementModel.getTargets()
                        .stream()
                        .map( t -> t.getTarget() + " (" + t.getNature() + ")" )

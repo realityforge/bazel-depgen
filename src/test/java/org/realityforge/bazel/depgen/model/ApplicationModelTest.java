@@ -115,7 +115,7 @@ public class ApplicationModelTest
     final ApplicationModel model = ApplicationModel.load( source, false );
 
     assertTrue( model.getArtifacts().isEmpty() );
-    assertTrue( model.getSystemArtifacts().isEmpty() );
+    assertEquals( model.getSystemArtifacts().size(), 1 );
     assertEquals( model.getReplacements().size(), 1 );
   }
 

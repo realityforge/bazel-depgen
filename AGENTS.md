@@ -12,6 +12,10 @@ reasonable alternatives.
 
 When you learn something non-obvious, add it here if it would make future changes faster or of higher quality.
 
+- Replacements now act as per-nature overlays rather than whole-artifact suppression: depgen still resolves the
+  underlying Maven artifact, explicit replacement targets override only the listed natures, omitted natures fall back
+  to generated targets from the artifact, and replaced natures are opaque during nature propagation.
+
 ## Coding Style & Naming Conventions
 
 - Language level: Java 17; compilation uses `-Xlint:all,-processing,-serial` and `-Werror`.

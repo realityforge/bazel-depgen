@@ -67,9 +67,7 @@ public final class ApplicationModel
     final List<ArtifactModel> systemArtifacts = new ArrayList<>();
     if ( optionsModel.verifyConfigSha256() &&
          artifactModels.stream().noneMatch( a -> DepGenConfig.getGroupId().equals( a.getGroup() ) &&
-                                                 DepGenConfig.getArtifactId().equals( a.getId() ) ) &&
-         replacements.stream().noneMatch( r -> DepGenConfig.getGroupId().equals( r.getGroup() ) &&
-                                               DepGenConfig.getArtifactId().equals( r.getId() ) ) )
+                                                 DepGenConfig.getArtifactId().equals( a.getId() ) ) )
     {
       final ArtifactConfig config = new ArtifactConfig();
       config.setCoord( DepGenConfig.getCoord() );

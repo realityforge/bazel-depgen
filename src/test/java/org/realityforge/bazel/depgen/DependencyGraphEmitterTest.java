@@ -88,7 +88,7 @@ public class DependencyGraphEmitterTest
                   "\\- com.example:myapp:jar:1.0 [compile]\n" +
                   "   +- com.example:mylib:jar:1.0 [compile]\n" +
                   "   |  \\- com.example:rtB:jar:2.0 [runtime]\n" +
-                  "   \\- com.example:rtA:jar:33.0 [runtime] REPLACED BY //foo/rta (Java)\n" );
+                  "   \\- com.example:rtA:jar:33.0 [runtime] TARGET OVERRIDES //foo/rta (Java)\n" );
   }
 
   @Test

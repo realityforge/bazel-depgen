@@ -237,27 +237,24 @@ public class Main
       // always is if there is a local WORKSPACE
       for ( final ArtifactRecord artifact : record.getArtifacts() )
       {
-        if ( null == artifact.getReplacementModel() )
+        final Artifact a = artifact.getArtifact();
+        final File file = a.getFile();
+        assert null != file;
+        final String sha256 = artifact.getSha256();
+        assert null != sha256;
+        cacheRepositoryFile( environment.logger(), repositoryCache, a.toString(), file, sha256 );
+        final String sourceSha256 = artifact.getSourceSha256();
+        if ( null != sourceSha256 )
         {
-          final Artifact a = artifact.getArtifact();
-          final File file = a.getFile();
-          assert null != file;
-          final String sha256 = artifact.getSha256();
-          assert null != sha256;
-          cacheRepositoryFile( environment.logger(), repositoryCache, a.toString(), file, sha256 );
-          final String sourceSha256 = artifact.getSourceSha256();
-          if ( null != sourceSha256 )
-          {
-            final SubArtifact sourcesArtifact = new SubArtifact( a, "sources", "jar" );
-            final String localFilename = ArtifactUtil.artifactToLocalFilename( sourcesArtifact );
-            final File sourcesFile = file.toPath().getParent().resolve( localFilename ).toFile();
+          final SubArtifact sourcesArtifact = new SubArtifact( a, "sources", "jar" );
+          final String localFilename = ArtifactUtil.artifactToLocalFilename( sourcesArtifact );
+          final File sourcesFile = file.toPath().getParent().resolve( localFilename ).toFile();
 
-            cacheRepositoryFile( environment.logger(),
-                                 repositoryCache,
-                                 sourcesArtifact.toString(),
-                                 sourcesFile,
-                                 sourceSha256 );
-          }
+          cacheRepositoryFile( environment.logger(),
+                               repositoryCache,
+                               sourcesArtifact.toString(),
+                               sourcesFile,
+                               sourceSha256 );
         }
       }
     }
@@ -582,7 +579,7 @@ public class Main
     }
     logger.severe( "\tOptions:" );
     final String[] options =
-      CLUtil.describeOptions( OPTIONS ).toString().split( System.getProperty( "line.separator" ) );
+      CLUtil.describeOptions( OPTIONS ).toString().split( System.lineSeparator() );
     for ( final String line : options )
     {
       logger.severe( line );

@@ -1257,6 +1257,44 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void build_declaredArtifactWithReplacementOverlay()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [Java, J2cl]\n" +
+                     "  - coord: com.example:mylib:1.0\n" +
+                     "  - coord: com.example:base:1.0\n" +
+                     "replacements:\n" +
+                     "  - coord: com.example:mylib\n" +
+                     "    targets:\n" +
+                     "      - target: \"@com_example//:mylib\"\n" +
+                     "        nature: J2cl\n" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    final ArtifactRecord artifactRecord = record.getArtifact( "com.example", "mylib" );
+    assertNotNull( artifactRecord.getArtifactModel() );
+    assertNotNull( artifactRecord.getReplacementModel() );
+    assertEquals( artifactRecord.getNatures(), Arrays.asList( Nature.Java, Nature.J2cl ) );
+    assertEquals( artifactRecord.getLabel( Nature.Java ), ":com_example__mylib" );
+    assertEquals( artifactRecord.getLabel( Nature.J2cl ), "@com_example//:mylib" );
+    assertTrue( artifactRecord.shouldEmitNatureTarget( Nature.Java ) );
+    assertFalse( artifactRecord.shouldEmitNatureTarget( Nature.J2cl ) );
+    assertTrue( artifactRecord.emitsRepositoryRules() );
+    assertEquals( artifactRecord.getDeps().size(), 1 );
+    assertEquals( artifactRecord.getDeps().get( 0 ).getKey(), "com.example:base" );
+    assertEquals( record.getArtifact( "com.example", "base" ).getNatures(),
+                  Collections.singletonList( Nature.Java ) );
+  }
+
+  @Test
   public void build_exclude()
     throws Exception
   {
@@ -2545,6 +2583,58 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void writeTargetMacro_replacementOverlay()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [Java, J2cl]\n" +
+                     "  - coord: com.example:mylib:1.0\n" +
+                     "  - coord: com.example:base:1.0\n" +
+                     "replacements:\n" +
+                     "  - coord: com.example:mylib\n" +
+                     "    targets:\n" +
+                     "      - target: \"@com_example//:mylib\"\n" +
+                     "        nature: J2cl\n" );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    record.writeTargetMacro( new StarlarkOutput( outputStream ) );
+    final String output = asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() );
+    assertOutputContains( output,
+                          "    _j2cl_library(\n" +
+                          "        name = \"com_example__myapp-j2cl\",\n" +
+                          "        srcs = [\"@com_example__myapp__1_0__sources//file\"],\n" +
+                          "        deps = [\"@com_example//:mylib\"],\n" +
+                          "    )\n" );
+    assertOutputContains( output,
+                          "    _java_import(\n" +
+                          "        name = \"com_example__myapp\",\n" +
+                          "        jars = [\"@com_example__myapp__1_0//file\"],\n" +
+                          "        srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
+                          "        tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
+                          "        deps = [\":com_example__mylib\"],\n" +
+                          "    )\n" );
+    assertOutputContains( output,
+                          "    _java_import(\n" +
+                          "        name = \"com_example__mylib\",\n" +
+                          "        jars = [\"@com_example__mylib__1_0//file\"],\n" +
+                          "        srcjar = \"@com_example__mylib__1_0__sources//file\",\n" +
+                          "        tags = [\"maven_coordinates=com.example:mylib:1.0\"],\n" +
+                          "        deps = [\":com_example__base\"],\n" +
+                          "    )\n" );
+    assertOutputDoesNotContain( output, "        name = \"com_example__mylib-j2cl\",\n" );
+    assertOutputDoesNotContain( output, ":com_example__base-j2cl" );
+  }
+
+  @Test
   public void writeTargetMacro_depgen_replacement()
     throws Exception
   {
@@ -2912,6 +3002,45 @@ public class ApplicationRecordTest
                   "        sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
                   "        urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
                   "    )\n" );
+  }
+
+  @Test
+  public void writeWorkspaceMacro_replacementOverlay()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+    final URI uri = dir.toUri();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [Java, J2cl]\n" +
+                     "  - coord: com.example:mylib:1.0\n" +
+                     "  - coord: com.example:base:1.0\n" +
+                     "replacements:\n" +
+                     "  - coord: com.example:mylib\n" +
+                     "    targets:\n" +
+                     "      - target: \"@com_example//:mylib\"\n" +
+                     "        nature: J2cl\n" );
+
+    final Path jarFile = createJarFile( outputStream -> {
+      createJarEntry( outputStream, "com/example/MyLib.js", "" );
+      createJarEntry( outputStream, "com/example/MyLib.native.js", "" );
+    } );
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+    deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0", jarFile );
+    deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
+    deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    record.writeWorkspaceMacro( new StarlarkOutput( outputStream ) );
+    final String output = asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() );
+    assertOutputContains( output, "        name = \"com_example__mylib__1_0\",\n" );
+    assertOutputContains( output, "        name = \"com_example__mylib__1_0__sources\",\n" );
+    assertOutputContains( output, "        name = \"com_example__base__1_0\",\n" );
+    assertOutputDoesNotContain( output, "        name = \"com_example__mylib__1_0__js_sources\",\n" );
   }
 
   @Test
@@ -4072,7 +4201,7 @@ public class ApplicationRecordTest
                   "#    \\- com.example:myapp:jar:1.0 [compile]\n" +
                   "\n" +
                   "load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")\n" +
-                  "load(\"@rules_java//java:defs.bzl\", _java_binary = \"java_binary\", _java_import = \"java_import\", _java_test = \"java_test\")\n" +
+                  "load(\"@rules_java//java:defs.bzl\", _java_binary = \"java_binary\", _java_import = \"java_import\", _java_library = \"java_library\", _java_plugin = \"java_plugin\", _java_test = \"java_test\")\n" +
                   "load(\"@com_google_j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")\n" +
                   "\n" +
                   "# SHA256 of the configuration content that generated this file\n" +
@@ -4249,11 +4378,15 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final DepgenValidationException exception =
-      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( exception.getMessage(),
-                  "Artifact 'com.example:mylib:jar:1.0' is a replacement and has a nature of 'Java' but has not declared a replacement target for that nature." );
+    assertEquals( record.getArtifact( "com.example", "mylib" ).getNatures(),
+                  Arrays.asList( Nature.J2cl, Nature.Java ) );
+    assertEquals( record.getArtifact( "com.example", "mylib" ).getLabel( Nature.J2cl ), "@com_example//:mylib" );
+    assertEquals( record.getArtifact( "com.example", "mylib" ).getLabel( Nature.Java ), ":com_example__mylib" );
+    assertEquals( record.getArtifact( "com.example", "mylib" ).getDeps().size(), 1 );
+    assertEquals( record.getArtifact( "com.example", "base" ).getNatures(),
+                  Collections.singletonList( Nature.Java ) );
   }
 
   @Test
@@ -4277,11 +4410,16 @@ public class ApplicationRecordTest
     deployArtifactToLocalRepository( dir, "com.example:mylib:1.0", "com.example:base:1.0" );
     deployArtifactToLocalRepository( dir, "com.example:base:1.0" );
 
-    final DepgenValidationException exception =
-      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final ApplicationRecord record = loadApplicationRecord();
 
-    assertEquals( exception.getMessage(),
-                  "Artifact 'com.example:mylib:jar:1.0' declared target for nature 'J2cl' but artifact does not have specified nature." );
+    assertEquals( record.getArtifact( "com.example", "mylib" ).getNatures(),
+                  Arrays.asList( Nature.Java, Nature.J2cl ) );
+    assertEquals( record.getArtifact( "com.example", "mylib" ).getLabel( Nature.Java ),
+                  "@com_example//:othermylib" );
+    assertEquals( record.getArtifact( "com.example", "mylib" ).getLabel( Nature.J2cl ),
+                  "@com_example//:mylib" );
+    assertEquals( record.getArtifact( "com.example", "base" ).getNatures(),
+                  Collections.singletonList( Nature.Java ) );
   }
 
   @Test
@@ -4313,7 +4451,7 @@ public class ApplicationRecordTest
   }
 
   @Test
-  public void ensureDepgenArtifactReplacementWithoutJavaNatureGeneratesError()
+  public void ensureDepgenArtifactReplacementWithoutJavaNatureFallsBackToUnderlyingArtifact()
     throws Exception
   {
     final Path dir = FileUtil.createLocalTempDir();
@@ -4329,11 +4467,12 @@ public class ApplicationRecordTest
 
     deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
 
-    final DepgenValidationException exception =
-      expectThrows( DepgenValidationException.class, this::loadApplicationRecord );
+    final ApplicationRecord record = loadApplicationRecord();
+    final ArtifactRecord artifact = record.getArtifact( DepGenConfig.getGroupId(), DepGenConfig.getArtifactId() );
 
-    assertEquals( exception.getMessage(),
-                  "Artifact 'org.realityforge.bazel.depgen:bazel-depgen' declared as a replace but does not declare the Java nature which is required if verifyConfigSha256 option is set to true." );
+    assertEquals( artifact.getNatures(), Arrays.asList( Nature.Java, Nature.J2cl ) );
+    assertEquals( artifact.getLabel( Nature.J2cl ), ":depgen" );
+    assertEquals( artifact.getLabel( Nature.Java ), ":" + artifact.getName( Nature.Java ) );
   }
 
   @Test

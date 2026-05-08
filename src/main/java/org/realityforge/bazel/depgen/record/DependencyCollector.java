@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.DependencyVisitor;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -43,12 +42,6 @@ final class DependencyCollector
     {
       // This is a duplicate dependency that is NOT the winner but instead points at one.
       // So we can just avoid processing any child nodes.
-      return false;
-    }
-    else if ( hasReplacement( node.getDependency() ) )
-    {
-      // Manually supplied dependency
-      _record.replacement( node );
       return false;
     }
     else
@@ -132,17 +125,6 @@ final class DependencyCollector
                       processors,
                       jsAssets );
   }
-
-  private boolean hasReplacement( @Nonnull final Dependency dependency )
-  {
-    return _record
-      .getSource()
-      .getReplacements()
-      .stream()
-      .anyMatch( replacement -> replacement.getGroup().equals( dependency.getArtifact().getGroupId() ) &&
-                                replacement.getId().equals( dependency.getArtifact().getArtifactId() ) );
-  }
-
   @Override
   public boolean visitLeave( @Nonnull final DependencyNode node )
   {
