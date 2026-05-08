@@ -3874,6 +3874,97 @@ public class ApplicationRecordTest
   }
 
   @Test
+  public void writeBazelModuleSection_j2cl_withDependenciesAndJsAssets()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+    final URI uri = dir.toUri();
+
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  repositoryRuleGenerationStrategy: module\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [J2cl]\n" );
+
+    final Path jarFile1 = createJarFile( outputStream -> {
+      createJarEntry( outputStream, "com/biz/MyFile1.js", "" );
+      createJarEntry( outputStream, "com/biz/MyOtherFile.js", "" );
+      createJarEntry( outputStream, "com/biz/MyBlah.js", "" );
+      createJarEntry( outputStream, "com/biz/public/NotIncludedAsNestedInPublic.js", "" );
+      createJarEntry( outputStream, "com/biz/TheClass.native.js", "" );
+      createJarEntry( outputStream, "com/public/biz/NotIncludedAsNestedDeeplyInPublic.js", "" );
+    } );
+    final Path jarFile2 = createJarFile( "foo.js", "" );
+    deployTempArtifactToLocalRepository( dir, "com.example:mylib:jar:sources:1.0", jarFile1 );
+    deployTempArtifactToLocalRepository( dir, "com.example:mylib:1.0" );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0", jarFile2 );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0", "com.example:mylib:1.0" );
+
+    final ApplicationRecord record = loadApplicationRecord();
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    record.writeBazelModuleSection( new StarlarkOutput( outputStream ) );
+    assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), uri.toString() ),
+                  "# DO NOT EDIT: Content is auto-generated from //thirdparty:dependencies.yml by " +
+                  "https://github.com/realityforge/bazel-depgen version 1\n" +
+                  "\n" +
+                  "_http_file = use_repo_rule(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                  "_http_archive = use_repo_rule(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\")\n" +
+                  "\n" +
+                  "_http_file(\n" +
+                  "    name = \"com_example__myapp__1_0__sources\",\n" +
+                  "    downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
+                  "    sha256 = \"94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d\",\n" +
+                  "    urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  ")\n" +
+                  "\n" +
+                  "_http_archive(\n" +
+                  "    name = \"com_example__myapp__1_0__js_sources\",\n" +
+                  "    sha256 = \"94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d\",\n" +
+                  "    urls = [\"MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  "    build_file_content = \"\"\"\n" +
+                  "filegroup(\n" +
+                  "    name = \"srcs\",\n" +
+                  "    visibility = [\"//visibility:public\"],\n" +
+                  "    srcs = [\"foo.js\"],\n" +
+                  ")\n" +
+                  "\"\"\",\n" +
+                  ")\n" +
+                  "\n" +
+                  "_http_file(\n" +
+                  "    name = \"com_example__mylib__1_0__sources\",\n" +
+                  "    downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0-sources.jar\",\n" +
+                  "    sha256 = \"e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f\",\n" +
+                  "    urls = [\"MYURI/com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
+                  ")\n" +
+                  "\n" +
+                  "_http_archive(\n" +
+                  "    name = \"com_example__mylib__1_0__js_sources\",\n" +
+                  "    sha256 = \"e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f\",\n" +
+                  "    urls = [\"MYURI/com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" +
+                  "    build_file_content = \"\"\"\n" +
+                  "filegroup(\n" +
+                  "    name = \"srcs\",\n" +
+                  "    visibility = [\"//visibility:public\"],\n" +
+                  "    srcs = [\n" +
+                  "        \"com/biz/MyBlah.js\",\n" +
+                  "        \"com/biz/MyFile1.js\",\n" +
+                  "        \"com/biz/MyOtherFile.js\",\n" +
+                  "    ],\n" +
+                  ")\n" +
+                  "\"\"\",\n" +
+                  ")\n" +
+                  "\n" +
+                  "_http_file(\n" +
+                  "    name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "    sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "    urls = [\"MYURI/org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  ")\n" );
+  }
+
+  @Test
   public void writeBazelExtension_java_withDependenciesAndJsAssets()
     throws Exception
   {

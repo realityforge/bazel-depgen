@@ -1023,6 +1023,76 @@ public class ArtifactRecordTest
   }
 
   @Test
+  public void writeArtifactJsSourcesHttpArchiveRule_extensionStyle()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [J2cl]\n" );
+    final Path sourceJar = createJarFile( "foo.js", "" );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0", sourceJar );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+    final List<String> sourceUrls = artifactRecord.getSourceUrls();
+    assertNotNull( sourceUrls );
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    artifactRecord.writeArtifactJsSourcesHttpArchiveRule( new StarlarkOutput( outputStream ), false );
+    assertEquals( asString( outputStream ),
+                  "_http_archive(\n" +
+                  "    name = \"com_example__myapp__1_0__js_sources\",\n" +
+                  "    sha256 = \"94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d\",\n" +
+                  "    urls = [\"" + sourceUrls.get( 0 ) + "\"],\n" +
+                  "    build_file_content = \"\"\"\n" +
+                  "filegroup(\n" +
+                  "    name = \"srcs\",\n" +
+                  "    visibility = [\"//visibility:public\"],\n" +
+                  "    srcs = [\"foo.js\"],\n" +
+                  ")\n" +
+                  "\"\"\",\n" +
+                  ")\n" );
+  }
+
+  @Test
+  public void writeArtifactJsSourcesHttpArchiveRule_moduleStyle()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeConfigFile( dir,
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" +
+                     "    natures: [J2cl]\n" );
+    final Path sourceJar = createJarFile( "foo.js", "" );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:jar:sources:1.0", sourceJar );
+    deployTempArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final ArtifactRecord artifactRecord = getArtifactAt( loadApplicationRecord(), 0 );
+    final List<String> sourceUrls = artifactRecord.getSourceUrls();
+    assertNotNull( sourceUrls );
+
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    artifactRecord.writeArtifactJsSourcesHttpArchiveRule( new StarlarkOutput( outputStream ), true );
+    assertEquals( asString( outputStream ),
+                  "_http_archive(\n" +
+                  "    name = \"com_example__myapp__1_0__js_sources\",\n" +
+                  "    sha256 = \"94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d\",\n" +
+                  "    urls = [\"" + sourceUrls.get( 0 ) + "\"],\n" +
+                  "    build_file_content = \"\"\"\n" +
+                  "filegroup(\n" +
+                  "    name = \"srcs\",\n" +
+                  "    visibility = [\"//visibility:public\"],\n" +
+                  "    srcs = [\"foo.js\"],\n" +
+                  ")\n" +
+                  "\"\"\",\n" +
+                  ")\n" );
+  }
+
+  @Test
   public void writeArtifactTargets_Library()
     throws Exception
   {

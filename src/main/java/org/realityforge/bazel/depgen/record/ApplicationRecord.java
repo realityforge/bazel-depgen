@@ -654,18 +654,21 @@ public final class ApplicationRecord
             macro.newLine();
             if ( supportDependencyOmit )
             {
-              macro.writeIfCondition( "not omit_" + artifact.getSymbol(), o -> writeArtifactHttpRules( artifact, o ) );
+              macro.writeIfCondition( "not omit_" + artifact.getSymbol(),
+                                      o -> writeArtifactHttpRules( artifact, o, false ) );
             }
             else
             {
-              writeArtifactHttpRules( artifact, macro );
+              writeArtifactHttpRules( artifact, macro, false );
             }
           }
         }
       } );
   }
 
-  private void writeArtifactHttpRules( @Nonnull final ArtifactRecord artifact, @Nonnull final StarlarkOutput output )
+  private void writeArtifactHttpRules( @Nonnull final ArtifactRecord artifact,
+                                       @Nonnull final StarlarkOutput output,
+                                       final boolean useRepoRuleBindingStyle )
     throws IOException
   {
     boolean needsNewLine = false;
@@ -699,8 +702,7 @@ public final class ApplicationRecord
       {
         output.newLine();
       }
-      needsNewLine = true;
-      artifact.writeArtifactJsSourcesHttpFileRule( output );
+      artifact.writeArtifactJsSourcesHttpArchiveRule( output, useRepoRuleBindingStyle );
     }
   }
 
@@ -855,7 +857,7 @@ public final class ApplicationRecord
         {
           output.newLine();
         }
-        writeArtifactHttpRules( artifact, output );
+        writeArtifactHttpRules( artifact, output, true );
       }
     }
   }

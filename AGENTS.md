@@ -15,6 +15,9 @@ When you learn something non-obvious, add it here if it would make future change
 - Replacements now act as per-nature overlays rather than whole-artifact suppression: depgen still resolves the
   underlying Maven artifact, explicit replacement targets override only the listed natures, omitted natures fall back
   to generated targets from the artifact, and replaced natures are opaque during nature propagation.
+- Module-mode JS asset repositories already use the same `_http_archive(...)` call shape as extension-mode generation
+  when underscored repo-rule aliases are retained; the module-specific behavior difference is the surrounding
+  `use_repo_rule(...)` binding setup, not the archive call itself.
 
 ## Coding Style & Naming Conventions
 

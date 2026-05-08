@@ -1098,7 +1098,8 @@ public final class ArtifactRecord
     output.writeCall( "_http_file", arguments );
   }
 
-  void writeArtifactJsSourcesHttpFileRule( @Nonnull final StarlarkOutput output )
+  void writeArtifactJsSourcesHttpArchiveRule( @Nonnull final StarlarkOutput output,
+                                              final boolean useRepoRuleBindingStyle )
     throws IOException
   {
     final String sourceSha256 = getSourceSha256();
