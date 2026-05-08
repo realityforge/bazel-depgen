@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.24](https://github.com/realityforge/bazel-depgen/tree/v0.24) (2026-05-08) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.23...v0.24)
+
+Changes in this release:
 
 * Use load statement that works with modern j2cl. i.e. `load("@j2cl//build_defs:rules.bzl", _j2cl_library = "j2cl_library")`
 * Add explicit coverage for module-mode J2CL js-asset repository generation, including `_http_archive`
