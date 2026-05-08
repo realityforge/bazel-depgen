@@ -184,6 +184,12 @@ public abstract class AbstractTest
     FileUtil.write( "WORKSPACE", "" );
   }
 
+  final void writeModule()
+    throws IOException
+  {
+    FileUtil.write( "MODULE.bazel", "module(name = \"test\")\n" );
+  }
+
   protected final void writeConfigFile( @Nonnull final Path dir, @Nonnull final String content )
     throws Exception
   {

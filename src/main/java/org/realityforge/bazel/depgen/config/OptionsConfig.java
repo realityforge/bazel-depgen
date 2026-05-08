@@ -10,6 +10,14 @@ public final class OptionsConfig
   public static final String DEFAULT_EXTENSION_FILE = "dependencies.bzl";
   public static final String DEFAULT_WORKSPACE_MACRO_NAME = "generate_workspace_rules";
   public static final String DEFAULT_TARGET_MACRO_NAME = "generate_targets";
+  public static final RepositoryRuleGenerationStrategy DEFAULT_REPOSITORY_RULE_GENERATION_STRATEGY =
+    RepositoryRuleGenerationStrategy.ExtensionFile;
+  public static final TargetGenerationStrategy DEFAULT_TARGET_GENERATION_STRATEGY =
+    TargetGenerationStrategy.ExtensionFile;
+  public static final String DEFAULT_REPOSITORY_RULE_START_TOKEN = "# --- depgen-generated repository rules start ---";
+  public static final String DEFAULT_REPOSITORY_RULE_END_TOKEN = "# --- depgen-generated repository rules end ---";
+  public static final String DEFAULT_TARGET_START_TOKEN = "# --- depgen-generated targets start ---";
+  public static final String DEFAULT_TARGET_END_TOKEN = "# --- depgen-generated targets end ---";
   public static final String DEFAULT_NAME_PREFIX = "";
   public static final NameStrategy DEFAULT_NAME_STRATEGY = NameStrategy.GroupIdAndArtifactId;
   public static final NameStrategy DEFAULT_REPOSITORY_NAME_STRATEGY = NameStrategy.GroupIdAndArtifactIdAndVersion;
@@ -30,6 +38,18 @@ public final class OptionsConfig
   private String workspaceMacroName;
   @Nullable
   private String targetMacroName;
+  @Nullable
+  private String repositoryRuleGenerationStrategy;
+  @Nullable
+  private String targetGenerationStrategy;
+  @Nullable
+  private String repositoryRuleStartToken;
+  @Nullable
+  private String repositoryRuleEndToken;
+  @Nullable
+  private String targetStartToken;
+  @Nullable
+  private String targetEndToken;
   @Nullable
   private String namePrefix;
   @Nullable
@@ -97,6 +117,72 @@ public final class OptionsConfig
   public void setTargetMacroName( @Nonnull final String targetMacroName )
   {
     this.targetMacroName = Objects.requireNonNull( targetMacroName );
+  }
+
+  @Nullable
+  public String getRepositoryRuleGenerationStrategy()
+  {
+    return repositoryRuleGenerationStrategy;
+  }
+
+  public void setRepositoryRuleGenerationStrategy( @Nonnull final String repositoryRuleGenerationStrategy )
+  {
+    this.repositoryRuleGenerationStrategy = Objects.requireNonNull( repositoryRuleGenerationStrategy );
+  }
+
+  @Nullable
+  public String getTargetGenerationStrategy()
+  {
+    return targetGenerationStrategy;
+  }
+
+  public void setTargetGenerationStrategy( @Nonnull final String targetGenerationStrategy )
+  {
+    this.targetGenerationStrategy = Objects.requireNonNull( targetGenerationStrategy );
+  }
+
+  @Nullable
+  public String getRepositoryRuleStartToken()
+  {
+    return repositoryRuleStartToken;
+  }
+
+  public void setRepositoryRuleStartToken( @Nonnull final String repositoryRuleStartToken )
+  {
+    this.repositoryRuleStartToken = Objects.requireNonNull( repositoryRuleStartToken );
+  }
+
+  @Nullable
+  public String getRepositoryRuleEndToken()
+  {
+    return repositoryRuleEndToken;
+  }
+
+  public void setRepositoryRuleEndToken( @Nonnull final String repositoryRuleEndToken )
+  {
+    this.repositoryRuleEndToken = Objects.requireNonNull( repositoryRuleEndToken );
+  }
+
+  @Nullable
+  public String getTargetStartToken()
+  {
+    return targetStartToken;
+  }
+
+  public void setTargetStartToken( @Nonnull final String targetStartToken )
+  {
+    this.targetStartToken = Objects.requireNonNull( targetStartToken );
+  }
+
+  @Nullable
+  public String getTargetEndToken()
+  {
+    return targetEndToken;
+  }
+
+  public void setTargetEndToken( @Nonnull final String targetEndToken )
+  {
+    this.targetEndToken = Objects.requireNonNull( targetEndToken );
   }
 
   @Nullable

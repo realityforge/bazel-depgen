@@ -1,9 +1,13 @@
 package org.realityforge.bazel.depgen;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
+import org.realityforge.bazel.depgen.util.GeneratedSectionWriter;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 
 final class GenerateCommand
@@ -14,7 +18,7 @@ final class GenerateCommand
 
   GenerateCommand()
   {
-    super( COMMAND, "Generate the bazel extension from the dependency configuration." );
+    super( COMMAND, "Generate the Bazel outputs from the dependency configuration." );
   }
 
   boolean mayUseArtifactCache()
@@ -34,30 +38,41 @@ final class GenerateCommand
     final ApplicationRecord record = context.loadRecord();
     final OptionsModel options = record.getSource().getOptions();
     final Path extensionFile = options.getExtensionFile();
-    final Path dir = extensionFile.getParent();
-    final Path extensionBuildfile = dir.resolve( "BUILD.bazel" );
+    final Path extensionDir = extensionFile.getParent();
+    final Path extensionBuildfile = extensionDir.resolve( "BUILD.bazel" );
     final Path configBuildfile = record.getSource().getConfigLocation().getParent().resolve( "BUILD.bazel" );
+    final Path moduleFile = options.getModuleFile();
+    final boolean requiresExtensionFile = options.requiresExtensionFile();
+    final boolean generatesTargetsInExtension = options.isTargetGenerationInExtensionFile();
 
-    if ( !dir.toFile().exists() && !dir.toFile().mkdirs() )
+    if ( requiresExtensionFile && !extensionDir.toFile().exists() && !extensionDir.toFile().mkdirs() )
     {
-      throw new DepgenException( "Failed to create directory " + dir.toFile() );
+      throw new DepgenException( "Failed to create directory " + extensionDir.toFile() );
     }
 
-    // The tool will emit the `BUILD.bazel` file for the package containing the extension
-    // if none exist. If a `BUILD.bazel` exists then the tool assumes the user has supplied
-    // it or it is an artifact from a previous run.
-    if ( !extensionBuildfile.toFile().exists() )
+    if ( requiresExtensionFile &&
+         generatesTargetsInExtension &&
+         extensionBuildfile.equals( configBuildfile ) &&
+         !extensionBuildfile.toFile().exists() )
     {
       try ( final StarlarkOutput output = new StarlarkOutput( extensionBuildfile ) )
       {
         record.writeDefaultExtensionBuild( output );
       }
     }
+    else if ( requiresExtensionFile &&
+              !extensionBuildfile.equals( configBuildfile ) &&
+              !extensionBuildfile.toFile().exists() )
+    {
+      try ( final StarlarkOutput output = new StarlarkOutput( extensionBuildfile ) )
+      {
+        record.writeDefaultExtensionBuild( output, generatesTargetsInExtension );
+      }
+    }
 
-    // The tool will emit the `BUILD.bazel` file for the package containing the config file
-    // if none exist. If a `BUILD.bazel` exists then the tool assumes the user has supplied
-    // it or it is an artifact from a previous run.
-    if ( !configBuildfile.toFile().exists() )
+    if ( generatesTargetsInExtension &&
+         !extensionBuildfile.equals( configBuildfile ) &&
+         !configBuildfile.toFile().exists() )
     {
       try ( final StarlarkOutput output = new StarlarkOutput( configBuildfile ) )
       {
@@ -65,10 +80,54 @@ final class GenerateCommand
       }
     }
 
-    try ( final StarlarkOutput output = new StarlarkOutput( extensionFile ) )
+    if ( requiresExtensionFile )
     {
-      record.writeBazelExtension( output );
+      try ( final StarlarkOutput output = new StarlarkOutput( extensionFile ) )
+      {
+        record.writeBazelExtension( output );
+      }
+    }
+    else if ( extensionFile.toFile().exists() && context.environment().logger().isLoggable( Level.WARNING ) )
+    {
+      context.environment().logger().log( Level.WARNING,
+                                          "Generated extension file '" + extensionFile +
+                                          "' is no longer used and can be removed manually." );
+    }
+
+    if ( !options.isRepositoryRuleGenerationInExtensionFile() )
+    {
+      GeneratedSectionWriter.replaceSection( moduleFile,
+                                             options.getRepositoryRuleStartToken(),
+                                             options.getRepositoryRuleEndToken(),
+                                             emit( record::writeBazelModuleSection ) );
+    }
+
+    if ( !generatesTargetsInExtension )
+    {
+      GeneratedSectionWriter.replaceSection( configBuildfile,
+                                             options.getTargetStartToken(),
+                                             options.getTargetEndToken(),
+                                             emit( record::writeBazelBuildSection ) );
     }
     return ExitCodes.SUCCESS_EXIT_CODE;
+  }
+
+  @Nonnull
+  private String emit( @Nonnull final Emitter emitter )
+    throws Exception
+  {
+    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    try ( final StarlarkOutput output = new StarlarkOutput( baos ) )
+    {
+      emitter.emit( output );
+    }
+    return baos.toString( StandardCharsets.UTF_8 );
+  }
+
+  @FunctionalInterface
+  private interface Emitter
+  {
+    void emit( @Nonnull StarlarkOutput output )
+      throws Exception;
   }
 }

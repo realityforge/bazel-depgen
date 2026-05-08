@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+* Add `module` and `build` generation strategies that let depgen inject repository rules into `MODULE.bazel`
+  and targets into `BUILD.bazel` marker blocks without requiring `dependencies.bzl`.
+* Rename the generated `regenerate_depgen_extension` helper target to
+  `update_depgen_generated_outputs`.
+
 ### [v0.20](https://github.com/realityforge/bazel-depgen/tree/v0.20) (2026-05-07) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.19...v0.20)
 
 Changes in this release:

@@ -127,7 +127,19 @@ public final class ApplicationModel
     _replacements = Objects.requireNonNull( replacements );
     _excludes = Objects.requireNonNull( excludes );
     _repositories = Collections.unmodifiableList( Objects.requireNonNull( repositories ) );
+    ensureOptionCombinationIsValid();
     ensureArtifactRepositoriesAlign();
+  }
+
+  private void ensureOptionCombinationIsValid()
+  {
+    if ( getOptions().supportDependencyOmit() &&
+         ( !getOptions().isRepositoryRuleGenerationInExtensionFile() ||
+           !getOptions().isTargetGenerationInExtensionFile() ) )
+    {
+      throw new DepgenValidationException( "The options.supportDependencyOmit property is only supported when both " +
+                                           "repository rules and targets are generated into the extension file." );
+    }
   }
 
   private void ensureArtifactRepositoriesAlign()

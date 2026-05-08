@@ -17,6 +17,30 @@ options:
   # Defaults to 'generate_targets'
   #targetMacroName: generate_targets
 
+  # Strategy indicating whether repository rules should be generated in the extension file or injected
+  # into the MODULE.bazel file at the workspace root. Defaults to 'extensionFile'.
+  # Valid values are 'extensionFile' and 'module'.
+  #repositoryRuleGenerationStrategy: extensionFile
+
+  # Strategy indicating whether targets should be generated in the extension file or injected into the
+  # BUILD.bazel file that lives beside this configuration. Defaults to 'extensionFile'.
+  # Valid values are 'extensionFile' and 'build'.
+  #targetGenerationStrategy: extensionFile
+
+  # Token indicating the start of the generated repository-rule section when using
+  # repositoryRuleGenerationStrategy: module.
+  #repositoryRuleStartToken: "# --- depgen-generated repository rules start ---"
+
+  # Token indicating the end of the generated repository-rule section when using
+  # repositoryRuleGenerationStrategy: module.
+  #repositoryRuleEndToken: "# --- depgen-generated repository rules end ---"
+
+  # Token indicating the start of the generated target section when using targetGenerationStrategy: build.
+  #targetStartToken: "# --- depgen-generated targets start ---"
+
+  # Token indicating the end of the generated target section when using targetGenerationStrategy: build.
+  #targetEndToken: "# --- depgen-generated targets end ---"
+
   # The prefix that is added to any rule, target or macro defined. If the workspaceMacroName
   # or the targetMacroName configuration is explicitly specified then this setting will no
   # prefix those names but all other names will be prefixed. Defaults to ''.

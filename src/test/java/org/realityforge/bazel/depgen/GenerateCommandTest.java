@@ -120,7 +120,7 @@ public class GenerateCommandTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -256,7 +256,7 @@ public class GenerateCommandTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -374,5 +374,149 @@ public class GenerateCommandTest
       Files.setPosixFilePermissions( FileUtil.getCurrentDirectory(), perms );
     }
     assertEquals( handler.toString(), "" );
+  }
+
+  @Test
+  public void generate_repositoryRulesInModule_targetsInExtension()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeModule();
+    FileUtil.write( "MODULE.bazel",
+                    "module(name = \"test\")\n" +
+                    "\n" +
+                    "# --- depgen-generated repository rules start ---\n" +
+                    "\n" +
+                    "# --- depgen-generated repository rules end ---\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  repositoryRuleGenerationStrategy: module\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final GenerateCommand command = new GenerateCommand();
+    final int exitCode = command.run( new CommandContextImpl( newEnvironment() ) );
+    assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
+
+    assertEquals( loadAsString( FileUtil.getCurrentDirectory().resolve( "MODULE.bazel" ) ),
+                  "module(name = \"test\")\n" +
+                  "\n" +
+                  "# --- depgen-generated repository rules start ---\n" +
+                  "\n" +
+                  "# DO NOT EDIT: Content is auto-generated from //thirdparty:dependencies.yml by https://github.com/realityforge/bazel-depgen version 1\n" +
+                  "\n" +
+                  "_http_file = use_repo_rule(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n" +
+                  "\n" +
+                  "_http_file(\n" +
+                  "    name = \"com_example__myapp__1_0\",\n" +
+                  "    downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0.jar\",\n" +
+                  "    sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "    urls = [\"" + dir.toUri() + "com/example/myapp/1.0/myapp-1.0.jar\"],\n" +
+                  ")\n" +
+                  "\n" +
+                  "_http_file(\n" +
+                  "    name = \"com_example__myapp__1_0__sources\",\n" +
+                  "    downloaded_file_path = \"com/example/myapp/1.0/myapp-1.0-sources.jar\",\n" +
+                  "    sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "    urls = [\"" + dir.toUri() + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" +
+                  ")\n" +
+                  "\n" +
+                  "_http_file(\n" +
+                  "    name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n" +
+                  "    downloaded_file_path = \"org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\",\n" +
+                  "    sha256 = \"e424b659cf9c9c4adf4c19a1cacdb13c0cbd78a79070817f433dbc2dade3c6d4\",\n" +
+                  "    urls = [\"" + dir.toUri() + "org/realityforge/bazel/depgen/bazel-depgen/1/bazel-depgen-1-all.jar\"],\n" +
+                  ")\n" +
+                  "\n" +
+                  "# --- depgen-generated repository rules end ---\n" );
+    final String extension =
+      loadAsString( FileUtil.getCurrentDirectory().resolve( "thirdparty/dependencies.bzl" ) );
+    assertFalse( extension.contains( "def generate_workspace_rules():" ) );
+    assertTrue( extension.contains( "def generate_targets():" ) );
+  }
+
+  @Test
+  public void generate_repositoryRulesInExtension_targetsInBuild()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    writeWorkspace();
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  targetGenerationStrategy: build\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+    final Path buildFile = FileUtil.getCurrentDirectory().resolve( "thirdparty/BUILD.bazel" );
+    FileUtil.write( buildFile,
+                    "package(default_visibility = [\"//visibility:public\"])\n" +
+                    "\n" +
+                    "# --- depgen-generated targets start ---\n" +
+                    "\n" +
+                    "# --- depgen-generated targets end ---\n" );
+
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final GenerateCommand command = new GenerateCommand();
+    final int exitCode = command.run( new CommandContextImpl( newEnvironment() ) );
+    assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
+
+    final String extension = loadAsString( FileUtil.getCurrentDirectory().resolve( "thirdparty/dependencies.bzl" ) );
+    assertTrue( extension.contains( "def generate_workspace_rules():" ) );
+    assertFalse( extension.contains( "def generate_targets():" ) );
+    assertFalse( extension.contains( "# Dependency Graph Generated from the input data" ) );
+
+    final String build = loadAsString( buildFile );
+    assertTrue( build.contains( "# --- depgen-generated targets start ---" ) );
+    assertTrue( build.contains( "_CONFIG_SHA256 = \"" ) );
+    assertTrue( build.contains( "exports_files([\"dependencies.yml\"])" ) );
+    assertTrue( build.contains( "name = \"update_depgen_generated_outputs\"" ) );
+    assertTrue( build.contains( "# Dependency Graph Generated from the input data" ) );
+    assertTrue( build.contains( "# --- depgen-generated targets end ---" ) );
+  }
+
+  @Test
+  public void generate_repositoryRulesInModule_targetsInBuild_noExtensionGenerated_warnsIfStaleExtensionPresent()
+    throws Exception
+  {
+    final Path dir = FileUtil.createLocalTempDir();
+
+    FileUtil.write( "MODULE.bazel",
+                    "module(name = \"test\")\n" +
+                    "\n" +
+                    "# --- depgen-generated repository rules start ---\n" +
+                    "\n" +
+                    "# --- depgen-generated repository rules end ---\n" );
+    final Path buildFile = FileUtil.getCurrentDirectory().resolve( "thirdparty/BUILD.bazel" );
+    FileUtil.write( buildFile,
+                    "package(default_visibility = [\"//visibility:public\"])\n" +
+                    "\n" +
+                    "# --- depgen-generated targets start ---\n" +
+                    "\n" +
+                    "# --- depgen-generated targets end ---\n" );
+    writeConfigFile( dir,
+                     "options:\n" +
+                     "  repositoryRuleGenerationStrategy: module\n" +
+                     "  targetGenerationStrategy: build\n" +
+                     "artifacts:\n" +
+                     "  - coord: com.example:myapp:1.0\n" );
+    final Path extensionFile = FileUtil.getCurrentDirectory().resolve( "thirdparty/dependencies.bzl" );
+    FileUtil.write( extensionFile, "stale extension" );
+
+    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+
+    final TestHandler handler = new TestHandler();
+    final GenerateCommand command = new GenerateCommand();
+    final int exitCode = command.run( new CommandContextImpl( newEnvironment( handler ) ) );
+    assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
+    assertOutputContains( handler.toString(),
+                          "Generated extension file '" + extensionFile +
+                          "' is no longer used and can be removed manually." );
+    assertEquals( loadAsString( extensionFile ), "stale extension" );
+    assertTrue( loadAsString( FileUtil.getCurrentDirectory().resolve( "MODULE.bazel" ) ).contains( "_http_file(" ) );
+    assertTrue( loadAsString( buildFile ).contains( "update_depgen_generated_outputs" ) );
   }
 }

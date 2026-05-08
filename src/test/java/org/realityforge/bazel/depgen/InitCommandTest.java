@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen;
 
+import gir.io.FileUtil;
 import gir.io.IoUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -187,6 +188,65 @@ public class InitCommandTest
     assertOutputContains( output, "Created configuration file " + environment.getConfigFile() );
 
     assertAllFilesExist( environment );
+  }
+
+  @Test
+  public void init_moduleMode_noGenerate()
+    throws Exception
+  {
+    final TestHandler handler = new TestHandler();
+    final Command command = new InitCommand();
+    final Environment environment = newEnvironment( handler );
+
+    FileUtil.write( environment.currentDirectory().resolve( "MODULE.bazel" ), "module(name = \"test\")\n" );
+    FileUtil.write( environment.getConfigFile().getParent().resolve( "BUILD.bazel" ),
+                    "package(default_visibility = [\"//visibility:public\"])\n" );
+
+    assertTrue( command.processOptions( environment, "--no-generate" ) );
+    final int exitCode = command.run( new CommandContextImpl( environment ) );
+    assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
+
+    assertOutputContains( handler.toString(), "Created configuration file " + environment.getConfigFile() );
+    assertOutputDoesNotContain( handler.toString(), "Created WORKSPACE file " );
+    assertFalse( Files.exists( environment.currentDirectory().resolve( "WORKSPACE" ) ) );
+    assertFalse( Files.exists( getExtensionFile( environment ) ) );
+
+    final String config = loadAsString( environment.getConfigFile() );
+    assertOutputContains( config, "repositoryRuleGenerationStrategy: module" );
+    assertOutputContains( config, "targetGenerationStrategy: build" );
+
+    assertEquals( loadAsString( environment.currentDirectory().resolve( "MODULE.bazel" ) ),
+                  "module(name = \"test\")\n" +
+                  "\n" +
+                  "# --- depgen-generated repository rules start ---\n" +
+                  "\n" +
+                  "# --- depgen-generated repository rules end ---\n" );
+    assertEquals( loadAsString( environment.getConfigFile().getParent().resolve( "BUILD.bazel" ) ),
+                  "package(default_visibility = [\"//visibility:public\"])\n" +
+                  "\n" +
+                  "# --- depgen-generated targets start ---\n" +
+                  "\n" +
+                  "# --- depgen-generated targets end ---\n" );
+  }
+
+  @Test
+  public void init_moduleMode_missingBuildFile()
+    throws Exception
+  {
+    final TestHandler handler = new TestHandler();
+    final Command command = new InitCommand();
+    final Environment environment = newEnvironment( handler );
+
+    FileUtil.write( environment.currentDirectory().resolve( "MODULE.bazel" ), "module(name = \"test\")\n" );
+
+    assertTrue( command.processOptions( environment, "--no-generate" ) );
+    final int exitCode = command.run( new CommandContextImpl( environment ) );
+    assertEquals( exitCode, ExitCodes.ERROR_INIT_WRITE_FAILED_CODE );
+    assertOutputContains( handler.toString(),
+                          "Expected generated output destination file to exist. File: " +
+                          environment.getConfigFile().getParent().resolve( "BUILD.bazel" ) );
+    assertFalse( Files.exists( environment.currentDirectory().resolve( "WORKSPACE" ) ) );
+    assertFalse( Files.exists( getExtensionFile( environment ) ) );
   }
 
   @Test

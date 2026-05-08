@@ -3,10 +3,12 @@ package org.realityforge.bazel.depgen.model;
 import java.nio.file.Path;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import org.realityforge.bazel.depgen.config.RepositoryRuleGenerationStrategy;
 import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.GlobalJavaConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
+import org.realityforge.bazel.depgen.config.TargetGenerationStrategy;
 import org.realityforge.bazel.depgen.util.BazelUtil;
 
 public final class OptionsModel
@@ -29,9 +31,33 @@ public final class OptionsModel
   static OptionsModel parse( @Nonnull final Path configDirectory, @Nonnull final OptionsConfig source )
   {
     validateNamePrefix( source );
+    validateRepositoryRuleGenerationStrategy( source );
+    validateTargetGenerationStrategy( source );
     final Path workspaceDirectory = deriveWorkspaceDirectory( configDirectory, source );
     final Path extensionFile = deriveExtensionFile( configDirectory, source );
     return new OptionsModel( source, workspaceDirectory, extensionFile );
+  }
+
+  private static void validateRepositoryRuleGenerationStrategy( @Nonnull final OptionsConfig source )
+  {
+    final String value = source.getRepositoryRuleGenerationStrategy();
+    if ( null != value && null == RepositoryRuleGenerationStrategy.findById( value ) )
+    {
+      throw new InvalidModelException(
+        "The options.repositoryRuleGenerationStrategy property must be one of: extensionFile, module.",
+        source );
+    }
+  }
+
+  private static void validateTargetGenerationStrategy( @Nonnull final OptionsConfig source )
+  {
+    final String value = source.getTargetGenerationStrategy();
+    if ( null != value && null == TargetGenerationStrategy.findById( value ) )
+    {
+      throw new InvalidModelException(
+        "The options.targetGenerationStrategy property must be one of: extensionFile, build.",
+        source );
+    }
   }
 
   private static void validateNamePrefix( @Nonnull final OptionsConfig source )
@@ -89,6 +115,12 @@ public final class OptionsModel
   }
 
   @Nonnull
+  public Path getModuleFile()
+  {
+    return getWorkspaceDirectory().resolve( "MODULE.bazel" );
+  }
+
+  @Nonnull
   public String getWorkspaceMacroName()
   {
     final String workspaceMacroName = _source.getWorkspaceMacroName();
@@ -102,6 +134,67 @@ public final class OptionsModel
   {
     final String targetMacroName = _source.getTargetMacroName();
     return null == targetMacroName ? getNamePrefix() + OptionsConfig.DEFAULT_TARGET_MACRO_NAME : targetMacroName;
+  }
+
+  @Nonnull
+  public RepositoryRuleGenerationStrategy getRepositoryRuleGenerationStrategy()
+  {
+    final String value = _source.getRepositoryRuleGenerationStrategy();
+    return null == value ?
+           OptionsConfig.DEFAULT_REPOSITORY_RULE_GENERATION_STRATEGY :
+           Objects.requireNonNull( RepositoryRuleGenerationStrategy.findById( value ) );
+  }
+
+  @Nonnull
+  public TargetGenerationStrategy getTargetGenerationStrategy()
+  {
+    final String value = _source.getTargetGenerationStrategy();
+    return null == value ?
+           OptionsConfig.DEFAULT_TARGET_GENERATION_STRATEGY :
+           Objects.requireNonNull( TargetGenerationStrategy.findById( value ) );
+  }
+
+  public boolean isRepositoryRuleGenerationInExtensionFile()
+  {
+    return RepositoryRuleGenerationStrategy.ExtensionFile == getRepositoryRuleGenerationStrategy();
+  }
+
+  public boolean isTargetGenerationInExtensionFile()
+  {
+    return TargetGenerationStrategy.ExtensionFile == getTargetGenerationStrategy();
+  }
+
+  public boolean requiresExtensionFile()
+  {
+    return isRepositoryRuleGenerationInExtensionFile() || isTargetGenerationInExtensionFile();
+  }
+
+  @Nonnull
+  public String getRepositoryRuleStartToken()
+  {
+    final String value = _source.getRepositoryRuleStartToken();
+    return null == value ? OptionsConfig.DEFAULT_REPOSITORY_RULE_START_TOKEN : value;
+  }
+
+  @Nonnull
+  public String getRepositoryRuleEndToken()
+  {
+    final String value = _source.getRepositoryRuleEndToken();
+    return null == value ? OptionsConfig.DEFAULT_REPOSITORY_RULE_END_TOKEN : value;
+  }
+
+  @Nonnull
+  public String getTargetStartToken()
+  {
+    final String value = _source.getTargetStartToken();
+    return null == value ? OptionsConfig.DEFAULT_TARGET_START_TOKEN : value;
+  }
+
+  @Nonnull
+  public String getTargetEndToken()
+  {
+    final String value = _source.getTargetEndToken();
+    return null == value ? OptionsConfig.DEFAULT_TARGET_END_TOKEN : value;
   }
 
   @Nonnull

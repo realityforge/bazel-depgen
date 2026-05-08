@@ -91,16 +91,15 @@ final class HashCommand
         final OptionsModel options = model.getOptions();
         if ( options.verifyConfigSha256() )
         {
-          final Path pathToExtensionDir =
-            options.getWorkspaceDirectory().relativize( options.getExtensionFile().getParent() );
-          final Path extensionFile = pathToExtensionDir.resolve( options.getExtensionFile().getFileName() );
-          final Path configLocation = pathToExtensionDir.resolve( model.getConfigLocation().getFileName() );
+          final Path configPackage =
+            options.getWorkspaceDirectory().relativize( model.getConfigLocation().getParent() );
+          final Path configLocation = configPackage.resolve( model.getConfigLocation().getFileName() );
           logger.log( Level.WARNING,
-                      "Depgen generated extension file '" + extensionFile + "' is out of date with " +
-                      "the configuration file '" + configLocation + "." );
+                      "Depgen generated outputs for configuration file '" + configLocation + "' are out of date." );
           logger.log( Level.WARNING,
-                      "Please run command 'bazel run //" + pathToExtensionDir + ":regenerate_depgen_extension' " +
-                      "to update the extension." );
+                      "Please run command 'bazel run //" + configPackage + ":" +
+                      model.getOptions().getNamePrefix() +
+                      "update_depgen_generated_outputs' to update the generated outputs." );
         }
       }
       return ExitCodes.ERROR_BAD_SHA256_CONFIG_CODE;

@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
+import org.realityforge.bazel.depgen.util.GeneratedSectionWriter;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
@@ -37,7 +38,7 @@ final class InitCommand
 
   InitCommand()
   {
-    super( COMMAND, "Initialize an empty dependency configuration and workspace infrastructure.", OPTIONS );
+    super( COMMAND, "Initialize an empty dependency configuration and Bazel scaffolding.", OPTIONS );
   }
 
   @Override
@@ -84,6 +85,7 @@ final class InitCommand
     final Path configFile = environment.getConfigFile();
     final Logger logger = environment.logger();
     final Path workspaceDir = environment.currentDirectory();
+    final boolean moduleMode = Files.exists( workspaceDir.resolve( "MODULE.bazel" ) );
     if ( Files.exists( configFile ) )
     {
       if ( logger.isLoggable( Level.WARNING ) )
@@ -98,9 +100,16 @@ final class InitCommand
       {
         return ExitCodes.ERROR_INIT_WRITE_FAILED_CODE;
       }
-      else if ( !createConfigFile( logger, configFile, workspaceDir ) )
+      else if ( !createConfigFile( logger, configFile, workspaceDir, moduleMode ) )
       {
         return ExitCodes.ERROR_INIT_WRITE_FAILED_CODE;
+      }
+      else if ( moduleMode )
+      {
+        if ( !prepareModuleModeFiles( logger, workspaceDir, configFile ) )
+        {
+          return ExitCodes.ERROR_INIT_WRITE_FAILED_CODE;
+        }
       }
       else if ( _createWorkspace )
       {
@@ -155,7 +164,8 @@ final class InitCommand
 
   private boolean createConfigFile( @Nonnull final Logger logger,
                                     @Nonnull final Path configFile,
-                                    @Nonnull final Path workspaceDir )
+                                    @Nonnull final Path workspaceDir,
+                                    final boolean moduleMode )
   {
     try
     {
@@ -176,7 +186,14 @@ final class InitCommand
         new String( data, StandardCharsets.UTF_8 )
           .replace( "workspaceDirectory: ..",
                     "workspaceDirectory: " + configFile.getParent().relativize( workspaceDir ) );
-      Files.write( configFile, outputData.getBytes( StandardCharsets.UTF_8 ) );
+      final String finalOutputData =
+        moduleMode ?
+        outputData
+          .replace( "  #repositoryRuleGenerationStrategy: extensionFile",
+                    "  repositoryRuleGenerationStrategy: module" )
+          .replace( "  #targetGenerationStrategy: extensionFile", "  targetGenerationStrategy: build" ) :
+        outputData;
+      Files.write( configFile, finalOutputData.getBytes( StandardCharsets.UTF_8 ) );
     }
     catch ( final IOException e )
     {
@@ -192,6 +209,43 @@ final class InitCommand
       logger.log( Level.FINE, "Created configuration file " + configFile );
     }
     return true;
+  }
+
+  private boolean prepareModuleModeFiles( @Nonnull final Logger logger,
+                                          @Nonnull final Path workspaceDir,
+                                          @Nonnull final Path configFile )
+  {
+    try
+    {
+      final Path moduleFile = workspaceDir.resolve( "MODULE.bazel" );
+      final Path buildFile = configFile.getParent().resolve( "BUILD.bazel" );
+      final boolean moduleUpdated =
+        GeneratedSectionWriter.ensureSectionExists( moduleFile,
+                                                   OptionsConfig.DEFAULT_REPOSITORY_RULE_START_TOKEN,
+                                                   OptionsConfig.DEFAULT_REPOSITORY_RULE_END_TOKEN );
+      if ( moduleUpdated && logger.isLoggable( Level.FINE ) )
+      {
+        logger.log( Level.FINE, "Updated generated section markers in " + moduleFile );
+      }
+      final boolean buildUpdated =
+        GeneratedSectionWriter.ensureSectionExists( buildFile,
+                                                   OptionsConfig.DEFAULT_TARGET_START_TOKEN,
+                                                   OptionsConfig.DEFAULT_TARGET_END_TOKEN );
+      if ( buildUpdated && logger.isLoggable( Level.FINE ) )
+      {
+        logger.log( Level.FINE, "Updated generated section markers in " + buildFile );
+      }
+      return true;
+    }
+    catch ( final IOException | DepgenException e )
+    {
+      if ( logger.isLoggable( Level.WARNING ) )
+      {
+        logger.log( Level.WARNING, "Error: Failed to prepare module-mode scaffolding." );
+        logger.log( Level.WARNING, e.getMessage() );
+      }
+      return false;
+    }
   }
 
   private boolean createWorkspaceFile( @Nonnull final Logger logger,

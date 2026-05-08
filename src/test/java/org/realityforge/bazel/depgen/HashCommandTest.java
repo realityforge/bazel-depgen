@@ -84,8 +84,8 @@ public class HashCommandTest
     assertEquals( exitCode, ExitCodes.ERROR_BAD_SHA256_CONFIG_CODE );
     assertEquals( handler.toString(),
                   "Content SHA256: 0A8DBED4B09238126BA5E065EB4E392A1B631FA1A20FCA9AE1DF5AA364F59C96 (Expected XXXX)\n" +
-                  "Depgen generated extension file 'thirdparty/dependencies.bzl' is out of date with the configuration file 'thirdparty/dependencies.yml.\n" +
-                  "Please run command 'bazel run //thirdparty:regenerate_depgen_extension' to update the extension." );
+                  "Depgen generated outputs for configuration file 'thirdparty/dependencies.yml' are out of date.\n" +
+                  "Please run command 'bazel run //thirdparty:update_depgen_generated_outputs' to update the generated outputs." );
   }
 
   @Test

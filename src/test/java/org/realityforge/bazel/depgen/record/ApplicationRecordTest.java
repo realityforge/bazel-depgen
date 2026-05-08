@@ -2084,7 +2084,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -2191,7 +2191,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -2271,7 +2271,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -2348,7 +2348,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -2422,7 +2422,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -2509,7 +2509,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -2584,7 +2584,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\"@org_realityforge_bazel//:depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -2970,7 +2970,7 @@ public class ApplicationRecordTest
     record.writeRegenerateExtensionTarget( new StarlarkOutput( outputStream ) );
     assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "_java_binary(\n" +
-                  "    name = \"regenerate_depgen_extension\",\n" +
+                  "    name = \"update_depgen_generated_outputs\",\n" +
                   "    runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "    args = [\n" +
@@ -3142,7 +3142,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -3401,7 +3401,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -3529,7 +3529,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -3699,7 +3699,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -3858,7 +3858,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -3987,7 +3987,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
@@ -4144,7 +4144,7 @@ public class ApplicationRecordTest
                   "    )\n" +
                   "\n" +
                   "    _java_binary(\n" +
-                  "        name = \"regenerate_depgen_extension\",\n" +
+                  "        name = \"update_depgen_generated_outputs\",\n" +
                   "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +

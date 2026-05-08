@@ -133,6 +133,22 @@ public class ApplicationModelTest
   }
 
   @Test
+  public void supportDependencyOmitRequiresExtensionFileStrategies()
+    throws Exception
+  {
+    writeConfigFile( "options:\n" +
+                     "  supportDependencyOmit: true\n" +
+                     "  targetGenerationStrategy: build\n" );
+    final Path configFile = getDefaultConfigFile();
+    final ApplicationConfig source = ApplicationConfig.load( configFile );
+    final DepgenValidationException exception =
+      expectThrows( DepgenValidationException.class, () -> ApplicationModel.load( source, false ) );
+    assertEquals( exception.getMessage(),
+                  "The options.supportDependencyOmit property is only supported when both repository rules and " +
+                  "targets are generated into the extension file." );
+  }
+
+  @Test
   public void isExcluded()
     throws Exception
   {

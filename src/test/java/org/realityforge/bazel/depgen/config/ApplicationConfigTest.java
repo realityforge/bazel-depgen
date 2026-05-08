@@ -289,6 +289,12 @@ public class ApplicationConfigTest
                      "  emitDependencyGraph: false\n" +
                      "  workspaceMacroName: workspace_rules\n" +
                      "  targetMacroName: gen_targets\n" +
+                     "  repositoryRuleGenerationStrategy: module\n" +
+                     "  targetGenerationStrategy: build\n" +
+                     "  repositoryRuleStartToken: '# rs'\n" +
+                     "  repositoryRuleEndToken: '# re'\n" +
+                     "  targetStartToken: '# ts'\n" +
+                     "  targetEndToken: '# te'\n" +
                      "  namePrefix: magic_\n" +
                      "  nameStrategy: ArtifactId\n" +
                      "  repositoryNameStrategy: ArtifactId\n" +
@@ -306,6 +312,12 @@ public class ApplicationConfigTest
     assertEquals( options.getExtensionFile(), "workspaceDir/vendor/workspace.bzl" );
     assertEquals( options.getWorkspaceMacroName(), "workspace_rules" );
     assertEquals( options.getTargetMacroName(), "gen_targets" );
+    assertEquals( options.getRepositoryRuleGenerationStrategy(), "module" );
+    assertEquals( options.getTargetGenerationStrategy(), "build" );
+    assertEquals( options.getRepositoryRuleStartToken(), "# rs" );
+    assertEquals( options.getRepositoryRuleEndToken(), "# re" );
+    assertEquals( options.getTargetStartToken(), "# ts" );
+    assertEquals( options.getTargetEndToken(), "# te" );
     assertEquals( options.getNamePrefix(), "magic_" );
     assertEquals( options.getNameStrategy(), NameStrategy.ArtifactId );
     assertEquals( options.getRepositoryNameStrategy(), NameStrategy.ArtifactId );
@@ -337,6 +349,12 @@ public class ApplicationConfigTest
     assertNull( options.getExtensionFile() );
     assertNull( options.getWorkspaceMacroName() );
     assertNull( options.getTargetMacroName() );
+    assertNull( options.getRepositoryRuleGenerationStrategy() );
+    assertNull( options.getTargetGenerationStrategy() );
+    assertNull( options.getRepositoryRuleStartToken() );
+    assertNull( options.getRepositoryRuleEndToken() );
+    assertNull( options.getTargetStartToken() );
+    assertNull( options.getTargetEndToken() );
     assertNull( options.getNamePrefix() );
     assertNull( options.getNameStrategy() );
     assertNull( options.getRepositoryNameStrategy() );
