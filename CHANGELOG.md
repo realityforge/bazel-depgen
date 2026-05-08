@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Use load statement that works with modern j2cl. i.e. `load("@j2cl//build_defs:rules.bzl", _j2cl_library = "j2cl_library")`
+
 ### [v0.23](https://github.com/realityforge/bazel-depgen/tree/v0.23) (2026-05-08) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.22...v0.23)
 
 Changes in this release:

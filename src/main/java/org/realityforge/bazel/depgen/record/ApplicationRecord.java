@@ -800,7 +800,7 @@ public final class ApplicationRecord
       if ( getArtifacts().stream().anyMatch( a -> a.shouldEmitNatureTarget( Nature.J2cl ) ) )
       {
         emittedLoad = true;
-        output.write( "load(\"@com_google_j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")" );
+        output.write( "load(\"@j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")" );
       }
       if ( emittedLoad )
       {
