@@ -494,20 +494,17 @@ public final class ApplicationRecord
     final String depgenArtifactLabel = getDepgenArtifactLabel();
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", "\"" + getUpdateGeneratedOutputsTargetName() + "\"" );
-    arguments.put( "runtime_deps", Collections.singletonList( "\"" + depgenArtifactLabel + "\"" ) );
-    arguments.put( "main_class", "\"org.realityforge.bazel.depgen.Main\"" );
     arguments.put( "args",
                    Arrays.asList( "\"--config-file\"",
                                   "\"$(rootpath " + configLabel + ")\"",
                                   "\"--verbose\"",
                                   "\"generate\"" ) );
-
+    arguments.put( "data", Collections.singletonList( "\"" + configLabel + "\"" ) );
+    arguments.put( "main_class", "\"org.realityforge.bazel.depgen.Main\"" );
     arguments.put( "tags",
                    Arrays.asList( "\"local\"", "\"manual\"", "\"no-cache\"", "\"no-remote\"", "\"no-sandbox\"" ) );
-
-    arguments.put( "data", Collections.singletonList( "\"" + configLabel + "\"" ) );
-
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
+    arguments.put( "runtime_deps", Collections.singletonList( "\"" + depgenArtifactLabel + "\"" ) );
     output.writeCall( "_java_binary", arguments );
   }
 

@@ -2123,14 +2123,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -2138,8 +2138,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +
@@ -2230,14 +2230,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -2245,8 +2245,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    if not omit_com_example__myapp:\n" +
@@ -2310,14 +2310,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -2325,8 +2325,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    if not omit_myapp:\n" +
@@ -2387,14 +2387,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -2402,8 +2402,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +
@@ -2461,14 +2461,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -2476,8 +2476,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +
@@ -2548,14 +2548,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -2563,8 +2563,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +
@@ -2675,14 +2675,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\"@org_realityforge_bazel//:depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -2690,8 +2690,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\"@org_realityforge_bazel//:depgen\"],\n" +
                   "    )\n" );
   }
 
@@ -3100,14 +3100,14 @@ public class ApplicationRecordTest
     assertEquals( asCleanString( outputStream, record.getSource().getConfigSha256(), dir.toUri().toString() ),
                   "_java_binary(\n" +
                   "    name = \"update_depgen_generated_outputs\",\n" +
-                  "    runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "    main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "    args = [\n" +
                   "        \"--config-file\",\n" +
                   "        \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "        \"--verbose\",\n" +
                   "        \"generate\",\n" +
                   "    ],\n" +
+                  "    data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "    main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "    tags = [\n" +
                   "        \"local\",\n" +
                   "        \"manual\",\n" +
@@ -3115,8 +3115,8 @@ public class ApplicationRecordTest
                   "        \"no-remote\",\n" +
                   "        \"no-sandbox\",\n" +
                   "    ],\n" +
-                  "    data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
+                  "    runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   ")\n" );
   }
 
@@ -3272,14 +3272,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -3287,8 +3287,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +
@@ -3531,14 +3531,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -3546,8 +3546,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _j2cl_library(\n" +
@@ -3659,14 +3659,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -3674,8 +3674,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _j2cl_library(\n" +
@@ -3829,14 +3829,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -3844,8 +3844,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _j2cl_library(\n" +
@@ -4079,14 +4079,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -4094,8 +4094,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +
@@ -4208,14 +4208,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -4223,8 +4223,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +
@@ -4365,14 +4365,14 @@ public class ApplicationRecordTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -4380,8 +4380,8 @@ public class ApplicationRecordTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +

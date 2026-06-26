@@ -121,14 +121,14 @@ public class GenerateCommandTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -136,8 +136,8 @@ public class GenerateCommandTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +
@@ -257,14 +257,14 @@ public class GenerateCommandTest
                   "\n" +
                   "    _java_binary(\n" +
                   "        name = \"update_depgen_generated_outputs\",\n" +
-                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
-                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        args = [\n" +
                   "            \"--config-file\",\n" +
                   "            \"$(rootpath //thirdparty:dependencies.yml)\",\n" +
                   "            \"--verbose\",\n" +
                   "            \"generate\",\n" +
                   "        ],\n" +
+                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
+                  "        main_class = \"org.realityforge.bazel.depgen.Main\",\n" +
                   "        tags = [\n" +
                   "            \"local\",\n" +
                   "            \"manual\",\n" +
@@ -272,8 +272,8 @@ public class GenerateCommandTest
                   "            \"no-remote\",\n" +
                   "            \"no-sandbox\",\n" +
                   "        ],\n" +
-                  "        data = [\"//thirdparty:dependencies.yml\"],\n" +
                   "        visibility = [\"//visibility:private\"],\n" +
+                  "        runtime_deps = [\":org_realityforge_bazel_depgen__bazel_depgen\"],\n" +
                   "    )\n" +
                   "\n" +
                   "    _java_import(\n" +

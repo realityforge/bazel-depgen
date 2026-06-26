@@ -334,8 +334,8 @@ public class ArtifactRecordTest
                     "    jars = [\"@com_example__myapp__1_0//file\"],\n" +
                     "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n" +
                     "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n" +
-                    "    deps = [\":com_example__mylib\"],\n" +
                     "    runtime_deps = [\":com_example__rta\"],\n" +
+                    "    deps = [\":com_example__mylib\"],\n" +
                     ")\n" );
     }
     {

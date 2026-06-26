@@ -835,20 +835,20 @@ public final class ArtifactRecord
     {
       arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     }
-    final List<ArtifactRecord> deps = getDeps( dependencyNature );
-    if ( !deps.isEmpty() )
-    {
-      arguments.put( "deps",
-                     deps.stream()
-                       .map( a -> asString( a.getLabel( Nature.Java ) ) )
-                       .sorted()
-                       .collect( Collectors.toList() ) );
-    }
     final List<ArtifactRecord> runtimeDeps = getRuntimeDeps( dependencyNature );
     if ( !runtimeDeps.isEmpty() )
     {
       arguments.put( "runtime_deps",
                      runtimeDeps.stream()
+                       .map( a -> asString( a.getLabel( Nature.Java ) ) )
+                       .sorted()
+                       .collect( Collectors.toList() ) );
+    }
+    final List<ArtifactRecord> deps = getDeps( dependencyNature );
+    if ( !deps.isEmpty() )
+    {
+      arguments.put( "deps",
+                     deps.stream()
                        .map( a -> asString( a.getLabel( Nature.Java ) ) )
                        .sorted()
                        .collect( Collectors.toList() ) );
