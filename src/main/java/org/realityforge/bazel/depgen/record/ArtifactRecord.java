@@ -933,13 +933,13 @@ public final class ArtifactRecord
   {
     final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
     arguments.put( "name", asString( pluginName( processorClass ) ) );
-    if ( null != processorClass )
-    {
-      arguments.put( "processor_class", asString( processorClass ) );
-    }
     if ( null != processorClass && generatesApi() )
     {
       arguments.put( "generates_api", "True" );
+    }
+    if ( null != processorClass )
+    {
+      arguments.put( "processor_class", asString( processorClass ) );
     }
     arguments.put( "visibility", Collections.singletonList( "\"//visibility:private\"" ) );
     arguments.put( "deps", Collections.singletonList( "\":" + getName( Nature.Java ) + PLUGIN_LIBRARY_SUFFIX + "\"" ) );

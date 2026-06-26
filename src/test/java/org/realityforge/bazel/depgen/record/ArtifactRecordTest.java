@@ -574,8 +574,8 @@ public class ArtifactRecordTest
     assertEquals( asString( outputStream ),
                   "_java_plugin(\n" +
                   "    name = \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n" +
-                  "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    generates_api = True,\n" +
+                  "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" );
@@ -781,15 +781,15 @@ public class ArtifactRecordTest
                   ")\n" +
                   "_java_plugin(\n" +
                   "    name = \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n" +
-                  "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    generates_api = True,\n" +
+                  "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
                   "    name = \"com_example__myapp__react4j_processor_reactprocessor__plugin\",\n" +
-                  "    processor_class = \"react4j.processor.ReactProcessor\",\n" +
                   "    generates_api = True,\n" +
+                  "    processor_class = \"react4j.processor.ReactProcessor\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
@@ -1143,15 +1143,15 @@ public class ArtifactRecordTest
                   ")\n" +
                   "_java_plugin(\n" +
                   "    name = \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n" +
-                  "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    generates_api = True,\n" +
+                  "    processor_class = \"arez.processor.ArezProcessor\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
                   "_java_plugin(\n" +
                   "    name = \"com_example__myapp__react4j_processor_reactprocessor__plugin\",\n" +
-                  "    processor_class = \"react4j.processor.ReactProcessor\",\n" +
                   "    generates_api = True,\n" +
+                  "    processor_class = \"react4j.processor.ReactProcessor\",\n" +
                   "    visibility = [\"//visibility:private\"],\n" +
                   "    deps = [\":com_example__myapp__plugin_library\"],\n" +
                   ")\n" +
