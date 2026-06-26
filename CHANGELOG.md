@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Update the ordering of attributes to align with the order of attributes that results from buildifier run.
+
 ### [v0.24](https://github.com/realityforge/bazel-depgen/tree/v0.24) (2026-05-08) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.23...v0.24)
 
 Changes in this release:
