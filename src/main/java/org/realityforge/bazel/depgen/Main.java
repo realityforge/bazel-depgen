@@ -95,7 +95,7 @@ public class Main
     };
   @Nonnull
   private static final Map<String, Supplier<Command>> COMMAND_MAP =
-    Collections.unmodifiableMap( new LinkedHashMap<String, Supplier<Command>>()
+    Collections.unmodifiableMap( new LinkedHashMap<>()
     {
       {
         put( GenerateCommand.COMMAND, GenerateCommand::new );
