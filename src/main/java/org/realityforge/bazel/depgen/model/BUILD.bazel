@@ -1,0 +1,24 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "model",
+    srcs = [
+        "ApplicationModel.java",
+        "ArtifactModel.java",
+        "ExcludeModel.java",
+        "GlobalExcludeModel.java",
+        "InvalidModelException.java",
+        "OptionsModel.java",
+        "ReplacementModel.java",
+        "ReplacementTargetModel.java",
+        "RepositoryModel.java",
+    ],
+    deps = [
+        "//src/main/java/org/realityforge/bazel/depgen:core",
+        "//src/main/java/org/realityforge/bazel/depgen/config",
+        "//src/main/java/org/realityforge/bazel/depgen/util",
+        "//third_party/java:javax_annotation",
+    ],
+)

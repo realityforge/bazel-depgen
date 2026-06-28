@@ -1,0 +1,30 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "config",
+    srcs = [
+        "ApplicationConfig.java",
+        "ArtifactConfig.java",
+        "ChecksumPolicy.java",
+        "ExcludeConfig.java",
+        "GlobalJavaConfig.java",
+        "J2clConfig.java",
+        "J2clMode.java",
+        "JavaConfig.java",
+        "NameStrategy.java",
+        "Nature.java",
+        "OptionsConfig.java",
+        "PluginConfig.java",
+        "ReplacementConfig.java",
+        "ReplacementTargetConfig.java",
+        "RepositoryConfig.java",
+        "RepositoryRuleGenerationStrategy.java",
+        "TargetGenerationStrategy.java",
+    ],
+    deps = [
+        "//third_party/java:javax_annotation",
+        "//third_party/java:snakeyaml",
+    ],
+)

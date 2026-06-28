@@ -1,0 +1,24 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "record",
+    srcs = [
+        "ApplicationRecord.java",
+        "ArtifactRecord.java",
+        "DependencyCollector.java",
+    ],
+    deps = [
+        "//src/main/java/org/realityforge/bazel/depgen:core",
+        "//src/main/java/org/realityforge/bazel/depgen:dependency_graph_emitter",
+        "//src/main/java/org/realityforge/bazel/depgen/config",
+        "//src/main/java/org/realityforge/bazel/depgen/metadata",
+        "//src/main/java/org/realityforge/bazel/depgen/model",
+        "//src/main/java/org/realityforge/bazel/depgen/util",
+        "//third_party/java:javax_annotation",
+        "//third_party/java:maven_artifact",
+        "//third_party/java:maven_resolver_api",
+        "//third_party/java:maven_resolver_util",
+    ],
+)

@@ -21,7 +21,6 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.realityforge.bazel.depgen.DepgenException;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.RepositoryModel;
-import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.util.OrderedProperties;
 
 /**
@@ -29,8 +28,8 @@ import org.realityforge.bazel.depgen.util.OrderedProperties;
  * This includes information such as the sha256 values, urls in particular repositories, annotation processors present etc
  * for each artifact/classifier.
  *
- * <p>The data is derived in the context of a particular {@link ApplicationRecord} so that only the repositories that
- * are registered in <code>dependency.yaml</code> are checked etc.</p>
+ * <p>The data is derived in the context of a particular application record so that only the repositories that are
+ * registered in <code>dependency.yaml</code> are checked etc.</p>
  */
 public final class DepgenMetadata {
     @Nonnull

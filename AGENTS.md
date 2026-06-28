@@ -2,6 +2,12 @@
 
 This guide helps contributors work effectively on the Bazel-Depgen codebase.
 
+## Bazel Rules
+
+- Non-negotiable: do not use `glob()` in Bazel targets; list source files explicitly.
+- Non-negotiable: every source directory owns its own `BUILD.bazel`; Bazel targets must not list source files from child, sibling, or parent directories.
+- Non-negotiable: run `tools/check.sh` before claiming implementation work is complete.
+
 ## Commit & Pull Request Guidelines
 
 - Keep commits small and focused

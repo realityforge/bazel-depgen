@@ -1,0 +1,17 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "config_tests",
+    srcs = [
+        "ApplicationConfigTest.java",
+        "NatureTest.java",
+    ],
+    deps = [
+        "//src/main/java/org/realityforge/bazel/depgen",
+        "//src/test/java/org/realityforge/bazel/depgen:test_support",
+        "//third_party/java:javax_annotation",
+        "//third_party/java:testng",
+    ],
+)

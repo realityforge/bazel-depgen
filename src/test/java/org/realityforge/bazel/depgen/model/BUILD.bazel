@@ -1,0 +1,24 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "model_tests",
+    srcs = [
+        "ApplicationModelTest.java",
+        "ArtifactModelTest.java",
+        "ExcludeModelTest.java",
+        "GlobalExcludeModelTest.java",
+        "OptionsModelTest.java",
+        "ReplacementModelTest.java",
+        "RepositoryModelTest.java",
+    ],
+    deps = [
+        "//src/main/java/org/realityforge/bazel/depgen",
+        "//src/test/java/org/realityforge/bazel/depgen:test_support",
+        "//third_party/java:gir_core",
+        "//third_party/java:guiceyloops",
+        "//third_party/java:javax_annotation",
+        "//third_party/java:testng",
+    ],
+)

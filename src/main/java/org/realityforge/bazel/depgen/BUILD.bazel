@@ -2,7 +2,7 @@ load("//third_party/java:rules.bzl", "java_binary", "java_library")
 
 package(default_visibility = ["//visibility:public"])
 
-DEPGEN_DEPS = [
+DEPGEN_EXTERNAL_DEPS = [
     "//third_party/java:commons_codec",
     "//third_party/java:commons_lang3",
     "//third_party/java:getopt4j",
@@ -44,13 +44,83 @@ genrule(
 )
 
 java_library(
+    name = "core",
+    srcs = [
+        "Constants.java",
+        "DepGenConfig.java",
+        "DepgenConfigurationException.java",
+        "DepgenException.java",
+        "DepgenValidationException.java",
+    ],
+    resources = [":config_properties"],
+    deps = [
+        "//src/main/java/org/realityforge/bazel/depgen/util:ordered_properties",
+        "//third_party/java:javax_annotation",
+    ],
+)
+
+java_library(
+    name = "dependency_graph_emitter",
+    srcs = ["DependencyGraphEmitter.java"],
+    deps = [
+        ":core",
+        "//src/main/java/org/realityforge/bazel/depgen/model",
+        "//third_party/java:javax_annotation",
+        "//third_party/java:maven_resolver_api",
+        "//third_party/java:maven_resolver_util",
+    ],
+)
+
+java_library(
     name = "depgen",
-    srcs = glob(["**/*.java"]),
+    srcs = [
+        "AddCommand.java",
+        "Command.java",
+        "CommandContextImpl.java",
+        "CompileAndRuntimeDependencySelector.java",
+        "ConfigurableCommand.java",
+        "Environment.java",
+        "ExitCodes.java",
+        "ExternalAnnotationsDownloaderVisitor.java",
+        "GenerateCommand.java",
+        "HashCommand.java",
+        "InfoCommand.java",
+        "InitCommand.java",
+        "Main.java",
+        "OptionalDependencySelector.java",
+        "PeerArtifactDownloaderVisitor.java",
+        "PrintGraphCommand.java",
+        "RawFormatter.java",
+        "RejectDependencySelector.java",
+        "Resolver.java",
+        "ResolverUtil.java",
+        "SettingsUtil.java",
+        "SimpleRepositoryListener.java",
+        "SimpleTransferListener.java",
+        "SourceDownloaderVisitor.java",
+        "TerminalStateException.java",
+    ],
     resources = [
-        ":config_properties",
         "//src/main/resources/org/realityforge/bazel/depgen/templates:dependencies.yml",
     ],
-    deps = DEPGEN_DEPS,
+    exports = [
+        ":core",
+        ":dependency_graph_emitter",
+        "//src/main/java/org/realityforge/bazel/depgen/config",
+        "//src/main/java/org/realityforge/bazel/depgen/metadata",
+        "//src/main/java/org/realityforge/bazel/depgen/model",
+        "//src/main/java/org/realityforge/bazel/depgen/record",
+        "//src/main/java/org/realityforge/bazel/depgen/util",
+    ],
+    deps = DEPGEN_EXTERNAL_DEPS + [
+        ":core",
+        ":dependency_graph_emitter",
+        "//src/main/java/org/realityforge/bazel/depgen/config",
+        "//src/main/java/org/realityforge/bazel/depgen/metadata",
+        "//src/main/java/org/realityforge/bazel/depgen/model",
+        "//src/main/java/org/realityforge/bazel/depgen/record",
+        "//src/main/java/org/realityforge/bazel/depgen/util",
+    ],
 )
 
 java_binary(
