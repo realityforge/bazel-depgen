@@ -1,0 +1,60 @@
+load("//third_party/java:rules.bzl", "java_binary", "java_library")
+
+package(default_visibility = ["//visibility:public"])
+
+DEPGEN_DEPS = [
+    "//third_party/java:commons_codec",
+    "//third_party/java:commons_lang3",
+    "//third_party/java:getopt4j",
+    "//third_party/java:guava",
+    "//third_party/java:httpclient",
+    "//third_party/java:httpcore",
+    "//third_party/java:javax_annotation",
+    "//third_party/java:javax_inject",
+    "//third_party/java:jcl_over_slf4j",
+    "//third_party/java:maven_artifact",
+    "//third_party/java:maven_builder_support",
+    "//third_party/java:maven_model",
+    "//third_party/java:maven_model_builder",
+    "//third_party/java:maven_repository_metadata",
+    "//third_party/java:maven_resolver_api",
+    "//third_party/java:maven_resolver_connector_basic",
+    "//third_party/java:maven_resolver_impl",
+    "//third_party/java:maven_resolver_provider",
+    "//third_party/java:maven_resolver_spi",
+    "//third_party/java:maven_resolver_transport_file",
+    "//third_party/java:maven_resolver_transport_http",
+    "//third_party/java:maven_resolver_util",
+    "//third_party/java:maven_settings",
+    "//third_party/java:maven_settings_builder",
+    "//third_party/java:plexus_cipher",
+    "//third_party/java:plexus_component_annotations",
+    "//third_party/java:plexus_interpolation",
+    "//third_party/java:plexus_sec_dispatcher",
+    "//third_party/java:plexus_utils",
+    "//third_party/java:slf4j_api",
+    "//third_party/java:slf4j_jdk14",
+    "//third_party/java:snakeyaml",
+]
+
+genrule(
+    name = "config_properties",
+    outs = ["config.properties"],
+    cmd = "printf 'group=org.realityforge.bazel.depgen\\nid=bazel-depgen\\nversion=0.25\\n' > $@",
+)
+
+java_library(
+    name = "depgen",
+    srcs = glob(["**/*.java"]),
+    resources = [
+        ":config_properties",
+        "//src/main/resources/org/realityforge/bazel/depgen/templates:dependencies.yml",
+    ],
+    deps = DEPGEN_DEPS,
+)
+
+java_binary(
+    name = "bazel_depgen",
+    main_class = "org.realityforge.bazel.depgen.Main",
+    runtime_deps = [":depgen"],
+)

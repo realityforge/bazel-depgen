@@ -1,0 +1,687 @@
+load("@rules_java//java:defs.bzl", _java_binary = "java_binary", _java_import = "java_import", _java_library = "java_library", _java_plugin = "java_plugin", _java_test = "java_test")
+
+package(default_visibility = ["//visibility:public"])
+
+# --- depgen-generated targets start ---
+
+# DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.25
+
+# SHA256 of the configuration content that generated this content
+_CONFIG_SHA256 = "C342A893E26079DDEF6254B0FB80E87BF04CDF6D25F312DA4865E891D401F5EC"
+
+exports_files(["dependencies.yml"])
+
+# Dependency Graph Generated from the input data
+# +- org.realityforge.bazel.depgen:bazel-depgen:jar:all:0.25 [compile]
+# +- org.realityforge.javax.annotation:javax.annotation:jar:1.1.1 [compile]
+# +- org.realityforge.getopt4j:getopt4j:jar:1.3 [compile]
+# +- javax.inject:javax.inject:jar:1 [compile]
+# +- org.apache.maven.resolver:maven-resolver-api:jar:1.3.3 [compile]
+# +- org.apache.maven.resolver:maven-resolver-spi:jar:1.3.3 [compile]
+# |  \- org.apache.maven.resolver:maven-resolver-api:jar:1.3.3 [compile]
+# +- org.apache.maven.resolver:maven-resolver-util:jar:1.3.3 [compile]
+# |  \- org.apache.maven.resolver:maven-resolver-api:jar:1.3.3 [compile]
+# +- org.apache.maven.resolver:maven-resolver-impl:jar:1.3.3 [compile]
+# |  +- org.apache.maven.resolver:maven-resolver-api:jar:1.3.3 [compile]
+# |  +- org.apache.maven.resolver:maven-resolver-spi:jar:1.3.3 [compile]
+# |  +- org.apache.maven.resolver:maven-resolver-util:jar:1.3.3 [compile]
+# |  \- org.slf4j:slf4j-api:jar:1.7.25 [compile]
+# +- org.apache.maven.resolver:maven-resolver-connector-basic:jar:1.3.3 [compile]
+# |  +- org.apache.maven.resolver:maven-resolver-api:jar:1.3.3 [compile]
+# |  +- org.apache.maven.resolver:maven-resolver-spi:jar:1.3.3 [compile]
+# |  +- org.apache.maven.resolver:maven-resolver-util:jar:1.3.3 [compile]
+# |  \- org.slf4j:slf4j-api:jar:1.7.25 [compile]
+# +- org.apache.maven.resolver:maven-resolver-transport-file:jar:1.3.3 [compile]
+# |  +- org.apache.maven.resolver:maven-resolver-api:jar:1.3.3 [compile]
+# |  +- org.apache.maven.resolver:maven-resolver-spi:jar:1.3.3 [compile]
+# |  \- org.slf4j:slf4j-api:jar:1.7.25 [compile]
+# +- org.apache.maven.resolver:maven-resolver-transport-http:jar:1.3.3 [compile]
+# |  +- org.apache.maven.resolver:maven-resolver-api:jar:1.3.3 [compile]
+# |  +- org.apache.maven.resolver:maven-resolver-spi:jar:1.3.3 [compile]
+# |  +- org.apache.maven.resolver:maven-resolver-util:jar:1.3.3 [compile]
+# |  +- org.apache.httpcomponents:httpclient:jar:4.5.6 [compile]
+# |  +- org.apache.httpcomponents:httpcore:jar:4.4.10 [compile]
+# |  +- org.slf4j:jcl-over-slf4j:jar:1.7.25 [runtime]
+# |  \- org.slf4j:slf4j-api:jar:1.7.25 [compile]
+# +- org.apache.httpcomponents:httpcore:jar:4.4.10 [compile]
+# +- org.apache.httpcomponents:httpclient:jar:4.5.6 [compile]
+# |  +- org.apache.httpcomponents:httpcore:jar:4.4.10 [compile]
+# |  +- commons-logging:commons-logging:jar:1.2 [compile]
+# |  |  +- log4j:log4j:jar:1.2.17 [compile, optional]
+# |  |  +- logkit:logkit:jar:1.0.1 [compile, optional]
+# |  |  \- avalon-framework:avalon-framework:jar:4.1.5 [compile, optional]
+# |  \- commons-codec:commons-codec:jar:1.10 [compile] (conflicts with 1.12)
+# +- org.apache.maven:maven-resolver-provider:jar:3.5.0 [compile]
+# |  +- org.apache.maven:maven-model:jar:3.5.0 [compile]
+# |  +- org.apache.maven:maven-model-builder:jar:3.5.0 [compile]
+# |  +- org.apache.maven:maven-repository-metadata:jar:3.5.0 [compile]
+# |  +- org.apache.maven.resolver:maven-resolver-api:jar:1.0.3 [compile] (conflicts with 1.3.3)
+# |  +- org.apache.maven.resolver:maven-resolver-spi:jar:1.0.3 [compile] (conflicts with 1.3.3)
+# |  +- org.apache.maven.resolver:maven-resolver-util:jar:1.0.3 [compile] (conflicts with 1.3.3)
+# |  +- org.apache.maven.resolver:maven-resolver-impl:jar:1.0.3 [compile] (conflicts with 1.3.3)
+# |  +- org.codehaus.plexus:plexus-component-annotations:jar:1.7.1 [compile]
+# |  +- org.codehaus.plexus:plexus-utils:jar:3.0.24 [compile]
+# |  +- com.google.inject:guice:jar:no_aop:4.0 [compile, optional]
+# |  \- org.apache.commons:commons-lang3:jar:3.5 [compile]
+# +- org.apache.commons:commons-lang3:jar:3.5 [compile]
+# +- commons-codec:commons-codec:jar:1.12 [compile]
+# +- org.apache.maven:maven-model:jar:3.5.0 [compile]
+# |  +- org.codehaus.plexus:plexus-utils:jar:3.0.24 [compile]
+# |  \- org.apache.commons:commons-lang3:jar:3.5 [compile]
+# +- org.codehaus.plexus:plexus-utils:jar:3.0.24 [compile]
+# +- org.codehaus.plexus:plexus-interpolation:jar:1.25 [compile]
+# +- org.sonatype.plexus:plexus-sec-dispatcher:jar:1.4 [compile]
+# |  +- org.codehaus.plexus:plexus-utils:jar:1.5.5 [compile] (conflicts with 3.0.24)
+# |  \- org.sonatype.plexus:plexus-cipher:jar:1.4 [compile]
+# +- org.sonatype.plexus:plexus-cipher:jar:1.4 [compile]
+# +- org.apache.maven:maven-repository-metadata:jar:3.5.0 [compile]
+# |  \- org.codehaus.plexus:plexus-utils:jar:3.0.24 [compile]
+# +- org.codehaus.plexus:plexus-component-annotations:jar:1.7.1 [compile]
+# +- org.apache.maven:maven-model-builder:jar:3.5.0 [compile]
+# |  +- org.codehaus.plexus:plexus-utils:jar:3.0.24 [compile]
+# |  +- org.codehaus.plexus:plexus-interpolation:jar:1.24 [compile] (conflicts with 1.25)
+# |  +- org.codehaus.plexus:plexus-component-annotations:jar:1.7.1 [compile]
+# |  +- org.apache.maven:maven-model:jar:3.5.0 [compile]
+# |  +- org.apache.maven:maven-artifact:jar:3.5.0 [compile]
+# |  +- org.apache.maven:maven-builder-support:jar:3.5.0 [compile]
+# |  +- com.google.guava:guava:jar:20.0 [compile]
+# |  \- org.apache.commons:commons-lang3:jar:3.5 [compile]
+# +- org.apache.maven:maven-builder-support:jar:3.5.0 [compile]
+# |  +- org.codehaus.plexus:plexus-utils:jar:3.0.24 [compile]
+# |  \- org.apache.commons:commons-lang3:jar:3.5 [compile]
+# +- org.apache.maven:maven-artifact:jar:3.5.0 [compile]
+# |  +- org.codehaus.plexus:plexus-utils:jar:3.0.24 [compile]
+# |  \- org.apache.commons:commons-lang3:jar:3.5 [compile]
+# +- org.apache.maven:maven-settings-builder:jar:3.5.0 [compile]
+# |  +- org.apache.maven:maven-builder-support:jar:3.5.0 [compile]
+# |  +- org.codehaus.plexus:plexus-utils:jar:3.0.24 [compile]
+# |  +- org.codehaus.plexus:plexus-interpolation:jar:1.24 [compile] (conflicts with 1.25)
+# |  +- org.codehaus.plexus:plexus-component-annotations:jar:1.7.1 [compile]
+# |  +- org.apache.maven:maven-settings:jar:3.5.0 [compile]
+# |  +- org.sonatype.plexus:plexus-sec-dispatcher:jar:1.4 [compile]
+# |  \- org.apache.commons:commons-lang3:jar:3.5 [compile]
+# +- org.apache.maven:maven-settings:jar:3.5.0 [compile]
+# |  \- org.codehaus.plexus:plexus-utils:jar:3.0.24 [compile]
+# +- com.google.guava:guava:jar:20.0 [compile]
+# |  +- com.google.code.findbugs:jsr305:jar:1.3.9 [compile, optional]
+# |  +- com.google.errorprone:error_prone_annotations:jar:2.0.12 [compile, optional]
+# |  +- com.google.j2objc:j2objc-annotations:jar:1.1 [compile, optional]
+# |  \- org.codehaus.mojo:animal-sniffer-annotations:jar:1.14 [compile, optional]
+# +- org.slf4j:slf4j-api:jar:1.7.25 [compile]
+# +- org.slf4j:slf4j-jdk14:jar:1.7.25 [compile]
+# |  \- org.slf4j:slf4j-api:jar:1.7.25 [compile]
+# +- org.slf4j:jcl-over-slf4j:jar:1.7.25 [compile]
+# |  \- org.slf4j:slf4j-api:jar:1.7.25 [compile]
+# +- org.yaml:snakeyaml:jar:1.24 [compile]
+# +- org.realityforge.gir:gir-core:jar:0.12 [compile]
+# |  \- org.realityforge.braincheck:braincheck-core:jar:1.31.0 [compile]
+# +- org.realityforge.guiceyloops:guiceyloops:jar:0.113 [compile]
+# |  +- org.realityforge.jndikit:jndikit:jar:1.4 [compile, optional]
+# |  +- com.icegreen:greenmail:jar:1.4.0 [compile, optional]
+# |  +- fish.payara.extras:payara-embedded-all:jar:5.2022.5 [compile, optional]
+# |  +- org.mockito:mockito-core:jar:4.5.1 [compile]
+# |  +- net.bytebuddy:byte-buddy:jar:1.12.9 [compile]
+# |  +- org.objenesis:objenesis:jar:3.2 [compile]
+# |  +- org.hamcrest:hamcrest:jar:2.2 [compile]
+# |  +- com.google.inject:guice:jar:5.1.0 [compile]
+# |  +- com.google.guava:guava:jar:30.1-jre [compile] (conflicts with 20.0)
+# |  +- com.google.guava:failureaccess:jar:1.0.1 [compile]
+# |  +- aopalliance:aopalliance:jar:1.0 [compile]
+# |  \- org.ow2.asm:asm:jar:9.2 [compile]
+# +- org.testng:testng:jar:7.4.0 [compile]
+# |  +- com.beust:jcommander:jar:1.78 [compile]
+# |  +- org.webjars:jquery:jar:3.5.1 [compile]
+# |  +- org.apache.ant:ant:jar:1.10.9 [compile, optional]
+# |  +- com.google.inject:guice:jar:no_aop:4.2.3 [compile, optional] (conflicts with 4.0)
+# |  +- junit:junit:jar:4.12 [compile, optional]
+# |  \- org.yaml:snakeyaml:jar:1.21 [compile, optional] (conflicts with 1.24)
+# +- com.beust:jcommander:jar:1.78 [compile]
+# \- org.webjars:jquery:jar:3.5.1 [compile]
+
+_java_test(
+    name = "verify_config_sha256",
+    size = "small",
+    args = [
+        "--config-file",
+        "$(rootpath //third_party/java:dependencies.yml)",
+        "--verbose",
+        "hash",
+        "--verify-sha256",
+        _CONFIG_SHA256,
+    ],
+    data = ["//third_party/java:dependencies.yml"],
+    main_class = "org.realityforge.bazel.depgen.Main",
+    use_testrunner = False,
+    visibility = ["//visibility:private"],
+    runtime_deps = [":bazel_depgen"],
+)
+
+_java_binary(
+    name = "update_depgen_generated_outputs",
+    args = [
+        "--config-file",
+        "$(rootpath //third_party/java:dependencies.yml)",
+        "--verbose",
+        "generate",
+    ],
+    data = ["//third_party/java:dependencies.yml"],
+    main_class = "org.realityforge.bazel.depgen.Main",
+    tags = [
+        "local",
+        "manual",
+        "no-cache",
+        "no-remote",
+        "no-sandbox",
+    ],
+    visibility = ["//visibility:private"],
+    runtime_deps = [":bazel_depgen"],
+)
+
+_java_import(
+    name = "aopalliance",
+    jars = ["@aopalliance//file"],
+    tags = ["maven_coordinates=aopalliance:aopalliance:1.0"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "avalon_framework",
+    jars = ["@avalon_framework//file"],
+    tags = ["maven_coordinates=avalon-framework:avalon-framework:4.1.5"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "jcommander",
+    jars = ["@jcommander//file"],
+    tags = ["maven_coordinates=com.beust:jcommander:1.78"],
+)
+
+_java_import(
+    name = "jsr305",
+    jars = ["@jsr305//file"],
+    tags = ["maven_coordinates=com.google.code.findbugs:jsr305:1.3.9"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "error_prone_annotations",
+    jars = ["@error_prone_annotations//file"],
+    tags = ["maven_coordinates=com.google.errorprone:error_prone_annotations:2.0.12"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "failureaccess",
+    jars = ["@failureaccess//file"],
+    tags = ["maven_coordinates=com.google.guava:failureaccess:1.0.1"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "guava",
+    jars = ["@guava//file"],
+    tags = ["maven_coordinates=com.google.guava:guava:20.0"],
+)
+
+_java_import(
+    name = "guice",
+    jars = ["@guice//file"],
+    tags = ["maven_coordinates=com.google.inject:guice:5.1.0"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "j2objc_annotations",
+    jars = ["@j2objc_annotations//file"],
+    tags = ["maven_coordinates=com.google.j2objc:j2objc-annotations:1.1"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "greenmail",
+    jars = ["@greenmail//file"],
+    tags = ["maven_coordinates=com.icegreen:greenmail:1.4.0"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "commons_codec",
+    jars = ["@commons_codec//file"],
+    tags = ["maven_coordinates=commons-codec:commons-codec:1.12"],
+)
+
+_java_import(
+    name = "commons_logging",
+    jars = ["@commons_logging//file"],
+    tags = ["maven_coordinates=commons-logging:commons-logging:1.2"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "payara_embedded_all__plugin_library",
+    jars = ["@payara_embedded_all//file"],
+    tags = ["maven_coordinates=fish.payara.extras:payara-embedded-all:5.2022.5"],
+    visibility = ["//visibility:private"],
+)
+
+_java_plugin(
+    name = "payara_embedded_all__org_eclipse_persistence_internal_jpa_modelgen_canonicalmodelprocessor__plugin",
+    generates_api = True,
+    processor_class = "org.eclipse.persistence.internal.jpa.modelgen.CanonicalModelProcessor",
+    visibility = ["//visibility:private"],
+    deps = [":payara_embedded_all__plugin_library"],
+)
+
+_java_plugin(
+    name = "payara_embedded_all__org_glassfish_admin_rest_annotation_processor_restmodelextensionprocessor__plugin",
+    generates_api = True,
+    processor_class = "org.glassfish.admin.rest.annotation.processor.RestModelExtensionProcessor",
+    visibility = ["//visibility:private"],
+    deps = [":payara_embedded_all__plugin_library"],
+)
+
+_java_library(
+    name = "payara_embedded_all",
+    exported_plugins = [
+        "payara_embedded_all__org_eclipse_persistence_internal_jpa_modelgen_canonicalmodelprocessor__plugin",
+        "payara_embedded_all__org_glassfish_admin_rest_annotation_processor_restmodelextensionprocessor__plugin",
+    ],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "javax_inject",
+    jars = ["@javax_inject//file"],
+    tags = ["maven_coordinates=javax.inject:javax.inject:1"],
+)
+
+_java_import(
+    name = "junit",
+    jars = ["@junit//file"],
+    tags = ["maven_coordinates=junit:junit:4.12"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "log4j",
+    jars = ["@log4j//file"],
+    tags = ["maven_coordinates=log4j:log4j:1.2.17"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "logkit",
+    jars = ["@logkit//file"],
+    tags = ["maven_coordinates=logkit:logkit:1.0.1"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "byte_buddy",
+    jars = ["@byte_buddy//file"],
+    tags = ["maven_coordinates=net.bytebuddy:byte-buddy:1.12.9"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "ant",
+    jars = ["@ant//file"],
+    tags = ["maven_coordinates=org.apache.ant:ant:1.10.9"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "commons_lang3",
+    jars = ["@commons_lang3//file"],
+    tags = ["maven_coordinates=org.apache.commons:commons-lang3:3.5"],
+)
+
+_java_import(
+    name = "httpclient",
+    jars = ["@httpclient//file"],
+    tags = ["maven_coordinates=org.apache.httpcomponents:httpclient:4.5.6"],
+    deps = [
+        ":commons_codec",
+        ":commons_logging",
+        ":httpcore",
+    ],
+)
+
+_java_import(
+    name = "httpcore",
+    jars = ["@httpcore//file"],
+    tags = ["maven_coordinates=org.apache.httpcomponents:httpcore:4.4.10"],
+)
+
+_java_import(
+    name = "maven_resolver_api",
+    jars = ["@maven_resolver_api//file"],
+    tags = ["maven_coordinates=org.apache.maven.resolver:maven-resolver-api:1.3.3"],
+)
+
+_java_import(
+    name = "maven_resolver_connector_basic",
+    jars = ["@maven_resolver_connector_basic//file"],
+    tags = ["maven_coordinates=org.apache.maven.resolver:maven-resolver-connector-basic:1.3.3"],
+    deps = [
+        ":maven_resolver_api",
+        ":maven_resolver_spi",
+        ":maven_resolver_util",
+        ":slf4j_api",
+    ],
+)
+
+_java_import(
+    name = "maven_resolver_impl",
+    jars = ["@maven_resolver_impl//file"],
+    tags = ["maven_coordinates=org.apache.maven.resolver:maven-resolver-impl:1.3.3"],
+    deps = [
+        ":maven_resolver_api",
+        ":maven_resolver_spi",
+        ":maven_resolver_util",
+        ":slf4j_api",
+    ],
+)
+
+_java_import(
+    name = "maven_resolver_spi",
+    jars = ["@maven_resolver_spi//file"],
+    tags = ["maven_coordinates=org.apache.maven.resolver:maven-resolver-spi:1.3.3"],
+    deps = [":maven_resolver_api"],
+)
+
+_java_import(
+    name = "maven_resolver_transport_file",
+    jars = ["@maven_resolver_transport_file//file"],
+    tags = ["maven_coordinates=org.apache.maven.resolver:maven-resolver-transport-file:1.3.3"],
+    deps = [
+        ":maven_resolver_api",
+        ":maven_resolver_spi",
+        ":slf4j_api",
+    ],
+)
+
+_java_import(
+    name = "maven_resolver_transport_http",
+    jars = ["@maven_resolver_transport_http//file"],
+    tags = ["maven_coordinates=org.apache.maven.resolver:maven-resolver-transport-http:1.3.3"],
+    runtime_deps = [":jcl_over_slf4j"],
+    deps = [
+        ":httpclient",
+        ":httpcore",
+        ":maven_resolver_api",
+        ":maven_resolver_spi",
+        ":maven_resolver_util",
+        ":slf4j_api",
+    ],
+)
+
+_java_import(
+    name = "maven_resolver_util",
+    jars = ["@maven_resolver_util//file"],
+    tags = ["maven_coordinates=org.apache.maven.resolver:maven-resolver-util:1.3.3"],
+    deps = [":maven_resolver_api"],
+)
+
+_java_import(
+    name = "maven_artifact",
+    jars = ["@maven_artifact//file"],
+    tags = ["maven_coordinates=org.apache.maven:maven-artifact:3.5.0"],
+    deps = [
+        ":commons_lang3",
+        ":plexus_utils",
+    ],
+)
+
+_java_import(
+    name = "maven_builder_support",
+    jars = ["@maven_builder_support//file"],
+    tags = ["maven_coordinates=org.apache.maven:maven-builder-support:3.5.0"],
+    deps = [
+        ":commons_lang3",
+        ":plexus_utils",
+    ],
+)
+
+_java_import(
+    name = "maven_model",
+    jars = ["@maven_model//file"],
+    tags = ["maven_coordinates=org.apache.maven:maven-model:3.5.0"],
+    deps = [
+        ":commons_lang3",
+        ":plexus_utils",
+    ],
+)
+
+_java_import(
+    name = "maven_model_builder",
+    jars = ["@maven_model_builder//file"],
+    tags = ["maven_coordinates=org.apache.maven:maven-model-builder:3.5.0"],
+    deps = [
+        ":commons_lang3",
+        ":guava",
+        ":maven_artifact",
+        ":maven_builder_support",
+        ":maven_model",
+        ":plexus_component_annotations",
+        ":plexus_interpolation",
+        ":plexus_utils",
+    ],
+)
+
+_java_import(
+    name = "maven_repository_metadata",
+    jars = ["@maven_repository_metadata//file"],
+    tags = ["maven_coordinates=org.apache.maven:maven-repository-metadata:3.5.0"],
+    deps = [":plexus_utils"],
+)
+
+_java_import(
+    name = "maven_resolver_provider",
+    jars = ["@maven_resolver_provider//file"],
+    tags = ["maven_coordinates=org.apache.maven:maven-resolver-provider:3.5.0"],
+    deps = [
+        ":commons_lang3",
+        ":maven_model",
+        ":maven_model_builder",
+        ":maven_repository_metadata",
+        ":maven_resolver_api",
+        ":maven_resolver_impl",
+        ":maven_resolver_spi",
+        ":maven_resolver_util",
+        ":plexus_component_annotations",
+        ":plexus_utils",
+    ],
+)
+
+_java_import(
+    name = "maven_settings",
+    jars = ["@maven_settings//file"],
+    tags = ["maven_coordinates=org.apache.maven:maven-settings:3.5.0"],
+    deps = [":plexus_utils"],
+)
+
+_java_import(
+    name = "maven_settings_builder",
+    jars = ["@maven_settings_builder//file"],
+    tags = ["maven_coordinates=org.apache.maven:maven-settings-builder:3.5.0"],
+    deps = [
+        ":commons_lang3",
+        ":maven_builder_support",
+        ":maven_settings",
+        ":plexus_component_annotations",
+        ":plexus_interpolation",
+        ":plexus_sec_dispatcher",
+        ":plexus_utils",
+    ],
+)
+
+_java_import(
+    name = "animal_sniffer_annotations",
+    jars = ["@animal_sniffer_annotations//file"],
+    tags = ["maven_coordinates=org.codehaus.mojo:animal-sniffer-annotations:1.14"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "plexus_component_annotations",
+    jars = ["@plexus_component_annotations//file"],
+    tags = ["maven_coordinates=org.codehaus.plexus:plexus-component-annotations:1.7.1"],
+)
+
+_java_import(
+    name = "plexus_interpolation",
+    jars = ["@plexus_interpolation//file"],
+    tags = ["maven_coordinates=org.codehaus.plexus:plexus-interpolation:1.25"],
+)
+
+_java_import(
+    name = "plexus_utils",
+    jars = ["@plexus_utils//file"],
+    tags = ["maven_coordinates=org.codehaus.plexus:plexus-utils:3.0.24"],
+)
+
+_java_import(
+    name = "hamcrest",
+    jars = ["@hamcrest//file"],
+    tags = ["maven_coordinates=org.hamcrest:hamcrest:2.2"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "mockito_core",
+    jars = ["@mockito_core//file"],
+    tags = ["maven_coordinates=org.mockito:mockito-core:4.5.1"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "objenesis",
+    jars = ["@objenesis//file"],
+    tags = ["maven_coordinates=org.objenesis:objenesis:3.2"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "asm",
+    jars = ["@asm//file"],
+    tags = ["maven_coordinates=org.ow2.asm:asm:9.2"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "bazel_depgen",
+    jars = ["@bazel_depgen//file"],
+    tags = ["maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:0.25"],
+)
+
+_java_import(
+    name = "braincheck_core",
+    jars = ["@braincheck_core//file"],
+    tags = ["maven_coordinates=org.realityforge.braincheck:braincheck-core:1.31.0"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "getopt4j",
+    jars = ["@getopt4j//file"],
+    tags = ["maven_coordinates=org.realityforge.getopt4j:getopt4j:1.3"],
+)
+
+_java_import(
+    name = "gir_core",
+    jars = ["@gir_core//file"],
+    tags = ["maven_coordinates=org.realityforge.gir:gir-core:0.12"],
+    deps = [":braincheck_core"],
+)
+
+_java_import(
+    name = "guiceyloops",
+    jars = ["@guiceyloops//file"],
+    tags = ["maven_coordinates=org.realityforge.guiceyloops:guiceyloops:0.113"],
+    deps = [
+        ":aopalliance",
+        ":asm",
+        ":byte_buddy",
+        ":failureaccess",
+        ":guava",
+        ":guice",
+        ":hamcrest",
+        ":mockito_core",
+        ":objenesis",
+    ],
+)
+
+_java_import(
+    name = "javax_annotation",
+    jars = ["@javax_annotation//file"],
+    tags = ["maven_coordinates=org.realityforge.javax.annotation:javax.annotation:1.1.1"],
+)
+
+_java_import(
+    name = "jndikit",
+    jars = ["@jndikit//file"],
+    tags = ["maven_coordinates=org.realityforge.jndikit:jndikit:1.4"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "jcl_over_slf4j",
+    jars = ["@jcl_over_slf4j//file"],
+    tags = ["maven_coordinates=org.slf4j:jcl-over-slf4j:1.7.25"],
+    deps = [":slf4j_api"],
+)
+
+_java_import(
+    name = "slf4j_api",
+    jars = ["@slf4j_api//file"],
+    tags = ["maven_coordinates=org.slf4j:slf4j-api:1.7.25"],
+)
+
+_java_import(
+    name = "slf4j_jdk14",
+    jars = ["@slf4j_jdk14//file"],
+    tags = ["maven_coordinates=org.slf4j:slf4j-jdk14:1.7.25"],
+    deps = [":slf4j_api"],
+)
+
+_java_import(
+    name = "plexus_cipher",
+    jars = ["@plexus_cipher//file"],
+    tags = ["maven_coordinates=org.sonatype.plexus:plexus-cipher:1.4"],
+)
+
+_java_import(
+    name = "plexus_sec_dispatcher",
+    jars = ["@plexus_sec_dispatcher//file"],
+    tags = ["maven_coordinates=org.sonatype.plexus:plexus-sec-dispatcher:1.4"],
+    deps = [
+        ":plexus_cipher",
+        ":plexus_utils",
+    ],
+)
+
+_java_import(
+    name = "testng",
+    jars = ["@testng//file"],
+    tags = ["maven_coordinates=org.testng:testng:7.4.0"],
+    deps = [
+        ":jcommander",
+        ":jquery",
+    ],
+)
+
+_java_import(
+    name = "jquery",
+    jars = ["@jquery//file"],
+    tags = ["maven_coordinates=org.webjars:jquery:3.5.1"],
+)
+
+_java_import(
+    name = "snakeyaml",
+    jars = ["@snakeyaml//file"],
+    tags = ["maven_coordinates=org.yaml:snakeyaml:1.24"],
+)
+
+# --- depgen-generated targets end ---

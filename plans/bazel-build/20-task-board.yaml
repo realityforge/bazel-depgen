@@ -1,0 +1,77 @@
+plan:
+  id: bazel-build
+  title: Convert project build to Bazel
+tasks:
+  - id: BB-01
+    title: Record conversion requirements and plan
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance:
+      - Requirements, implementation plan, and task board exist under plans/bazel-build.
+    files:
+      - plans/bazel-build/**
+    evidence:
+      - command: created planning artifacts
+        result: requirements, implementation plan, and task board added
+    commit:
+      hash: not_required
+      message: null
+  - id: BB-02
+    title: Add Bazel module and dependency infrastructure
+    status: completed
+    priority: high
+    depends_on:
+      - BB-01
+    acceptance:
+      - Root BUILD/MODULE files exist.
+      - third_party/java dependency config and Java wrapper exist.
+      - update/check scripts exist.
+    files:
+      - BUILD.bazel
+      - MODULE.bazel
+      - third_party/java/**
+      - tools/**
+    evidence:
+      - command: manual file edits
+        result: added Bazel module, root buildifier targets, third_party/java dependency config, Java 17 wrapper, update/check scripts, and Bazel 9.1.1 pin
+    commit:
+      hash: not_required
+      message: null
+  - id: BB-03
+    title: Add source and test Bazel targets
+    status: completed
+    priority: high
+    depends_on:
+      - BB-02
+    acceptance:
+      - Production library and binary targets build.
+      - TestNG tests are exposed as Bazel test targets.
+    files:
+      - src/main/java/org/realityforge/bazel/depgen/BUILD.bazel
+      - src/test/java/org/realityforge/bazel/depgen/BUILD.bazel
+    evidence:
+      - command: manual file edits
+        result: added coarse production library/binary target, resource export, and TestNG all_tests target
+    commit:
+      hash: not_required
+      message: null
+  - id: BB-04
+    title: Generate dependency outputs and validate
+    status: completed
+    priority: high
+    depends_on:
+      - BB-03
+    acceptance:
+      - Generated dependency outputs are up to date.
+      - Bazel build and tests pass or failures are recorded with evidence.
+    files:
+      - MODULE.bazel
+      - third_party/java/BUILD.bazel
+      - MODULE.bazel.lock
+    evidence:
+      - command: tools/check.sh
+        result: passed dependency regeneration, buildifier_check, bazel build //..., and bazel test //...
+    commit:
+      hash: not_required
+      message: null

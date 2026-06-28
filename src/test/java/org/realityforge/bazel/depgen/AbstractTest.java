@@ -175,7 +175,10 @@ public abstract class AbstractTest
   protected final void writeBazelrc( @Nonnull final Path repositoryCache )
     throws IOException
   {
-    FileUtil.write( ".bazelrc", "build --repository_cache " + repositoryCache + "\n" );
+    FileUtil.write( ".bazelrc",
+                    "startup --output_user_root " + Files.createTempDirectory( "bazel-depgen" ) + "\n" +
+                    "build --repository_cache " + repositoryCache + "\n" +
+                    "build --repo_contents_cache=\n" );
   }
 
   final void writeWorkspace()
