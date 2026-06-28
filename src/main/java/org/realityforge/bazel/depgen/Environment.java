@@ -7,148 +7,133 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-final class Environment
-{
-  @Nullable
-  private final Console _console;
-  @Nonnull
-  private Path _currentDirectory;
-  @Nonnull
-  private final Logger _logger;
-  @Nullable
-  private Path _configFile;
-  @Nullable
-  private Path _settingsFile;
-  @Nullable
-  private Path _cacheDir;
-  @Nullable
-  private Path _repositoryCacheDir;
-  @Nullable
-  private Command _command;
-  private boolean _resetCachedMetadata;
+final class Environment {
+    @Nullable
+    private final Console _console;
 
-  Environment( @Nullable final Console console, @Nonnull final Path currentDirectory, @Nonnull final Logger logger )
-  {
-    _console = console;
-    _currentDirectory = Objects.requireNonNull( currentDirectory );
-    _logger = Objects.requireNonNull( logger );
-  }
+    @Nonnull
+    private Path _currentDirectory;
 
-  @Nullable
-  Console console()
-  {
-    return _console;
-  }
+    @Nonnull
+    private final Logger _logger;
 
-  public void setCurrentDirectory( @Nonnull final Path currentDirectory )
-  {
-    _currentDirectory = Objects.requireNonNull( currentDirectory );
-  }
+    @Nullable
+    private Path _configFile;
 
-  @Nonnull
-  Path currentDirectory()
-  {
-    return _currentDirectory;
-  }
+    @Nullable
+    private Path _settingsFile;
 
-  @Nonnull
-  Logger logger()
-  {
-    return _logger;
-  }
+    @Nullable
+    private Path _cacheDir;
 
-  boolean hasConfigFile()
-  {
-    return null != _configFile;
-  }
+    @Nullable
+    private Path _repositoryCacheDir;
 
-  @Nonnull
-  Path getConfigFile()
-  {
-    assert null != _configFile;
-    return _configFile;
-  }
+    @Nullable
+    private Command _command;
 
-  void setConfigFile( @Nullable final Path configFile )
-  {
-    _configFile = configFile;
-  }
+    private boolean _resetCachedMetadata;
 
-  boolean hasSettingsFile()
-  {
-    return null != _settingsFile;
-  }
+    Environment(@Nullable final Console console, @Nonnull final Path currentDirectory, @Nonnull final Logger logger) {
+        _console = console;
+        _currentDirectory = Objects.requireNonNull(currentDirectory);
+        _logger = Objects.requireNonNull(logger);
+    }
 
-  @Nonnull
-  Path getSettingsFile()
-  {
-    assert null != _settingsFile;
-    return _settingsFile;
-  }
+    @Nullable
+    Console console() {
+        return _console;
+    }
 
-  void setSettingsFile( @Nullable final Path settingsFile )
-  {
-    _settingsFile = settingsFile;
-  }
+    public void setCurrentDirectory(@Nonnull final Path currentDirectory) {
+        _currentDirectory = Objects.requireNonNull(currentDirectory);
+    }
 
-  boolean hasCacheDir()
-  {
-    return null != _cacheDir;
-  }
+    @Nonnull
+    Path currentDirectory() {
+        return _currentDirectory;
+    }
 
-  @Nonnull
-  Path getCacheDir()
-  {
-    assert null != _cacheDir;
-    return _cacheDir;
-  }
+    @Nonnull
+    Logger logger() {
+        return _logger;
+    }
 
-  void setCacheDir( @Nullable final Path cacheDir )
-  {
-    _cacheDir = cacheDir;
-  }
+    boolean hasConfigFile() {
+        return null != _configFile;
+    }
 
-  boolean hasRepositoryCacheDir()
-  {
-    return null != _repositoryCacheDir;
-  }
+    @Nonnull
+    Path getConfigFile() {
+        assert null != _configFile;
+        return _configFile;
+    }
 
-  @Nonnull
-  Path getRepositoryCacheDir()
-  {
-    assert null != _repositoryCacheDir;
-    return _repositoryCacheDir;
-  }
+    void setConfigFile(@Nullable final Path configFile) {
+        _configFile = configFile;
+    }
 
-  void setRepositoryCacheDir( @Nullable final Path repositoryCacheDir )
-  {
-    _repositoryCacheDir = repositoryCacheDir;
-  }
+    boolean hasSettingsFile() {
+        return null != _settingsFile;
+    }
 
-  boolean hasCommand()
-  {
-    return null != _command;
-  }
+    @Nonnull
+    Path getSettingsFile() {
+        assert null != _settingsFile;
+        return _settingsFile;
+    }
 
-  @Nonnull
-  Command getCommand()
-  {
-    assert null != _command;
-    return _command;
-  }
+    void setSettingsFile(@Nullable final Path settingsFile) {
+        _settingsFile = settingsFile;
+    }
 
-  void setCommand( @Nonnull final Command command )
-  {
-    _command = Objects.requireNonNull( command );
-  }
+    boolean hasCacheDir() {
+        return null != _cacheDir;
+    }
 
-  boolean shouldResetCachedMetadata()
-  {
-    return _resetCachedMetadata;
-  }
+    @Nonnull
+    Path getCacheDir() {
+        assert null != _cacheDir;
+        return _cacheDir;
+    }
 
-  void markResetCachedMetadata()
-  {
-    _resetCachedMetadata = true;
-  }
+    void setCacheDir(@Nullable final Path cacheDir) {
+        _cacheDir = cacheDir;
+    }
+
+    boolean hasRepositoryCacheDir() {
+        return null != _repositoryCacheDir;
+    }
+
+    @Nonnull
+    Path getRepositoryCacheDir() {
+        assert null != _repositoryCacheDir;
+        return _repositoryCacheDir;
+    }
+
+    void setRepositoryCacheDir(@Nullable final Path repositoryCacheDir) {
+        _repositoryCacheDir = repositoryCacheDir;
+    }
+
+    boolean hasCommand() {
+        return null != _command;
+    }
+
+    @Nonnull
+    Command getCommand() {
+        assert null != _command;
+        return _command;
+    }
+
+    void setCommand(@Nonnull final Command command) {
+        _command = Objects.requireNonNull(command);
+    }
+
+    boolean shouldResetCachedMetadata() {
+        return _resetCachedMetadata;
+    }
+
+    void markResetCachedMetadata() {
+        _resetCachedMetadata = true;
+    }
 }

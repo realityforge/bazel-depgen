@@ -4,32 +4,28 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class PluginConfig
-{
-  @Nullable
-  private Boolean generatesApi;
-  @Nullable
-  private String name;
+public final class PluginConfig {
+    @Nullable
+    private Boolean generatesApi;
 
-  @Nullable
-  public Boolean getGeneratesApi()
-  {
-    return generatesApi;
-  }
+    @Nullable
+    private String name;
 
-  public void setGeneratesApi( @Nonnull final Boolean generatesApi )
-  {
-    this.generatesApi = Objects.requireNonNull( generatesApi );
-  }
+    @Nullable
+    public Boolean getGeneratesApi() {
+        return generatesApi;
+    }
 
-  @Nullable
-  public String getName()
-  {
-    return name;
-  }
+    public void setGeneratesApi(@Nonnull final Boolean generatesApi) {
+        this.generatesApi = Objects.requireNonNull(generatesApi);
+    }
 
-  public void setName( @Nullable final String name )
-  {
-    this.name = name;
-  }
+    @Nullable
+    public String getName() {
+        return name;
+    }
+
+    public void setName(@Nullable final String name) {
+        this.name = name;
+    }
 }

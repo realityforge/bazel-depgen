@@ -5,14 +5,10 @@ import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.nodes.Tag;
 
-public final class YamlUtil
-{
-  private YamlUtil()
-  {
-  }
+public final class YamlUtil {
+    private YamlUtil() {}
 
-  public static String asYamlString( @Nonnull final Object object )
-  {
-    return new Yaml( new OmitNullRepresenter() ).dumpAs( object, Tag.MAP, DumperOptions.FlowStyle.BLOCK );
-  }
+    public static String asYamlString(@Nonnull final Object object) {
+        return new Yaml(new OmitNullRepresenter()).dumpAs(object, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
+    }
 }

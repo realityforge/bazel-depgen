@@ -13,272 +13,245 @@ import org.realityforge.bazel.depgen.config.JavaConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.util.BazelUtil;
 
-public final class ArtifactModel
-{
-  @Nonnull
-  private static final Pattern REPOSITORY_NAME_PATTERN = Pattern.compile( "[a-z][a-z0-9_]*" );
-  @Nonnull
-  private final ArtifactConfig _source;
-  @Nonnull
-  private final String _group;
-  @Nonnull
-  private final String _id;
-  @Nullable
-  private final String _type;
-  @Nullable
-  private final String _classifier;
-  @Nullable
-  private final String _version;
-  @Nonnull
-  private final List<ExcludeModel> _excludes;
-  @Nonnull
-  private final List<String> _visibility;
+public final class ArtifactModel {
+    @Nonnull
+    private static final Pattern REPOSITORY_NAME_PATTERN = Pattern.compile("[a-z][a-z0-9_]*");
 
-  @Nonnull
-  public static ArtifactModel parse( @Nonnull final ArtifactConfig source )
-  {
-    validateRepositoryNamingConfig( source );
-    validateUserSpecifiedTargetNames( source );
+    @Nonnull
+    private final ArtifactConfig _source;
 
-    final String coord = source.getCoord();
-    final String group;
-    final String id;
-    String version = null;
-    String classifier = null;
-    String type = null;
-    final List<String> excludes = source.getExcludes();
-    if ( null == coord )
-    {
-      throw new InvalidModelException( "The dependency must specify the 'coord' property.", source );
-    }
-    else
-    {
-      final String[] components = coord.split( ":" );
-      if ( components.length < 2 || components.length > 5 )
-      {
-        throw new InvalidModelException( "The 'coord' property on the dependency must specify 2-5 components " +
-                                         "separated by the ':' character. The 'coords' must be in one of the " +
-                                         "forms; 'group:id', 'group:id:version', 'group:id:type:version' or " +
-                                         "'group:id:type:classifier:version'.", source );
-      }
-      else if ( 2 == components.length )
-      {
-        group = components[ 0 ];
-        id = components[ 1 ];
-      }
-      else if ( 3 == components.length )
-      {
-        group = components[ 0 ];
-        id = components[ 1 ];
-        version = components[ 2 ];
-      }
-      else if ( 4 == components.length )
-      {
-        group = components[ 0 ];
-        id = components[ 1 ];
-        type = components[ 2 ];
-        version = components[ 3 ];
-      }
-      else
-      {
-        group = components[ 0 ];
-        id = components[ 1 ];
-        type = components[ 2 ];
-        classifier = components[ 3 ];
-        version = components[ 4 ];
-      }
-    }
+    @Nonnull
+    private final String _group;
 
-    final List<ExcludeModel> aexcludes =
-      null == excludes ?
-      Collections.emptyList() :
-      excludes
-        .stream()
-        .map( ExcludeModel::parse )
-        .collect( Collectors.toList() );
-    final List<String> visibility = source.getVisibility();
-    final List<String> avisibility =
-      null == visibility ?
-      Collections.emptyList() :
-      Collections.unmodifiableList( new ArrayList<>( visibility ) );
+    @Nonnull
+    private final String _id;
 
-    return new ArtifactModel( source, group, id, type, classifier, version, aexcludes, avisibility );
-  }
+    @Nullable
+    private final String _type;
 
-  private static void validateRepositoryNamingConfig( @Nonnull final ArtifactConfig source )
-  {
-    final String repositoryName = source.getRepositoryName();
-    if ( null != repositoryName )
-    {
-      if ( null != source.getRepositoryNameStrategy() )
-      {
-        throw new InvalidModelException( "The dependency must not specify both the 'repositoryName' and " +
-                                         "'repositoryNameStrategy' properties.", source );
-      }
-      else if ( repositoryName.contains( BazelUtil.COMPONENT_SEPARATOR ) )
-      {
-        throw new InvalidModelException( "The dependency repositoryName '" + repositoryName +
-                                         "' must not contain '" + BazelUtil.COMPONENT_SEPARATOR + "'.", source );
-      }
-      else if ( !REPOSITORY_NAME_PATTERN.matcher( repositoryName ).matches() )
-      {
-        throw new InvalidModelException( "The dependency repositoryName '" + repositoryName +
-                                         "' must match the pattern '[a-z][a-z0-9_]*'.", source );
-      }
-    }
-  }
+    @Nullable
+    private final String _classifier;
 
-  private static void validateUserSpecifiedTargetNames( @Nonnull final ArtifactConfig source )
-  {
-    validateNameOverride( "java.name", null != source.getJava() ? source.getJava().getName() : null, source );
-    validateNameOverride( "j2cl.name", null != source.getJ2cl() ? source.getJ2cl().getName() : null, source );
-    validateNameOverride( "plugin.name", null != source.getPlugin() ? source.getPlugin().getName() : null, source );
-  }
+    @Nullable
+    private final String _version;
 
-  private static void validateNameOverride( @Nonnull final String fieldName,
-                                            @Nullable final String name,
-                                            @Nonnull final ArtifactConfig source )
-  {
-    if ( null != name && name.contains( BazelUtil.COMPONENT_SEPARATOR ) )
-    {
-      throw new InvalidModelException( "The dependency " + fieldName + " property must not contain '" +
-                                       BazelUtil.COMPONENT_SEPARATOR + "'.", source );
-    }
-  }
+    @Nonnull
+    private final List<ExcludeModel> _excludes;
 
-  public ArtifactModel( @Nonnull final ArtifactConfig source,
-                        @Nonnull final String group,
-                        @Nonnull final String id,
-                        @Nullable final String type,
-                        @Nullable final String classifier,
-                        @Nullable final String version,
-                        @Nonnull final List<ExcludeModel> excludes,
-                        @Nonnull final List<String> visibility )
-  {
-    _source = Objects.requireNonNull( source );
-    _group = Objects.requireNonNull( group );
-    _id = Objects.requireNonNull( id );
-    _type = type;
-    _classifier = classifier;
-    _version = version;
-    _excludes = Objects.requireNonNull( excludes );
-    _visibility = Objects.requireNonNull( visibility );
-  }
+    @Nonnull
+    private final List<String> _visibility;
 
-  @Nonnull
-  public ArtifactConfig getSource()
-  {
-    return _source;
-  }
+    @Nonnull
+    public static ArtifactModel parse(@Nonnull final ArtifactConfig source) {
+        validateRepositoryNamingConfig(source);
+        validateUserSpecifiedTargetNames(source);
 
-  @Nonnull
-  public String getGroup()
-  {
-    return _group;
-  }
+        final String coord = source.getCoord();
+        final String group;
+        final String id;
+        String version = null;
+        String classifier = null;
+        String type = null;
+        final List<String> excludes = source.getExcludes();
+        if (null == coord) {
+            throw new InvalidModelException("The dependency must specify the 'coord' property.", source);
+        } else {
+            final String[] components = coord.split(":");
+            if (components.length < 2 || components.length > 5) {
+                throw new InvalidModelException(
+                        "The 'coord' property on the dependency must specify 2-5 components "
+                                + "separated by the ':' character. The 'coords' must be in one of the "
+                                + "forms; 'group:id', 'group:id:version', 'group:id:type:version' or "
+                                + "'group:id:type:classifier:version'.",
+                        source);
+            } else if (2 == components.length) {
+                group = components[0];
+                id = components[1];
+            } else if (3 == components.length) {
+                group = components[0];
+                id = components[1];
+                version = components[2];
+            } else if (4 == components.length) {
+                group = components[0];
+                id = components[1];
+                type = components[2];
+                version = components[3];
+            } else {
+                group = components[0];
+                id = components[1];
+                type = components[2];
+                classifier = components[3];
+                version = components[4];
+            }
+        }
 
-  @Nonnull
-  public String getId()
-  {
-    return _id;
-  }
+        final List<ExcludeModel> aexcludes = null == excludes
+                ? Collections.emptyList()
+                : excludes.stream().map(ExcludeModel::parse).collect(Collectors.toList());
+        final List<String> visibility = source.getVisibility();
+        final List<String> avisibility = null == visibility
+                ? Collections.emptyList()
+                : Collections.unmodifiableList(new ArrayList<>(visibility));
 
-  @Nonnull
-  public String getType()
-  {
-    return null == _type ? "jar" : _type;
-  }
-
-  @Nullable
-  public String getClassifier()
-  {
-    return _classifier;
-  }
-
-  @Nullable
-  public String getVersion()
-  {
-    return _version;
-  }
-
-  public boolean isVersioned()
-  {
-    return null != _version;
-  }
-
-  @Nonnull
-  public List<Nature> getNatures( @Nonnull final Nature defaultNature )
-  {
-    final List<Nature> natures = _source.getNatures();
-    return null == natures ? Collections.singletonList( defaultNature ) : natures;
-  }
-
-  public boolean includeOptional()
-  {
-    final Boolean includeOptional = _source.getIncludeOptional();
-    return null != includeOptional && includeOptional;
-  }
-
-  public boolean includeSource( final boolean defaultIncludeSource )
-  {
-    final Boolean includeSource = _source.getIncludeSource();
-    return null == includeSource ? defaultIncludeSource : includeSource;
-  }
-
-  public boolean includeExternalAnnotations( final boolean defaultInclude )
-  {
-    final Boolean include = _source.getIncludeExternalAnnotations();
-    return null == include ? defaultInclude : include;
-  }
-
-  public boolean exportDeps( final boolean defaultExportDeps )
-  {
-    final JavaConfig java = _source.getJava();
-    final Boolean exportDeps = null != java ? java.getExportDeps() : null;
-    return null == exportDeps ? defaultExportDeps : exportDeps;
-  }
-
-  @Nonnull
-  public List<String> getRepositories()
-  {
-    final List<String> repositories = _source.getRepositories();
-    return null == repositories ? Collections.emptyList() : Collections.unmodifiableList( repositories );
-  }
-
-  @Nonnull
-  public List<ExcludeModel> getExcludes()
-  {
-    return _excludes;
-  }
-
-  @Nonnull
-  public List<String> getVisibility()
-  {
-    return _visibility;
-  }
-
-  @Nonnull
-  public String toCoord()
-  {
-    final StringBuilder sb = new StringBuilder();
-    sb.append( getGroup() );
-    sb.append( ':' );
-    sb.append( getId() );
-    final String version = getVersion();
-    if ( null != version )
-    {
-      sb.append( ':' );
-      sb.append( getType() );
-      final String classifier = getClassifier();
-      if ( null != classifier )
-      {
-        sb.append( ':' );
-        sb.append( classifier );
-      }
-      sb.append( ':' );
-      sb.append( version );
+        return new ArtifactModel(source, group, id, type, classifier, version, aexcludes, avisibility);
     }
 
-    return sb.toString();
-  }
+    private static void validateRepositoryNamingConfig(@Nonnull final ArtifactConfig source) {
+        final String repositoryName = source.getRepositoryName();
+        if (null != repositoryName) {
+            if (null != source.getRepositoryNameStrategy()) {
+                throw new InvalidModelException(
+                        "The dependency must not specify both the 'repositoryName' and "
+                                + "'repositoryNameStrategy' properties.",
+                        source);
+            } else if (repositoryName.contains(BazelUtil.COMPONENT_SEPARATOR)) {
+                throw new InvalidModelException(
+                        "The dependency repositoryName '" + repositoryName + "' must not contain '"
+                                + BazelUtil.COMPONENT_SEPARATOR + "'.",
+                        source);
+            } else if (!REPOSITORY_NAME_PATTERN.matcher(repositoryName).matches()) {
+                throw new InvalidModelException(
+                        "The dependency repositoryName '" + repositoryName
+                                + "' must match the pattern '[a-z][a-z0-9_]*'.",
+                        source);
+            }
+        }
+    }
+
+    private static void validateUserSpecifiedTargetNames(@Nonnull final ArtifactConfig source) {
+        validateNameOverride(
+                "java.name", null != source.getJava() ? source.getJava().getName() : null, source);
+        validateNameOverride(
+                "j2cl.name", null != source.getJ2cl() ? source.getJ2cl().getName() : null, source);
+        validateNameOverride(
+                "plugin.name", null != source.getPlugin() ? source.getPlugin().getName() : null, source);
+    }
+
+    private static void validateNameOverride(
+            @Nonnull final String fieldName, @Nullable final String name, @Nonnull final ArtifactConfig source) {
+        if (null != name && name.contains(BazelUtil.COMPONENT_SEPARATOR)) {
+            throw new InvalidModelException(
+                    "The dependency " + fieldName + " property must not contain '" + BazelUtil.COMPONENT_SEPARATOR
+                            + "'.",
+                    source);
+        }
+    }
+
+    public ArtifactModel(
+            @Nonnull final ArtifactConfig source,
+            @Nonnull final String group,
+            @Nonnull final String id,
+            @Nullable final String type,
+            @Nullable final String classifier,
+            @Nullable final String version,
+            @Nonnull final List<ExcludeModel> excludes,
+            @Nonnull final List<String> visibility) {
+        _source = Objects.requireNonNull(source);
+        _group = Objects.requireNonNull(group);
+        _id = Objects.requireNonNull(id);
+        _type = type;
+        _classifier = classifier;
+        _version = version;
+        _excludes = Objects.requireNonNull(excludes);
+        _visibility = Objects.requireNonNull(visibility);
+    }
+
+    @Nonnull
+    public ArtifactConfig getSource() {
+        return _source;
+    }
+
+    @Nonnull
+    public String getGroup() {
+        return _group;
+    }
+
+    @Nonnull
+    public String getId() {
+        return _id;
+    }
+
+    @Nonnull
+    public String getType() {
+        return null == _type ? "jar" : _type;
+    }
+
+    @Nullable
+    public String getClassifier() {
+        return _classifier;
+    }
+
+    @Nullable
+    public String getVersion() {
+        return _version;
+    }
+
+    public boolean isVersioned() {
+        return null != _version;
+    }
+
+    @Nonnull
+    public List<Nature> getNatures(@Nonnull final Nature defaultNature) {
+        final List<Nature> natures = _source.getNatures();
+        return null == natures ? Collections.singletonList(defaultNature) : natures;
+    }
+
+    public boolean includeOptional() {
+        final Boolean includeOptional = _source.getIncludeOptional();
+        return null != includeOptional && includeOptional;
+    }
+
+    public boolean includeSource(final boolean defaultIncludeSource) {
+        final Boolean includeSource = _source.getIncludeSource();
+        return null == includeSource ? defaultIncludeSource : includeSource;
+    }
+
+    public boolean includeExternalAnnotations(final boolean defaultInclude) {
+        final Boolean include = _source.getIncludeExternalAnnotations();
+        return null == include ? defaultInclude : include;
+    }
+
+    public boolean exportDeps(final boolean defaultExportDeps) {
+        final JavaConfig java = _source.getJava();
+        final Boolean exportDeps = null != java ? java.getExportDeps() : null;
+        return null == exportDeps ? defaultExportDeps : exportDeps;
+    }
+
+    @Nonnull
+    public List<String> getRepositories() {
+        final List<String> repositories = _source.getRepositories();
+        return null == repositories ? Collections.emptyList() : Collections.unmodifiableList(repositories);
+    }
+
+    @Nonnull
+    public List<ExcludeModel> getExcludes() {
+        return _excludes;
+    }
+
+    @Nonnull
+    public List<String> getVisibility() {
+        return _visibility;
+    }
+
+    @Nonnull
+    public String toCoord() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(getGroup());
+        sb.append(':');
+        sb.append(getId());
+        final String version = getVersion();
+        if (null != version) {
+            sb.append(':');
+            sb.append(getType());
+            final String classifier = getClassifier();
+            if (null != classifier) {
+                sb.append(':');
+                sb.append(classifier);
+            }
+            sb.append(':');
+            sb.append(version);
+        }
+
+        return sb.toString();
+    }
 }

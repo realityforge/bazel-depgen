@@ -6,188 +6,172 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class ArtifactConfig
-{
-  @Nullable
-  private NameStrategy nameStrategy;
-  @Nullable
-  private NameStrategy repositoryNameStrategy;
-  @Nullable
-  private String repositoryName;
-  @Nullable
-  private String coord;
-  @Nullable
-  private Boolean includeOptional;
-  @Nullable
-  private Boolean includeSource;
-  @Nullable
-  private Boolean includeExternalAnnotations;
-  @Nullable
-  private List<String> excludes;
-  @Nullable
-  private List<String> repositories;
-  @Nullable
-  private List<String> visibility;
-  @Nullable
-  private List<Nature> natures;
-  @Nullable
-  private JavaConfig java;
-  @Nullable
-  private J2clConfig j2cl;
-  @Nullable
-  private PluginConfig plugin;
+public final class ArtifactConfig {
+    @Nullable
+    private NameStrategy nameStrategy;
 
-  @Nullable
-  public NameStrategy getNameStrategy()
-  {
-    return nameStrategy;
-  }
+    @Nullable
+    private NameStrategy repositoryNameStrategy;
 
-  public void setNameStrategy( @Nonnull final NameStrategy nameStrategy )
-  {
-    this.nameStrategy = Objects.requireNonNull( nameStrategy );
-  }
+    @Nullable
+    private String repositoryName;
 
-  @Nullable
-  public NameStrategy getRepositoryNameStrategy()
-  {
-    return repositoryNameStrategy;
-  }
+    @Nullable
+    private String coord;
 
-  public void setRepositoryNameStrategy( @Nonnull final NameStrategy repositoryNameStrategy )
-  {
-    this.repositoryNameStrategy = Objects.requireNonNull( repositoryNameStrategy );
-  }
+    @Nullable
+    private Boolean includeOptional;
 
-  @Nullable
-  public String getRepositoryName()
-  {
-    return repositoryName;
-  }
+    @Nullable
+    private Boolean includeSource;
 
-  public void setRepositoryName( @Nonnull final String repositoryName )
-  {
-    this.repositoryName = Objects.requireNonNull( repositoryName );
-  }
+    @Nullable
+    private Boolean includeExternalAnnotations;
 
-  @Nullable
-  public String getCoord()
-  {
-    return coord;
-  }
+    @Nullable
+    private List<String> excludes;
 
-  public void setCoord( @Nonnull final String coord )
-  {
-    this.coord = Objects.requireNonNull( coord );
-  }
+    @Nullable
+    private List<String> repositories;
 
-  @Nullable
-  public Boolean getIncludeOptional()
-  {
-    return includeOptional;
-  }
+    @Nullable
+    private List<String> visibility;
 
-  public void setIncludeOptional( final Boolean includeOptional )
-  {
-    this.includeOptional = Objects.requireNonNull( includeOptional );
-  }
+    @Nullable
+    private List<Nature> natures;
 
-  @Nullable
-  public Boolean getIncludeSource()
-  {
-    return includeSource;
-  }
+    @Nullable
+    private JavaConfig java;
 
-  public void setIncludeSource( @Nonnull final Boolean includeSource )
-  {
-    this.includeSource = Objects.requireNonNull( includeSource );
-  }
+    @Nullable
+    private J2clConfig j2cl;
 
-  @Nullable
-  public Boolean getIncludeExternalAnnotations()
-  {
-    return includeExternalAnnotations;
-  }
+    @Nullable
+    private PluginConfig plugin;
 
-  public void setIncludeExternalAnnotations( @Nonnull final Boolean includeExternalAnnotations )
-  {
-    this.includeExternalAnnotations = Objects.requireNonNull( includeExternalAnnotations );
-  }
+    @Nullable
+    public NameStrategy getNameStrategy() {
+        return nameStrategy;
+    }
 
-  @Nullable
-  public List<String> getExcludes()
-  {
-    return excludes;
-  }
+    public void setNameStrategy(@Nonnull final NameStrategy nameStrategy) {
+        this.nameStrategy = Objects.requireNonNull(nameStrategy);
+    }
 
-  public void setExcludes( @Nonnull final List<String> excludes )
-  {
-    this.excludes = Objects.requireNonNull( excludes );
-  }
+    @Nullable
+    public NameStrategy getRepositoryNameStrategy() {
+        return repositoryNameStrategy;
+    }
 
-  @Nullable
-  public List<String> getRepositories()
-  {
-    return repositories;
-  }
+    public void setRepositoryNameStrategy(@Nonnull final NameStrategy repositoryNameStrategy) {
+        this.repositoryNameStrategy = Objects.requireNonNull(repositoryNameStrategy);
+    }
 
-  public void setRepositories( @Nonnull final List<String> repositories )
-  {
-    this.repositories = Objects.requireNonNull( repositories );
-  }
+    @Nullable
+    public String getRepositoryName() {
+        return repositoryName;
+    }
 
-  @Nullable
-  public List<String> getVisibility()
-  {
-    return visibility;
-  }
+    public void setRepositoryName(@Nonnull final String repositoryName) {
+        this.repositoryName = Objects.requireNonNull(repositoryName);
+    }
 
-  public void setVisibility( @Nonnull final List<String> visibility )
-  {
-    this.visibility = Objects.requireNonNull( visibility );
-  }
+    @Nullable
+    public String getCoord() {
+        return coord;
+    }
 
-  @Nullable
-  public List<Nature> getNatures()
-  {
-    return natures;
-  }
+    public void setCoord(@Nonnull final String coord) {
+        this.coord = Objects.requireNonNull(coord);
+    }
 
-  public void setNatures( @Nonnull final List<Nature> natures )
-  {
-    this.natures = Collections.unmodifiableList( Objects.requireNonNull( natures ) );
-  }
+    @Nullable
+    public Boolean getIncludeOptional() {
+        return includeOptional;
+    }
 
-  @Nullable
-  public JavaConfig getJava()
-  {
-    return java;
-  }
+    public void setIncludeOptional(final Boolean includeOptional) {
+        this.includeOptional = Objects.requireNonNull(includeOptional);
+    }
 
-  public void setJava( @Nonnull final JavaConfig java )
-  {
-    this.java = Objects.requireNonNull( java );
-  }
+    @Nullable
+    public Boolean getIncludeSource() {
+        return includeSource;
+    }
 
-  @Nullable
-  public J2clConfig getJ2cl()
-  {
-    return j2cl;
-  }
+    public void setIncludeSource(@Nonnull final Boolean includeSource) {
+        this.includeSource = Objects.requireNonNull(includeSource);
+    }
 
-  public void setJ2cl( @Nonnull final J2clConfig j2cl )
-  {
-    this.j2cl = Objects.requireNonNull( j2cl );
-  }
+    @Nullable
+    public Boolean getIncludeExternalAnnotations() {
+        return includeExternalAnnotations;
+    }
 
-  @Nullable
-  public PluginConfig getPlugin()
-  {
-    return plugin;
-  }
+    public void setIncludeExternalAnnotations(@Nonnull final Boolean includeExternalAnnotations) {
+        this.includeExternalAnnotations = Objects.requireNonNull(includeExternalAnnotations);
+    }
 
-  public void setPlugin( @Nonnull final PluginConfig plugin )
-  {
-    this.plugin = Objects.requireNonNull( plugin );
-  }
+    @Nullable
+    public List<String> getExcludes() {
+        return excludes;
+    }
+
+    public void setExcludes(@Nonnull final List<String> excludes) {
+        this.excludes = Objects.requireNonNull(excludes);
+    }
+
+    @Nullable
+    public List<String> getRepositories() {
+        return repositories;
+    }
+
+    public void setRepositories(@Nonnull final List<String> repositories) {
+        this.repositories = Objects.requireNonNull(repositories);
+    }
+
+    @Nullable
+    public List<String> getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(@Nonnull final List<String> visibility) {
+        this.visibility = Objects.requireNonNull(visibility);
+    }
+
+    @Nullable
+    public List<Nature> getNatures() {
+        return natures;
+    }
+
+    public void setNatures(@Nonnull final List<Nature> natures) {
+        this.natures = Collections.unmodifiableList(Objects.requireNonNull(natures));
+    }
+
+    @Nullable
+    public JavaConfig getJava() {
+        return java;
+    }
+
+    public void setJava(@Nonnull final JavaConfig java) {
+        this.java = Objects.requireNonNull(java);
+    }
+
+    @Nullable
+    public J2clConfig getJ2cl() {
+        return j2cl;
+    }
+
+    public void setJ2cl(@Nonnull final J2clConfig j2cl) {
+        this.j2cl = Objects.requireNonNull(j2cl);
+    }
+
+    @Nullable
+    public PluginConfig getPlugin() {
+        return plugin;
+    }
+
+    public void setPlugin(@Nonnull final PluginConfig plugin) {
+        this.plugin = Objects.requireNonNull(plugin);
+    }
 }

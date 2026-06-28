@@ -4,32 +4,28 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class ReplacementTargetConfig
-{
-  @Nullable
-  private Nature nature;
-  @Nullable
-  private String target;
+public final class ReplacementTargetConfig {
+    @Nullable
+    private Nature nature;
 
-  @Nullable
-  public Nature getNature()
-  {
-    return nature;
-  }
+    @Nullable
+    private String target;
 
-  public void setNature( @Nonnull final Nature nature )
-  {
-    this.nature = Objects.requireNonNull( nature );
-  }
+    @Nullable
+    public Nature getNature() {
+        return nature;
+    }
 
-  @Nullable
-  public String getTarget()
-  {
-    return target;
-  }
+    public void setNature(@Nonnull final Nature nature) {
+        this.nature = Objects.requireNonNull(nature);
+    }
 
-  public void setTarget( @Nonnull final String target )
-  {
-    this.target = Objects.requireNonNull( target );
-  }
+    @Nullable
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(@Nonnull final String target) {
+        this.target = Objects.requireNonNull(target);
+    }
 }

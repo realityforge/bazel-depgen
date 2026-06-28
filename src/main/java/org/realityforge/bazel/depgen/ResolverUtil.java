@@ -33,162 +33,150 @@ import org.realityforge.bazel.depgen.model.GlobalExcludeModel;
 import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.model.RepositoryModel;
 
-final class ResolverUtil
-{
-  private ResolverUtil()
-  {
-  }
+final class ResolverUtil {
+    private ResolverUtil() {}
 
-  @Nonnull
-  static Resolver createResolver( @Nonnull final Environment environment,
-                                  @Nonnull final Path cacheDir,
-                                  @Nonnull final ApplicationModel model,
-                                  @Nonnull final Settings settings )
-  {
-    final OptionsModel options = model.getOptions();
-    final List<RemoteRepository> repositories = ResolverUtil.getRemoteRepositories( model.getRepositories(), settings );
-    final List<RemoteRepository> defaultRepositories =
-      ResolverUtil.getRemoteRepositories( model.getRepositories()
-                                            .stream()
-                                            .filter( RepositoryModel::searchByDefault )
-                                            .toList(),
-                                          settings );
-    return createResolver( environment,
-                           cacheDir,
-                           repositories,
-                           defaultRepositories,
-                           options.failOnMissingPom(),
-                           options.failOnInvalidPom() );
-  }
-
-  @Nonnull
-  static Resolver createResolver( @Nonnull final Environment environment,
-                                  @Nonnull final Path cacheDir,
-                                  @Nonnull final List<RemoteRepository> repositories,
-                                  @Nonnull final List<RemoteRepository> defaultRepositories,
-                                  final boolean failOnMissingPom,
-                                  final boolean failOnInvalidPom )
-  {
-    final RepositorySystem system = newRepositorySystem( environment );
-    final RepositorySystemSession session =
-      newRepositorySystemSession( system, cacheDir, environment, failOnMissingPom, failOnInvalidPom );
-    return new Resolver( environment, system, session, repositories, defaultRepositories );
-  }
-
-  @Nonnull
-  static Resolver createResolver( @Nonnull final Environment environment,
-                                  @Nonnull final Path cacheDir,
-                                  @Nonnull final List<RemoteRepository> repositories,
-                                  final boolean failOnMissingPom,
-                                  final boolean failOnInvalidPom )
-  {
-    return createResolver( environment,
-                           cacheDir,
-                           repositories,
-                           repositories,
-                           failOnMissingPom,
-                           failOnInvalidPom );
-  }
-
-  @Nonnull
-  private static RepositorySystem newRepositorySystem( @Nonnull final Environment environment )
-  {
-    // Use the pre-populated DefaultServiceLocator rather than explicitly registering components
-    final DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
-    locator.addService( RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class );
-    locator.addService( TransporterFactory.class, FileTransporterFactory.class );
-    locator.addService( TransporterFactory.class, HttpTransporterFactory.class );
-
-    locator.setErrorHandler( new DefaultServiceLocator.ErrorHandler()
-    {
-      @Override
-      public void serviceCreationFailed( @Nonnull final Class<?> type,
-                                         @Nonnull final Class<?> impl,
-                                         @Nonnull final Throwable exception )
-      {
-        environment.logger().log( Level.SEVERE,
-                                  "Service creation failed for " + type + " implementation " + impl +
-                                  ": " + exception.getMessage(), exception );
-      }
-    } );
-
-    final RepositorySystem service = locator.getService( RepositorySystem.class );
-    if ( null == service )
-    {
-      throw new DepgenConfigurationException( "Unable create RepositorySystem" );
+    @Nonnull
+    static Resolver createResolver(
+            @Nonnull final Environment environment,
+            @Nonnull final Path cacheDir,
+            @Nonnull final ApplicationModel model,
+            @Nonnull final Settings settings) {
+        final OptionsModel options = model.getOptions();
+        final List<RemoteRepository> repositories =
+                ResolverUtil.getRemoteRepositories(model.getRepositories(), settings);
+        final List<RemoteRepository> defaultRepositories = ResolverUtil.getRemoteRepositories(
+                model.getRepositories().stream()
+                        .filter(RepositoryModel::searchByDefault)
+                        .toList(),
+                settings);
+        return createResolver(
+                environment,
+                cacheDir,
+                repositories,
+                defaultRepositories,
+                options.failOnMissingPom(),
+                options.failOnInvalidPom());
     }
-    return service;
-  }
 
-  @Nonnull
-  private static RepositorySystemSession newRepositorySystemSession( @Nonnull final RepositorySystem system,
-                                                                     @Nonnull final Path cacheDir,
-                                                                     @Nonnull final Environment environment,
-                                                                     final boolean failOnMissingPom,
-                                                                     final boolean failOnInvalidPom )
-  {
-    final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
-
-    final LocalRepository localRepository = new LocalRepository( cacheDir.toString() );
-
-    session.setLocalRepositoryManager( system.newLocalRepositoryManager( session, localRepository ) );
-
-    // Avoid using repositories set up in artifact's pom.xml
-    session.setIgnoreArtifactDescriptorRepositories( true );
-
-    session.setConfigProperty( ConflictResolver.CONFIG_PROP_VERBOSE, true );
-    session.setConfigProperty( DependencyManagerUtils.CONFIG_PROP_VERBOSE, true );
-
-    session.setTransferListener( new SimpleTransferListener( environment ) );
-    session.setRepositoryListener( new SimpleRepositoryListener( environment ) );
-    session.setArtifactDescriptorPolicy( new SimpleArtifactDescriptorPolicy( !failOnMissingPom, !failOnInvalidPom ) );
-
-    return session;
-  }
-
-  @Nonnull
-  static List<RemoteRepository> getRemoteRepositories( @Nonnull final List<RepositoryModel> repositories,
-                                                       @Nonnull final Settings settings )
-  {
-    final List<RemoteRepository> remoteRepositories = new ArrayList<>();
-
-    for ( final RepositoryModel repository : repositories )
-    {
-      final String name = repository.getName();
-      final RemoteRepository.Builder builder = new RemoteRepository.Builder( name, "default", repository.getUrl() );
-      final Server server = settings.getServer( name );
-      if ( null != server )
-      {
-        final Authentication authentication =
-          new AuthenticationBuilder().addUsername( server.getUsername() ).addPassword( server.getPassword() ).build();
-        builder.setAuthentication( authentication );
-      }
-      builder.setReleasePolicy( new RepositoryPolicy( true, null, repository.checksumPolicy().name() ) );
-      remoteRepositories.add( builder.build() );
+    @Nonnull
+    static Resolver createResolver(
+            @Nonnull final Environment environment,
+            @Nonnull final Path cacheDir,
+            @Nonnull final List<RemoteRepository> repositories,
+            @Nonnull final List<RemoteRepository> defaultRepositories,
+            final boolean failOnMissingPom,
+            final boolean failOnInvalidPom) {
+        final RepositorySystem system = newRepositorySystem(environment);
+        final RepositorySystemSession session =
+                newRepositorySystemSession(system, cacheDir, environment, failOnMissingPom, failOnInvalidPom);
+        return new Resolver(environment, system, session, repositories, defaultRepositories);
     }
-    return remoteRepositories;
-  }
 
-  @Nonnull
-  static ArrayList<Exclusion> deriveGlobalExclusions( @Nonnull final ApplicationModel model )
-  {
-    final ArrayList<Exclusion> exclusions = new ArrayList<>();
-    for ( final GlobalExcludeModel exclude : model.getExcludes() )
-    {
-      exclusions.add( new Exclusion( exclude.getGroup(), exclude.getId(), "*", "*" ) );
+    @Nonnull
+    static Resolver createResolver(
+            @Nonnull final Environment environment,
+            @Nonnull final Path cacheDir,
+            @Nonnull final List<RemoteRepository> repositories,
+            final boolean failOnMissingPom,
+            final boolean failOnInvalidPom) {
+        return createResolver(environment, cacheDir, repositories, repositories, failOnMissingPom, failOnInvalidPom);
     }
-    return exclusions;
-  }
 
-  @Nonnull
-  static ArrayList<Exclusion> deriveExclusions( @Nonnull final ArtifactModel artifactModel )
-  {
-    final ArrayList<Exclusion> exclusions = new ArrayList<>();
-    for ( final ExcludeModel exclude : artifactModel.getExcludes() )
-    {
-      final String id = exclude.getId();
-      exclusions.add( new Exclusion( exclude.getGroup(), null == id ? "*" : id, "*", "*" ) );
+    @Nonnull
+    private static RepositorySystem newRepositorySystem(@Nonnull final Environment environment) {
+        // Use the pre-populated DefaultServiceLocator rather than explicitly registering components
+        final DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
+        locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
+        locator.addService(TransporterFactory.class, FileTransporterFactory.class);
+        locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
+
+        locator.setErrorHandler(new DefaultServiceLocator.ErrorHandler() {
+            @Override
+            public void serviceCreationFailed(
+                    @Nonnull final Class<?> type, @Nonnull final Class<?> impl, @Nonnull final Throwable exception) {
+                environment
+                        .logger()
+                        .log(
+                                Level.SEVERE,
+                                "Service creation failed for " + type + " implementation " + impl + ": "
+                                        + exception.getMessage(),
+                                exception);
+            }
+        });
+
+        final RepositorySystem service = locator.getService(RepositorySystem.class);
+        if (null == service) {
+            throw new DepgenConfigurationException("Unable create RepositorySystem");
+        }
+        return service;
     }
-    return exclusions;
-  }
+
+    @Nonnull
+    private static RepositorySystemSession newRepositorySystemSession(
+            @Nonnull final RepositorySystem system,
+            @Nonnull final Path cacheDir,
+            @Nonnull final Environment environment,
+            final boolean failOnMissingPom,
+            final boolean failOnInvalidPom) {
+        final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+
+        final LocalRepository localRepository = new LocalRepository(cacheDir.toString());
+
+        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepository));
+
+        // Avoid using repositories set up in artifact's pom.xml
+        session.setIgnoreArtifactDescriptorRepositories(true);
+
+        session.setConfigProperty(ConflictResolver.CONFIG_PROP_VERBOSE, true);
+        session.setConfigProperty(DependencyManagerUtils.CONFIG_PROP_VERBOSE, true);
+
+        session.setTransferListener(new SimpleTransferListener(environment));
+        session.setRepositoryListener(new SimpleRepositoryListener(environment));
+        session.setArtifactDescriptorPolicy(new SimpleArtifactDescriptorPolicy(!failOnMissingPom, !failOnInvalidPom));
+
+        return session;
+    }
+
+    @Nonnull
+    static List<RemoteRepository> getRemoteRepositories(
+            @Nonnull final List<RepositoryModel> repositories, @Nonnull final Settings settings) {
+        final List<RemoteRepository> remoteRepositories = new ArrayList<>();
+
+        for (final RepositoryModel repository : repositories) {
+            final String name = repository.getName();
+            final RemoteRepository.Builder builder = new RemoteRepository.Builder(name, "default", repository.getUrl());
+            final Server server = settings.getServer(name);
+            if (null != server) {
+                final Authentication authentication = new AuthenticationBuilder()
+                        .addUsername(server.getUsername())
+                        .addPassword(server.getPassword())
+                        .build();
+                builder.setAuthentication(authentication);
+            }
+            builder.setReleasePolicy(
+                    new RepositoryPolicy(true, null, repository.checksumPolicy().name()));
+            remoteRepositories.add(builder.build());
+        }
+        return remoteRepositories;
+    }
+
+    @Nonnull
+    static ArrayList<Exclusion> deriveGlobalExclusions(@Nonnull final ApplicationModel model) {
+        final ArrayList<Exclusion> exclusions = new ArrayList<>();
+        for (final GlobalExcludeModel exclude : model.getExcludes()) {
+            exclusions.add(new Exclusion(exclude.getGroup(), exclude.getId(), "*", "*"));
+        }
+        return exclusions;
+    }
+
+    @Nonnull
+    static ArrayList<Exclusion> deriveExclusions(@Nonnull final ArtifactModel artifactModel) {
+        final ArrayList<Exclusion> exclusions = new ArrayList<>();
+        for (final ExcludeModel exclude : artifactModel.getExcludes()) {
+            final String id = exclude.getId();
+            exclusions.add(new Exclusion(exclude.getGroup(), null == id ? "*" : id, "*", "*"));
+        }
+        return exclusions;
+    }
 }

@@ -7,7 +7,7 @@ package(default_visibility = ["//visibility:public"])
 # DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.25
 
 # SHA256 of the configuration content that generated this content
-_CONFIG_SHA256 = "C342A893E26079DDEF6254B0FB80E87BF04CDF6D25F312DA4865E891D401F5EC"
+_CONFIG_SHA256 = "C9923AE05174157307528E0DEDE9CD3FB4D0B8815D92731A91FC5BD769FFCD90"
 
 exports_files(["dependencies.yml"])
 
@@ -103,7 +103,7 @@ exports_files(["dependencies.yml"])
 # +- org.apache.maven:maven-settings:jar:3.5.0 [compile]
 # |  \- org.codehaus.plexus:plexus-utils:jar:3.0.24 [compile]
 # +- com.google.guava:guava:jar:20.0 [compile]
-# |  +- com.google.code.findbugs:jsr305:jar:1.3.9 [compile, optional]
+# |  +- com.google.code.findbugs:jsr305:jar:1.3.9 [compile]
 # |  +- com.google.errorprone:error_prone_annotations:jar:2.0.12 [compile, optional]
 # |  +- com.google.j2objc:j2objc-annotations:jar:1.1 [compile, optional]
 # |  \- org.codehaus.mojo:animal-sniffer-annotations:jar:1.14 [compile, optional]
@@ -136,7 +136,29 @@ exports_files(["dependencies.yml"])
 # |  +- junit:junit:jar:4.12 [compile, optional]
 # |  \- org.yaml:snakeyaml:jar:1.21 [compile, optional] (conflicts with 1.24)
 # +- com.beust:jcommander:jar:1.78 [compile]
-# \- org.webjars:jquery:jar:3.5.1 [compile]
+# +- org.webjars:jquery:jar:3.5.1 [compile]
+# \- com.palantir.javaformat:palantir-java-format:jar:2.93.0 [compile]
+#    +- com.palantir.javaformat:palantir-java-format-spi:jar:2.93.0 [compile]
+#    |  +- com.google.guava:guava:jar:33.6.0-jre [compile] (conflicts with 20.0)
+#    |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.21 [compile]
+#    |  \- com.fasterxml.jackson.datatype:jackson-datatype-guava:jar:2.21.4 [compile]
+#    |     +- com.google.guava:guava:jar:25.1-jre [compile] (conflicts with 20.0)
+#    |     +- com.fasterxml.jackson.core:jackson-annotations:jar:2.21 [compile]
+#    |     +- com.fasterxml.jackson.core:jackson-core:jar:2.21.4 [compile]
+#    |     \- com.fasterxml.jackson.core:jackson-databind:jar:2.21.4 [compile]
+#    +- com.google.guava:guava:jar:33.6.0-jre [compile] (conflicts with 20.0)
+#    +- org.functionaljava:functionaljava:jar:5.0 [runtime]
+#    +- com.fasterxml.jackson.core:jackson-core:jar:2.21.4 [compile]
+#    +- com.fasterxml.jackson.core:jackson-databind:jar:2.21.4 [compile]
+#    |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.21 [compile]
+#    |  \- com.fasterxml.jackson.core:jackson-core:jar:2.21.4 [compile]
+#    +- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.21.4 [runtime]
+#    |  +- com.fasterxml.jackson.core:jackson-core:jar:2.21.4 [runtime]
+#    |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.21.4 [runtime]
+#    +- com.fasterxml.jackson.module:jackson-module-parameter-names:jar:2.21.4 [runtime]
+#    |  +- com.fasterxml.jackson.core:jackson-core:jar:2.21.4 [runtime]
+#    |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.21.4 [runtime]
+#    \- com.google.code.findbugs:jsr305:jar:3.0.2 [runtime] (conflicts with 1.3.9)
 
 _java_test(
     name = "verify_config_sha256",
@@ -198,6 +220,66 @@ _java_import(
 )
 
 _java_import(
+    name = "jackson_annotations",
+    jars = ["@jackson_annotations//file"],
+    tags = ["maven_coordinates=com.fasterxml.jackson.core:jackson-annotations:2.21"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "jackson_core",
+    jars = ["@jackson_core//file"],
+    tags = ["maven_coordinates=com.fasterxml.jackson.core:jackson-core:2.21.4"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "jackson_databind",
+    jars = ["@jackson_databind//file"],
+    tags = ["maven_coordinates=com.fasterxml.jackson.core:jackson-databind:2.21.4"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":jackson_annotations",
+        ":jackson_core",
+    ],
+)
+
+_java_import(
+    name = "jackson_datatype_guava",
+    jars = ["@jackson_datatype_guava//file"],
+    tags = ["maven_coordinates=com.fasterxml.jackson.datatype:jackson-datatype-guava:2.21.4"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":guava",
+        ":jackson_annotations",
+        ":jackson_core",
+        ":jackson_databind",
+    ],
+)
+
+_java_import(
+    name = "jackson_datatype_jdk8",
+    jars = ["@jackson_datatype_jdk8//file"],
+    tags = ["maven_coordinates=com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.21.4"],
+    visibility = ["//visibility:private"],
+    runtime_deps = [
+        ":jackson_core",
+        ":jackson_databind",
+    ],
+)
+
+_java_import(
+    name = "jackson_module_parameter_names",
+    jars = ["@jackson_module_parameter_names//file"],
+    tags = ["maven_coordinates=com.fasterxml.jackson.module:jackson-module-parameter-names:2.21.4"],
+    visibility = ["//visibility:private"],
+    runtime_deps = [
+        ":jackson_core",
+        ":jackson_databind",
+    ],
+)
+
+_java_import(
     name = "jsr305",
     jars = ["@jsr305//file"],
     tags = ["maven_coordinates=com.google.code.findbugs:jsr305:1.3.9"],
@@ -222,6 +304,7 @@ _java_import(
     name = "guava",
     jars = ["@guava//file"],
     tags = ["maven_coordinates=com.google.guava:guava:20.0"],
+    deps = [":jsr305"],
 )
 
 _java_import(
@@ -243,6 +326,36 @@ _java_import(
     jars = ["@greenmail//file"],
     tags = ["maven_coordinates=com.icegreen:greenmail:1.4.0"],
     visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "palantir_java_format",
+    jars = ["@palantir_java_format//file"],
+    tags = ["maven_coordinates=com.palantir.javaformat:palantir-java-format:2.93.0"],
+    runtime_deps = [
+        ":functionaljava",
+        ":jackson_datatype_jdk8",
+        ":jackson_module_parameter_names",
+        ":jsr305",
+    ],
+    deps = [
+        ":guava",
+        ":jackson_core",
+        ":jackson_databind",
+        ":palantir_java_format_spi",
+    ],
+)
+
+_java_import(
+    name = "palantir_java_format_spi",
+    jars = ["@palantir_java_format_spi//file"],
+    tags = ["maven_coordinates=com.palantir.javaformat:palantir-java-format-spi:2.93.0"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":guava",
+        ":jackson_annotations",
+        ":jackson_datatype_guava",
+    ],
 )
 
 _java_import(
@@ -540,6 +653,13 @@ _java_import(
     name = "plexus_utils",
     jars = ["@plexus_utils//file"],
     tags = ["maven_coordinates=org.codehaus.plexus:plexus-utils:3.0.24"],
+)
+
+_java_import(
+    name = "functionaljava",
+    jars = ["@functionaljava//file"],
+    tags = ["maven_coordinates=org.functionaljava:functionaljava:5.0"],
+    visibility = ["//visibility:private"],
 )
 
 _java_import(

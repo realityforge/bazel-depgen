@@ -2,32 +2,28 @@ package org.realityforge.bazel.depgen.config;
 
 import javax.annotation.Nullable;
 
-public final class JavaConfig
-{
-  @Nullable
-  private Boolean exportDeps;
-  @Nullable
-  private String name;
+public final class JavaConfig {
+    @Nullable
+    private Boolean exportDeps;
 
-  @Nullable
-  public Boolean getExportDeps()
-  {
-    return exportDeps;
-  }
+    @Nullable
+    private String name;
 
-  public void setExportDeps( @Nullable final Boolean exportDeps )
-  {
-    this.exportDeps = exportDeps;
-  }
+    @Nullable
+    public Boolean getExportDeps() {
+        return exportDeps;
+    }
 
-  @Nullable
-  public String getName()
-  {
-    return name;
-  }
+    public void setExportDeps(@Nullable final Boolean exportDeps) {
+        this.exportDeps = exportDeps;
+    }
 
-  public void setName( @Nullable final String name )
-  {
-    this.name = name;
-  }
+    @Nullable
+    public String getName() {
+        return name;
+    }
+
+    public void setName(@Nullable final String name) {
+        this.name = name;
+    }
 }

@@ -4,316 +4,294 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class OptionsConfig
-{
-  public static final String DEFAULT_WORKSPACE_DIR = "..";
-  public static final String DEFAULT_EXTENSION_FILE = "dependencies.bzl";
-  public static final String DEFAULT_WORKSPACE_MACRO_NAME = "generate_workspace_rules";
-  public static final String DEFAULT_TARGET_MACRO_NAME = "generate_targets";
-  public static final RepositoryRuleGenerationStrategy DEFAULT_REPOSITORY_RULE_GENERATION_STRATEGY =
-    RepositoryRuleGenerationStrategy.ExtensionFile;
-  public static final TargetGenerationStrategy DEFAULT_TARGET_GENERATION_STRATEGY =
-    TargetGenerationStrategy.ExtensionFile;
-  public static final String DEFAULT_REPOSITORY_RULE_START_TOKEN = "# --- depgen-generated repository rules start ---";
-  public static final String DEFAULT_REPOSITORY_RULE_END_TOKEN = "# --- depgen-generated repository rules end ---";
-  public static final String DEFAULT_TARGET_START_TOKEN = "# --- depgen-generated targets start ---";
-  public static final String DEFAULT_TARGET_END_TOKEN = "# --- depgen-generated targets end ---";
-  public static final String DEFAULT_NAME_PREFIX = "";
-  public static final NameStrategy DEFAULT_NAME_STRATEGY = NameStrategy.GroupIdAndArtifactId;
-  public static final NameStrategy DEFAULT_REPOSITORY_NAME_STRATEGY = NameStrategy.GroupIdAndArtifactIdAndVersion;
-  public static final boolean DEFAULT_FAIL_ON_INVALID_POM = true;
-  public static final boolean DEFAULT_FAIL_ON_MISSING_POM = true;
-  public static final boolean DEFAULT_EMIT_DEPENDENCY_GRAPH = true;
-  public static final boolean DEFAULT_INCLUDE_SOURCE = true;
-  public static final boolean DEFAULT_INCLUDE_EXTERNAL_ANNOTATIONS = false;
-  public static final boolean DEFAULT_EXPORT_DEPS = false;
-  public static final boolean DEFAULT_SUPPORT_DEPENDENCY_OMIT = false;
-  public static final boolean DEFAULT_VERIFY_CONFIG_SHA256 = true;
-  public static final Nature DEFAULT_NATURE = Nature.Java;
-  @Nullable
-  private String workspaceDirectory;
-  @Nullable
-  private String extensionFile;
-  @Nullable
-  private String workspaceMacroName;
-  @Nullable
-  private String targetMacroName;
-  @Nullable
-  private String repositoryRuleGenerationStrategy;
-  @Nullable
-  private String targetGenerationStrategy;
-  @Nullable
-  private String repositoryRuleStartToken;
-  @Nullable
-  private String repositoryRuleEndToken;
-  @Nullable
-  private String targetStartToken;
-  @Nullable
-  private String targetEndToken;
-  @Nullable
-  private String namePrefix;
-  @Nullable
-  private NameStrategy _nameStrategy;
-  @Nullable
-  private NameStrategy _repositoryNameStrategy;
-  @Nullable
-  private Nature defaultNature;
-  @Nullable
-  private Boolean failOnInvalidPom;
-  @Nullable
-  private Boolean failOnMissingPom;
-  @Nullable
-  private Boolean emitDependencyGraph;
-  @Nullable
-  private Boolean includeSource;
-  @Nullable
-  private Boolean includeExternalAnnotations;
-  @Nullable
-  private Boolean supportDependencyOmit;
-  @Nullable
-  private Boolean verifyConfigSha256;
-  @Nullable
-  private GlobalJavaConfig java;
+public final class OptionsConfig {
+    public static final String DEFAULT_WORKSPACE_DIR = "..";
+    public static final String DEFAULT_EXTENSION_FILE = "dependencies.bzl";
+    public static final String DEFAULT_WORKSPACE_MACRO_NAME = "generate_workspace_rules";
+    public static final String DEFAULT_TARGET_MACRO_NAME = "generate_targets";
+    public static final RepositoryRuleGenerationStrategy DEFAULT_REPOSITORY_RULE_GENERATION_STRATEGY =
+            RepositoryRuleGenerationStrategy.ExtensionFile;
+    public static final TargetGenerationStrategy DEFAULT_TARGET_GENERATION_STRATEGY =
+            TargetGenerationStrategy.ExtensionFile;
+    public static final String DEFAULT_REPOSITORY_RULE_START_TOKEN =
+            "# --- depgen-generated repository rules start ---";
+    public static final String DEFAULT_REPOSITORY_RULE_END_TOKEN = "# --- depgen-generated repository rules end ---";
+    public static final String DEFAULT_TARGET_START_TOKEN = "# --- depgen-generated targets start ---";
+    public static final String DEFAULT_TARGET_END_TOKEN = "# --- depgen-generated targets end ---";
+    public static final String DEFAULT_NAME_PREFIX = "";
+    public static final NameStrategy DEFAULT_NAME_STRATEGY = NameStrategy.GroupIdAndArtifactId;
+    public static final NameStrategy DEFAULT_REPOSITORY_NAME_STRATEGY = NameStrategy.GroupIdAndArtifactIdAndVersion;
+    public static final boolean DEFAULT_FAIL_ON_INVALID_POM = true;
+    public static final boolean DEFAULT_FAIL_ON_MISSING_POM = true;
+    public static final boolean DEFAULT_EMIT_DEPENDENCY_GRAPH = true;
+    public static final boolean DEFAULT_INCLUDE_SOURCE = true;
+    public static final boolean DEFAULT_INCLUDE_EXTERNAL_ANNOTATIONS = false;
+    public static final boolean DEFAULT_EXPORT_DEPS = false;
+    public static final boolean DEFAULT_SUPPORT_DEPENDENCY_OMIT = false;
+    public static final boolean DEFAULT_VERIFY_CONFIG_SHA256 = true;
+    public static final Nature DEFAULT_NATURE = Nature.Java;
 
-  @Nullable
-  public String getWorkspaceDirectory()
-  {
-    return workspaceDirectory;
-  }
+    @Nullable
+    private String workspaceDirectory;
 
-  public void setWorkspaceDirectory( @Nonnull final String workspaceDirectory )
-  {
-    this.workspaceDirectory = workspaceDirectory;
-  }
+    @Nullable
+    private String extensionFile;
 
-  @Nullable
-  public String getExtensionFile()
-  {
-    return extensionFile;
-  }
+    @Nullable
+    private String workspaceMacroName;
 
-  public void setExtensionFile( @Nonnull final String extensionFile )
-  {
-    this.extensionFile = Objects.requireNonNull( extensionFile );
-  }
+    @Nullable
+    private String targetMacroName;
 
-  @Nullable
-  public String getWorkspaceMacroName()
-  {
-    return workspaceMacroName;
-  }
+    @Nullable
+    private String repositoryRuleGenerationStrategy;
 
-  public void setWorkspaceMacroName( @Nonnull final String workspaceMacroName )
-  {
-    this.workspaceMacroName = Objects.requireNonNull( workspaceMacroName );
-  }
+    @Nullable
+    private String targetGenerationStrategy;
 
-  @Nullable
-  public String getTargetMacroName()
-  {
-    return targetMacroName;
-  }
+    @Nullable
+    private String repositoryRuleStartToken;
 
-  public void setTargetMacroName( @Nonnull final String targetMacroName )
-  {
-    this.targetMacroName = Objects.requireNonNull( targetMacroName );
-  }
+    @Nullable
+    private String repositoryRuleEndToken;
 
-  @Nullable
-  public String getRepositoryRuleGenerationStrategy()
-  {
-    return repositoryRuleGenerationStrategy;
-  }
+    @Nullable
+    private String targetStartToken;
 
-  public void setRepositoryRuleGenerationStrategy( @Nonnull final String repositoryRuleGenerationStrategy )
-  {
-    this.repositoryRuleGenerationStrategy = Objects.requireNonNull( repositoryRuleGenerationStrategy );
-  }
+    @Nullable
+    private String targetEndToken;
 
-  @Nullable
-  public String getTargetGenerationStrategy()
-  {
-    return targetGenerationStrategy;
-  }
+    @Nullable
+    private String namePrefix;
 
-  public void setTargetGenerationStrategy( @Nonnull final String targetGenerationStrategy )
-  {
-    this.targetGenerationStrategy = Objects.requireNonNull( targetGenerationStrategy );
-  }
+    @Nullable
+    private NameStrategy _nameStrategy;
 
-  @Nullable
-  public String getRepositoryRuleStartToken()
-  {
-    return repositoryRuleStartToken;
-  }
+    @Nullable
+    private NameStrategy _repositoryNameStrategy;
 
-  public void setRepositoryRuleStartToken( @Nonnull final String repositoryRuleStartToken )
-  {
-    this.repositoryRuleStartToken = Objects.requireNonNull( repositoryRuleStartToken );
-  }
+    @Nullable
+    private Nature defaultNature;
 
-  @Nullable
-  public String getRepositoryRuleEndToken()
-  {
-    return repositoryRuleEndToken;
-  }
+    @Nullable
+    private Boolean failOnInvalidPom;
 
-  public void setRepositoryRuleEndToken( @Nonnull final String repositoryRuleEndToken )
-  {
-    this.repositoryRuleEndToken = Objects.requireNonNull( repositoryRuleEndToken );
-  }
+    @Nullable
+    private Boolean failOnMissingPom;
 
-  @Nullable
-  public String getTargetStartToken()
-  {
-    return targetStartToken;
-  }
+    @Nullable
+    private Boolean emitDependencyGraph;
 
-  public void setTargetStartToken( @Nonnull final String targetStartToken )
-  {
-    this.targetStartToken = Objects.requireNonNull( targetStartToken );
-  }
+    @Nullable
+    private Boolean includeSource;
 
-  @Nullable
-  public String getTargetEndToken()
-  {
-    return targetEndToken;
-  }
+    @Nullable
+    private Boolean includeExternalAnnotations;
 
-  public void setTargetEndToken( @Nonnull final String targetEndToken )
-  {
-    this.targetEndToken = Objects.requireNonNull( targetEndToken );
-  }
+    @Nullable
+    private Boolean supportDependencyOmit;
 
-  @Nullable
-  public String getNamePrefix()
-  {
-    return namePrefix;
-  }
+    @Nullable
+    private Boolean verifyConfigSha256;
 
-  public void setNamePrefix( @Nonnull final String namePrefix )
-  {
-    this.namePrefix = Objects.requireNonNull( namePrefix );
-  }
+    @Nullable
+    private GlobalJavaConfig java;
 
-  @Nullable
-  public NameStrategy getNameStrategy()
-  {
-    return _nameStrategy;
-  }
+    @Nullable
+    public String getWorkspaceDirectory() {
+        return workspaceDirectory;
+    }
 
-  public void setNameStrategy( @Nonnull final NameStrategy nameStrategy )
-  {
-    this._nameStrategy = Objects.requireNonNull( nameStrategy );
-  }
+    public void setWorkspaceDirectory(@Nonnull final String workspaceDirectory) {
+        this.workspaceDirectory = workspaceDirectory;
+    }
 
-  @Nullable
-  public NameStrategy getRepositoryNameStrategy()
-  {
-    return _repositoryNameStrategy;
-  }
+    @Nullable
+    public String getExtensionFile() {
+        return extensionFile;
+    }
 
-  public void setRepositoryNameStrategy( @Nonnull final NameStrategy repositoryNameStrategy )
-  {
-    this._repositoryNameStrategy = Objects.requireNonNull( repositoryNameStrategy );
-  }
+    public void setExtensionFile(@Nonnull final String extensionFile) {
+        this.extensionFile = Objects.requireNonNull(extensionFile);
+    }
 
-  @Nullable
-  public Nature getDefaultNature()
-  {
-    return defaultNature;
-  }
+    @Nullable
+    public String getWorkspaceMacroName() {
+        return workspaceMacroName;
+    }
 
-  public void setDefaultNature( @Nonnull final Nature defaultNature )
-  {
-    this.defaultNature = Objects.requireNonNull( defaultNature );
-  }
+    public void setWorkspaceMacroName(@Nonnull final String workspaceMacroName) {
+        this.workspaceMacroName = Objects.requireNonNull(workspaceMacroName);
+    }
 
-  @Nullable
-  public Boolean getFailOnInvalidPom()
-  {
-    return failOnInvalidPom;
-  }
+    @Nullable
+    public String getTargetMacroName() {
+        return targetMacroName;
+    }
 
-  public void setFailOnInvalidPom( @Nonnull final Boolean failOnInvalidPom )
-  {
-    this.failOnInvalidPom = Objects.requireNonNull( failOnInvalidPom );
-  }
+    public void setTargetMacroName(@Nonnull final String targetMacroName) {
+        this.targetMacroName = Objects.requireNonNull(targetMacroName);
+    }
 
-  @Nullable
-  public Boolean getFailOnMissingPom()
-  {
-    return failOnMissingPom;
-  }
+    @Nullable
+    public String getRepositoryRuleGenerationStrategy() {
+        return repositoryRuleGenerationStrategy;
+    }
 
-  public void setFailOnMissingPom( @Nonnull final Boolean failOnMissingPom )
-  {
-    this.failOnMissingPom = Objects.requireNonNull( failOnMissingPom );
-  }
+    public void setRepositoryRuleGenerationStrategy(@Nonnull final String repositoryRuleGenerationStrategy) {
+        this.repositoryRuleGenerationStrategy = Objects.requireNonNull(repositoryRuleGenerationStrategy);
+    }
 
-  @Nullable
-  public Boolean getEmitDependencyGraph()
-  {
-    return emitDependencyGraph;
-  }
+    @Nullable
+    public String getTargetGenerationStrategy() {
+        return targetGenerationStrategy;
+    }
 
-  public void setEmitDependencyGraph( @Nonnull final Boolean emitDependencyGraph )
-  {
-    this.emitDependencyGraph = Objects.requireNonNull( emitDependencyGraph );
-  }
+    public void setTargetGenerationStrategy(@Nonnull final String targetGenerationStrategy) {
+        this.targetGenerationStrategy = Objects.requireNonNull(targetGenerationStrategy);
+    }
 
-  @Nullable
-  public Boolean getIncludeSource()
-  {
-    return includeSource;
-  }
+    @Nullable
+    public String getRepositoryRuleStartToken() {
+        return repositoryRuleStartToken;
+    }
 
-  public void setIncludeSource( @Nonnull final Boolean includeSource )
-  {
-    this.includeSource = Objects.requireNonNull( includeSource );
-  }
+    public void setRepositoryRuleStartToken(@Nonnull final String repositoryRuleStartToken) {
+        this.repositoryRuleStartToken = Objects.requireNonNull(repositoryRuleStartToken);
+    }
 
-  @Nullable
-  public Boolean getIncludeExternalAnnotations()
-  {
-    return includeExternalAnnotations;
-  }
+    @Nullable
+    public String getRepositoryRuleEndToken() {
+        return repositoryRuleEndToken;
+    }
 
-  public void setIncludeExternalAnnotations( @Nonnull final Boolean includeExternalAnnotations )
-  {
-    this.includeExternalAnnotations = Objects.requireNonNull( includeExternalAnnotations );
-  }
+    public void setRepositoryRuleEndToken(@Nonnull final String repositoryRuleEndToken) {
+        this.repositoryRuleEndToken = Objects.requireNonNull(repositoryRuleEndToken);
+    }
 
-  @Nullable
-  public Boolean getSupportDependencyOmit()
-  {
-    return supportDependencyOmit;
-  }
+    @Nullable
+    public String getTargetStartToken() {
+        return targetStartToken;
+    }
 
-  public void setSupportDependencyOmit( @Nonnull final Boolean supportDependencyOmit )
-  {
-    this.supportDependencyOmit = Objects.requireNonNull( supportDependencyOmit );
-  }
+    public void setTargetStartToken(@Nonnull final String targetStartToken) {
+        this.targetStartToken = Objects.requireNonNull(targetStartToken);
+    }
 
-  @Nullable
-  public Boolean getVerifyConfigSha256()
-  {
-    return verifyConfigSha256;
-  }
+    @Nullable
+    public String getTargetEndToken() {
+        return targetEndToken;
+    }
 
-  public void setVerifyConfigSha256( @Nonnull final Boolean verifyConfigSha256 )
-  {
-    this.verifyConfigSha256 = Objects.requireNonNull( verifyConfigSha256 );
-  }
+    public void setTargetEndToken(@Nonnull final String targetEndToken) {
+        this.targetEndToken = Objects.requireNonNull(targetEndToken);
+    }
 
-  @Nullable
-  public GlobalJavaConfig getJava()
-  {
-    return java;
-  }
+    @Nullable
+    public String getNamePrefix() {
+        return namePrefix;
+    }
 
-  public void setJava( @Nonnull final GlobalJavaConfig java )
-  {
-    this.java = Objects.requireNonNull( java );
-  }
+    public void setNamePrefix(@Nonnull final String namePrefix) {
+        this.namePrefix = Objects.requireNonNull(namePrefix);
+    }
+
+    @Nullable
+    public NameStrategy getNameStrategy() {
+        return _nameStrategy;
+    }
+
+    public void setNameStrategy(@Nonnull final NameStrategy nameStrategy) {
+        this._nameStrategy = Objects.requireNonNull(nameStrategy);
+    }
+
+    @Nullable
+    public NameStrategy getRepositoryNameStrategy() {
+        return _repositoryNameStrategy;
+    }
+
+    public void setRepositoryNameStrategy(@Nonnull final NameStrategy repositoryNameStrategy) {
+        this._repositoryNameStrategy = Objects.requireNonNull(repositoryNameStrategy);
+    }
+
+    @Nullable
+    public Nature getDefaultNature() {
+        return defaultNature;
+    }
+
+    public void setDefaultNature(@Nonnull final Nature defaultNature) {
+        this.defaultNature = Objects.requireNonNull(defaultNature);
+    }
+
+    @Nullable
+    public Boolean getFailOnInvalidPom() {
+        return failOnInvalidPom;
+    }
+
+    public void setFailOnInvalidPom(@Nonnull final Boolean failOnInvalidPom) {
+        this.failOnInvalidPom = Objects.requireNonNull(failOnInvalidPom);
+    }
+
+    @Nullable
+    public Boolean getFailOnMissingPom() {
+        return failOnMissingPom;
+    }
+
+    public void setFailOnMissingPom(@Nonnull final Boolean failOnMissingPom) {
+        this.failOnMissingPom = Objects.requireNonNull(failOnMissingPom);
+    }
+
+    @Nullable
+    public Boolean getEmitDependencyGraph() {
+        return emitDependencyGraph;
+    }
+
+    public void setEmitDependencyGraph(@Nonnull final Boolean emitDependencyGraph) {
+        this.emitDependencyGraph = Objects.requireNonNull(emitDependencyGraph);
+    }
+
+    @Nullable
+    public Boolean getIncludeSource() {
+        return includeSource;
+    }
+
+    public void setIncludeSource(@Nonnull final Boolean includeSource) {
+        this.includeSource = Objects.requireNonNull(includeSource);
+    }
+
+    @Nullable
+    public Boolean getIncludeExternalAnnotations() {
+        return includeExternalAnnotations;
+    }
+
+    public void setIncludeExternalAnnotations(@Nonnull final Boolean includeExternalAnnotations) {
+        this.includeExternalAnnotations = Objects.requireNonNull(includeExternalAnnotations);
+    }
+
+    @Nullable
+    public Boolean getSupportDependencyOmit() {
+        return supportDependencyOmit;
+    }
+
+    public void setSupportDependencyOmit(@Nonnull final Boolean supportDependencyOmit) {
+        this.supportDependencyOmit = Objects.requireNonNull(supportDependencyOmit);
+    }
+
+    @Nullable
+    public Boolean getVerifyConfigSha256() {
+        return verifyConfigSha256;
+    }
+
+    public void setVerifyConfigSha256(@Nonnull final Boolean verifyConfigSha256) {
+        this.verifyConfigSha256 = Objects.requireNonNull(verifyConfigSha256);
+    }
+
+    @Nullable
+    public GlobalJavaConfig getJava() {
+        return java;
+    }
+
+    public void setJava(@Nonnull final GlobalJavaConfig java) {
+        this.java = Objects.requireNonNull(java);
+    }
 }

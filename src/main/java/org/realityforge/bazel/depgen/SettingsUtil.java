@@ -10,20 +10,17 @@ import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingResult;
 
-final class SettingsUtil
-{
-  private SettingsUtil()
-  {
-  }
+final class SettingsUtil {
+    private SettingsUtil() {}
 
-  @Nonnull
-  static Settings loadSettings( @Nonnull final Path settingsFile, @Nonnull final Logger logger )
-    throws SettingsBuildingException
-  {
-    final SettingsBuildingRequest request =
-      new DefaultSettingsBuildingRequest().setUserSettingsFile( settingsFile.toFile() );
-    final SettingsBuildingResult result = new DefaultSettingsBuilderFactory().newInstance().build( request );
-    result.getProblems().forEach( problem -> logger.warning( problem.toString() ) );
-    return result.getEffectiveSettings();
-  }
+    @Nonnull
+    static Settings loadSettings(@Nonnull final Path settingsFile, @Nonnull final Logger logger)
+            throws SettingsBuildingException {
+        final SettingsBuildingRequest request =
+                new DefaultSettingsBuildingRequest().setUserSettingsFile(settingsFile.toFile());
+        final SettingsBuildingResult result =
+                new DefaultSettingsBuilderFactory().newInstance().build(request);
+        result.getProblems().forEach(problem -> logger.warning(problem.toString()));
+        return result.getEffectiveSettings();
+    }
 }

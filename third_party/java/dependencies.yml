@@ -54,3 +54,7 @@ artifacts:
   - coord: org.testng:testng:7.4.0
   - coord: com.beust:jcommander:1.78
   - coord: org.webjars:jquery:3.5.1
+  - coord: com.palantir.javaformat:palantir-java-format:2.93.0
+    includeSource: false
+    excludes:
+      - com.palantir.javaformat:palantir-java-format-parent

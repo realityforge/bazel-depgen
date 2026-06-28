@@ -1,34 +1,27 @@
 package org.realityforge.bazel.depgen;
 
+import static org.testng.Assert.*;
+
 import gir.io.FileUtil;
 import java.nio.file.Path;
 import java.util.logging.Level;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
-public class PrintGraphCommandTest
-  extends AbstractTest
-{
-  @Test
-  public void run_printGraph()
-    throws Exception
-  {
-    final Path dir = FileUtil.createLocalTempDir();
+public class PrintGraphCommandTest extends AbstractTest {
+    @Test
+    public void run_printGraph() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
 
-    deployArtifactToLocalRepository( dir, "com.example:myapp:1.0" );
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
-    writeWorkspace();
-    writeConfigFile( dir,
-                     "artifacts:\n" +
-                     "  - coord: com.example:myapp:1.0\n" );
+        writeWorkspace();
+        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
 
-    final TestHandler handler = new TestHandler();
-    handler.setLevel( Level.INFO );
-    final PrintGraphCommand command = new PrintGraphCommand();
-    final int exitCode = command.run( new CommandContextImpl( newEnvironment( handler ) ) );
-    assertEquals( exitCode, ExitCodes.SUCCESS_EXIT_CODE );
-    assertEquals( handler.toString(),
-                  "Dependency Graph:\n" +
-                  "\\- com.example:myapp:jar:1.0 [compile]" );
-  }
+        final TestHandler handler = new TestHandler();
+        handler.setLevel(Level.INFO);
+        final PrintGraphCommand command = new PrintGraphCommand();
+        final int exitCode = command.run(new CommandContextImpl(newEnvironment(handler)));
+        assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
+        assertEquals(handler.toString(), "Dependency Graph:\n" + "\\- com.example:myapp:jar:1.0 [compile]");
+    }
 }

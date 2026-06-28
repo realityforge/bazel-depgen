@@ -5,45 +5,40 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class J2clConfig
-{
-  @Nullable
-  private List<String> suppress;
-  @Nullable
-  private J2clMode mode;
-  @Nullable
-  private String name;
+public final class J2clConfig {
+    @Nullable
+    private List<String> suppress;
 
-  @Nullable
-  public List<String> getSuppress()
-  {
-    return suppress;
-  }
+    @Nullable
+    private J2clMode mode;
 
-  public void setSuppress( @Nonnull final List<String> suppress )
-  {
-    this.suppress = Objects.requireNonNull( suppress );
-  }
+    @Nullable
+    private String name;
 
-  @Nullable
-  public J2clMode getMode()
-  {
-    return mode;
-  }
+    @Nullable
+    public List<String> getSuppress() {
+        return suppress;
+    }
 
-  public void setMode( @Nonnull final J2clMode mode )
-  {
-    this.mode = Objects.requireNonNull( mode );
-  }
+    public void setSuppress(@Nonnull final List<String> suppress) {
+        this.suppress = Objects.requireNonNull(suppress);
+    }
 
-  @Nullable
-  public String getName()
-  {
-    return name;
-  }
+    @Nullable
+    public J2clMode getMode() {
+        return mode;
+    }
 
-  public void setName( @Nullable final String name )
-  {
-    this.name = name;
-  }
+    public void setMode(@Nonnull final J2clMode mode) {
+        this.mode = Objects.requireNonNull(mode);
+    }
+
+    @Nullable
+    public String getName() {
+        return name;
+    }
+
+    public void setName(@Nullable final String name) {
+        this.name = name;
+    }
 }

@@ -7,83 +7,68 @@ import java.nio.file.Path;
 import javax.annotation.Nonnull;
 import org.realityforge.bazel.depgen.DepgenException;
 
-public final class GeneratedSectionWriter
-{
-  private GeneratedSectionWriter()
-  {
-  }
+public final class GeneratedSectionWriter {
+    private GeneratedSectionWriter() {}
 
-  public static void replaceSection( @Nonnull final Path path,
-                                     @Nonnull final String startToken,
-                                     @Nonnull final String endToken,
-                                     @Nonnull final String content )
-    throws IOException
-  {
-    if ( !Files.exists( path ) )
-    {
-      throw new DepgenException( "Expected generated output destination file to exist. File: " + path );
-    }
+    public static void replaceSection(
+            @Nonnull final Path path,
+            @Nonnull final String startToken,
+            @Nonnull final String endToken,
+            @Nonnull final String content)
+            throws IOException {
+        if (!Files.exists(path)) {
+            throw new DepgenException("Expected generated output destination file to exist. File: " + path);
+        }
 
-    final String data = Files.readString( path, StandardCharsets.UTF_8 );
-    final int startIndex = data.indexOf( startToken );
-    if ( -1 == startIndex )
-    {
-      throw new DepgenException( "Expected generated output destination file to contain start token '" +
-                                 startToken + "'. File: " + path );
-    }
-    final int endIndex = data.indexOf( endToken, startIndex + startToken.length() );
-    if ( -1 == endIndex )
-    {
-      throw new DepgenException( "Expected generated output destination file to contain end token '" +
-                                 endToken + "' after the start token. File: " + path );
-    }
+        final String data = Files.readString(path, StandardCharsets.UTF_8);
+        final int startIndex = data.indexOf(startToken);
+        if (-1 == startIndex) {
+            throw new DepgenException("Expected generated output destination file to contain start token '" + startToken
+                    + "'. File: " + path);
+        }
+        final int endIndex = data.indexOf(endToken, startIndex + startToken.length());
+        if (-1 == endIndex) {
+            throw new DepgenException("Expected generated output destination file to contain end token '" + endToken
+                    + "' after the start token. File: " + path);
+        }
 
-    final StringBuilder sb = new StringBuilder();
-    sb.append( data, 0, startIndex + startToken.length() );
-    sb.append( "\n\n" ).append( content );
-    if ( !content.endsWith( "\n" ) )
-    {
-      sb.append( "\n" );
-    }
-    sb.append( "\n" );
-    sb.append( data.substring( endIndex ) );
-    Files.writeString( path, sb.toString(), StandardCharsets.UTF_8 );
-  }
-
-  public static boolean ensureSectionExists( @Nonnull final Path path,
-                                             @Nonnull final String startToken,
-                                             @Nonnull final String endToken )
-    throws IOException
-  {
-    if ( !Files.exists( path ) )
-    {
-      throw new DepgenException( "Expected generated output destination file to exist. File: " + path );
+        final StringBuilder sb = new StringBuilder();
+        sb.append(data, 0, startIndex + startToken.length());
+        sb.append("\n\n").append(content);
+        if (!content.endsWith("\n")) {
+            sb.append("\n");
+        }
+        sb.append("\n");
+        sb.append(data.substring(endIndex));
+        Files.writeString(path, sb.toString(), StandardCharsets.UTF_8);
     }
 
-    final String data = Files.readString( path, StandardCharsets.UTF_8 );
-    final boolean hasStartToken = data.contains( startToken );
-    final boolean hasEndToken = data.contains( endToken );
-    if ( hasStartToken && hasEndToken )
-    {
-      return false;
-    }
-    else if ( hasStartToken || hasEndToken )
-    {
-      throw new DepgenException( "Expected generated output destination file to either contain both markers or " +
-                                 "neither marker. File: " + path );
-    }
+    public static boolean ensureSectionExists(
+            @Nonnull final Path path, @Nonnull final String startToken, @Nonnull final String endToken)
+            throws IOException {
+        if (!Files.exists(path)) {
+            throw new DepgenException("Expected generated output destination file to exist. File: " + path);
+        }
 
-    final StringBuilder sb = new StringBuilder( data );
-    if ( !data.isEmpty() && !data.endsWith( "\n" ) )
-    {
-      sb.append( "\n" );
+        final String data = Files.readString(path, StandardCharsets.UTF_8);
+        final boolean hasStartToken = data.contains(startToken);
+        final boolean hasEndToken = data.contains(endToken);
+        if (hasStartToken && hasEndToken) {
+            return false;
+        } else if (hasStartToken || hasEndToken) {
+            throw new DepgenException("Expected generated output destination file to either contain both markers or "
+                    + "neither marker. File: " + path);
+        }
+
+        final StringBuilder sb = new StringBuilder(data);
+        if (!data.isEmpty() && !data.endsWith("\n")) {
+            sb.append("\n");
+        }
+        if (!data.isEmpty()) {
+            sb.append("\n");
+        }
+        sb.append(startToken).append("\n\n").append(endToken).append("\n");
+        Files.writeString(path, sb.toString(), StandardCharsets.UTF_8);
+        return true;
     }
-    if ( !data.isEmpty() )
-    {
-      sb.append( "\n" );
-    }
-    sb.append( startToken ).append( "\n\n" ).append( endToken ).append( "\n" );
-    Files.writeString( path, sb.toString(), StandardCharsets.UTF_8 );
-    return true;
-  }
 }
