@@ -1,0 +1,137 @@
+plan:
+  id: add-command
+  status: completed
+  required_full_gate: bundle exec buildr test
+
+tasks:
+  - id: PLAN-01
+    title: Establish add command requirements and plan
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - Requirements document exists with stable open question IDs.
+      - Implementation plan exists and references unresolved decisions.
+      - Task board exists and tracks plan approval.
+      - TODO entry reflects the modern accepted command surface.
+    files:
+      - TODO.md
+      - plans/add-command/00-requirements.md
+      - plans/add-command/10-implementation-plan.md
+      - plans/add-command/20-task-board.yaml
+    evidence:
+      - command: git status --short
+        result: clean before planning started
+      - command: user decision
+        result: Q-01 resolved; add fails on duplicate groupId:artifactId and leaves the file unchanged
+      - command: iterative plan review round 1
+        result: accepted findings on validation, YAML insertion, per-nature flags, safe writes, coord arity, and task-board status; plan artifacts updated
+      - command: iterative plan review round 2
+        result: accepted findings on deferred config-dependent validation, unsupported artifacts section shapes, and temp-file cleanup; plan artifacts updated
+    commit:
+      hash: not_required
+      message: Planning task only; implementation commits will be tracked on ADD-* tasks.
+
+  - id: PLAN-APPROVAL
+    title: User review and acceptance of latest plan
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-01
+    acceptance_criteria:
+      - All open questions are resolved.
+      - User review of the latest plan is explicitly requested.
+      - User feedback is incorporated.
+      - Plan status is updated only after approval.
+    files:
+      - plans/add-command/00-requirements.md
+      - plans/add-command/10-implementation-plan.md
+      - plans/add-command/20-task-board.yaml
+    evidence:
+      - command: user approval
+        result: User said "Implement" after iterative plan review completed with no findings; plan marked accepted.
+    commit:
+      hash: not_required
+      message: Approval checkpoint only; implementation commit is tracked on ADD-* tasks.
+
+  - id: ADD-01
+    title: Implement add command option parsing and registration
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-APPROVAL
+    acceptance_criteria:
+      - Add command appears in CLI usage.
+      - Command accepts one coordinate and rejects missing or extra positional arguments.
+      - Command parses the accepted modern flags.
+      - Command accepts 2-5 part coordinates and does not infer missing versions.
+      - Command defers config-dependent validation from option parsing to run.
+      - Command rejects per-nature flags that do not match explicit natures or options.defaultNature after config load.
+    files:
+      - src/main/java/org/realityforge/bazel/depgen/AddCommand.java
+      - src/main/java/org/realityforge/bazel/depgen/Main.java
+      - src/test/java/org/realityforge/bazel/depgen/AddCommandTest.java
+      - src/test/java/org/realityforge/bazel/depgen/MainTest.java
+    evidence:
+      - command: bundle exec buildr test:AddCommandTest
+        result: Passed 15 tests covering add command option parsing, repeated flags, enum validation, and nature-specific validation.
+      - command: bundle exec buildr test:MainTest
+        result: Passed 53 tests, including top-level usage output with the add command.
+    commit:
+      hash: d17724c8d71222c4f4f2fa5a7dd9477ec50d3030
+      message: "feat(add-command): append dependencies to config"
+
+  - id: ADD-02
+    title: Implement comment-preserving artifact insertion
+    status: completed
+    priority: high
+    depends_on:
+      - ADD-01
+    acceptance_criteria:
+      - Existing comments and unrelated YAML remain unchanged.
+      - Missing artifacts section is created correctly.
+      - Existing artifacts section receives the new dependency entry.
+      - Commented sample artifacts section is ignored as an insertion point.
+      - Existing artifacts section insertion stops before the next top-level key.
+      - Inline or non-list artifacts section forms fail unchanged.
+      - File is unchanged on command failure.
+      - Candidate config is model-validated before the real file is replaced.
+      - Temporary validation/write files are cleaned up on success and failure.
+    files:
+      - src/main/java/org/realityforge/bazel/depgen/AddCommand.java
+      - src/test/java/org/realityforge/bazel/depgen/AddCommandTest.java
+    evidence:
+      - command: bundle exec buildr test:AddCommandTest
+        result: Passed 15 tests covering missing sections, existing sections, commented template sections, inline-section rejection, duplicate failure, candidate validation failure, unchanged-file assertions, and temp-file cleanup.
+    commit:
+      hash: d17724c8d71222c4f4f2fa5a7dd9477ec50d3030
+      message: "feat(add-command): append dependencies to config"
+
+  - id: ADD-03
+    title: Validate behavior and update release notes
+    status: completed
+    priority: high
+    depends_on:
+      - ADD-02
+    acceptance_criteria:
+      - Targeted add command tests pass.
+      - Main CLI tests pass.
+      - Full Buildr test gate passes.
+      - CHANGELOG.md records the user-facing command.
+      - TODO item is removed after implementation.
+    files:
+      - CHANGELOG.md
+      - TODO.md
+      - plans/add-command/20-task-board.yaml
+    evidence:
+      - command: bundle exec buildr test:AddCommandTest
+        result: Passed 15 tests.
+      - command: bundle exec buildr test:MainTest
+        result: Passed 53 tests.
+      - command: bundle exec buildr test
+        result: Passed 470 tests.
+      - command: implementation discovery
+        result: Added explicit --include-source support and deterministic J2CL/source and J2CL suppress/import validation to keep add from writing known-invalid generation configs.
+    commit:
+      hash: d17724c8d71222c4f4f2fa5a7dd9477ec50d3030
+      message: "feat(add-command): append dependencies to config"
