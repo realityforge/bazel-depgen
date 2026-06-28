@@ -13,10 +13,12 @@ final class PrintGraphCommand extends Command {
         super(COMMAND, "Compute and print the dependency graph for the dependency configuration.");
     }
 
+    @Override
     boolean mayUseArtifactCache() {
         return true;
     }
 
+    @Override
     boolean mayUseRepositoryCache() {
         return true;
     }

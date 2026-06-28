@@ -38,7 +38,7 @@ import org.realityforge.getopt4j.CLUtil;
 /**
  * The entry point in which to run the tool.
  */
-public class Main {
+public final class Main {
     private static final int VERSION_OPT = 2;
     private static final int HELP_OPT = 'h';
     private static final int QUIET_OPT = 'q';
@@ -92,17 +92,21 @@ public class Main {
     };
 
     @Nonnull
-    private static final Map<String, Supplier<Command>> COMMAND_MAP =
-            Collections.unmodifiableMap(new LinkedHashMap<>() {
-                {
-                    put(GenerateCommand.COMMAND, GenerateCommand::new);
-                    put(PrintGraphCommand.COMMAND, PrintGraphCommand::new);
-                    put(HashCommand.COMMAND, HashCommand::new);
-                    put(InitCommand.COMMAND, InitCommand::new);
-                    put(AddCommand.COMMAND, AddCommand::new);
-                    put(InfoCommand.COMMAND, InfoCommand::new);
-                }
-            });
+    private static final Map<String, Supplier<Command>> COMMAND_MAP = buildCommandMap();
+
+    private Main() {}
+
+    @Nonnull
+    private static Map<String, Supplier<Command>> buildCommandMap() {
+        final LinkedHashMap<String, Supplier<Command>> commands = new LinkedHashMap<>();
+        commands.put(GenerateCommand.COMMAND, GenerateCommand::new);
+        commands.put(PrintGraphCommand.COMMAND, PrintGraphCommand::new);
+        commands.put(HashCommand.COMMAND, HashCommand::new);
+        commands.put(InitCommand.COMMAND, InitCommand::new);
+        commands.put(AddCommand.COMMAND, AddCommand::new);
+        commands.put(InfoCommand.COMMAND, InfoCommand::new);
+        return Collections.unmodifiableMap(commands);
+    }
 
     public static void main(@Nonnull final String[] args) {
         final Environment environment =

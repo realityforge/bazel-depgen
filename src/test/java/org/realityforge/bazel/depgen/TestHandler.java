@@ -6,7 +6,7 @@ import java.util.logging.LogRecord;
 import java.util.stream.Collectors;
 
 final class TestHandler extends Handler {
-    private ArrayList<LogRecord> _records = new ArrayList<>();
+    private final ArrayList<LogRecord> _records = new ArrayList<>();
 
     @Override
     public void publish(final LogRecord record) {

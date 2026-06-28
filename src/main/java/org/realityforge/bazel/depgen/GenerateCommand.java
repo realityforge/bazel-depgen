@@ -18,10 +18,12 @@ final class GenerateCommand extends Command {
         super(COMMAND, "Generate the Bazel outputs from the dependency configuration.");
     }
 
+    @Override
     boolean mayUseArtifactCache() {
         return true;
     }
 
+    @Override
     boolean mayUseRepositoryCache() {
         return true;
     }

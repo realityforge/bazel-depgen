@@ -184,6 +184,7 @@ public final class DepgenMetadata {
                 _properties.store(writer, null);
             }
         } catch (final IOException ignored) {
+            // Ignored. Metadata cache writes are best-effort.
         }
     }
 

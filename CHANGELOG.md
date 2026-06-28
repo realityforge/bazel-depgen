@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Enable strict Error Prone checks in Bazel builds, copying Ariake's rule set where it fits the current source
+  and omitting only `Varifier` to avoid a broad mechanical rewrite.
 * Add the `add` subcommand to append dependencies to `dependencies.yml` while preserving unrelated config text and
   validating the candidate configuration before replacing the file.
 

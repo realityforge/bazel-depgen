@@ -91,6 +91,7 @@ final class RecordUtil {
                 throw new DepgenConfigurationException(message);
             }
         } catch (final IOException | URISyntaxException ignored) {
+            // Ignored. The artifact is treated as absent from this repository.
         }
         return null;
     }
