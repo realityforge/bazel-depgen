@@ -85,7 +85,7 @@ abstract class PeerArtifactDownloaderVisitor implements DependencyVisitor {
             final ArtifactResult sourceArtifactResult = _resolver
                     .getSystem()
                     .resolveArtifact(_resolver.getSession(), new ArtifactRequest(peerArtifact, repositories, null));
-            final HashMap<String, String> properties = new HashMap<>(artifact.getProperties());
+            final var properties = new HashMap<>(artifact.getProperties());
             properties.put(
                     _filenameKey, sourceArtifactResult.getArtifact().getFile().getAbsolutePath());
             metadata.updateProperty(_metadataProperty, "true");

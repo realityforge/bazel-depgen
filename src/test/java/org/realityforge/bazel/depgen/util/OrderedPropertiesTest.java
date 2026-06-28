@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 public class OrderedPropertiesTest extends AbstractTest {
     @Test
     public void keySet() {
-        final OrderedProperties properties = new OrderedProperties();
+        final var properties = new OrderedProperties();
         properties.put("1", "1");
         properties.put("5", "1");
         properties.put("2", "1");
@@ -25,7 +25,7 @@ public class OrderedPropertiesTest extends AbstractTest {
 
     @Test
     public void store() throws Exception {
-        final OrderedProperties properties = new OrderedProperties();
+        final var properties = new OrderedProperties();
         properties.put("1", "1");
         properties.put("5", "1");
         properties.put("2", "1");

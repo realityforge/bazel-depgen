@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
 public class MainTest extends AbstractTest {
     @Test
     public void printUsage() throws Exception {
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         // We set the level to warning which is equivalent to --quiet so that we know that output
         // occurs even if the --quiet argument is passed.
@@ -76,7 +76,7 @@ public class MainTest extends AbstractTest {
     public void processOptions_defaultConfigFileMissing() throws Exception {
         writeWorkspace();
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         environment.setConfigFile(null);
         environment.setSettingsFile(null);
@@ -109,7 +109,7 @@ public class MainTest extends AbstractTest {
     public void processOptions_configFileMissing_initSubCommand() throws Exception {
         writeWorkspace();
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         assertFalse(environment.shouldResetCachedMetadata());
         assertTrue(Main.processOptions(environment, "init"));
@@ -154,7 +154,7 @@ public class MainTest extends AbstractTest {
         final Path configFile = dir.resolve("thirdparty").resolve(ApplicationConfig.FILENAME);
         FileUtil.write(configFile, "");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         environment.setConfigFile(null);
         environment.logger().setLevel(Level.INFO);
@@ -223,7 +223,7 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         environment.setConfigFile(null);
         environment.setSettingsFile(null);
@@ -243,7 +243,7 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         FileUtil.write("dependencies2.yml", "");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         assertTrue(Main.processOptions(environment, "--config-file", "dependencies2.yml", "generate"));
         assertEquals(environment.getConfigFile(), FileUtil.getCurrentDirectory().resolve("dependencies2.yml"));
@@ -255,7 +255,7 @@ public class MainTest extends AbstractTest {
         writeConfigFile("");
         final Path dir = FileUtil.createLocalTempDir();
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         assertTrue(Main.processOptions(environment, "--cache-directory", dir.toString(), "generate"));
         assertTrue(environment.hasCacheDir());
@@ -266,7 +266,7 @@ public class MainTest extends AbstractTest {
     public void processOptions_whenCacheDirectoryUnspecifiedAndNotInvokedWIthinWorkspace() throws Exception {
         FileUtil.write("dependencies2.yml", "");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         environment.setCacheDir(null);
         assertFalse(Main.processOptions(environment, "--config-file", "dependencies2.yml", "generate"));
@@ -297,7 +297,7 @@ public class MainTest extends AbstractTest {
                         + "</settings>\n");
         final Path path = FileUtil.getCurrentDirectory().resolve("settings.xml");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         assertTrue(Main.processOptions(environment, "--settings-file", path.toString(), "generate"));
         assertTrue(environment.hasSettingsFile());
@@ -309,7 +309,7 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         environment.logger().setLevel(Level.OFF);
         assertTrue(Main.processOptions(environment, "--verbose", "generate"));
@@ -321,7 +321,7 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         environment.logger().setLevel(Level.OFF);
         assertTrue(Main.processOptions(environment, "--quiet", "generate"));
@@ -333,7 +333,7 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         assertFalse(environment.shouldResetCachedMetadata());
         assertTrue(Main.processOptions(environment, "--reset-cached-metadata", "generate"));
@@ -480,7 +480,7 @@ public class MainTest extends AbstractTest {
         writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
 
         final Path cacheDir = FileUtil.createLocalTempDir();
@@ -506,7 +506,7 @@ public class MainTest extends AbstractTest {
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "com.example:mylib:1.0");
         deployArtifactToLocalRepository(dir, "com.example:mylib:1.0", "com.example:myapp:1.0");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final TerminalStateException exception =
                 expectThrows(TerminalStateException.class, () -> Main.loadRecord(newEnvironment(handler)));
         assertNull(exception.getMessage());
@@ -526,7 +526,7 @@ public class MainTest extends AbstractTest {
         writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "com.example:mylib:1.0");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
 
         final Path cacheDir = FileUtil.createLocalTempDir();
@@ -538,7 +538,7 @@ public class MainTest extends AbstractTest {
 
             exception = expectThrows(TerminalStateException.class, () -> Main.loadRecord(environment));
         } finally {
-            final HashSet<PosixFilePermission> perms = new HashSet<>();
+            final var perms = new HashSet<PosixFilePermission>();
             perms.add(PosixFilePermission.OWNER_READ);
             perms.add(PosixFilePermission.OWNER_WRITE);
             Files.setPosixFilePermissions(cacheDir, perms);
@@ -580,7 +580,7 @@ public class MainTest extends AbstractTest {
                 .resolve(sha256)
                 .resolve("file");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
 
         assertFalse(Files.exists(targetFile));
 
@@ -614,7 +614,7 @@ public class MainTest extends AbstractTest {
         Files.createDirectories(targetFile.getParent());
         Files.write(targetFile, cacheContent);
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
 
         assertTrue(Files.exists(targetFile));
 
@@ -646,7 +646,7 @@ public class MainTest extends AbstractTest {
         assertTrue(dir.mkdirs());
         assertTrue(dir.setWritable(false));
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
 
         assertFalse(Files.exists(targetFile));
 
@@ -681,7 +681,7 @@ public class MainTest extends AbstractTest {
         final Path targetFile = cacheBase.resolve(sha256).resolve("file");
         final Path sourceTargetFile = cacheBase.resolve(sourceSha256).resolve("file");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
 
         assertFalse(Files.exists(targetFile));
         assertFalse(Files.exists(sourceTargetFile));
@@ -719,7 +719,7 @@ public class MainTest extends AbstractTest {
         final Path cacheBase = repositoryCacheDir.resolve("content_addressable").resolve("sha256");
         final Path targetFile = cacheBase.resolve(sha256).resolve("file");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
 
         assertFalse(Files.exists(targetFile));
 
@@ -759,7 +759,7 @@ public class MainTest extends AbstractTest {
         final Path targetFile1 = cacheBase.resolve(file1Sha256).resolve("file");
         final Path targetFile2 = cacheBase.resolve(file2Sha256).resolve("file");
 
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
 
         assertFalse(Files.exists(targetFile1));
         assertFalse(Files.exists(targetFile2));
@@ -946,7 +946,7 @@ public class MainTest extends AbstractTest {
 
     @Nonnull
     private String runCommand(final int expectedExitCode, @Nonnull final String... args) throws Exception {
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         environment.logger().setLevel(Level.INFO);
         final int exitCode = Main.run(environment, args);
@@ -956,7 +956,7 @@ public class MainTest extends AbstractTest {
 
     @Nonnull
     private String failToProcessOptions(@Nonnull final String... args) throws Exception {
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         assertFalse(Main.processOptions(environment, args));
         return handler.toString();

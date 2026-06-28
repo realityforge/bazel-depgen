@@ -69,12 +69,12 @@ public final class ApplicationModel {
                         .map(c -> ReplacementModel.parse(c, optionsModel.getDefaultNature()))
                         .collect(Collectors.toList());
 
-        final List<ArtifactModel> systemArtifacts = new ArrayList<>();
+        final var systemArtifacts = new ArrayList<ArtifactModel>();
         if (optionsModel.verifyConfigSha256()
                 && artifactModels.stream()
                         .noneMatch(a -> DepGenConfig.getGroupId().equals(a.getGroup())
                                 && DepGenConfig.getArtifactId().equals(a.getId()))) {
-            final ArtifactConfig config = new ArtifactConfig();
+            final var config = new ArtifactConfig();
             config.setCoord(DepGenConfig.getCoord());
             config.setIncludeSource(false);
             config.setNatures(Collections.singletonList(Nature.Java));

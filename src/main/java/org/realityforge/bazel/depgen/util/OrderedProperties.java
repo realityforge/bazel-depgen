@@ -31,7 +31,7 @@ public final class OrderedProperties extends Properties {
     @Override
     public Set<Map.Entry<Object, Object>> entrySet() {
         // Used in Java17+ when writing properties
-        final TreeMap<Object, Object> map = new TreeMap<>();
+        final var map = new TreeMap<Object, Object>();
         for (final Map.Entry<Object, Object> entry : super.entrySet()) {
             map.put(entry.getKey(), entry.getValue());
         }

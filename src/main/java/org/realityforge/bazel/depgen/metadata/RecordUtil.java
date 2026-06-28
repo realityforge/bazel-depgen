@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -46,10 +45,10 @@ final class RecordUtil {
             @Nonnull final Map<String, AuthenticationContext> authenticationContexts) {
         try {
             final String repoUrl = remoteRepository.getUrl();
-            final URI uri =
+            final var uri =
                     new URI(repoUrl + (repoUrl.endsWith("/") ? "" : "/") + ArtifactUtil.artifactToPath(artifact));
 
-            final URI uriSansAuth = new URI(
+            final var uriSansAuth = new URI(
                     uri.getScheme(),
                     null,
                     uri.getHost(),
@@ -60,7 +59,7 @@ final class RecordUtil {
             final URL url = uriSansAuth.toURL();
             final String protocol = url.getProtocol();
             if ("http".equals(protocol) || "https".equals(protocol)) {
-                final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                final var connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("HEAD");
                 final AuthenticationContext context = authenticationContexts.get(remoteRepository.getId());
                 if (null != context) {
@@ -100,12 +99,12 @@ final class RecordUtil {
     static String readAnnotationProcessors(@Nonnull final File file) {
         if (isJarFile(file)) {
             try {
-                try (final JarFile jar = new JarFile(file)) {
+                try (final var jar = new JarFile(file)) {
                     final ZipEntry entry = jar.getEntry("META-INF/services/javax.annotation.processing.Processor");
                     if (null != entry) {
-                        try (final Reader input = new InputStreamReader(jar.getInputStream(entry))) {
-                            try (final BufferedReader reader = new BufferedReader(input)) {
-                                final ArrayList<String> processors = new ArrayList<>();
+                        try (final var input = new InputStreamReader(jar.getInputStream(entry))) {
+                            try (final var reader = new BufferedReader(input)) {
+                                final var processors = new ArrayList<String>();
                                 String line;
                                 while (null != (line = reader.readLine())) {
                                     final String l = line.trim();
@@ -130,7 +129,7 @@ final class RecordUtil {
     static String readJsAssets(@Nonnull final File file) {
         if (isJarFile(file)) {
             try {
-                try (final JarFile jar = new JarFile(file)) {
+                try (final var jar = new JarFile(file)) {
                     final String assetList = jar.stream()
                             .filter(e -> !e.isDirectory())
                             .map(ZipEntry::getName)

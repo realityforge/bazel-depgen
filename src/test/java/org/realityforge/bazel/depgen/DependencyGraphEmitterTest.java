@@ -115,7 +115,7 @@ public class DependencyGraphEmitterTest extends AbstractTest {
         final ApplicationModel model = loadApplicationModel();
         final DependencyNode root = resolveDependencies(resolver, model);
 
-        final StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
         root.accept(new DependencyGraphEmitter(model, line -> {
             sb.append(line);
             sb.append("\n");

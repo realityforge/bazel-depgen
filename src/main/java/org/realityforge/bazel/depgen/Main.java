@@ -98,7 +98,7 @@ public final class Main {
 
     @Nonnull
     private static Map<String, Supplier<Command>> buildCommandMap() {
-        final LinkedHashMap<String, Supplier<Command>> commands = new LinkedHashMap<>();
+        final var commands = new LinkedHashMap<String, Supplier<Command>>();
         commands.put(GenerateCommand.COMMAND, GenerateCommand::new);
         commands.put(PrintGraphCommand.COMMAND, PrintGraphCommand::new);
         commands.put(HashCommand.COMMAND, HashCommand::new);
@@ -109,8 +109,7 @@ public final class Main {
     }
 
     public static void main(@Nonnull final String[] args) {
-        final Environment environment =
-                new Environment(System.console(), Paths.get("").toAbsolutePath(), Logger.getGlobal());
+        final var environment = new Environment(System.console(), Paths.get("").toAbsolutePath(), Logger.getGlobal());
         // The BUILD_WORKSPACE_DIRECTORY environment variable is specified by bazel when
         // a binary is run using "bazel run ...". This is what we *should* be using as current directory
         // by default when running within bazel
@@ -217,7 +216,7 @@ public final class Main {
                 cacheRepositoryFile(environment.logger(), repositoryCache, a.toString(), file, sha256);
                 final String sourceSha256 = artifact.getSourceSha256();
                 if (null != sourceSha256) {
-                    final SubArtifact sourcesArtifact = new SubArtifact(a, "sources", "jar");
+                    final var sourcesArtifact = new SubArtifact(a, "sources", "jar");
                     final String localFilename = ArtifactUtil.artifactToLocalFilename(sourcesArtifact);
                     final File sourcesFile =
                             file.toPath().getParent().resolve(localFilename).toFile();
@@ -312,7 +311,7 @@ public final class Main {
     }
 
     static void setupLogger(@Nonnull final Environment environment) {
-        final ConsoleHandler handler = new ConsoleHandler();
+        final var handler = new ConsoleHandler();
         handler.setFormatter(new RawFormatter());
         handler.setLevel(Level.ALL);
         final Logger logger = environment.logger();
@@ -323,8 +322,7 @@ public final class Main {
 
     static boolean processOptions(@Nonnull final Environment environment, @Nonnull final String... args) {
         // Parse the arguments
-        final CLArgsParser parser =
-                new CLArgsParser(args, OPTIONS, lastOptionCode -> CLOption.TEXT_ARGUMENT == lastOptionCode);
+        final var parser = new CLArgsParser(args, OPTIONS, lastOptionCode -> CLOption.TEXT_ARGUMENT == lastOptionCode);
 
         // Make sure that there was no errors parsing arguments
         final Logger logger = environment.logger();

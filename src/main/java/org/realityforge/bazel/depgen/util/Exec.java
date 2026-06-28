@@ -27,7 +27,7 @@ final class Exec {
     @SuppressWarnings("SameParameterValue")
     @Nonnull
     static String capture(@Nonnull final Consumer<ProcessBuilder> action, @Nullable final Integer expectedExitCode) {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final var baos = new ByteArrayOutputStream();
         exec(action, process -> copy(process.getInputStream(), new BufferedOutputStream(baos)), expectedExitCode);
         return baos.toString();
     }
@@ -44,7 +44,7 @@ final class Exec {
             @Nonnull final Consumer<ProcessBuilder> action,
             @Nullable final Consumer<Process> processHandler,
             @Nullable final Integer expectedExitCode) {
-        final ProcessBuilder builder = new ProcessBuilder();
+        final var builder = new ProcessBuilder();
         action.accept(builder);
         try {
             final Process process = builder.start();

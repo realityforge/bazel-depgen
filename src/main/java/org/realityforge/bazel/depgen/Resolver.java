@@ -105,7 +105,7 @@ final class Resolver {
     DependencyResult resolveDependencies(
             @Nonnull final ApplicationModel model, @Nonnull final OnInvalidPomFn onInvalidPomFn)
             throws DependencyResolutionException {
-        final DefaultRepositorySystemSession session = (DefaultRepositorySystemSession) _session;
+        final var session = (DefaultRepositorySystemSession) _session;
         final ArrayList<Exclusion> exclusions = ResolverUtil.deriveGlobalExclusions(model);
         session.setDependencySelector(new AndDependencySelector(
                 new ExclusionDependencySelector(exclusions),
@@ -123,7 +123,7 @@ final class Resolver {
     private DependencyResult resolveDependencyScopes(
             @Nonnull final ApplicationModel model, @Nonnull final OnInvalidPomFn onInvalidPomFn)
             throws DependencyResolutionException {
-        final Map<String, ResolutionScope> scopes = new LinkedHashMap<>();
+        final var scopes = new LinkedHashMap<String, ResolutionScope>();
         model.getArtifacts().stream()
                 .filter(ArtifactModel::isVersioned)
                 .forEach(artifactModel -> addDependencyToScope(
@@ -139,7 +139,7 @@ final class Resolver {
             scopes.put(toRepositoryKey(_defaultRepositories), new ResolutionScope(_defaultRepositories));
         }
 
-        final List<DependencyResult> results = new ArrayList<>();
+        final var results = new ArrayList<DependencyResult>();
         for (final ResolutionScope scope : scopes.values()) {
             results.add(resolveDependencies(scope._dependencies, scope._repositories));
         }
@@ -167,10 +167,10 @@ final class Resolver {
         }
 
         final DependencyResult first = results.get(0);
-        final List<DependencyNode> children = new ArrayList<>();
-        final List<org.eclipse.aether.graph.DependencyCycle> cycles = new ArrayList<>();
-        final List<Exception> collectExceptions = new ArrayList<>();
-        final List<ArtifactResult> artifactResults = new ArrayList<>();
+        final var children = new ArrayList<DependencyNode>();
+        final var cycles = new ArrayList<org.eclipse.aether.graph.DependencyCycle>();
+        final var collectExceptions = new ArrayList<Exception>();
+        final var artifactResults = new ArrayList<ArtifactResult>();
         for (final DependencyResult result : results) {
             children.addAll(result.getRoot().getChildren());
             cycles.addAll(result.getCycles());
@@ -178,7 +178,7 @@ final class Resolver {
             artifactResults.addAll(result.getArtifactResults());
         }
 
-        final DefaultDependencyNode root = new DefaultDependencyNode((Dependency) null);
+        final var root = new DefaultDependencyNode((Dependency) null);
         root.setChildren(children);
         return new DependencyResult(first.getRequest())
                 .setRoot(root)
@@ -191,7 +191,7 @@ final class Resolver {
     private DependencyResult resolveDependencies(
             @Nonnull final List<Dependency> dependencies, @Nonnull final List<RemoteRepository> repositories)
             throws DependencyResolutionException {
-        final CollectRequest collectRequest = new CollectRequest();
+        final var collectRequest = new CollectRequest();
         collectRequest.setDependencies(dependencies);
         collectRequest.setRepositories(repositories);
         // This filter may also need to skip artifacts with replacements.
@@ -212,7 +212,7 @@ final class Resolver {
     @Nonnull
     private List<Dependency> deriveDependencies(
             @Nonnull final List<ArtifactModel> artifactModels, @Nonnull final OnInvalidPomFn onInvalidPomFn) {
-        final List<Dependency> dependencies = new ArrayList<>();
+        final var dependencies = new ArrayList<Dependency>();
         for (final ArtifactModel artifactModel : artifactModels) {
             dependencies.add(toDependency(artifactModel, e -> onInvalidPomFn.onInvalidPom(artifactModel, e)));
         }
@@ -236,15 +236,14 @@ final class Resolver {
     @Nonnull
     org.eclipse.aether.artifact.Artifact toArtifact(
             @Nonnull final ArtifactModel model, @Nonnull final Consumer<List<Exception>> onInvalidPomFn) {
-        final DefaultArtifact artifact = new DefaultArtifact(
+        final var artifact = new DefaultArtifact(
                 model.getGroup(), model.getId(), model.getClassifier(), model.getType(), model.getVersion());
         try {
             final List<RemoteRepository> remoteRepositories = getRepositories(model);
             final ArtifactResult artifactResult =
                     _system.resolveArtifact(_session, new ArtifactRequest(artifact, remoteRepositories, null));
 
-            final ArtifactDescriptorRequest request =
-                    new ArtifactDescriptorRequest(artifactResult.getArtifact(), remoteRepositories, null);
+            final var request = new ArtifactDescriptorRequest(artifactResult.getArtifact(), remoteRepositories, null);
 
             final ArtifactDescriptorResult result = _system.readArtifactDescriptor(_session, request);
             final List<Exception> exceptions = result.getExceptions();
@@ -271,7 +270,7 @@ final class Resolver {
 
     @Nonnull
     private List<RemoteRepository> selectRepositories(@Nonnull final List<String> repositoryIds) {
-        final ArrayList<RemoteRepository> repositories = new ArrayList<>();
+        final var repositories = new ArrayList<RemoteRepository>();
         for (final RemoteRepository repository : _repositories) {
             if (repositoryIds.contains(repository.getId())) {
                 repositories.add(repository);

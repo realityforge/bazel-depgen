@@ -20,8 +20,8 @@ import org.testng.annotations.Test;
 public class InitCommandTest extends AbstractTest {
     @Test
     public void init() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
         final Path configDirectory = environment.getConfigFile().getParent();
         deployDepGenArtifactToCacheDir(environment.getCacheDir());
@@ -46,8 +46,8 @@ public class InitCommandTest extends AbstractTest {
 
     @Test
     public void init_differentConfigLocation() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
         final Path configDirectory =
                 environment.currentDirectory().resolve("subdir").resolve("thirdparty");
@@ -76,8 +76,8 @@ public class InitCommandTest extends AbstractTest {
 
     @Test
     public void init_unknownArg() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
 
         final boolean parsed = command.processOptions(environment, "blah");
@@ -87,8 +87,8 @@ public class InitCommandTest extends AbstractTest {
 
     @Test
     public void init_no_generate() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
         final Path configDirectory = environment.getConfigFile().getParent();
         deployDepGenArtifactToCacheDir(environment.getCacheDir());
@@ -114,8 +114,8 @@ public class InitCommandTest extends AbstractTest {
 
     @Test
     public void init_no_create_workspace() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
         final Path configDirectory = environment.getConfigFile().getParent();
         deployDepGenArtifactToCacheDir(environment.getCacheDir());
@@ -136,8 +136,8 @@ public class InitCommandTest extends AbstractTest {
 
     @Test
     public void init_preExistingWorkspace() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
         final Path configDirectory = environment.getConfigFile().getParent();
         final Path workspaceFile = environment.currentDirectory().resolve("WORKSPACE");
@@ -160,8 +160,8 @@ public class InitCommandTest extends AbstractTest {
 
     @Test
     public void init_preExistingConfigDirectory() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
         final Path configDirectory = environment.getConfigFile().getParent();
         deployDepGenArtifactToCacheDir(environment.getCacheDir());
@@ -179,8 +179,8 @@ public class InitCommandTest extends AbstractTest {
 
     @Test
     public void init_moduleMode_noGenerate() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
 
         FileUtil.write(environment.currentDirectory().resolve("MODULE.bazel"), "module(name = \"test\")\n");
@@ -217,8 +217,8 @@ public class InitCommandTest extends AbstractTest {
 
     @Test
     public void init_moduleMode_missingBuildFile() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
 
         FileUtil.write(environment.currentDirectory().resolve("MODULE.bazel"), "module(name = \"test\")\n");
@@ -236,8 +236,8 @@ public class InitCommandTest extends AbstractTest {
 
     @Test
     public void init_configFileExists() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
 
         final Path configFile = environment.getConfigFile();
@@ -256,14 +256,14 @@ public class InitCommandTest extends AbstractTest {
 
     @Test
     public void init_configDirReadOnly() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
 
         final Path configFile = environment.getConfigFile();
         final Path configDirectory = configFile.getParent();
         Files.createDirectories(configDirectory);
-        final HashSet<PosixFilePermission> perms = new HashSet<>();
+        final var perms = new HashSet<PosixFilePermission>();
         perms.add(PosixFilePermission.OWNER_READ);
         Files.setPosixFilePermissions(configDirectory, perms);
 
@@ -277,12 +277,12 @@ public class InitCommandTest extends AbstractTest {
 
     @Test
     public void init_configDirParentReadOnly() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
 
         final Path configFile = environment.getConfigFile();
-        final HashSet<PosixFilePermission> perms = new HashSet<>();
+        final var perms = new HashSet<PosixFilePermission>();
         perms.add(PosixFilePermission.OWNER_READ);
         Files.setPosixFilePermissions(environment.currentDirectory(), perms);
 
@@ -303,21 +303,21 @@ public class InitCommandTest extends AbstractTest {
 
     @Test
     public void init_WORKSPACE_writeFailed() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final Command command = new InitCommand();
+        final var handler = new TestHandler();
+        final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
         final Path configDir = environment.currentDirectory().resolve("subdir").resolve("thirdparty");
         environment.setConfigFile(configDir.resolve(ApplicationConfig.FILENAME));
 
         Files.createDirectories(configDir);
 
-        final HashSet<PosixFilePermission> perms = new HashSet<>();
+        final var perms = new HashSet<PosixFilePermission>();
         perms.add(PosixFilePermission.OWNER_READ);
         perms.add(PosixFilePermission.OWNER_WRITE);
         perms.add(PosixFilePermission.OWNER_EXECUTE);
         Files.setPosixFilePermissions(configDir, perms);
 
-        final HashSet<PosixFilePermission> perms2 = new HashSet<>();
+        final var perms2 = new HashSet<PosixFilePermission>();
         perms2.add(PosixFilePermission.OWNER_READ);
         perms2.add(PosixFilePermission.OWNER_EXECUTE);
         Files.setPosixFilePermissions(environment.currentDirectory(), perms2);
@@ -384,7 +384,7 @@ public class InitCommandTest extends AbstractTest {
     private String loadTemplate() throws IOException {
         final InputStream inputStream = getClass().getResourceAsStream("templates/dependencies.yml");
         assertNotNull(inputStream);
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final var baos = new ByteArrayOutputStream();
         IoUtil.copy(inputStream, baos);
         return new String(baos.toByteArray(), StandardCharsets.ISO_8859_1);
     }

@@ -29,7 +29,7 @@ abstract class ConfigurableCommand extends Command {
     @Override
     final boolean processOptions(@Nonnull final Environment environment, @Nonnull final String... args) {
         // Parse the arguments
-        final CLArgsParser parser = new CLArgsParser(args, _options);
+        final var parser = new CLArgsParser(args, _options);
 
         // Make sure that there was no errors parsing arguments
         final Logger logger = environment.logger();
@@ -39,7 +39,7 @@ abstract class ConfigurableCommand extends Command {
         }
         // Get a list of parsed options
         final List<CLOption> arguments = parser.getArguments();
-        final ArrayList<CLOption> argumentsToProcess = new ArrayList<>(arguments);
+        final var argumentsToProcess = new ArrayList<>(arguments);
         for (final CLOption option : arguments) {
             if (HELP_OPT == option.getId()) {
                 argumentsToProcess.remove(option);

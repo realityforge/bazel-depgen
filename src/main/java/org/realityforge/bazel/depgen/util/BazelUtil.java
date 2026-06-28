@@ -44,10 +44,10 @@ public final class BazelUtil {
     @Nullable
     static Path getDefaultRepositoryCache() {
         try {
-            final File dir = File.createTempFile("bazel-depgen", "dir");
+            final var dir = File.createTempFile("bazel-depgen", "dir");
             dir.delete();
             dir.mkdir();
-            final File file = new File(dir, "WORKSPACE");
+            final var file = new File(dir, "WORKSPACE");
             Files.write(file.toPath(), new byte[0]);
             final String repositoryCache = Exec.capture(
                     p -> p.command("bazel", "info", "repository_cache").directory(dir), 0);

@@ -94,10 +94,10 @@ public class ResolverUtilTest extends AbstractTest {
             final Resolver resolver =
                     ResolverUtil.createResolver(newEnvironment(), cacheDir, Collections.emptyList(), true, true);
 
-            final RemoteRepository remoteRepository = new RemoteRepository.Builder(
+            final var remoteRepository = new RemoteRepository.Builder(
                             "local", "default", localRepository.toUri().toString())
                     .build();
-            final ArtifactRequest request = new ArtifactRequest(
+            final var request = new ArtifactRequest(
                     new DefaultArtifact("com.example:myapp:1.0.0"), Collections.singletonList(remoteRepository), null);
             final ArtifactResult artifactResult = resolver.getSystem().resolveArtifact(resolver.getSession(), request);
 
@@ -116,7 +116,7 @@ public class ResolverUtilTest extends AbstractTest {
 
     @Test
     public void deriveExclusions_noExcludes() {
-        final ArtifactModel artifactModel = new ArtifactModel(
+        final var artifactModel = new ArtifactModel(
                 new ArtifactConfig(),
                 "com.example",
                 "myapp",
@@ -132,10 +132,10 @@ public class ResolverUtilTest extends AbstractTest {
 
     @Test
     public void deriveExclusions() {
-        final ArrayList<ExcludeModel> excludes = new ArrayList<>();
+        final var excludes = new ArrayList<ExcludeModel>();
         excludes.add(new ExcludeModel("org.oss", null));
         excludes.add(new ExcludeModel("com.biz", "zelib"));
-        final ArtifactModel artifactModel = new ArtifactModel(
+        final var artifactModel = new ArtifactModel(
                 new ArtifactConfig(), "com.example", "myapp", "jar", null, "1.0", excludes, Collections.emptyList());
         final ArrayList<Exclusion> exclusions = ResolverUtil.deriveExclusions(artifactModel);
 

@@ -42,7 +42,7 @@ public final class ApplicationConfig {
 
     @Nonnull
     public static ApplicationConfig load(@Nonnull final Path path) throws Exception {
-        final Yaml yaml = new Yaml(new Constructor(ApplicationConfig.class));
+        final var yaml = new Yaml(new Constructor(ApplicationConfig.class));
         final ApplicationConfig config = yaml.load(new FileReader(path.toFile()));
         final ApplicationConfig applicationConfig = null == config ? new ApplicationConfig() : config;
         applicationConfig.setConfigLocation(path);

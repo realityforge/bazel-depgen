@@ -14,8 +14,8 @@ public class YamlUtilTest extends AbstractTest {
         assertEquals(YamlUtil.asYamlString(new ApplicationConfig()), "{}\n");
 
         // With a few settings
-        final ApplicationConfig object = new ApplicationConfig();
-        final OptionsConfig options = new OptionsConfig();
+        final var object = new ApplicationConfig();
+        final var options = new OptionsConfig();
         options.setDefaultNature(Nature.J2cl);
         object.setOptions(options);
         assertEquals(YamlUtil.asYamlString(object), "options:\n  defaultNature: J2cl\n");

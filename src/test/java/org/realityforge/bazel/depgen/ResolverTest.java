@@ -36,7 +36,7 @@ public class ResolverTest extends AbstractTest {
         final Resolver resolver =
                 ResolverUtil.createResolver(newEnvironment(handler), dir, Collections.emptyList(), true, true);
 
-        final ArtifactModel model = new ArtifactModel(
+        final var model = new ArtifactModel(
                 new ArtifactConfig(),
                 "com.example",
                 "myapp",
@@ -46,7 +46,7 @@ public class ResolverTest extends AbstractTest {
                 Collections.emptyList(),
                 Collections.emptyList());
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
 
         final Artifact artifact = resolver.toArtifact(model, exceptions -> hasFailed.set(true));
 
@@ -71,7 +71,7 @@ public class ResolverTest extends AbstractTest {
         final Resolver resolver =
                 ResolverUtil.createResolver(newEnvironment(handler), dir, Collections.emptyList(), true, true);
 
-        final ArtifactModel model = new ArtifactModel(
+        final var model = new ArtifactModel(
                 new ArtifactConfig(),
                 "com.example",
                 "myapp",
@@ -81,7 +81,7 @@ public class ResolverTest extends AbstractTest {
                 Collections.emptyList(),
                 Collections.emptyList());
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
 
         final Artifact artifact = resolver.toArtifact(model, exceptions -> hasFailed.set(true));
 
@@ -107,7 +107,7 @@ public class ResolverTest extends AbstractTest {
         final Resolver resolver =
                 ResolverUtil.createResolver(newEnvironment(handler), dir, Collections.emptyList(), false, true);
 
-        final ArtifactModel model = new ArtifactModel(
+        final var model = new ArtifactModel(
                 new ArtifactConfig(),
                 "com.example",
                 "myapp",
@@ -117,7 +117,7 @@ public class ResolverTest extends AbstractTest {
                 Collections.emptyList(),
                 Collections.emptyList());
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
 
         final Artifact artifact = resolver.toArtifact(model, exceptions -> hasFailed.set(true));
 
@@ -143,7 +143,7 @@ public class ResolverTest extends AbstractTest {
         final Resolver resolver =
                 ResolverUtil.createResolver(newEnvironment(handler), dir, Collections.emptyList(), true, true);
 
-        final ArtifactModel model = new ArtifactModel(
+        final var model = new ArtifactModel(
                 new ArtifactConfig(),
                 "com.example",
                 "myapp",
@@ -153,7 +153,7 @@ public class ResolverTest extends AbstractTest {
                 Collections.emptyList(),
                 Collections.emptyList());
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
 
         final Artifact artifact = resolver.toArtifact(model, exceptions -> hasFailed.set(true));
 
@@ -181,7 +181,7 @@ public class ResolverTest extends AbstractTest {
         final Resolver resolver =
                 ResolverUtil.createResolver(newEnvironment(handler), dir, Collections.emptyList(), true, false);
 
-        final ArtifactModel model = new ArtifactModel(
+        final var model = new ArtifactModel(
                 new ArtifactConfig(),
                 "com.example",
                 "myapp",
@@ -191,7 +191,7 @@ public class ResolverTest extends AbstractTest {
                 Collections.emptyList(),
                 Collections.emptyList());
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
 
         final Artifact artifact = resolver.toArtifact(model, exceptions -> hasFailed.set(true));
 
@@ -230,13 +230,13 @@ public class ResolverTest extends AbstractTest {
 
         final TestHandler handler = newHandler();
 
-        final RemoteRepository remoteRepository = new RemoteRepository.Builder(
+        final var remoteRepository = new RemoteRepository.Builder(
                         "local", "default", remoteDir.toUri().toString())
                 .build();
         final Resolver resolver = ResolverUtil.createResolver(
                 newEnvironment(handler), dir, Collections.singletonList(remoteRepository), true, true);
 
-        final ArtifactModel model = new ArtifactModel(
+        final var model = new ArtifactModel(
                 new ArtifactConfig(),
                 "com.example",
                 "myapp",
@@ -246,7 +246,7 @@ public class ResolverTest extends AbstractTest {
                 Collections.emptyList(),
                 Collections.emptyList());
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
 
         final Artifact artifact = resolver.toArtifact(model, exceptions -> hasFailed.set(true));
 
@@ -281,16 +281,16 @@ public class ResolverTest extends AbstractTest {
 
         final TestHandler handler = newHandler();
 
-        final RemoteRepository remoteRepository1 = new RemoteRepository.Builder(
+        final var remoteRepository1 = new RemoteRepository.Builder(
                         "local1", "default", remoteDir1.toUri().toString())
                 .build();
-        final RemoteRepository remoteRepository2 = new RemoteRepository.Builder(
+        final var remoteRepository2 = new RemoteRepository.Builder(
                         "local2", "default", remoteDir2.toUri().toString())
                 .build();
         final Resolver resolver = ResolverUtil.createResolver(
                 newEnvironment(handler), dir, Arrays.asList(remoteRepository1, remoteRepository2), true, true);
 
-        final ArtifactModel model = new ArtifactModel(
+        final var model = new ArtifactModel(
                 new ArtifactConfig(),
                 "com.example",
                 "myapp",
@@ -300,7 +300,7 @@ public class ResolverTest extends AbstractTest {
                 Collections.emptyList(),
                 Collections.emptyList());
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
 
         final Artifact artifact = resolver.toArtifact(model, exceptions -> hasFailed.set(true));
 
@@ -323,10 +323,10 @@ public class ResolverTest extends AbstractTest {
         deployTempArtifactToLocalRepository(remoteDir2, "com.example:myapp:1.0");
 
         final TestHandler handler = newHandler();
-        final RemoteRepository remoteRepository1 = new RemoteRepository.Builder(
+        final var remoteRepository1 = new RemoteRepository.Builder(
                         "local1", "default", remoteDir1.toUri().toString())
                 .build();
-        final RemoteRepository remoteRepository2 = new RemoteRepository.Builder(
+        final var remoteRepository2 = new RemoteRepository.Builder(
                         "local2", "default", remoteDir2.toUri().toString())
                 .build();
         final Resolver resolver = ResolverUtil.createResolver(
@@ -337,7 +337,7 @@ public class ResolverTest extends AbstractTest {
                 true,
                 true);
 
-        final ArtifactModel model = new ArtifactModel(
+        final var model = new ArtifactModel(
                 new ArtifactConfig(),
                 "com.example",
                 "myapp",
@@ -347,7 +347,7 @@ public class ResolverTest extends AbstractTest {
                 Collections.emptyList(),
                 Collections.emptyList());
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
         final Artifact artifact = resolver.toArtifact(model, exceptions -> hasFailed.set(true));
 
         assertTrue(hasFailed.get());
@@ -367,10 +367,10 @@ public class ResolverTest extends AbstractTest {
         deployTempArtifactToLocalRepository(remoteDir2, "com.example:myapp:1.0");
 
         final TestHandler handler = newHandler();
-        final RemoteRepository remoteRepository1 = new RemoteRepository.Builder(
+        final var remoteRepository1 = new RemoteRepository.Builder(
                         "local1", "default", remoteDir1.toUri().toString())
                 .build();
-        final RemoteRepository remoteRepository2 = new RemoteRepository.Builder(
+        final var remoteRepository2 = new RemoteRepository.Builder(
                         "local2", "default", remoteDir2.toUri().toString())
                 .build();
         final Resolver resolver = ResolverUtil.createResolver(
@@ -381,12 +381,12 @@ public class ResolverTest extends AbstractTest {
                 true,
                 true);
 
-        final ArtifactConfig config = new ArtifactConfig();
+        final var config = new ArtifactConfig();
         config.setCoord("com.example:myapp:1.0");
         config.setRepositories(Collections.singletonList("local2"));
         final ArtifactModel model = ArtifactModel.parse(config);
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
         final Artifact artifact = resolver.toArtifact(model, exceptions -> hasFailed.set(true));
 
         assertFalse(hasFailed.get());
@@ -408,7 +408,7 @@ public class ResolverTest extends AbstractTest {
         final Resolver resolver =
                 ResolverUtil.createResolver(newEnvironment(handler), dir, Collections.emptyList(), true, true);
 
-        final ArtifactModel model = new ArtifactModel(
+        final var model = new ArtifactModel(
                 new ArtifactConfig(),
                 "com.example",
                 "myapp",
@@ -418,7 +418,7 @@ public class ResolverTest extends AbstractTest {
                 Collections.emptyList(),
                 Collections.emptyList());
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
 
         final Artifact artifact = resolver.toArtifact(model, exceptions -> hasFailed.set(true));
 
@@ -451,7 +451,7 @@ public class ResolverTest extends AbstractTest {
                         "  - coord: com.example:mydep\n");
         final ApplicationModel model = loadApplicationModel();
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
 
         final List<Dependency> dependencies =
                 resolver.deriveRootDependencies(model, (artifactModel, exceptions) -> hasFailed.set(true));
@@ -497,7 +497,7 @@ public class ResolverTest extends AbstractTest {
         writeConfigFile(dir, "artifacts:\n  - coord: com.example:myapp:1.0\n");
         final ApplicationModel model = loadApplicationModel();
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
 
         final DependencyResult result =
                 resolver.resolveDependencies(model, (artifactModel, exceptions) -> hasFailed.set(true));
@@ -549,7 +549,7 @@ public class ResolverTest extends AbstractTest {
         final TestHandler handler = newHandler();
 
         final String url = dir.toUri().toString();
-        final RemoteRepository remoteRepository = new RemoteRepository.Builder("local", "default", url)
+        final var remoteRepository = new RemoteRepository.Builder("local", "default", url)
                 .setReleasePolicy(new RepositoryPolicy(true, null, ChecksumPolicy.fail.name()))
                 .build();
         final Resolver resolver = ResolverUtil.createResolver(
@@ -594,7 +594,7 @@ public class ResolverTest extends AbstractTest {
         final TestHandler handler = newHandler();
 
         final String url = dir.toUri().toString();
-        final RemoteRepository remoteRepository = new RemoteRepository.Builder("local", "default", url)
+        final var remoteRepository = new RemoteRepository.Builder("local", "default", url)
                 .setReleasePolicy(new RepositoryPolicy(true, null, ChecksumPolicy.warn.name()))
                 .build();
         final Resolver resolver = ResolverUtil.createResolver(
@@ -646,7 +646,7 @@ public class ResolverTest extends AbstractTest {
         final TestHandler handler = newHandler();
 
         final String url = dir.toUri().toString();
-        final RemoteRepository remoteRepository = new RemoteRepository.Builder("local", "default", url)
+        final var remoteRepository = new RemoteRepository.Builder("local", "default", url)
                 .setReleasePolicy(new RepositoryPolicy(true, null, ChecksumPolicy.ignore.name()))
                 .build();
         final Resolver resolver = ResolverUtil.createResolver(
@@ -689,7 +689,7 @@ public class ResolverTest extends AbstractTest {
                 dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    excludes: ['com.example:mylib']\n");
         final ApplicationModel model = loadApplicationModel();
 
-        final AtomicBoolean hasFailed = new AtomicBoolean(false);
+        final var hasFailed = new AtomicBoolean(false);
 
         final DependencyResult result = resolver.resolveDependencies(model, (m, e) -> hasFailed.set(true));
 
@@ -702,7 +702,7 @@ public class ResolverTest extends AbstractTest {
 
     @Nonnull
     private TestHandler newHandler() {
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         handler.setLevel(Level.INFO);
         return handler;
     }

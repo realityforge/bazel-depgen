@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.graph.DependencyNode;
@@ -90,7 +89,7 @@ public abstract class AbstractTest implements IHookable {
 
     @Nonnull
     final Environment newEnvironment(@Nonnull final Logger logger) throws IOException {
-        final Environment environment = new Environment(null, FileUtil.getCurrentDirectory(), logger);
+        final var environment = new Environment(null, FileUtil.getCurrentDirectory(), logger);
         environment.setConfigFile(getDefaultConfigFile());
         environment.setSettingsFile(FileUtil.getCurrentDirectory().resolve("settings.xml"));
         environment.setCacheDir(FileUtil.createLocalTempDir());
@@ -105,7 +104,7 @@ public abstract class AbstractTest implements IHookable {
 
     @Nonnull
     final Resolver createResolver(@Nonnull final Path localRepositoryDirectory) throws Exception {
-        final RemoteRepository remoteRepository = new RemoteRepository.Builder(
+        final var remoteRepository = new RemoteRepository.Builder(
                         "local", "default", localRepositoryDirectory.toUri().toString())
                 .build();
         return ResolverUtil.createResolver(
@@ -279,7 +278,7 @@ public abstract class AbstractTest implements IHookable {
     protected final void deployArtifactToLocalRepository(
             @Nonnull final Path localRepository, @Nonnull final String coords, @Nonnull final String... dependencies)
             throws Exception {
-        final SubArtifact sourcesArtifact = new SubArtifact(new DefaultArtifact(coords), "sources", "jar");
+        final var sourcesArtifact = new SubArtifact(new DefaultArtifact(coords), "sources", "jar");
         deployTempArtifactToLocalRepository(localRepository, sourcesArtifact.toString());
         deployTempArtifactToLocalRepository(localRepository, coords, dependencies);
     }
@@ -296,7 +295,7 @@ public abstract class AbstractTest implements IHookable {
             @Nonnull final Path file,
             @Nonnull final String... dependencies)
             throws Exception {
-        final Artifact artifact = new DefaultArtifact(coords);
+        final var artifact = new DefaultArtifact(coords);
         final Path pomFile = createTempPomFile(
                 artifact.getGroupId(),
                 artifact.getArtifactId(),
@@ -312,11 +311,11 @@ public abstract class AbstractTest implements IHookable {
             @Nonnull final Path file,
             @Nonnull final Path pomFile)
             throws Exception {
-        final Artifact pomArtifact = new SubArtifact(new DefaultArtifact(coords), "", "pom");
+        final var pomArtifact = new SubArtifact(new DefaultArtifact(coords), "", "pom");
 
         final Resolver resolver = createResolver(localRepository);
 
-        final DeployRequest request = new DeployRequest()
+        final var request = new DeployRequest()
                 .addArtifact(new DefaultArtifact(coords).setFile(file.toFile()))
                 .addArtifact(pomArtifact.setFile(pomFile.toFile()))
                 .setRepository(new RemoteRepository.Builder(
@@ -355,8 +354,8 @@ public abstract class AbstractTest implements IHookable {
     @Nonnull
     protected final Path createJarFile(@Nonnull final JarFileAction action) throws IOException {
         final Path jarFile = Files.createTempFile(FileUtil.getCurrentDirectory(), "data", ".jar");
-        try (final FileOutputStream out = new FileOutputStream(jarFile.toFile())) {
-            try (final JarOutputStream outputStream = new JarOutputStream(out)) {
+        try (final var out = new FileOutputStream(jarFile.toFile())) {
+            try (final var outputStream = new JarOutputStream(out)) {
                 action.accept(outputStream);
             }
         }
@@ -366,7 +365,7 @@ public abstract class AbstractTest implements IHookable {
     protected final void createJarEntry(
             @Nonnull final JarOutputStream outputStream, @Nonnull final String filename, @Nonnull final String contents)
             throws IOException {
-        final JarEntry entry = new JarEntry(filename);
+        final var entry = new JarEntry(filename);
         entry.setCreationTime(FileTime.fromMillis(0));
         entry.setTime(0);
         entry.setComment(null);

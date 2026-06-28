@@ -10,6 +10,7 @@ Copy Ariake's Error Prone rule strictness into Bazel-Depgen where it can be enfo
 - Replace the current `-XepDisableAllChecks` wrapper default with Ariake's explicit built-in Error Prone checks.
 - Add Ariake's test-only Error Prone check if the active Bazel toolchain supports it.
 - Enable Ariake's nullness-related Error Prone options if the active Bazel toolchain and current source accept them.
+- Enable Ariake's `Varifier` check after the explicit follow-up request, accepting the broad mechanical `var` migration required by the current source.
 - Avoid adopting extra plugin/dependency wiring unless the current source needs it to enforce the checks.
 - Update contributor-visible release notes for the stricter build checks.
 
@@ -38,3 +39,12 @@ Copy Ariake's Error Prone rule strictness into Bazel-Depgen where it can be enfo
   recommended_default: Include the NullAway-related javacopts if they validate cleanly; avoid extra plugin/dependency wiring unless needed.
   user_decision: Include the NullAway-related javacopts after validation; avoid extra plugin/dependency wiring because the checked-in source builds without it.
   artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`
+- id: Q-03
+  status: resolved
+  question: Should `Varifier` now be enforced despite the broad mechanical source impact?
+  context: The first strict-check pass omitted `Varifier` because it affected hundreds of local declarations. The user explicitly requested implementing the `Varifier` Error Prone check in a follow-up.
+  options: Keep omitting `Varifier`, or enable `Varifier` and migrate affected local declarations.
+  tradeoffs: Keeping it omitted avoids churn but leaves one Ariake check unenforced. Enabling it creates a broad mechanical diff but completes the requested strictness.
+  recommended_default: Enable `Varifier` and migrate the current source.
+  user_decision: Enable `Varifier` and migrate the current source.
+  artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`

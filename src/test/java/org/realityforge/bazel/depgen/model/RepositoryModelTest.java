@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 public class RepositoryModelTest extends AbstractTest {
     @Test
     public void create() {
-        final RepositoryModel model =
+        final var model =
                 RepositoryModel.create(ApplicationConfig.MAVEN_CENTRAL_NAME, ApplicationConfig.MAVEN_CENTRAL_URL);
 
         assertNull(model.getSource());
@@ -22,7 +22,7 @@ public class RepositoryModelTest extends AbstractTest {
 
     @Test
     public void parse() {
-        final RepositoryConfig source = new RepositoryConfig();
+        final var source = new RepositoryConfig();
         source.setName("example");
         source.setUrl("https://example.com/repo");
 
@@ -36,7 +36,7 @@ public class RepositoryModelTest extends AbstractTest {
 
     @Test
     public void parse_nameOmitted() {
-        final RepositoryConfig source = new RepositoryConfig();
+        final var source = new RepositoryConfig();
         source.setUrl("https://example.com/repo/");
 
         final RepositoryModel model = RepositoryModel.parse(source);
@@ -49,7 +49,7 @@ public class RepositoryModelTest extends AbstractTest {
 
     @Test
     public void parse_explicit_cacheLookups_FALSE() {
-        final RepositoryConfig source = new RepositoryConfig();
+        final var source = new RepositoryConfig();
         source.setName("example");
         source.setUrl("https://example.com/repo/");
         source.setCacheLookups(Boolean.FALSE);
@@ -64,7 +64,7 @@ public class RepositoryModelTest extends AbstractTest {
 
     @Test
     public void parse_explicit_cacheLookups_TRUE() {
-        final RepositoryConfig source = new RepositoryConfig();
+        final var source = new RepositoryConfig();
         source.setName("example");
         source.setUrl("https://example.com/repo/");
         source.setCacheLookups(Boolean.TRUE);
@@ -79,7 +79,7 @@ public class RepositoryModelTest extends AbstractTest {
 
     @Test
     public void parse_implicit_searchByDefault() {
-        final RepositoryConfig source = new RepositoryConfig();
+        final var source = new RepositoryConfig();
         source.setName("example");
         source.setUrl("https://example.com/repo/");
 
@@ -88,7 +88,7 @@ public class RepositoryModelTest extends AbstractTest {
 
     @Test
     public void parse_explicit_searchByDefault_FALSE() {
-        final RepositoryConfig source = new RepositoryConfig();
+        final var source = new RepositoryConfig();
         source.setName("example");
         source.setUrl("https://example.com/repo/");
         source.setSearchByDefault(Boolean.FALSE);
@@ -98,7 +98,7 @@ public class RepositoryModelTest extends AbstractTest {
 
     @Test
     public void parse_explicit_searchByDefault_TRUE() {
-        final RepositoryConfig source = new RepositoryConfig();
+        final var source = new RepositoryConfig();
         source.setName("example");
         source.setUrl("https://example.com/repo/");
         source.setSearchByDefault(Boolean.TRUE);
@@ -108,7 +108,7 @@ public class RepositoryModelTest extends AbstractTest {
 
     @Test
     public void parse_implicit_checksumPolicy() {
-        final RepositoryConfig source = new RepositoryConfig();
+        final var source = new RepositoryConfig();
         source.setName("example");
         source.setUrl("https://example.com/repo/");
 
@@ -117,7 +117,7 @@ public class RepositoryModelTest extends AbstractTest {
 
     @Test
     public void parse_explicit_checksumPolicy() {
-        final RepositoryConfig source = new RepositoryConfig();
+        final var source = new RepositoryConfig();
         source.setName("example");
         source.setUrl("https://example.com/repo/");
         source.setChecksumPolicy(ChecksumPolicy.ignore);
@@ -127,7 +127,7 @@ public class RepositoryModelTest extends AbstractTest {
 
     @Test
     public void parse_missing_url() {
-        final RepositoryConfig config = new RepositoryConfig();
+        final var config = new RepositoryConfig();
         final InvalidModelException exception =
                 expectThrows(InvalidModelException.class, () -> RepositoryModel.parse(config));
 

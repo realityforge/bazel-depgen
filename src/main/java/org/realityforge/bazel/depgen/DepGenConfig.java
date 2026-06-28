@@ -50,7 +50,7 @@ public final class DepGenConfig {
         assert null != inputStream;
 
         try {
-            final OrderedProperties properties = new OrderedProperties();
+            final var properties = new OrderedProperties();
             properties.load(inputStream);
             return properties;
         } catch (final IOException e) {

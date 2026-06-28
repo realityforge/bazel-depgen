@@ -191,10 +191,10 @@ public final class DepgenMetadataTest extends AbstractTest {
 
         final URI uri = dir1.toUri();
 
-        final RemoteRepository repo1 = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
-        final RemoteRepository repo2 =
+        final var repo1 = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
+        final var repo2 =
                 new RemoteRepository.Builder("dir2", "default", dir2.toUri().toString()).build();
-        final RemoteRepository repo3 =
+        final var repo3 =
                 new RemoteRepository.Builder("dir3", "default", dir3.toUri().toString()).build();
 
         deployTempArtifactToLocalRepository(dir1, "com.example:myapp:1.0");
@@ -242,7 +242,7 @@ public final class DepgenMetadataTest extends AbstractTest {
 
         final URI uri = dir1.toUri();
 
-        final RemoteRepository repo1 = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
+        final var repo1 = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
 
         final DepgenMetadata metadata =
                 loadMetadata(dir, "repositories:\n" + "  - name: dir1\n" + "    url: " + uri + "\n");
@@ -284,9 +284,9 @@ public final class DepgenMetadataTest extends AbstractTest {
                         + "  - name: dir3\n"
                         + "    url: http://c.com\n");
 
-        final RemoteRepository repo1 = new RemoteRepository.Builder("dir1", "default", "http://a.com").build();
-        final RemoteRepository repo2 = new RemoteRepository.Builder("dir2", "default", "http://b.com").build();
-        final RemoteRepository repo3 = new RemoteRepository.Builder("dir3", "default", "http://c.com").build();
+        final var repo1 = new RemoteRepository.Builder("dir1", "default", "http://a.com").build();
+        final var repo2 = new RemoteRepository.Builder("dir2", "default", "http://b.com").build();
+        final var repo3 = new RemoteRepository.Builder("dir3", "default", "http://c.com").build();
 
         final List<String> urls = metadata.getUrls(
                 new DefaultArtifact("com.example:myapp:jar:1.0"),
@@ -319,9 +319,9 @@ public final class DepgenMetadataTest extends AbstractTest {
                         + "  - name: dir3\n"
                         + "    url: http://c.com\n");
 
-        final RemoteRepository repo1 = new RemoteRepository.Builder("dir1", "default", "http://a.com").build();
-        final RemoteRepository repo2 = new RemoteRepository.Builder("dir2", "default", "http://b.com").build();
-        final RemoteRepository repo3 = new RemoteRepository.Builder("dir3", "default", "http://c.com").build();
+        final var repo1 = new RemoteRepository.Builder("dir1", "default", "http://a.com").build();
+        final var repo2 = new RemoteRepository.Builder("dir2", "default", "http://b.com").build();
+        final var repo3 = new RemoteRepository.Builder("dir3", "default", "http://c.com").build();
 
         final List<String> urls = metadata.getUrls(
                 new DefaultArtifact("com.example:myapp:jar:1.0"),
@@ -352,9 +352,9 @@ public final class DepgenMetadataTest extends AbstractTest {
                         + "  - name: dir3\n"
                         + "    url: http://c.com\n");
 
-        final RemoteRepository repo1 = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
-        final RemoteRepository repo2 = new RemoteRepository.Builder("dir2", "default", "http://b.com").build();
-        final RemoteRepository repo3 = new RemoteRepository.Builder("dir3", "default", "http://c.com").build();
+        final var repo1 = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
+        final var repo2 = new RemoteRepository.Builder("dir2", "default", "http://b.com").build();
+        final var repo3 = new RemoteRepository.Builder("dir3", "default", "http://c.com").build();
 
         final String fileUrl = repo1.getUrl() + "com/example/myapp/1.0/myapp-1.0.jar";
         Files.write(
@@ -416,9 +416,9 @@ public final class DepgenMetadataTest extends AbstractTest {
                         + "  - name: dir3\n"
                         + "    url: http://c.com\n");
 
-        final RemoteRepository repo1 = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
-        final RemoteRepository repo2 = new RemoteRepository.Builder("dir2", "default", "http://b.com").build();
-        final RemoteRepository repo3 = new RemoteRepository.Builder("dir3", "default", "http://c.com").build();
+        final var repo1 = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
+        final var repo2 = new RemoteRepository.Builder("dir2", "default", "http://b.com").build();
+        final var repo3 = new RemoteRepository.Builder("dir3", "default", "http://c.com").build();
 
         final String expectedWarning =
                 "Cache entry '<default>.dir1.url' for artifact 'com.example:myapp:jar:1.0' contains a url "
@@ -470,7 +470,7 @@ public final class DepgenMetadataTest extends AbstractTest {
         final ApplicationModel model = ApplicationModel.load(loadApplicationConfig(), true);
         final DepgenMetadata metadata = DepgenMetadata.fromDirectory(model, dir);
 
-        final RemoteRepository repo1 = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
+        final var repo1 = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
         final List<String> urls = metadata.getUrls(
                 new DefaultArtifact("com.example:myapp:jar:1.0"),
                 Collections.singletonList(repo1),
@@ -601,7 +601,7 @@ public final class DepgenMetadataTest extends AbstractTest {
                 "processors=react4j.processor.ReactProcessor,arez.processor.ArezProcessor\n"
                         .getBytes(StandardCharsets.ISO_8859_1));
 
-        final HashSet<PosixFilePermission> permissions = new HashSet<>();
+        final var permissions = new HashSet<PosixFilePermission>();
         permissions.add(PosixFilePermission.OWNER_WRITE);
         Files.setPosixFilePermissions(file, permissions);
 
@@ -732,7 +732,7 @@ public final class DepgenMetadataTest extends AbstractTest {
                 "js_assets=com/biz/MyBlah.js,com/biz/MyFile1.js,com/biz/MyOtherFile.js\n"
                         .getBytes(StandardCharsets.ISO_8859_1));
 
-        final HashSet<PosixFilePermission> permissions = new HashSet<>();
+        final var permissions = new HashSet<PosixFilePermission>();
         permissions.add(PosixFilePermission.OWNER_WRITE);
         Files.setPosixFilePermissions(file, permissions);
 
@@ -758,7 +758,7 @@ public final class DepgenMetadataTest extends AbstractTest {
 
         Files.write(file, "".getBytes(StandardCharsets.ISO_8859_1));
 
-        final HashSet<PosixFilePermission> permissions = new HashSet<>();
+        final var permissions = new HashSet<PosixFilePermission>();
         permissions.add(PosixFilePermission.OWNER_READ);
         Files.setPosixFilePermissions(file, permissions);
 

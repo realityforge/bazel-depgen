@@ -146,7 +146,7 @@ final class InitCommand extends ConfigurableCommand {
                 throw new IOException("Failed to ready file fully");
             }
 
-            final String outputData = new String(data, StandardCharsets.UTF_8)
+            final var outputData = new String(data, StandardCharsets.UTF_8)
                     .replace(
                             "workspaceDirectory: ..",
                             "workspaceDirectory: " + configFile.getParent().relativize(workspaceDir));
@@ -202,7 +202,7 @@ final class InitCommand extends ConfigurableCommand {
             @Nonnull final Logger logger, @Nonnull final Path workspaceFile, @Nonnull final Path configFile) {
         try {
             final Path workspaceDirectory = workspaceFile.getParent();
-            final StarlarkOutput output = new StarlarkOutput(workspaceFile);
+            final var output = new StarlarkOutput(workspaceFile);
             output.write("workspace(name = \"" + workspaceDirectory.getFileName() + "\")");
             output.newLine();
             output.write("load(\"//" + workspaceDirectory.relativize(configFile).getParent()

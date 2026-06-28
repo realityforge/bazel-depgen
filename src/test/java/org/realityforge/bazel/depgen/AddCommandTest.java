@@ -13,8 +13,8 @@ public class AddCommandTest extends AbstractTest {
     public void add_noArtifactsSection() throws Exception {
         writeConfigFile("options:\n" + "  verifyConfigSha256: false\n");
 
-        final TestHandler handler = new TestHandler();
-        final AddCommand command = new AddCommand();
+        final var handler = new TestHandler();
+        final var command = new AddCommand();
         final Environment environment = newEnvironment(handler);
         assertTrue(command.processOptions(environment, "com.example:myapp:1.0"));
 
@@ -33,7 +33,7 @@ public class AddCommandTest extends AbstractTest {
     public void add_ignoresCommentedTemplateArtifactsSection() throws Exception {
         writeConfigFile("#artifacts:\n" + "  #- coord: com.example:sample:1.0\n");
 
-        final AddCommand command = new AddCommand();
+        final var command = new AddCommand();
         final Environment environment = newEnvironment();
         assertTrue(command.processOptions(environment, "com.example:myapp:1.0"));
 
@@ -53,7 +53,7 @@ public class AddCommandTest extends AbstractTest {
                 + "excludes:\n"
                 + "  - coord: com.example:unused\n");
 
-        final AddCommand command = new AddCommand();
+        final var command = new AddCommand();
         final Environment environment = newEnvironment();
         assertTrue(command.processOptions(environment, "com.example:myapp:1.0"));
 
@@ -77,7 +77,7 @@ public class AddCommandTest extends AbstractTest {
                 + "artifacts:\n"
                 + "  - coord: org.example:old:1.0\n");
 
-        final AddCommand command = new AddCommand();
+        final var command = new AddCommand();
         final Environment environment = newEnvironment();
         assertTrue(command.processOptions(
                 environment,
@@ -151,7 +151,7 @@ public class AddCommandTest extends AbstractTest {
     public void add_repositoryNameStrategy() throws Exception {
         writeConfigFile("options:\n" + "  verifyConfigSha256: false\n");
 
-        final AddCommand command = new AddCommand();
+        final var command = new AddCommand();
         final Environment environment = newEnvironment();
         assertTrue(command.processOptions(
                 environment, "org.example:lib:1.2", "--repository-name-strategy", "GroupIdAndArtifactId"));
@@ -170,7 +170,7 @@ public class AddCommandTest extends AbstractTest {
     public void add_noIncludeSource() throws Exception {
         writeConfigFile("options:\n" + "  verifyConfigSha256: false\n");
 
-        final AddCommand command = new AddCommand();
+        final var command = new AddCommand();
         final Environment environment = newEnvironment();
         assertTrue(command.processOptions(environment, "org.example:lib:1.2", "--no-include-source"));
 
@@ -189,7 +189,7 @@ public class AddCommandTest extends AbstractTest {
         final String original = "options:\n" + "  includeSource: false\n";
         writeConfigFile(original);
 
-        final AddCommand command = new AddCommand();
+        final var command = new AddCommand();
         final Environment environment = newEnvironment();
         assertTrue(command.processOptions(environment, "com.example:myapp:1.0", "--nature", "J2cl"));
 
@@ -202,8 +202,8 @@ public class AddCommandTest extends AbstractTest {
 
     @Test
     public void add_conflictingIncludeSourceOptions() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final AddCommand command = new AddCommand();
+        final var handler = new TestHandler();
+        final var command = new AddCommand();
         assertFalse(command.processOptions(
                 newEnvironment(handler), "com.example:myapp:1.0", "--include-source", "--no-include-source"));
         assertEquals(
@@ -215,7 +215,7 @@ public class AddCommandTest extends AbstractTest {
         final String original = "options:\n" + "  verifyConfigSha256: false\n";
         writeConfigFile(original);
 
-        final AddCommand command = new AddCommand();
+        final var command = new AddCommand();
         final Environment environment = newEnvironment();
         assertTrue(command.processOptions(
                 environment,
@@ -243,7 +243,7 @@ public class AddCommandTest extends AbstractTest {
             final String original = "artifacts:\n" + "  - coord: " + existingCoord + "\n";
             writeConfigFile(original);
 
-            final AddCommand command = new AddCommand();
+            final var command = new AddCommand();
             final Environment environment = newEnvironment();
             assertTrue(command.processOptions(environment, "com.example:myapp:1.0"));
 
@@ -259,7 +259,7 @@ public class AddCommandTest extends AbstractTest {
         final String original = "options:\n" + "  defaultNature: Java\n";
         writeConfigFile(original);
 
-        final AddCommand command = new AddCommand();
+        final var command = new AddCommand();
         final Environment environment = newEnvironment();
         assertTrue(command.processOptions(environment, "com.example:myapp:1.0", "--j2cl-name", "myapp_j2cl"));
 
@@ -275,7 +275,7 @@ public class AddCommandTest extends AbstractTest {
         final String original = "artifacts: []\n";
         writeConfigFile(original);
 
-        final AddCommand command = new AddCommand();
+        final var command = new AddCommand();
         final Environment environment = newEnvironment();
         assertTrue(command.processOptions(environment, "com.example:myapp:1.0"));
 
@@ -291,7 +291,7 @@ public class AddCommandTest extends AbstractTest {
         final String original = "artifacts:\n" + "  - coord: com.example:old:1.0\n";
         writeConfigFile(original);
 
-        final AddCommand command = new AddCommand();
+        final var command = new AddCommand();
         final Environment environment = newEnvironment();
         assertTrue(command.processOptions(environment, "com.example:myapp:1.0", "--repository", "missing"));
 
@@ -307,16 +307,16 @@ public class AddCommandTest extends AbstractTest {
 
     @Test
     public void add_missingCoord() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final AddCommand command = new AddCommand();
+        final var handler = new TestHandler();
+        final var command = new AddCommand();
         assertFalse(command.processOptions(newEnvironment(handler)));
         assertEquals(handler.toString(), "Error: Missing dependency coordinate.");
     }
 
     @Test
     public void add_invalidEnum() throws Exception {
-        final TestHandler handler = new TestHandler();
-        final AddCommand command = new AddCommand();
+        final var handler = new TestHandler();
+        final var command = new AddCommand();
         assertFalse(command.processOptions(newEnvironment(handler), "com.example:myapp:1.0", "--nature", "Nope"));
         assertEquals(handler.toString(), "Error: Invalid value for --nature: Nope");
     }

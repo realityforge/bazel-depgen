@@ -11,8 +11,8 @@ public class HashCommandTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
 
-        final TestHandler handler = new TestHandler();
-        final HashCommand command = new HashCommand();
+        final var handler = new TestHandler();
+        final var command = new HashCommand();
         final int exitCode = command.run(new CommandContextImpl(newEnvironment(handler)));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
         assertEquals(
@@ -24,8 +24,8 @@ public class HashCommandTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
 
-        final TestHandler handler = new TestHandler();
-        final HashCommand command = new HashCommand();
+        final var handler = new TestHandler();
+        final var command = new HashCommand();
         final Environment environment = newEnvironment(handler);
         final boolean parsed = command.processOptions(
                 environment, "--verify-sha256", "0A8DBED4B09238126BA5E065EB4E392A1B631FA1A20FCA9AE1DF5AA364F59C96");
@@ -41,8 +41,8 @@ public class HashCommandTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
 
-        final TestHandler handler = new TestHandler();
-        final HashCommand command = new HashCommand();
+        final var handler = new TestHandler();
+        final var command = new HashCommand();
         final Environment environment = newEnvironment(handler);
         environment.logger().setLevel(Level.WARNING);
         final boolean parsed = command.processOptions(
@@ -58,8 +58,8 @@ public class HashCommandTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
 
-        final TestHandler handler = new TestHandler();
-        final HashCommand command = new HashCommand();
+        final var handler = new TestHandler();
+        final var command = new HashCommand();
         final Environment environment = newEnvironment(handler);
         final boolean parsed = command.processOptions(environment, "--verify-sha256", "XXXX");
         assertTrue(parsed);
@@ -80,8 +80,8 @@ public class HashCommandTest extends AbstractTest {
         writeConfigFile(
                 "options:\n" + "  verifyConfigSha256: false\n" + "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
 
-        final TestHandler handler = new TestHandler();
-        final HashCommand command = new HashCommand();
+        final var handler = new TestHandler();
+        final var command = new HashCommand();
         final Environment environment = newEnvironment(handler);
         final boolean parsed = command.processOptions(environment, "--verify-sha256", "XXXX");
         assertTrue(parsed);
@@ -97,8 +97,8 @@ public class HashCommandTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
 
-        final TestHandler handler = new TestHandler();
-        final HashCommand command = new HashCommand();
+        final var handler = new TestHandler();
+        final var command = new HashCommand();
         final Environment environment = newEnvironment(handler);
         final boolean parsed = command.processOptions(environment, "--something-something");
         assertFalse(parsed);
@@ -110,8 +110,8 @@ public class HashCommandTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
 
-        final TestHandler handler = new TestHandler();
-        final HashCommand command = new HashCommand();
+        final var handler = new TestHandler();
+        final var command = new HashCommand();
         final Environment environment = newEnvironment(handler);
         final boolean parsed = command.processOptions(environment, "blah");
         assertFalse(parsed);

@@ -32,7 +32,7 @@ public final class GeneratedSectionWriter {
                     + "' after the start token. File: " + path);
         }
 
-        final StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
         sb.append(data, 0, startIndex + startToken.length());
         sb.append("\n\n").append(content);
         if (!content.endsWith("\n")) {
@@ -60,7 +60,7 @@ public final class GeneratedSectionWriter {
                     + "neither marker. File: " + path);
         }
 
-        final StringBuilder sb = new StringBuilder(data);
+        final var sb = new StringBuilder(data);
         if (!data.isEmpty() && !data.endsWith("\n")) {
             sb.append("\n");
         }

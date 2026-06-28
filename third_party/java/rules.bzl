@@ -89,6 +89,7 @@ _ERROR_PRONE_JAVACOPTS = [
     "-Xep:InterruptedExceptionSwallowed:ERROR",
     "-Xep:PrivateConstructorForUtilityClass:ERROR",
     "-Xep:UnnecessaryDefaultInEnumSwitch:ERROR",
+    "-Xep:Varifier:ERROR",
 ]
 
 _TEST_ERROR_PRONE_JAVACOPTS = [

@@ -68,7 +68,7 @@ final class DependencyCollector implements DependencyVisitor {
         final List<String> sourceUrls;
         final String sourcesFilename = artifact.getProperty(Constants.SOURCE_ARTIFACT_FILENAME, null);
         if (null != sourcesFilename) {
-            final File sourcesFile = new File(sourcesFilename);
+            final var sourcesFile = new File(sourcesFilename);
             final org.eclipse.aether.artifact.Artifact sourcesArtifact =
                     new SubArtifact(artifact, "sources", "jar").setFile(sourcesFile);
 
@@ -86,7 +86,7 @@ final class DependencyCollector implements DependencyVisitor {
         final String externalAnnotationsFilename =
                 artifact.getProperty(Constants.EXTERNAL_ANNOTATIONS_ARTIFACT_FILENAME, null);
         if (null != externalAnnotationsFilename) {
-            final File sourcesFile = new File(externalAnnotationsFilename);
+            final var sourcesFile = new File(externalAnnotationsFilename);
             final org.eclipse.aether.artifact.Artifact sourcesArtifact =
                     new SubArtifact(artifact, "annotations", "jar").setFile(sourcesFile);
 

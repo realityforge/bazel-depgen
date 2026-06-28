@@ -102,7 +102,7 @@ public final class StarlarkOutput implements AutoCloseable {
                 } else if (Boolean.FALSE == value) {
                     write(key + " = False,");
                 } else if (value instanceof List) {
-                    final List<?> arg = (List<?>) value;
+                    final var arg = (List<?>) value;
                     if (arg.isEmpty()) {
                         write(key + " = [],");
                     } else if (1 == arg.size()) {

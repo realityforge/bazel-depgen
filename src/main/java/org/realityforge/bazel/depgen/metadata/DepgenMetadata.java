@@ -88,7 +88,7 @@ public final class DepgenMetadata {
             @Nonnull final List<RemoteRepository> repositories,
             @Nonnull final Map<String, AuthenticationContext> authenticationContexts,
             @Nonnull final RecordBuildCallback callback) {
-        final ArrayList<String> urls = new ArrayList<>();
+        final var urls = new ArrayList<String>();
         for (final RemoteRepository remoteRepository : repositories) {
             final String name = remoteRepository.getId();
             final RepositoryModel repository = _model.findRepository(name);
@@ -191,7 +191,7 @@ public final class DepgenMetadata {
     @Nonnull
     private Properties getCachedProperties() {
         if (null == _properties) {
-            final OrderedProperties properties = new OrderedProperties();
+            final var properties = new OrderedProperties();
             if (_file.toFile().exists() && _file.toFile().isFile()) {
                 try {
                     properties.load(Files.newBufferedReader(_file));

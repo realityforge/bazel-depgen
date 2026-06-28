@@ -14,7 +14,6 @@ import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.graph.Exclusion;
 import org.eclipse.aether.impl.DefaultServiceLocator;
-import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
@@ -121,7 +120,7 @@ final class ResolverUtil {
             final boolean failOnInvalidPom) {
         final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
 
-        final LocalRepository localRepository = new LocalRepository(cacheDir.toString());
+        final var localRepository = new LocalRepository(cacheDir.toString());
 
         session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepository));
 
@@ -141,14 +140,14 @@ final class ResolverUtil {
     @Nonnull
     static List<RemoteRepository> getRemoteRepositories(
             @Nonnull final List<RepositoryModel> repositories, @Nonnull final Settings settings) {
-        final List<RemoteRepository> remoteRepositories = new ArrayList<>();
+        final var remoteRepositories = new ArrayList<RemoteRepository>();
 
         for (final RepositoryModel repository : repositories) {
             final String name = repository.getName();
-            final RemoteRepository.Builder builder = new RemoteRepository.Builder(name, "default", repository.getUrl());
+            final var builder = new RemoteRepository.Builder(name, "default", repository.getUrl());
             final Server server = settings.getServer(name);
             if (null != server) {
-                final Authentication authentication = new AuthenticationBuilder()
+                final var authentication = new AuthenticationBuilder()
                         .addUsername(server.getUsername())
                         .addPassword(server.getPassword())
                         .build();
@@ -163,7 +162,7 @@ final class ResolverUtil {
 
     @Nonnull
     static ArrayList<Exclusion> deriveGlobalExclusions(@Nonnull final ApplicationModel model) {
-        final ArrayList<Exclusion> exclusions = new ArrayList<>();
+        final var exclusions = new ArrayList<Exclusion>();
         for (final GlobalExcludeModel exclude : model.getExcludes()) {
             exclusions.add(new Exclusion(exclude.getGroup(), exclude.getId(), "*", "*"));
         }
@@ -172,7 +171,7 @@ final class ResolverUtil {
 
     @Nonnull
     static ArrayList<Exclusion> deriveExclusions(@Nonnull final ArtifactModel artifactModel) {
-        final ArrayList<Exclusion> exclusions = new ArrayList<>();
+        final var exclusions = new ArrayList<Exclusion>();
         for (final ExcludeModel exclude : artifactModel.getExcludes()) {
             final String id = exclude.getId();
             exclusions.add(new Exclusion(exclude.getGroup(), null == id ? "*" : id, "*", "*"));

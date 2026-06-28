@@ -381,7 +381,7 @@ final class AddCommand extends ConfigurableCommand {
 
     @Nonnull
     private ArtifactConfig createArtifactConfig() {
-        final ArtifactConfig config = new ArtifactConfig();
+        final var config = new ArtifactConfig();
         assert null != _coord;
         config.setCoord(_coord);
         if (null != _nameStrategy) {
@@ -434,7 +434,7 @@ final class AddCommand extends ConfigurableCommand {
         if (null == _javaName && !_javaExportDeps) {
             return null;
         }
-        final JavaConfig config = new JavaConfig();
+        final var config = new JavaConfig();
         config.setName(_javaName);
         if (_javaExportDeps) {
             config.setExportDeps(true);
@@ -447,7 +447,7 @@ final class AddCommand extends ConfigurableCommand {
         if (null == _j2clName && null == _j2clMode && _j2clSuppress.isEmpty()) {
             return null;
         }
-        final J2clConfig config = new J2clConfig();
+        final var config = new J2clConfig();
         config.setName(_j2clName);
         if (null != _j2clMode) {
             config.setMode(_j2clMode);
@@ -463,7 +463,7 @@ final class AddCommand extends ConfigurableCommand {
         if (null == _pluginName && null == _pluginGeneratesApi) {
             return null;
         }
-        final PluginConfig config = new PluginConfig();
+        final var config = new PluginConfig();
         config.setName(_pluginName);
         if (null != _pluginGeneratesApi) {
             config.setGeneratesApi(_pluginGeneratesApi);
@@ -509,7 +509,7 @@ final class AddCommand extends ConfigurableCommand {
 
     @Nonnull
     private String renderArtifact(@Nonnull final ArtifactConfig config) {
-        final StringBuilder output = new StringBuilder();
+        final var output = new StringBuilder();
         output.append("  - coord: ").append(config.getCoord()).append('\n');
         appendScalar(output, "    ", "nameStrategy", config.getNameStrategy());
         appendScalar(output, "    ", "repositoryNameStrategy", config.getRepositoryNameStrategy());
@@ -605,7 +605,7 @@ final class AddCommand extends ConfigurableCommand {
                     break;
                 }
             }
-            final StringBuilder output = new StringBuilder();
+            final var output = new StringBuilder();
             for (int i = 0; i < insertionIndex; i++) {
                 output.append(lines[i]).append('\n');
             }

@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
 public class ArtifactModelTest extends AbstractTest {
     @Test
     public void parseArtifactWith2PartCoord() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
 
         final ArtifactModel model = ArtifactModel.parse(source);
@@ -38,7 +38,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWith3PartCoord() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp:1.0");
 
         final ArtifactModel model = ArtifactModel.parse(source);
@@ -59,7 +59,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWith4PartCoord() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp:jszip:1.0");
 
         final ArtifactModel model = ArtifactModel.parse(source);
@@ -80,7 +80,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWith5PartCoord() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp:jszip:sources:1.0");
 
         final ArtifactModel model = ArtifactModel.parse(source);
@@ -101,7 +101,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWith1PartCoord() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example");
 
         final InvalidModelException exception =
@@ -116,7 +116,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWith6PartCoord() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp:jszip:sources:1.0:compile");
 
         final InvalidModelException exception =
@@ -131,7 +131,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithIncludeOptional() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         source.setIncludeOptional(true);
 
@@ -152,9 +152,9 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithExportDeps() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
-        final JavaConfig java = new JavaConfig();
+        final var java = new JavaConfig();
         java.setExportDeps(true);
         source.setJava(java);
 
@@ -168,9 +168,9 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithExportDeps_overrideGlobal() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
-        final JavaConfig java = new JavaConfig();
+        final var java = new JavaConfig();
         java.setExportDeps(false);
         source.setJava(java);
 
@@ -184,7 +184,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithRepositoryName() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         source.setRepositoryName("myapp_repo");
 
@@ -197,7 +197,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithRepositoryNameAndStrategy() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         source.setRepositoryName("myapp_repo");
         source.setRepositoryNameStrategy(NameStrategy.ArtifactId);
@@ -212,7 +212,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithInvalidRepositoryName() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         source.setRepositoryName("MyApp");
 
@@ -226,7 +226,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithRepositoryNameContainingDoubleUnderscore() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         source.setRepositoryName("my__app");
 
@@ -238,9 +238,9 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithInvalidJavaName() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
-        final JavaConfig java = new JavaConfig();
+        final var java = new JavaConfig();
         java.setName("my__java");
         source.setJava(java);
 
@@ -252,9 +252,9 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithInvalidJ2clName() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
-        final J2clConfig j2cl = new J2clConfig();
+        final var j2cl = new J2clConfig();
         j2cl.setName("my__j2cl");
         source.setJ2cl(j2cl);
 
@@ -266,9 +266,9 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithInvalidPluginName() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
-        final PluginConfig plugin = new PluginConfig();
+        final var plugin = new PluginConfig();
         plugin.setName("my__plugin");
         source.setPlugin(plugin);
 
@@ -280,7 +280,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithNature() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         source.setNatures(Collections.singletonList(Nature.Plugin));
 
@@ -293,7 +293,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithNoIncludeSource() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         source.setIncludeSource(false);
 
@@ -314,7 +314,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithIncludeExternalAnnotations() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         source.setIncludeExternalAnnotations(true);
 
@@ -326,7 +326,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithNoIncludeExternalAnnotations() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         source.setIncludeExternalAnnotations(false);
 
@@ -338,7 +338,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithCoordAndExcludes() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         source.setExcludes(Arrays.asList("com.biz.db", "com.biz.ui:core-ui"));
 
@@ -367,7 +367,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithVisibility() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         source.setVisibility(Arrays.asList("//project:__subpackages__", "//other:__subpackages__"));
 
@@ -388,7 +388,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithNaturesSpecified() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         source.setNatures(Arrays.asList(Nature.Java, Nature.J2cl));
 
@@ -397,7 +397,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithNaturesNotSpecified() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
 
         assertEquals(ArtifactModel.parse(source).getNatures(Nature.Java), Collections.singletonList(Nature.Java));
@@ -405,7 +405,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithSpec2Elements() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
 
         final ArtifactModel model = ArtifactModel.parse(source);
@@ -426,7 +426,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithSpec3Elements() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp:1.0");
 
         final ArtifactModel model = ArtifactModel.parse(source);
@@ -447,7 +447,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithSpec4Elements() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp:jar:1.0");
 
         final ArtifactModel model = ArtifactModel.parse(source);
@@ -468,7 +468,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactWithAllSpecElementsAndExcludes() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp:jszip:sources:1.0");
         source.setExcludes(Arrays.asList("com.biz.db", "com.biz.ui:core-ui"));
 
@@ -497,7 +497,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void parseArtifactMissingCoord() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
 
         final InvalidModelException exception =
                 expectThrows(InvalidModelException.class, () -> ArtifactModel.parse(source));
@@ -507,7 +507,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void getRepositories() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
         final List<String> repositories = Arrays.asList("local", "central");
         source.setRepositories(repositories);
@@ -517,7 +517,7 @@ public class ArtifactModelTest extends AbstractTest {
 
     @Test
     public void getRepositories_defaultValue() {
-        final ArtifactConfig source = new ArtifactConfig();
+        final var source = new ArtifactConfig();
         source.setCoord("com.example:myapp");
 
         assertTrue(ArtifactModel.parse(source).getRepositories().isEmpty());

@@ -55,7 +55,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
         assertEquals(
                 asString(outputStream),
@@ -78,7 +78,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
         assertEquals(
                 asString(outputStream),
@@ -103,7 +103,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
         assertEquals(
                 asString(outputStream),
@@ -123,7 +123,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "__library");
         assertEquals(
                 asString(outputStream),
@@ -143,7 +143,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
         assertEquals(
                 asString(outputStream),
@@ -164,7 +164,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
         assertEquals(
                 asString(outputStream),
@@ -191,7 +191,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
         assertEquals(
                 asString(outputStream),
@@ -212,7 +212,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
         // Output does not declare data with verify task included
         assertEquals(
@@ -236,7 +236,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
         assertEquals(
                 asString(outputStream),
@@ -259,7 +259,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
         assertEquals(
                 asString(outputStream),
@@ -295,7 +295,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         {
             final ArtifactRecord artifactRecord = getArtifactAt(record, 0);
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            final var outputStream = new ByteArrayOutputStream();
             artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
             assertEquals(
                     asString(outputStream),
@@ -309,7 +309,7 @@ public class ArtifactRecordTest extends AbstractTest {
         }
         {
             final ArtifactRecord artifactRecord = getArtifactAt(record, 1);
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            final var outputStream = new ByteArrayOutputStream();
             artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
             assertEquals(
                     asString(outputStream),
@@ -323,7 +323,7 @@ public class ArtifactRecordTest extends AbstractTest {
         }
         {
             final ArtifactRecord artifactRecord = getArtifactAt(record, 2);
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            final var outputStream = new ByteArrayOutputStream();
             artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
             assertEquals(
                     asString(outputStream),
@@ -448,7 +448,7 @@ public class ArtifactRecordTest extends AbstractTest {
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         {
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            final var outputStream = new ByteArrayOutputStream();
             artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
             assertEquals(
                     asString(outputStream),
@@ -459,7 +459,7 @@ public class ArtifactRecordTest extends AbstractTest {
                             + ")\n");
         }
         {
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            final var outputStream = new ByteArrayOutputStream();
             artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
             assertEquals(
                     asString(outputStream),
@@ -470,7 +470,7 @@ public class ArtifactRecordTest extends AbstractTest {
                             + ")\n");
         }
         {
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            final var outputStream = new ByteArrayOutputStream();
             artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
             assertEquals(
                     asString(outputStream),
@@ -491,7 +491,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaPlugin(new StarlarkOutput(outputStream), null);
         assertEquals(
                 asString(outputStream),
@@ -513,7 +513,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaPlugin(new StarlarkOutput(outputStream), "arez.processor.ArezProcessor");
         assertEquals(
                 asString(outputStream),
@@ -542,7 +542,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaPlugin(new StarlarkOutput(outputStream), "arez.processor.ArezProcessor");
         assertEquals(
                 asString(outputStream),
@@ -562,7 +562,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -585,7 +585,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -609,7 +609,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -628,7 +628,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -650,7 +650,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -691,7 +691,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writePluginLibrary(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -732,7 +732,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writePluginLibrary(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -761,7 +761,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writePluginLibrary(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -794,7 +794,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJavaPluginLibrary(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -815,7 +815,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJavaPluginLibrary(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -833,7 +833,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJavaPluginLibrary(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -853,7 +853,7 @@ public class ArtifactRecordTest extends AbstractTest {
         final List<String> urls = artifactRecord.getUrls();
         assertNotNull(urls);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactHttpFileRule(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -875,7 +875,7 @@ public class ArtifactRecordTest extends AbstractTest {
         final List<String> urls = artifactRecord.getUrls();
         assertNotNull(urls);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactSourcesHttpFileRule(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -902,7 +902,7 @@ public class ArtifactRecordTest extends AbstractTest {
         final List<String> urls = artifactRecord.getUrls();
         assertNotNull(urls);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactAnnotationsHttpFileRule(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -926,7 +926,7 @@ public class ArtifactRecordTest extends AbstractTest {
         final List<String> sourceUrls = artifactRecord.getSourceUrls();
         assertNotNull(sourceUrls);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactJsSourcesHttpArchiveRule(new StarlarkOutput(outputStream), false);
         assertEquals(
                 asString(outputStream),
@@ -956,7 +956,7 @@ public class ArtifactRecordTest extends AbstractTest {
         final List<String> sourceUrls = artifactRecord.getSourceUrls();
         assertNotNull(sourceUrls);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactJsSourcesHttpArchiveRule(new StarlarkOutput(outputStream), true);
         assertEquals(
                 asString(outputStream),
@@ -982,7 +982,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -1006,7 +1006,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -1047,7 +1047,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -1070,7 +1070,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
@@ -1088,7 +1088,7 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),

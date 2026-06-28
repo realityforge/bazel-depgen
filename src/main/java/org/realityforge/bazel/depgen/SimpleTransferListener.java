@@ -45,7 +45,7 @@ final class SimpleTransferListener extends AbstractTransferListener {
             final TransferResource resource = event.getResource();
             _downloads.put(resource, event.getTransferredBytes());
 
-            final StringBuilder buffer = new StringBuilder(64);
+            final var buffer = new StringBuilder(64);
 
             for (final Map.Entry<TransferResource, Long> entry : _downloads.entrySet()) {
                 final long total = entry.getKey().getContentLength();
@@ -78,7 +78,7 @@ final class SimpleTransferListener extends AbstractTransferListener {
                 final String throughput;
                 if (duration > 0) {
                     final long bytes = contentLength - resource.getResumeOffset();
-                    final DecimalFormat format = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.ENGLISH));
+                    final var format = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.ENGLISH));
                     final double kbPerSec = (bytes / 1024.0) / (duration / 1000.0);
                     throughput = " at " + format.format(kbPerSec) + " KB/sec";
                 } else {
@@ -115,7 +115,7 @@ final class SimpleTransferListener extends AbstractTransferListener {
 
         final Console console = _environment.console();
         if (null != console && _environment.logger().isLoggable(Level.INFO)) {
-            final StringBuilder buffer = new StringBuilder(64);
+            final var buffer = new StringBuilder(64);
             pad(buffer, lastLength);
             buffer.append('\r');
             console.writer().print(buffer);

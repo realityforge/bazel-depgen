@@ -10,8 +10,8 @@ public class InfoCommandTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final TestHandler handler = new TestHandler();
-        final Command command = new InfoCommand();
+        final var handler = new TestHandler();
+        final var command = new InfoCommand();
         final Environment environment = newEnvironment(handler);
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
@@ -28,8 +28,8 @@ public class InfoCommandTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final TestHandler handler = new TestHandler();
-        final Command command = new InfoCommand();
+        final var handler = new TestHandler();
+        final var command = new InfoCommand();
         final Environment environment = newEnvironment(handler);
         command.processOptions(environment, "config-file");
         final int exitCode = command.run(new CommandContextImpl(environment));
@@ -43,8 +43,8 @@ public class InfoCommandTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final TestHandler handler = new TestHandler();
-        final Command command = new InfoCommand();
+        final var handler = new TestHandler();
+        final var command = new InfoCommand();
         final Environment environment = newEnvironment(handler);
         command.processOptions(environment, "config-file", "settings-file");
         final int exitCode = command.run(new CommandContextImpl(environment));
@@ -60,8 +60,8 @@ public class InfoCommandTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final TestHandler handler = new TestHandler();
-        final Command command = new InfoCommand();
+        final var handler = new TestHandler();
+        final var command = new InfoCommand();
         final Environment environment = newEnvironment(handler);
         command.processOptions(environment, "XXXXX");
         final int exitCode = command.run(new CommandContextImpl(environment));
@@ -75,8 +75,8 @@ public class InfoCommandTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final TestHandler handler = new TestHandler();
-        final InfoCommand command = new InfoCommand();
+        final var handler = new TestHandler();
+        final var command = new InfoCommand();
         final Environment environment = newEnvironment(handler);
         final boolean parsed = command.processOptions(environment, "--something-something");
         assertFalse(parsed);

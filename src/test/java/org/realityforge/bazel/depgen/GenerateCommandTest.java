@@ -26,8 +26,8 @@ public class GenerateCommandTest extends AbstractTest {
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
         final ApplicationModel model = loadApplicationModel();
 
-        final TestHandler handler = new TestHandler();
-        final GenerateCommand command = new GenerateCommand();
+        final var handler = new TestHandler();
+        final var command = new GenerateCommand();
         final int exitCode = command.run(new CommandContextImpl(newEnvironment()));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
         assertEquals(handler.toString(), "");
@@ -172,8 +172,8 @@ public class GenerateCommandTest extends AbstractTest {
 
         final ApplicationModel model = loadApplicationModel();
 
-        final TestHandler handler = new TestHandler();
-        final GenerateCommand command = new GenerateCommand();
+        final var handler = new TestHandler();
+        final var command = new GenerateCommand();
         final int exitCode = command.run(new CommandContextImpl(newEnvironment()));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
         assertEquals(handler.toString(), "");
@@ -310,8 +310,8 @@ public class GenerateCommandTest extends AbstractTest {
 
         FileUtil.write(FileUtil.getCurrentDirectory().resolve("thirdparty").resolve("somedir"), "");
 
-        final TestHandler handler = new TestHandler();
-        final GenerateCommand command = new GenerateCommand();
+        final var handler = new TestHandler();
+        final var command = new GenerateCommand();
 
         assertThrows(IOException.class, () -> command.run(new CommandContextImpl(newEnvironment())));
         assertEquals(handler.toString(), "");
@@ -328,12 +328,12 @@ public class GenerateCommandTest extends AbstractTest {
 
         final ApplicationRecord applicationRecord = loadApplicationRecord();
 
-        final TestHandler handler = new TestHandler();
-        final GenerateCommand command = new GenerateCommand();
+        final var handler = new TestHandler();
+        final var command = new GenerateCommand();
 
         final Environment environment = newEnvironment();
 
-        final HashSet<PosixFilePermission> perms = new HashSet<>();
+        final var perms = new HashSet<PosixFilePermission>();
         perms.add(PosixFilePermission.OWNER_READ);
         Files.setPosixFilePermissions(FileUtil.getCurrentDirectory(), perms);
 
@@ -390,7 +390,7 @@ public class GenerateCommandTest extends AbstractTest {
 
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
-        final GenerateCommand command = new GenerateCommand();
+        final var command = new GenerateCommand();
         final int exitCode = command.run(new CommandContextImpl(newEnvironment()));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
 
@@ -468,7 +468,7 @@ public class GenerateCommandTest extends AbstractTest {
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0", jarFile2);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0", "com.example:mylib:1.0");
 
-        final GenerateCommand command = new GenerateCommand();
+        final var command = new GenerateCommand();
         final int exitCode = command.run(new CommandContextImpl(newEnvironment()));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
 
@@ -569,7 +569,7 @@ public class GenerateCommandTest extends AbstractTest {
 
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
-        final GenerateCommand command = new GenerateCommand();
+        final var command = new GenerateCommand();
         final int exitCode = command.run(new CommandContextImpl(newEnvironment()));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
 
@@ -616,8 +616,8 @@ public class GenerateCommandTest extends AbstractTest {
 
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
-        final TestHandler handler = new TestHandler();
-        final GenerateCommand command = new GenerateCommand();
+        final var handler = new TestHandler();
+        final var command = new GenerateCommand();
         final int exitCode = command.run(new CommandContextImpl(newEnvironment(handler)));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
         assertOutputContains(

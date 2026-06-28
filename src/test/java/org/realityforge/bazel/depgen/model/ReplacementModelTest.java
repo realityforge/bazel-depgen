@@ -13,9 +13,9 @@ import org.testng.annotations.Test;
 public class ReplacementModelTest extends AbstractTest {
     @Test
     public void parseReplacementWithCoord() {
-        final ReplacementConfig source = new ReplacementConfig();
+        final var source = new ReplacementConfig();
         source.setCoord("com.example:myapp");
-        final ReplacementTargetConfig targetConfig = new ReplacementTargetConfig();
+        final var targetConfig = new ReplacementTargetConfig();
         targetConfig.setTarget("@com.example//:myapp");
         source.setTargets(Collections.singletonList(targetConfig));
 
@@ -32,7 +32,7 @@ public class ReplacementModelTest extends AbstractTest {
 
     @Test
     public void parse_missing_targets() {
-        final ReplacementConfig source = new ReplacementConfig();
+        final var source = new ReplacementConfig();
         source.setCoord("com.example:myapp");
 
         final InvalidModelException exception = expectThrows(
@@ -43,7 +43,7 @@ public class ReplacementModelTest extends AbstractTest {
 
     @Test
     public void parse_missing_coord() {
-        final ReplacementConfig source = new ReplacementConfig();
+        final var source = new ReplacementConfig();
         source.setTargets(Collections.emptyList());
 
         final InvalidModelException exception = expectThrows(
@@ -54,9 +54,9 @@ public class ReplacementModelTest extends AbstractTest {
 
     @Test
     public void parse_missing_target() {
-        final ReplacementConfig source = new ReplacementConfig();
+        final var source = new ReplacementConfig();
         source.setCoord("com.example:myapp");
-        final ReplacementTargetConfig targetConfig = new ReplacementTargetConfig();
+        final var targetConfig = new ReplacementTargetConfig();
         source.setTargets(Collections.singletonList(targetConfig));
 
         final InvalidModelException exception = expectThrows(
@@ -67,7 +67,7 @@ public class ReplacementModelTest extends AbstractTest {
 
     @Test
     public void parseReplacementWith1PartCoord() {
-        final ReplacementConfig source = new ReplacementConfig();
+        final var source = new ReplacementConfig();
         source.setCoord("com.example");
         source.setTargets(Collections.emptyList());
 
@@ -82,7 +82,7 @@ public class ReplacementModelTest extends AbstractTest {
 
     @Test
     public void parseReplacementWith3PartCoord() {
-        final ReplacementConfig source = new ReplacementConfig();
+        final var source = new ReplacementConfig();
         source.setCoord("com.example:myapp:1.0");
         source.setTargets(Collections.emptyList());
 

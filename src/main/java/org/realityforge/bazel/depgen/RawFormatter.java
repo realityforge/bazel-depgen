@@ -11,8 +11,8 @@ final class RawFormatter extends Formatter {
         final String output = logRecord.getMessage() + "\n";
         final Throwable throwable = logRecord.getThrown();
         if (null != throwable) {
-            final StringWriter sw = new StringWriter();
-            final PrintWriter writer = new PrintWriter(sw);
+            final var sw = new StringWriter();
+            final var writer = new PrintWriter(sw);
             throwable.printStackTrace(writer);
             writer.close();
             return output + sw;

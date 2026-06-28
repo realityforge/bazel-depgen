@@ -211,7 +211,7 @@ public final class ArtifactRecord {
         if (NameStrategy.ArtifactId == nameStrategy) {
             return getNamePrefix() + BazelUtil.cleanNamePart(artifact.getArtifactId());
         } else {
-            final StringBuilder sb = new StringBuilder();
+            final var sb = new StringBuilder();
             sb.append(getNamePrefix());
             sb.append(BazelUtil.cleanNamePart(artifact.getGroupId()));
             sb.append(BazelUtil.COMPONENT_SEPARATOR);
@@ -276,7 +276,7 @@ public final class ArtifactRecord {
             if (NameStrategy.ArtifactId == nameStrategy) {
                 return getNamePrefix() + BazelUtil.cleanNamePart(artifact.getArtifactId());
             } else {
-                final StringBuilder sb = new StringBuilder();
+                final var sb = new StringBuilder();
                 sb.append(getNamePrefix());
                 sb.append(BazelUtil.cleanNamePart(artifact.getGroupId()));
                 sb.append(BazelUtil.COMPONENT_SEPARATOR);
@@ -331,7 +331,7 @@ public final class ArtifactRecord {
 
     @Nonnull
     List<Nature> getNatures() {
-        final List<Nature> natures = new ArrayList<>();
+        final var natures = new ArrayList<Nature>();
         if (null == _artifactModel) {
             if (null != _natures && !_natures.isEmpty()) {
                 natures.addAll(_natures);
@@ -408,7 +408,7 @@ public final class ArtifactRecord {
 
     @Nonnull
     LinkedHashMap<String, String> getEmittedRepositoryNames() {
-        final LinkedHashMap<String, String> names = new LinkedHashMap<>();
+        final var names = new LinkedHashMap<String, String>();
         final String artifactName = "artifact '" + getArtifact() + "'";
         if (emitsBinaryRepositoryRule()) {
             names.put(getRepository(), artifactName + " binary repository");
@@ -427,7 +427,7 @@ public final class ArtifactRecord {
 
     @Nonnull
     LinkedHashMap<String, String> getEmittedPublicTargetNames() {
-        final LinkedHashMap<String, String> names = new LinkedHashMap<>();
+        final var names = new LinkedHashMap<String, String>();
         final String artifactName = "artifact '" + getArtifact() + "'";
         for (final Nature nature : getNatures()) {
             if (shouldEmitNatureTarget(nature)) {
@@ -439,7 +439,7 @@ public final class ArtifactRecord {
 
     @Nonnull
     LinkedHashMap<String, String> getEmittedPrivateTargetNames() {
-        final LinkedHashMap<String, String> names = new LinkedHashMap<>();
+        final var names = new LinkedHashMap<String, String>();
         if (shouldEmitNatureTarget(Nature.Plugin)) {
             final String artifactName = "artifact '" + getArtifact() + "'";
             names.put(getName(Nature.Java) + PLUGIN_LIBRARY_SUFFIX, artifactName + " private plugin library target");
@@ -705,7 +705,7 @@ public final class ArtifactRecord {
             @Nonnull final Nature dependencyNature)
             throws IOException {
         // nameSuffix is still used so that plugins base library can be satisfied
-        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", "\"" + getName(Nature.Java) + nameSuffix + "\"");
         arguments.put("jars", Collections.singletonList(asString(getQualifiedBinaryLabel())));
         if (null != getSourceSha256()) {
@@ -756,10 +756,10 @@ public final class ArtifactRecord {
                 null != _artifactModel ? _artifactModel.getSource().getJ2cl() : null;
         final J2clMode mode =
                 null != j2clConfig && null != j2clConfig.getMode() ? j2clConfig.getMode() : J2clMode.Library;
-        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getName(Nature.J2cl)));
         if (J2clMode.Library == mode) {
-            final List<String> srcs = new ArrayList<>();
+            final var srcs = new ArrayList<String>();
             srcs.add(asString(getQualifiedSourcesLabel()));
             if (null != getJsAssets()) {
                 srcs.add(asString(getQualifiedJsSourceRepository()));
@@ -808,7 +808,7 @@ public final class ArtifactRecord {
 
     void emitJavaPlugin(@Nonnull final StarlarkOutput output, @Nullable final String processorClass)
             throws IOException {
-        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(pluginName(processorClass)));
         if (null != processorClass && generatesApi()) {
             arguments.put("generates_api", "True");
@@ -844,9 +844,9 @@ public final class ArtifactRecord {
     }
 
     void writeJavaPluginLibrary(@Nonnull final StarlarkOutput output) throws IOException {
-        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getName(Nature.Plugin)));
-        final ArrayList<String> plugins = new ArrayList<>();
+        final var plugins = new ArrayList<String>();
         final List<String> processors = getProcessors();
         if (null == processors) {
             plugins.add(asString(pluginName(null)));
@@ -891,7 +891,7 @@ public final class ArtifactRecord {
     }
 
     void writeArtifactHttpFileRule(@Nonnull final StarlarkOutput output) throws IOException {
-        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getRepository()));
         final org.eclipse.aether.artifact.Artifact a = getNode().getArtifact();
         assert null != a;
@@ -909,7 +909,7 @@ public final class ArtifactRecord {
         final String sourceSha256 = getSourceSha256();
         assert null != sourceSha256;
 
-        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getSourceRepository()));
         final org.eclipse.aether.artifact.Artifact a = getNode().getArtifact();
         assert null != a;
@@ -928,7 +928,7 @@ public final class ArtifactRecord {
         final String sha256 = getExternalAnnotationSha256();
         assert null != sha256;
 
-        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getExternalAnnotationsRepository()));
         final org.eclipse.aether.artifact.Artifact a = getNode().getArtifact();
         assert null != a;
@@ -948,7 +948,7 @@ public final class ArtifactRecord {
         final String sourceSha256 = getSourceSha256();
         assert null != sourceSha256;
 
-        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getJsSourceRepository()));
 
         arguments.put("sha256", asString(sourceSha256.toLowerCase()));
@@ -958,16 +958,16 @@ public final class ArtifactRecord {
         final List<String> jsAssets = getJsAssets();
         assert null != jsAssets;
 
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final StarlarkOutput buildContent = new StarlarkOutput(baos);
-        final LinkedHashMap<String, Object> args = new LinkedHashMap<>();
+        final var baos = new ByteArrayOutputStream();
+        final var buildContent = new StarlarkOutput(baos);
+        final var args = new LinkedHashMap<String, Object>();
         args.put("name", asString("srcs"));
         args.put("visibility", Collections.singletonList(asString("//visibility:public")));
         args.put("srcs", jsAssets.stream().map(this::asString).collect(Collectors.toList()));
         buildContent.writeCall("filegroup", args);
         buildContent.close();
         baos.close();
-        final String buildFileContent = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+        final var buildFileContent = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 
         arguments.put("build_file_content", asString(buildFileContent));
         output.writeCall("_http_archive", arguments);

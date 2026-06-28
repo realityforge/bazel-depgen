@@ -154,7 +154,7 @@ public final class RecordUtilTest extends AbstractTest {
 
         final URI uri = dir.toUri();
 
-        final RemoteRepository repo = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
+        final var repo = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
 
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
@@ -171,7 +171,7 @@ public final class RecordUtilTest extends AbstractTest {
 
         final URI uri = dir.toUri();
 
-        final RemoteRepository repo = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
+        final var repo = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
 
         final String url = RecordUtil.lookupArtifactInRepository(
                 new DefaultArtifact("com.example:myapp:jar:1.0"), repo, Collections.emptyMap());
@@ -180,7 +180,7 @@ public final class RecordUtilTest extends AbstractTest {
 
     @Test
     public void lookupArtifactInRepository_unknown_protocol() {
-        final RemoteRepository repo = new RemoteRepository.Builder("dir1", "default", "ftp://example.com").build();
+        final var repo = new RemoteRepository.Builder("dir1", "default", "ftp://example.com").build();
 
         final DepgenConfigurationException exception = expectThrows(
                 DepgenConfigurationException.class,
@@ -203,7 +203,7 @@ public final class RecordUtilTest extends AbstractTest {
 
         server.start();
         try {
-            final RemoteRepository repo = new RemoteRepository.Builder("http", "default", server.getBaseURL()).build();
+            final var repo = new RemoteRepository.Builder("http", "default", server.getBaseURL()).build();
 
             final String url = RecordUtil.lookupArtifactInRepository(
                     new DefaultArtifact("com.example:myapp:jar:1.0"), repo, Collections.emptyMap());
@@ -224,7 +224,7 @@ public final class RecordUtilTest extends AbstractTest {
 
         server1.start();
         try {
-            final RemoteRepository repo = new RemoteRepository.Builder("http", "default", server1.getBaseURL()).build();
+            final var repo = new RemoteRepository.Builder("http", "default", server1.getBaseURL()).build();
 
             final String url = RecordUtil.lookupArtifactInRepository(
                     new DefaultArtifact("com.example:myapp:jar:1.0"), repo, Collections.emptyMap());
@@ -341,7 +341,7 @@ public final class RecordUtilTest extends AbstractTest {
     private HttpServer serveDirectoryWithBasicAuth(
             @Nonnull final Path dir, @Nonnull final String username, @Nonnull final String password)
             throws IOException {
-        final HttpServer server = HttpServer.create(new InetSocketAddress(InetAddress.getLocalHost(), 0), 0);
+        final var server = HttpServer.create(new InetSocketAddress(InetAddress.getLocalHost(), 0), 0);
         server.createContext("/", e -> serveFilePath(dir, e)).setAuthenticator(new BasicAuthenticator("MyRealm") {
             @Override
             public boolean checkCredentials(

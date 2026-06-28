@@ -25,7 +25,7 @@ public class SettingsUtilTest extends AbstractTest {
                         + "  </servers>\n"
                         + "</settings>\n");
         final Path path = FileUtil.getCurrentDirectory().resolve("settings.xml");
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
 
         final Settings settings = SettingsUtil.loadSettings(path, createLogger(handler));
         assertNotNull(settings);
@@ -56,7 +56,7 @@ public class SettingsUtilTest extends AbstractTest {
                         + "  </servers>\n"
                         + "</settings>\n");
         final Path path = FileUtil.getCurrentDirectory().resolve("settings.xml");
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         final Settings settings = SettingsUtil.loadSettings(path, createLogger(handler));
         assertNotNull(settings);
         final ArrayList<LogRecord> records = handler.getRecords();
@@ -74,7 +74,7 @@ public class SettingsUtilTest extends AbstractTest {
     public void loadSettings_malformedSettings() throws Exception {
         FileUtil.write("settings.xml", "X\n");
         final Path path = FileUtil.getCurrentDirectory().resolve("settings.xml");
-        final TestHandler handler = new TestHandler();
+        final var handler = new TestHandler();
         assertThrows(SettingsBuildingException.class, () -> SettingsUtil.loadSettings(path, createLogger(handler)));
         assertEquals(handler.getRecords().size(), 0);
     }

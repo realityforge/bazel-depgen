@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 public class GlobalExcludeModelTest extends AbstractTest {
     @Test
     public void parseExcludeWithCoord() {
-        final ExcludeConfig source = new ExcludeConfig();
+        final var source = new ExcludeConfig();
         source.setCoord("com.example:myapp");
 
         final GlobalExcludeModel model = GlobalExcludeModel.parse(source);
@@ -20,7 +20,7 @@ public class GlobalExcludeModelTest extends AbstractTest {
 
     @Test
     public void parse_missingCoord() {
-        final ExcludeConfig source = new ExcludeConfig();
+        final var source = new ExcludeConfig();
 
         final InvalidModelException exception =
                 expectThrows(InvalidModelException.class, () -> GlobalExcludeModel.parse(source));
@@ -30,7 +30,7 @@ public class GlobalExcludeModelTest extends AbstractTest {
 
     @Test
     public void parseExcludeWith1PartCoord() {
-        final ExcludeConfig source = new ExcludeConfig();
+        final var source = new ExcludeConfig();
         source.setCoord("com.example");
 
         final InvalidModelException exception =
@@ -44,7 +44,7 @@ public class GlobalExcludeModelTest extends AbstractTest {
 
     @Test
     public void parseExcludeWith3PartCoord() {
-        final ExcludeConfig source = new ExcludeConfig();
+        final var source = new ExcludeConfig();
         source.setCoord("com.example:myapp:1.0");
 
         final InvalidModelException exception =

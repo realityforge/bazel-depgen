@@ -51,13 +51,13 @@ final class GenerateCommand extends Command {
                 && generatesTargetsInExtension
                 && extensionBuildfile.equals(configBuildfile)
                 && !extensionBuildfile.toFile().exists()) {
-            try (final StarlarkOutput output = new StarlarkOutput(extensionBuildfile)) {
+            try (final var output = new StarlarkOutput(extensionBuildfile)) {
                 record.writeDefaultExtensionBuild(output);
             }
         } else if (requiresExtensionFile
                 && !extensionBuildfile.equals(configBuildfile)
                 && !extensionBuildfile.toFile().exists()) {
-            try (final StarlarkOutput output = new StarlarkOutput(extensionBuildfile)) {
+            try (final var output = new StarlarkOutput(extensionBuildfile)) {
                 record.writeDefaultExtensionBuild(output, generatesTargetsInExtension);
             }
         }
@@ -65,13 +65,13 @@ final class GenerateCommand extends Command {
         if (generatesTargetsInExtension
                 && !extensionBuildfile.equals(configBuildfile)
                 && !configBuildfile.toFile().exists()) {
-            try (final StarlarkOutput output = new StarlarkOutput(configBuildfile)) {
+            try (final var output = new StarlarkOutput(configBuildfile)) {
                 record.writeDefaultConfigBuild(output);
             }
         }
 
         if (requiresExtensionFile) {
-            try (final StarlarkOutput output = new StarlarkOutput(extensionFile)) {
+            try (final var output = new StarlarkOutput(extensionFile)) {
                 record.writeBazelExtension(output);
             }
         } else if (extensionFile.toFile().exists()
@@ -104,8 +104,8 @@ final class GenerateCommand extends Command {
 
     @Nonnull
     private String emit(@Nonnull final Emitter emitter) throws Exception {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (final StarlarkOutput output = new StarlarkOutput(baos)) {
+        final var baos = new ByteArrayOutputStream();
+        try (final var output = new StarlarkOutput(baos)) {
             emitter.emit(output);
         }
         return baos.toString(StandardCharsets.UTF_8);

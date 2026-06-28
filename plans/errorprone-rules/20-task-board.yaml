@@ -61,3 +61,45 @@ tasks:
     commit:
       hash: not_required
       message: null
+  - id: EPR-04
+    title: Enforce Varifier
+    status: completed
+    priority: high
+    depends_on:
+      - EPR-03
+    acceptance:
+      - `third_party/java/rules.bzl` enables `-Xep:Varifier:ERROR`.
+      - Affected current-source local declarations are migrated to `var`.
+      - `bazel build //...` passes.
+    files:
+      - third_party/java/rules.bzl
+      - src/main/java/**/*.java
+      - src/test/java/**/*.java
+    evidence:
+      - command: bazel build //... --keep_going
+        result: Varifier migration findings resolved after local declarations were converted to var and diamond constructors were given explicit generic arguments where needed
+      - command: tools/java_format.sh write
+        result: Palantir formatter completed successfully
+      - command: bazel build //...
+        result: Build completed successfully, 9 total actions
+    commit:
+      hash: not_required
+      message: null
+  - id: EPR-05
+    title: Validate Varifier gate
+    status: completed
+    priority: high
+    depends_on:
+      - EPR-04
+    acceptance:
+      - `tools/check.sh` passes with `Varifier` enabled.
+      - CHANGELOG.md no longer says `Varifier` is omitted.
+    files:
+      - CHANGELOG.md
+      - tools/check.sh
+    evidence:
+      - command: tools/check.sh
+        result: Build completed successfully; //third_party/java:verify_config_sha256 PASSED; //src/test/java/org/realityforge/bazel/depgen:all_tests PASSED
+    commit:
+      hash: not_required
+      message: null

@@ -261,10 +261,10 @@ public class ApplicationModelTest extends AbstractTest {
                 ApplicationModel.calculateConfigSha256(new ApplicationConfig()));
 
         // ensure sha changes as more data added
-        final ApplicationConfig config1 = new ApplicationConfig();
+        final var config1 = new ApplicationConfig();
         final String shaA = ApplicationModel.calculateConfigSha256(config1);
         assertEquals(shaA, "C63A169524CF58709A43361D23D8B9C0DBBB999461CA1500EB374D7A72C3334C");
-        final OptionsConfig options = new OptionsConfig();
+        final var options = new OptionsConfig();
         config1.setOptions(options);
         final String shaB = ApplicationModel.calculateConfigSha256(config1);
         assertEquals(shaB, "EF5CF3CC89EAD37C90FC2CB27F3922F7D7CD7CB63180371E9F737AF7CA8E122E");

@@ -74,7 +74,7 @@ public class StarlarkOutputTest extends AbstractTest {
     public void writeCall_singleArg() throws Exception {
         final Path file = writeFileContent(output -> {
             output.incIndent();
-            final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+            final var arguments = new LinkedHashMap<String, Object>();
             arguments.put("name", "'Foo'");
             output.writeCall("myFunction", arguments);
             output.decIndent();
@@ -87,7 +87,7 @@ public class StarlarkOutputTest extends AbstractTest {
     public void writeCall_singleArrayArg() throws Exception {
         final Path file = writeFileContent(output -> {
             output.incIndent();
-            final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+            final var arguments = new LinkedHashMap<String, Object>();
             arguments.put("name", Arrays.asList("1", "2", "3"));
             output.writeCall("myFunction", arguments);
             output.decIndent();
@@ -107,7 +107,7 @@ public class StarlarkOutputTest extends AbstractTest {
     public void writeCall_singleMultiValueArrayArg() throws Exception {
         final Path file = writeFileContent(output -> {
             output.incIndent();
-            final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+            final var arguments = new LinkedHashMap<String, Object>();
             arguments.put("name", Arrays.asList("1", "2", "3"));
             output.writeCall("myFunction", arguments);
             output.decIndent();
@@ -127,7 +127,7 @@ public class StarlarkOutputTest extends AbstractTest {
     public void writeCall_multiArg() throws Exception {
         final Path file = writeFileContent(output -> {
             output.incIndent();
-            final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+            final var arguments = new LinkedHashMap<String, Object>();
             arguments.put("name", "'com_biz__myartifact'");
             arguments.put("actual", "':com_biz__myartifact_42'");
             arguments.put("visibility", Collections.singletonList("'//visibility:public'"));
@@ -217,14 +217,14 @@ public class StarlarkOutputTest extends AbstractTest {
     @Nonnull
     private Path writeFileContent(@Nonnull final WriterCallback callback) throws Exception {
         final Path file = FileUtil.createLocalTempDir().resolve("file.bzl");
-        final StarlarkOutput output = new StarlarkOutput(file);
+        final var output = new StarlarkOutput(file);
         callback.process(output);
         output.close();
         return file;
     }
 
     private void assertFileContent(@Nonnull final Path file, @Nonnull final String expected) throws Exception {
-        final String content = new String(Files.readAllBytes(file), StandardCharsets.US_ASCII);
+        final var content = new String(Files.readAllBytes(file), StandardCharsets.US_ASCII);
         assertEquals(content, expected);
     }
 }

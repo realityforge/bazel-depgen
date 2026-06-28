@@ -235,7 +235,7 @@ public final class ArtifactModel {
 
     @Nonnull
     public String toCoord() {
-        final StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
         sb.append(getGroup());
         sb.append(':');
         sb.append(getId());

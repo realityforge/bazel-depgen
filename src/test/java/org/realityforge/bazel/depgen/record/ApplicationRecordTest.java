@@ -1964,7 +1964,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeTargetMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -2039,7 +2039,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeTargetMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -2071,7 +2071,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeTargetMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -2153,7 +2153,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeTargetMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -2234,7 +2234,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeTargetMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -2308,7 +2308,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeTargetMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -2397,7 +2397,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeTargetMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -2483,7 +2483,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeTargetMacro(new StarlarkOutput(outputStream));
         final String output = asCleanString(
                 outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
@@ -2525,7 +2525,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeTargetMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -2586,7 +2586,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeWorkspaceMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -2636,7 +2636,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeWorkspaceMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -2692,7 +2692,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeWorkspaceMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -2745,7 +2745,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeWorkspaceMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -2791,7 +2791,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeWorkspaceMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -2857,7 +2857,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeWorkspaceMacro(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -2920,7 +2920,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeWorkspaceMacro(new StarlarkOutput(outputStream));
         final String output = asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString());
         assertOutputContains(output, "        name = \"com_example__mylib__1_0\",\n");
@@ -2939,7 +2939,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeDependencyGraphIfRequired(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -2965,7 +2965,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeDependencyGraphIfRequired(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -2983,7 +2983,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeRegenerateExtensionTarget(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -3019,7 +3019,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeVerifyTarget(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -3052,7 +3052,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeVerifyTarget(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -3087,7 +3087,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeBazelExtension(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -3210,7 +3210,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeBazelExtension(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -3272,7 +3272,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeDefaultExtensionBuild(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -3300,7 +3300,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeDefaultExtensionBuild(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -3326,7 +3326,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeDefaultConfigBuild(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(
@@ -3351,7 +3351,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeBazelExtension(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -3479,7 +3479,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeBazelExtension(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -3620,7 +3620,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeBazelExtension(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -3803,7 +3803,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeBazelModuleSection(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -3890,7 +3890,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeBazelExtension(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -4035,7 +4035,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeBazelExtension(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),
@@ -4179,7 +4179,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final var outputStream = new ByteArrayOutputStream();
         record.writeBazelExtension(new StarlarkOutput(outputStream));
         assertEquals(
                 asCleanString(outputStream, record.getSource().getConfigSha256(), uri.toString()),

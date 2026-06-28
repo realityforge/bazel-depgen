@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 public class OptionsModelTest extends AbstractTest {
     @Test
     public void parseWithDefaults() {
-        final OptionsConfig source = new OptionsConfig();
+        final var source = new OptionsConfig();
 
         final OptionsModel model = OptionsModel.parse(FileUtil.getCurrentDirectory(), source);
         assertEquals(model.getSource(), source);
@@ -50,7 +50,7 @@ public class OptionsModelTest extends AbstractTest {
 
     @Test
     public void parseWithNamePrefixSpecified() {
-        final OptionsConfig source = new OptionsConfig();
+        final var source = new OptionsConfig();
         source.setNamePrefix("myprj");
 
         final OptionsModel model = OptionsModel.parse(FileUtil.getCurrentDirectory(), source);
@@ -61,7 +61,7 @@ public class OptionsModelTest extends AbstractTest {
 
     @Test
     public void parseWithInvalidNamePrefix() {
-        final OptionsConfig source = new OptionsConfig();
+        final var source = new OptionsConfig();
         source.setNamePrefix("my__prj");
 
         final InvalidModelException exception = expectThrows(
@@ -75,7 +75,7 @@ public class OptionsModelTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         final Path thirdpartyDir = dir.resolve("thirdparty");
 
-        final OptionsConfig source = new OptionsConfig();
+        final var source = new OptionsConfig();
         source.setWorkspaceDirectory("..");
         source.setExtensionFile("dependencies.bzl");
         source.setWorkspaceMacroName("gen_myprj_dependency_rules");
@@ -97,7 +97,7 @@ public class OptionsModelTest extends AbstractTest {
         source.setIncludeExternalAnnotations(true);
         source.setSupportDependencyOmit(true);
         source.setVerifyConfigSha256(false);
-        final GlobalJavaConfig java = new GlobalJavaConfig();
+        final var java = new GlobalJavaConfig();
         java.setExportDeps(true);
         source.setJava(java);
 
@@ -128,7 +128,7 @@ public class OptionsModelTest extends AbstractTest {
 
     @Test
     public void parseWithInvalidRepositoryRuleGenerationStrategy() {
-        final OptionsConfig source = new OptionsConfig();
+        final var source = new OptionsConfig();
         source.setRepositoryRuleGenerationStrategy("bogus");
 
         final InvalidModelException exception = expectThrows(
@@ -141,7 +141,7 @@ public class OptionsModelTest extends AbstractTest {
 
     @Test
     public void parseWithInvalidTargetGenerationStrategy() {
-        final OptionsConfig source = new OptionsConfig();
+        final var source = new OptionsConfig();
         source.setTargetGenerationStrategy("bogus");
 
         final InvalidModelException exception = expectThrows(

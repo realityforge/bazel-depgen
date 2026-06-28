@@ -48,7 +48,7 @@ public final class DependencyGraphEmitter implements DependencyVisitor {
             if (!line.isEmpty()) {
                 _emitter.emitLine(line);
             }
-            final int size = (int) node.getChildren().stream()
+            final var size = (int) node.getChildren().stream()
                     .filter(a -> !isSystemArtifact(a))
                     .count();
             _childInfos.add(new ChildInfo(size));
@@ -71,7 +71,7 @@ public final class DependencyGraphEmitter implements DependencyVisitor {
 
     @Nonnull
     private String formatIndentation() {
-        final StringBuilder buffer = new StringBuilder(128);
+        final var buffer = new StringBuilder(128);
         for (final Iterator<ChildInfo> it = _childInfos.iterator(); it.hasNext(); ) {
             buffer.append(it.next().formatIndentation(!it.hasNext()));
         }
@@ -80,7 +80,7 @@ public final class DependencyGraphEmitter implements DependencyVisitor {
 
     @Nonnull
     private String formatNode(@Nonnull final DependencyNode node) {
-        final StringBuilder buffer = new StringBuilder(128);
+        final var buffer = new StringBuilder(128);
         final Artifact a = node.getArtifact();
         final Dependency d = node.getDependency();
         if (null != a) {
@@ -105,7 +105,7 @@ public final class DependencyGraphEmitter implements DependencyVisitor {
                 buffer.append(" (scope managed from ").append(premanaged).append(")");
             }
         }
-        final DependencyNode winner = (DependencyNode) node.getData().get(ConflictResolver.NODE_DATA_WINNER);
+        final var winner = (DependencyNode) node.getData().get(ConflictResolver.NODE_DATA_WINNER);
         if (winner != null && !ArtifactIdUtils.equalsId(a, winner.getArtifact())) {
             final Artifact w = winner.getArtifact();
             buffer.append(" (conflicts with ");

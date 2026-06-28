@@ -48,7 +48,7 @@ public final class ApplicationRecord {
             @Nonnull final DependencyNode node,
             @Nonnull final List<AuthenticationContext> authenticationContexts,
             @Nonnull final RecordBuildCallback callback) {
-        final ApplicationRecord record = new ApplicationRecord(model, node, authenticationContexts);
+        final var record = new ApplicationRecord(model, node, authenticationContexts);
         node.accept(new DependencyCollector(record, callback));
         propagateNature(record, Nature.J2cl, Nature.J2cl);
         propagateNature(record, Nature.Plugin, Nature.Java);
@@ -132,7 +132,7 @@ public final class ApplicationRecord {
     }
 
     private void ensureEmittedTargetNamesAreUnique() {
-        final HashMap<String, String> names = new HashMap<>();
+        final var names = new HashMap<String, String>();
         if (getSource().getOptions().verifyConfigSha256()) {
             final String verifyTargetName = getSource().verifyTargetName();
             ensureUniqueEmittedTargetName(names, verifyTargetName, "built-in helper target '" + verifyTargetName + "'");
@@ -157,7 +157,7 @@ public final class ApplicationRecord {
     }
 
     private void ensureEmittedRepositoryNamesAreUnique() {
-        final HashMap<String, String> names = new HashMap<>();
+        final var names = new HashMap<String, String>();
         for (final ArtifactRecord artifact : getArtifacts()) {
             if (artifact.emitsRepositoryRules()) {
                 for (final Map.Entry<String, String> entry :
@@ -200,7 +200,7 @@ public final class ApplicationRecord {
             @Nonnull final List<AuthenticationContext> authenticationContexts) {
         _source = Objects.requireNonNull(source);
         _node = Objects.requireNonNull(node);
-        final Map<String, AuthenticationContext> contexts = new HashMap<>();
+        final var contexts = new HashMap<String, AuthenticationContext>();
         authenticationContexts.forEach(c -> contexts.put(c.getRepository().getId(), c));
         _authenticationContexts = Collections.unmodifiableMap(contexts);
     }
@@ -274,7 +274,7 @@ public final class ApplicationRecord {
 
     @Nonnull
     private Set<String> getJavaRules() {
-        final Set<String> javaRules = new HashSet<>();
+        final var javaRules = new HashSet<String>();
         if (getSource().getOptions().verifyConfigSha256()) {
             javaRules.add("java_binary");
             javaRules.add("java_test");
@@ -377,7 +377,7 @@ public final class ApplicationRecord {
         final String artifactId = node.getArtifact().getArtifactId();
         final ArtifactModel model = _source.findArtifact(groupId, artifactId);
         final ReplacementModel replacementModel = _source.findReplacement(groupId, artifactId);
-        final ArtifactRecord record = new ArtifactRecord(
+        final var record = new ArtifactRecord(
                 this,
                 node,
                 sha256,
@@ -420,7 +420,7 @@ public final class ApplicationRecord {
     void writeUpdateGeneratedOutputsTarget(@Nonnull final StarlarkOutput output) throws IOException {
         final String configLabel = getConfigFileLabel();
         final String depgenArtifactLabel = getDepgenArtifactLabel();
-        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", "\"" + getUpdateGeneratedOutputsTargetName() + "\"");
         arguments.put(
                 "args",
@@ -440,7 +440,7 @@ public final class ApplicationRecord {
     }
 
     void writeVerifyTarget(@Nonnull final StarlarkOutput output) throws IOException {
-        final LinkedHashMap<String, Object> arguments = new LinkedHashMap<>();
+        final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", "\"" + _source.verifyTargetName() + "\"");
         arguments.put("size", "\"small\"");
         arguments.put("runtime_deps", Collections.singletonList("\"" + getDepgenArtifactLabel() + "\""));
