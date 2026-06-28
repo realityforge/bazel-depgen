@@ -1,9 +1,9 @@
 package org.realityforge.bazel.depgen;
 
-import javax.annotation.Nonnull;
 import org.eclipse.aether.collection.DependencyCollectionContext;
 import org.eclipse.aether.collection.DependencySelector;
 import org.eclipse.aether.graph.Dependency;
+import org.jspecify.annotations.NonNull;
 
 final class RejectDependencySelector implements DependencySelector {
     static final RejectDependencySelector INSTANCE = new RejectDependencySelector();
@@ -11,12 +11,12 @@ final class RejectDependencySelector implements DependencySelector {
     private RejectDependencySelector() {}
 
     @Override
-    public boolean selectDependency(@Nonnull final Dependency dependency) {
+    public boolean selectDependency(@NonNull final Dependency dependency) {
         return false;
     }
 
     @Override
-    public DependencySelector deriveChildSelector(@Nonnull final DependencyCollectionContext context) {
+    public DependencySelector deriveChildSelector(@NonNull final DependencyCollectionContext context) {
         return this;
     }
 }

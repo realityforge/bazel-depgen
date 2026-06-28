@@ -1,8 +1,8 @@
 package org.realityforge.bazel.depgen.config;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public final class ReplacementTargetConfig {
     @Nullable
@@ -16,7 +16,7 @@ public final class ReplacementTargetConfig {
         return nature;
     }
 
-    public void setNature(@Nonnull final Nature nature) {
+    public void setNature(@NonNull final Nature nature) {
         this.nature = Objects.requireNonNull(nature);
     }
 
@@ -25,7 +25,7 @@ public final class ReplacementTargetConfig {
         return target;
     }
 
-    public void setTarget(@Nonnull final String target) {
+    public void setTarget(@NonNull final String target) {
         this.target = Objects.requireNonNull(target);
     }
 }

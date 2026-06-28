@@ -9,7 +9,6 @@ DEPGEN_EXTERNAL_DEPS = [
     "//third_party/java:guava",
     "//third_party/java:httpclient",
     "//third_party/java:httpcore",
-    "//third_party/java:javax_annotation",
     "//third_party/java:javax_inject",
     "//third_party/java:jcl_over_slf4j",
     "//third_party/java:maven_artifact",
@@ -51,21 +50,22 @@ java_library(
         "DepgenConfigurationException.java",
         "DepgenException.java",
         "DepgenValidationException.java",
+        "package-info.java",
     ],
     resources = [":config_properties"],
     deps = [
         "//src/main/java/org/realityforge/bazel/depgen/util:ordered_properties",
-        "//third_party/java:javax_annotation",
     ],
 )
 
 java_library(
     name = "dependency_graph_emitter",
-    srcs = ["DependencyGraphEmitter.java"],
+    srcs = [
+        "DependencyGraphEmitter.java",
+    ],
     deps = [
         ":core",
         "//src/main/java/org/realityforge/bazel/depgen/model",
-        "//third_party/java:javax_annotation",
         "//third_party/java:maven_resolver_api",
         "//third_party/java:maven_resolver_util",
     ],

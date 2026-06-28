@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.testng.annotations.Test;
 
@@ -211,11 +211,11 @@ public class StarlarkOutputTest extends AbstractTest {
 
     @FunctionalInterface
     interface WriterCallback {
-        void process(@Nonnull StarlarkOutput output) throws Exception;
+        void process(@NonNull StarlarkOutput output) throws Exception;
     }
 
-    @Nonnull
-    private Path writeFileContent(@Nonnull final WriterCallback callback) throws Exception {
+    @NonNull
+    private Path writeFileContent(@NonNull final WriterCallback callback) throws Exception {
         final Path file = FileUtil.createLocalTempDir().resolve("file.bzl");
         final var output = new StarlarkOutput(file);
         callback.process(output);
@@ -223,7 +223,7 @@ public class StarlarkOutputTest extends AbstractTest {
         return file;
     }
 
-    private void assertFileContent(@Nonnull final Path file, @Nonnull final String expected) throws Exception {
+    private void assertFileContent(@NonNull final Path file, @NonNull final String expected) throws Exception {
         final var content = new String(Files.readAllBytes(file), StandardCharsets.US_ASCII);
         assertEquals(content, expected);
     }

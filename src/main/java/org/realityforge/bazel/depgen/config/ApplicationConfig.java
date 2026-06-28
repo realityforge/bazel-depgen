@@ -4,22 +4,22 @@ import java.io.FileReader;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 public final class ApplicationConfig {
-    @Nonnull
+    @NonNull
     public static final String DEFAULT_MODULE = "thirdparty";
 
-    @Nonnull
+    @NonNull
     public static final String FILENAME = "dependencies.yml";
 
-    @Nonnull
+    @NonNull
     public static final String MAVEN_CENTRAL_NAME = "central";
 
-    @Nonnull
+    @NonNull
     public static final String MAVEN_CENTRAL_URL = "https://repo.maven.apache.org/maven2/";
 
     @Nullable
@@ -40,8 +40,8 @@ public final class ApplicationConfig {
     @Nullable
     private List<ExcludeConfig> excludes;
 
-    @Nonnull
-    public static ApplicationConfig load(@Nonnull final Path path) throws Exception {
+    @NonNull
+    public static ApplicationConfig load(@NonNull final Path path) throws Exception {
         final var yaml = new Yaml(new Constructor(ApplicationConfig.class));
         final ApplicationConfig config = yaml.load(new FileReader(path.toFile()));
         final ApplicationConfig applicationConfig = null == config ? new ApplicationConfig() : config;
@@ -49,14 +49,13 @@ public final class ApplicationConfig {
         return applicationConfig;
     }
 
-    private void setConfigLocation(@Nonnull final Path configLocation) {
+    private void setConfigLocation(@NonNull final Path configLocation) {
         _configLocation = Objects.requireNonNull(configLocation);
     }
 
-    @Nonnull
+    @NonNull
     public Path getConfigLocation() {
-        assert null != _configLocation;
-        return _configLocation;
+        return Objects.requireNonNull(_configLocation);
     }
 
     @Nullable
@@ -64,7 +63,7 @@ public final class ApplicationConfig {
         return options;
     }
 
-    public void setOptions(@Nonnull final OptionsConfig options) {
+    public void setOptions(@NonNull final OptionsConfig options) {
         this.options = Objects.requireNonNull(options);
     }
 
@@ -73,7 +72,7 @@ public final class ApplicationConfig {
         return repositories;
     }
 
-    public void setRepositories(@Nonnull final List<RepositoryConfig> repositories) {
+    public void setRepositories(@NonNull final List<RepositoryConfig> repositories) {
         this.repositories = Objects.requireNonNull(repositories);
     }
 
@@ -82,7 +81,7 @@ public final class ApplicationConfig {
         return artifacts;
     }
 
-    public void setArtifacts(@Nonnull final List<ArtifactConfig> artifacts) {
+    public void setArtifacts(@NonNull final List<ArtifactConfig> artifacts) {
         this.artifacts = Objects.requireNonNull(artifacts);
     }
 
@@ -91,7 +90,7 @@ public final class ApplicationConfig {
         return replacements;
     }
 
-    public void setReplacements(@Nonnull final List<ReplacementConfig> replacements) {
+    public void setReplacements(@NonNull final List<ReplacementConfig> replacements) {
         this.replacements = Objects.requireNonNull(replacements);
     }
 
@@ -100,7 +99,7 @@ public final class ApplicationConfig {
         return excludes;
     }
 
-    public void setExcludes(@Nonnull final List<ExcludeConfig> excludes) {
+    public void setExcludes(@NonNull final List<ExcludeConfig> excludes) {
         this.excludes = Objects.requireNonNull(excludes);
     }
 }

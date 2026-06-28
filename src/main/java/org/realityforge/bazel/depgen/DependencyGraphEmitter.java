@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
@@ -13,6 +12,7 @@ import org.eclipse.aether.graph.DependencyVisitor;
 import org.eclipse.aether.util.artifact.ArtifactIdUtils;
 import org.eclipse.aether.util.graph.manager.DependencyManagerUtils;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ReplacementModel;
 
@@ -22,25 +22,25 @@ import org.realityforge.bazel.depgen.model.ReplacementModel;
 public final class DependencyGraphEmitter implements DependencyVisitor {
     @FunctionalInterface
     public interface LineEmitterFn {
-        void emitLine(@Nonnull String line);
+        void emitLine(@NonNull String line);
     }
 
-    @Nonnull
+    @NonNull
     private final ApplicationModel _model;
 
-    @Nonnull
+    @NonNull
     private final LineEmitterFn _emitter;
 
-    @Nonnull
+    @NonNull
     private final List<ChildInfo> _childInfos = new ArrayList<>();
 
-    public DependencyGraphEmitter(@Nonnull final ApplicationModel model, @Nonnull final LineEmitterFn emitter) {
+    public DependencyGraphEmitter(@NonNull final ApplicationModel model, @NonNull final LineEmitterFn emitter) {
         _model = Objects.requireNonNull(model);
         _emitter = Objects.requireNonNull(emitter);
     }
 
     @Override
-    public boolean visitEnter(@Nonnull final DependencyNode node) {
+    public boolean visitEnter(@NonNull final DependencyNode node) {
         if (isSystemArtifact(node)) {
             return false;
         } else {
@@ -56,7 +56,7 @@ public final class DependencyGraphEmitter implements DependencyVisitor {
         }
     }
 
-    private boolean isSystemArtifact(@Nonnull final DependencyNode node) {
+    private boolean isSystemArtifact(@NonNull final DependencyNode node) {
         final Dependency dependency = node.getDependency();
         if (null != dependency
                 && _model.isSystemArtifact(
@@ -69,7 +69,7 @@ public final class DependencyGraphEmitter implements DependencyVisitor {
         }
     }
 
-    @Nonnull
+    @NonNull
     private String formatIndentation() {
         final var buffer = new StringBuilder(128);
         for (final Iterator<ChildInfo> it = _childInfos.iterator(); it.hasNext(); ) {
@@ -78,8 +78,8 @@ public final class DependencyGraphEmitter implements DependencyVisitor {
         return buffer.toString();
     }
 
-    @Nonnull
-    private String formatNode(@Nonnull final DependencyNode node) {
+    @NonNull
+    private String formatNode(@NonNull final DependencyNode node) {
         final var buffer = new StringBuilder(128);
         final Artifact a = node.getArtifact();
         final Dependency d = node.getDependency();
@@ -131,7 +131,7 @@ public final class DependencyGraphEmitter implements DependencyVisitor {
     }
 
     @Override
-    public boolean visitLeave(@Nonnull final DependencyNode node) {
+    public boolean visitLeave(@NonNull final DependencyNode node) {
         if (!_childInfos.isEmpty()) {
             _childInfos.remove(_childInfos.size() - 1);
         }

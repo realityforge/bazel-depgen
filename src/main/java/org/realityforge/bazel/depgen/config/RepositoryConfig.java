@@ -1,8 +1,8 @@
 package org.realityforge.bazel.depgen.config;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public final class RepositoryConfig {
     @Nullable
@@ -25,7 +25,7 @@ public final class RepositoryConfig {
         return name;
     }
 
-    public void setName(@Nonnull final String name) {
+    public void setName(@NonNull final String name) {
         this.name = Objects.requireNonNull(name);
     }
 
@@ -34,7 +34,7 @@ public final class RepositoryConfig {
         return url;
     }
 
-    public void setUrl(@Nonnull final String url) {
+    public void setUrl(@NonNull final String url) {
         this.url = Objects.requireNonNull(url);
     }
 
@@ -43,7 +43,7 @@ public final class RepositoryConfig {
         return cacheLookups;
     }
 
-    public void setSearchByDefault(@Nonnull final Boolean searchByDefault) {
+    public void setSearchByDefault(@NonNull final Boolean searchByDefault) {
         this.searchByDefault = Objects.requireNonNull(searchByDefault);
     }
 
@@ -52,7 +52,7 @@ public final class RepositoryConfig {
         return searchByDefault;
     }
 
-    public void setCacheLookups(@Nonnull final Boolean cacheLookups) {
+    public void setCacheLookups(@NonNull final Boolean cacheLookups) {
         this.cacheLookups = Objects.requireNonNull(cacheLookups);
     }
 

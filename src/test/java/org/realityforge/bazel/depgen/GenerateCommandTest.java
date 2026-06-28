@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.HashSet;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.testng.annotations.Test;
@@ -341,19 +341,19 @@ public class GenerateCommandTest extends AbstractTest {
             final DepgenException exception = expectThrows(
                     DepgenException.class,
                     () -> command.run(new Command.Context() {
-                        @Nonnull
+                        @NonNull
                         @Override
                         public Environment environment() {
                             return environment;
                         }
 
-                        @Nonnull
+                        @NonNull
                         @Override
                         public ApplicationModel loadModel() {
                             return applicationRecord.getSource();
                         }
 
-                        @Nonnull
+                        @NonNull
                         @Override
                         public ApplicationRecord loadRecord() {
                             return applicationRecord;

@@ -7,11 +7,11 @@ java_library(
     srcs = [
         "ApplicationConfigTest.java",
         "NatureTest.java",
+        "package-info.java",
     ],
     deps = [
         "//src/main/java/org/realityforge/bazel/depgen",
         "//src/test/java/org/realityforge/bazel/depgen:test_support",
-        "//third_party/java:javax_annotation",
         "//third_party/java:testng",
     ],
 )

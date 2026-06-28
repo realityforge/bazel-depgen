@@ -3,8 +3,8 @@ package org.realityforge.bazel.depgen.config;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public final class ArtifactConfig {
     @Nullable
@@ -54,7 +54,7 @@ public final class ArtifactConfig {
         return nameStrategy;
     }
 
-    public void setNameStrategy(@Nonnull final NameStrategy nameStrategy) {
+    public void setNameStrategy(@NonNull final NameStrategy nameStrategy) {
         this.nameStrategy = Objects.requireNonNull(nameStrategy);
     }
 
@@ -63,7 +63,7 @@ public final class ArtifactConfig {
         return repositoryNameStrategy;
     }
 
-    public void setRepositoryNameStrategy(@Nonnull final NameStrategy repositoryNameStrategy) {
+    public void setRepositoryNameStrategy(@NonNull final NameStrategy repositoryNameStrategy) {
         this.repositoryNameStrategy = Objects.requireNonNull(repositoryNameStrategy);
     }
 
@@ -72,7 +72,7 @@ public final class ArtifactConfig {
         return repositoryName;
     }
 
-    public void setRepositoryName(@Nonnull final String repositoryName) {
+    public void setRepositoryName(@NonNull final String repositoryName) {
         this.repositoryName = Objects.requireNonNull(repositoryName);
     }
 
@@ -81,7 +81,7 @@ public final class ArtifactConfig {
         return coord;
     }
 
-    public void setCoord(@Nonnull final String coord) {
+    public void setCoord(@NonNull final String coord) {
         this.coord = Objects.requireNonNull(coord);
     }
 
@@ -99,7 +99,7 @@ public final class ArtifactConfig {
         return includeSource;
     }
 
-    public void setIncludeSource(@Nonnull final Boolean includeSource) {
+    public void setIncludeSource(@NonNull final Boolean includeSource) {
         this.includeSource = Objects.requireNonNull(includeSource);
     }
 
@@ -108,7 +108,7 @@ public final class ArtifactConfig {
         return includeExternalAnnotations;
     }
 
-    public void setIncludeExternalAnnotations(@Nonnull final Boolean includeExternalAnnotations) {
+    public void setIncludeExternalAnnotations(@NonNull final Boolean includeExternalAnnotations) {
         this.includeExternalAnnotations = Objects.requireNonNull(includeExternalAnnotations);
     }
 
@@ -117,7 +117,7 @@ public final class ArtifactConfig {
         return excludes;
     }
 
-    public void setExcludes(@Nonnull final List<String> excludes) {
+    public void setExcludes(@NonNull final List<String> excludes) {
         this.excludes = Objects.requireNonNull(excludes);
     }
 
@@ -126,7 +126,7 @@ public final class ArtifactConfig {
         return repositories;
     }
 
-    public void setRepositories(@Nonnull final List<String> repositories) {
+    public void setRepositories(@NonNull final List<String> repositories) {
         this.repositories = Objects.requireNonNull(repositories);
     }
 
@@ -135,7 +135,7 @@ public final class ArtifactConfig {
         return visibility;
     }
 
-    public void setVisibility(@Nonnull final List<String> visibility) {
+    public void setVisibility(@NonNull final List<String> visibility) {
         this.visibility = Objects.requireNonNull(visibility);
     }
 
@@ -144,7 +144,7 @@ public final class ArtifactConfig {
         return natures;
     }
 
-    public void setNatures(@Nonnull final List<Nature> natures) {
+    public void setNatures(@NonNull final List<Nature> natures) {
         this.natures = Collections.unmodifiableList(Objects.requireNonNull(natures));
     }
 
@@ -153,7 +153,7 @@ public final class ArtifactConfig {
         return java;
     }
 
-    public void setJava(@Nonnull final JavaConfig java) {
+    public void setJava(@NonNull final JavaConfig java) {
         this.java = Objects.requireNonNull(java);
     }
 
@@ -162,7 +162,7 @@ public final class ArtifactConfig {
         return j2cl;
     }
 
-    public void setJ2cl(@Nonnull final J2clConfig j2cl) {
+    public void setJ2cl(@NonNull final J2clConfig j2cl) {
         this.j2cl = Objects.requireNonNull(j2cl);
     }
 
@@ -171,7 +171,7 @@ public final class ArtifactConfig {
         return plugin;
     }
 
-    public void setPlugin(@Nonnull final PluginConfig plugin) {
+    public void setPlugin(@NonNull final PluginConfig plugin) {
         this.plugin = Objects.requireNonNull(plugin);
     }
 }

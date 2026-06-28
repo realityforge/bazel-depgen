@@ -2,11 +2,11 @@ package org.realityforge.bazel.depgen;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 
 final class PrintGraphCommand extends Command {
-    @Nonnull
+    @NonNull
     static final String COMMAND = "print-graph";
 
     PrintGraphCommand() {
@@ -24,7 +24,7 @@ final class PrintGraphCommand extends Command {
     }
 
     @Override
-    int run(@Nonnull final Context context) throws Exception {
+    int run(@NonNull final Context context) throws Exception {
         final ApplicationRecord record = context.loadRecord();
         final Logger logger = context.environment().logger();
         if (logger.isLoggable(Level.WARNING)) {

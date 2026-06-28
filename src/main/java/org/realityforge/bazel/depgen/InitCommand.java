@@ -6,9 +6,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.realityforge.bazel.depgen.util.GeneratedSectionWriter;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
@@ -16,7 +17,7 @@ import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 
 final class InitCommand extends ConfigurableCommand {
-    @Nonnull
+    @NonNull
     static final String COMMAND = "init";
 
     private static final int NO_CREATE_WORKSPACE_OPT = 1;
@@ -46,7 +47,7 @@ final class InitCommand extends ConfigurableCommand {
     }
 
     @Override
-    boolean processArguments(@Nonnull final Environment environment, @Nonnull final List<CLOption> arguments) {
+    boolean processArguments(@NonNull final Environment environment, @NonNull final List<CLOption> arguments) {
         // Get a list of parsed options
         for (final CLOption option : arguments) {
             switch (option.getId()) {
@@ -70,7 +71,7 @@ final class InitCommand extends ConfigurableCommand {
     }
 
     @Override
-    int run(@Nonnull final Context context) throws Exception {
+    int run(@NonNull final Context context) throws Exception {
         final Environment environment = context.environment();
         final Path configFile = environment.getConfigFile();
         final Logger logger = environment.logger();
@@ -107,7 +108,7 @@ final class InitCommand extends ConfigurableCommand {
         }
     }
 
-    private boolean createConfigDirectory(@Nonnull final Logger logger, @Nonnull final Path configFile) {
+    private boolean createConfigDirectory(@NonNull final Logger logger, @NonNull final Path configFile) {
         final Path configDirectory = configFile.getParent();
         if (!Files.exists(configDirectory)) {
             try {
@@ -130,9 +131,9 @@ final class InitCommand extends ConfigurableCommand {
     }
 
     private boolean createConfigFile(
-            @Nonnull final Logger logger,
-            @Nonnull final Path configFile,
-            @Nonnull final Path workspaceDir,
+            @NonNull final Logger logger,
+            @NonNull final Path configFile,
+            @NonNull final Path workspaceDir,
             final boolean moduleMode) {
         try {
             final byte[] data;
@@ -146,10 +147,11 @@ final class InitCommand extends ConfigurableCommand {
                 throw new IOException("Failed to ready file fully");
             }
 
+            final Path configDirectory = Objects.requireNonNull(configFile.getParent());
             final var outputData = new String(data, StandardCharsets.UTF_8)
                     .replace(
                             "workspaceDirectory: ..",
-                            "workspaceDirectory: " + configFile.getParent().relativize(workspaceDir));
+                            "workspaceDirectory: " + configDirectory.relativize(workspaceDir));
             final String finalOutputData = moduleMode
                     ? outputData
                             .replace(
@@ -172,10 +174,11 @@ final class InitCommand extends ConfigurableCommand {
     }
 
     private boolean prepareModuleModeFiles(
-            @Nonnull final Logger logger, @Nonnull final Path workspaceDir, @Nonnull final Path configFile) {
+            @NonNull final Logger logger, @NonNull final Path workspaceDir, @NonNull final Path configFile) {
         try {
             final Path moduleFile = workspaceDir.resolve("MODULE.bazel");
-            final Path buildFile = configFile.getParent().resolve("BUILD.bazel");
+            final Path buildFile =
+                    Objects.requireNonNull(configFile.getParent()).resolve("BUILD.bazel");
             final boolean moduleUpdated = GeneratedSectionWriter.ensureSectionExists(
                     moduleFile,
                     OptionsConfig.DEFAULT_REPOSITORY_RULE_START_TOKEN,
@@ -199,13 +202,15 @@ final class InitCommand extends ConfigurableCommand {
     }
 
     private boolean createWorkspaceFile(
-            @Nonnull final Logger logger, @Nonnull final Path workspaceFile, @Nonnull final Path configFile) {
+            @NonNull final Logger logger, @NonNull final Path workspaceFile, @NonNull final Path configFile) {
         try {
-            final Path workspaceDirectory = workspaceFile.getParent();
+            final Path workspaceDirectory = Objects.requireNonNull(workspaceFile.getParent());
+            final Path relativeConfigDirectory = Objects.requireNonNull(
+                    workspaceDirectory.relativize(configFile).getParent());
             final var output = new StarlarkOutput(workspaceFile);
             output.write("workspace(name = \"" + workspaceDirectory.getFileName() + "\")");
             output.newLine();
-            output.write("load(\"//" + workspaceDirectory.relativize(configFile).getParent()
+            output.write("load(\"//" + relativeConfigDirectory
                     + ":"
                     + OptionsConfig.DEFAULT_EXTENSION_FILE
                     + "\", \""

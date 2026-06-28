@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
@@ -20,6 +19,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.ChecksumPolicy;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
@@ -700,7 +700,7 @@ public class ResolverTest extends AbstractTest {
         assertNotNull(result.getRoot());
     }
 
-    @Nonnull
+    @NonNull
     private TestHandler newHandler() {
         final var handler = new TestHandler();
         handler.setLevel(Level.INFO);

@@ -14,11 +14,11 @@ java_library(
         "ReplacementModel.java",
         "ReplacementTargetModel.java",
         "RepositoryModel.java",
+        "package-info.java",
     ],
     deps = [
         "//src/main/java/org/realityforge/bazel/depgen:core",
         "//src/main/java/org/realityforge/bazel/depgen/config",
         "//src/main/java/org/realityforge/bazel/depgen/util",
-        "//third_party/java:javax_annotation",
     ],
 )

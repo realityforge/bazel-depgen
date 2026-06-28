@@ -22,9 +22,9 @@ java_library(
         "RepositoryConfig.java",
         "RepositoryRuleGenerationStrategy.java",
         "TargetGenerationStrategy.java",
+        "package-info.java",
     ],
     deps = [
-        "//third_party/java:javax_annotation",
         "//third_party/java:snakeyaml",
     ],
 )

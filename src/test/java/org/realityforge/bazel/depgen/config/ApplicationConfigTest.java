@@ -5,7 +5,7 @@ import static org.testng.Assert.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.testng.annotations.Test;
 
@@ -29,8 +29,7 @@ public class ApplicationConfigTest extends AbstractTest {
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         assertEquals(config.getConfigLocation(), getDefaultConfigFile());
-        final List<RepositoryConfig> repositories = config.getRepositories();
-        assertNotNull(repositories);
+        final List<RepositoryConfig> repositories = requireNonNull(config.getRepositories());
 
         assertEquals(repositories.size(), 2);
         final RepositoryConfig repository1 = repositories.get(0);
@@ -66,8 +65,7 @@ public class ApplicationConfigTest extends AbstractTest {
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
         assertEquals(artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08");
-        final List<String> excludes = artifact.getExcludes();
-        assertNotNull(excludes);
+        final List<String> excludes = requireNonNull(artifact.getExcludes());
         assertEquals(excludes.size(), 2);
 
         assertTrue(excludes.contains("org.realityforge.javax.annotation:javax.annotation"));
@@ -98,8 +96,7 @@ public class ApplicationConfigTest extends AbstractTest {
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
         assertEquals(artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08");
-        final List<String> visibility = artifact.getVisibility();
-        assertNotNull(visibility);
+        final List<String> visibility = requireNonNull(artifact.getVisibility());
         assertEquals(visibility.size(), 2);
 
         assertTrue(visibility.contains("//some/package:__pkg__"));
@@ -133,8 +130,7 @@ public class ApplicationConfigTest extends AbstractTest {
         final List<Nature> natures = artifact.getNatures();
         assertNotNull(natures);
         assertEquals(natures, Collections.singletonList(Nature.J2cl));
-        final J2clConfig j2cl = artifact.getJ2cl();
-        assertNotNull(j2cl);
+        final J2clConfig j2cl = requireNonNull(artifact.getJ2cl());
         assertEquals(j2cl.getSuppress(), Arrays.asList("checkDebuggerStatement", "other"));
         assertEquals(j2cl.getMode(), J2clMode.Library);
     }
@@ -195,8 +191,7 @@ public class ApplicationConfigTest extends AbstractTest {
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
         assertEquals(artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08");
-        assertNotNull(artifact.getIncludeOptional());
-        assertTrue(artifact.getIncludeOptional());
+        assertTrue(requireNonNull(artifact.getIncludeOptional()));
     }
 
     @Test
@@ -208,10 +203,8 @@ public class ApplicationConfigTest extends AbstractTest {
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
         assertEquals(artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08");
-        final JavaConfig java = artifact.getJava();
-        assertNotNull(java);
-        assertNotNull(java.getExportDeps());
-        assertTrue(java.getExportDeps());
+        final JavaConfig java = requireNonNull(artifact.getJava());
+        assertTrue(requireNonNull(java.getExportDeps()));
     }
 
     @Test
@@ -223,10 +216,8 @@ public class ApplicationConfigTest extends AbstractTest {
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
         assertEquals(artifact.getCoord(), "org.realityforge.gir:gir-core:jar:sources:0.08");
-        final PluginConfig plugin = artifact.getPlugin();
-        assertNotNull(plugin);
-        final Boolean generatesApi = plugin.getGeneratesApi();
-        assertNotNull(generatesApi);
+        final PluginConfig plugin = requireNonNull(artifact.getPlugin());
+        final Boolean generatesApi = requireNonNull(plugin.getGeneratesApi());
         assertFalse(generatesApi);
     }
 
@@ -258,8 +249,7 @@ public class ApplicationConfigTest extends AbstractTest {
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
 
-        final OptionsConfig options = config.getOptions();
-        assertNotNull(options);
+        final OptionsConfig options = requireNonNull(config.getOptions());
 
         assertEquals(options.getWorkspaceDirectory(), "workspaceDir");
         assertEquals(options.getExtensionFile(), "workspaceDir/vendor/workspace.bzl");
@@ -282,8 +272,7 @@ public class ApplicationConfigTest extends AbstractTest {
         assertEquals(options.getIncludeExternalAnnotations(), Boolean.TRUE);
         assertEquals(options.getSupportDependencyOmit(), Boolean.TRUE);
         assertEquals(options.getVerifyConfigSha256(), Boolean.FALSE);
-        final GlobalJavaConfig java = options.getJava();
-        assertNotNull(java);
+        final GlobalJavaConfig java = requireNonNull(options.getJava());
         assertEquals(java.getExportDeps(), Boolean.TRUE);
     }
 
@@ -293,8 +282,7 @@ public class ApplicationConfigTest extends AbstractTest {
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
 
-        final OptionsConfig options = config.getOptions();
-        assertNotNull(options);
+        final OptionsConfig options = requireNonNull(config.getOptions());
 
         assertNull(options.getWorkspaceDirectory());
         assertNull(options.getExtensionFile());
@@ -329,14 +317,12 @@ public class ApplicationConfigTest extends AbstractTest {
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
 
-        final List<ReplacementConfig> replacements = config.getReplacements();
-        assertNotNull(replacements);
+        final List<ReplacementConfig> replacements = requireNonNull(config.getReplacements());
 
         assertEquals(replacements.size(), 1);
         final ReplacementConfig replacement = replacements.get(0);
         assertEquals(replacement.getCoord(), "com.example:myapp");
-        final List<ReplacementTargetConfig> targets = replacement.getTargets();
-        assertNotNull(targets);
+        final List<ReplacementTargetConfig> targets = requireNonNull(replacement.getTargets());
         final ReplacementTargetConfig target = targets.get(0);
         assertEquals(target.getTarget(), "@com_example//:myapp");
         assertEquals(target.getNature(), Nature.Java);
@@ -361,18 +347,16 @@ public class ApplicationConfigTest extends AbstractTest {
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
 
-        final List<ExcludeConfig> excludes = config.getExcludes();
-        assertNotNull(excludes);
+        final List<ExcludeConfig> excludes = requireNonNull(config.getExcludes());
 
         assertEquals(excludes.size(), 1);
         final ExcludeConfig exclude = excludes.get(0);
         assertEquals(exclude.getCoord(), "com.example:myapp");
     }
 
-    @Nonnull
-    private ArtifactConfig ensureSingleArtifact(@Nonnull final ApplicationConfig config) {
-        final List<ArtifactConfig> artifacts = config.getArtifacts();
-        assertNotNull(artifacts);
+    @NonNull
+    private ArtifactConfig ensureSingleArtifact(@NonNull final ApplicationConfig config) {
+        final List<ArtifactConfig> artifacts = requireNonNull(config.getArtifacts());
 
         assertEquals(artifacts.size(), 1);
         final ArtifactConfig artifact = artifacts.get(0);

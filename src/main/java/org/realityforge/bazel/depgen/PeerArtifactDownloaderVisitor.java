@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.DependencyVisitor;
@@ -13,41 +12,42 @@ import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 
 abstract class PeerArtifactDownloaderVisitor implements DependencyVisitor {
-    @Nonnull
+    @NonNull
     private final Resolver _resolver;
 
-    @Nonnull
+    @NonNull
     private final ApplicationModel _model;
 
-    @Nonnull
+    @NonNull
     private final String _metadataProperty;
 
-    @Nonnull
+    @NonNull
     private final String _filenameKey;
 
     PeerArtifactDownloaderVisitor(
-            @Nonnull final Resolver resolver,
-            @Nonnull final ApplicationModel model,
-            @Nonnull final String metadataProperty,
-            @Nonnull final String filenameKey) {
+            @NonNull final Resolver resolver,
+            @NonNull final ApplicationModel model,
+            @NonNull final String metadataProperty,
+            @NonNull final String filenameKey) {
         _resolver = Objects.requireNonNull(resolver);
         _model = Objects.requireNonNull(model);
         _metadataProperty = Objects.requireNonNull(metadataProperty);
         _filenameKey = Objects.requireNonNull(filenameKey);
     }
 
-    @Nonnull
+    @NonNull
     ApplicationModel getModel() {
         return _model;
     }
 
     @Override
-    public final boolean visitEnter(@Nonnull final DependencyNode node) {
+    public final boolean visitEnter(@NonNull final DependencyNode node) {
         final org.eclipse.aether.artifact.Artifact artifact = node.getArtifact();
         if (null != artifact) {
             final boolean shouldDownloadPeerArtifact = shouldDownloadPeerArtifact(artifact);
@@ -59,12 +59,11 @@ abstract class PeerArtifactDownloaderVisitor implements DependencyVisitor {
     }
 
     @Override
-    public final boolean visitLeave(@Nonnull final DependencyNode node) {
+    public final boolean visitLeave(@NonNull final DependencyNode node) {
         return true;
     }
 
-    @Nonnull
-    private org.eclipse.aether.artifact.Artifact downloadPeerArtifact(@Nonnull final DependencyNode node) {
+    private org.eclipse.aether.artifact.Artifact downloadPeerArtifact(@NonNull final DependencyNode node) {
         final org.eclipse.aether.artifact.Artifact artifact = node.getArtifact();
         assert null != artifact;
         final File file = artifact.getFile();
@@ -98,8 +97,8 @@ abstract class PeerArtifactDownloaderVisitor implements DependencyVisitor {
         }
     }
 
-    abstract boolean shouldDownloadPeerArtifact(@Nonnull Artifact artifact);
+    abstract boolean shouldDownloadPeerArtifact(@NonNull Artifact artifact);
 
-    @Nonnull
-    abstract SubArtifact toPeerArtifact(@Nonnull Artifact artifact);
+    @NonNull
+    abstract SubArtifact toPeerArtifact(@NonNull Artifact artifact);
 }

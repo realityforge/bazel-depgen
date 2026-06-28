@@ -9,11 +9,11 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.eclipse.aether.artifact.Artifact;
@@ -22,6 +22,7 @@ import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.InvalidModelException;
@@ -91,12 +92,12 @@ public final class Main {
                 "Recalculate metadata about an artifact.")
     };
 
-    @Nonnull
+    @NonNull
     private static final Map<String, Supplier<Command>> COMMAND_MAP = buildCommandMap();
 
     private Main() {}
 
-    @Nonnull
+    @NonNull
     private static Map<String, Supplier<Command>> buildCommandMap() {
         final var commands = new LinkedHashMap<String, Supplier<Command>>();
         commands.put(GenerateCommand.COMMAND, GenerateCommand::new);
@@ -108,7 +109,7 @@ public final class Main {
         return Collections.unmodifiableMap(commands);
     }
 
-    public static void main(@Nonnull final String[] args) {
+    public static void main(@NonNull final String[] args) {
         final var environment = new Environment(System.console(), Paths.get("").toAbsolutePath(), Logger.getGlobal());
         // The BUILD_WORKSPACE_DIRECTORY environment variable is specified by bazel when
         // a binary is run using "bazel run ...". This is what we *should* be using as current directory
@@ -121,7 +122,7 @@ public final class Main {
         System.exit(run(environment, args));
     }
 
-    static int run(@Nonnull final Environment environment, @Nonnull final String... args) {
+    static int run(@NonNull final Environment environment, @NonNull final String... args) {
         if (!processOptions(environment, args)) {
             return ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE;
         }
@@ -182,13 +183,13 @@ public final class Main {
         }
     }
 
-    @Nonnull
-    static ApplicationModel loadModel(@Nonnull final Environment environment) {
+    @NonNull
+    static ApplicationModel loadModel(@NonNull final Environment environment) {
         return ApplicationModel.load(loadConfigFile(environment), environment.shouldResetCachedMetadata());
     }
 
-    @Nonnull
-    static ApplicationRecord loadRecord(@Nonnull final Environment environment) throws DependencyResolutionException {
+    @NonNull
+    static ApplicationRecord loadRecord(@NonNull final Environment environment) throws DependencyResolutionException {
         final ApplicationModel model = loadModel(environment);
         final Resolver resolver =
                 ResolverUtil.createResolver(environment, environment.getCacheDir(), model, loadSettings(environment));
@@ -202,24 +203,24 @@ public final class Main {
     }
 
     static void cacheArtifactsInRepositoryCache(
-            @Nonnull final Environment environment, @Nonnull final ApplicationRecord record) {
+            @NonNull final Environment environment, @NonNull final ApplicationRecord record) {
         if (environment.hasRepositoryCacheDir()) {
             final Path repositoryCache = environment.getRepositoryCacheDir();
             // We only attempt to copy into repositoryCache if there is one ... which there
             // always is if there is a local WORKSPACE
             for (final ArtifactRecord artifact : record.getArtifacts()) {
                 final Artifact a = artifact.getArtifact();
-                final File file = a.getFile();
-                assert null != file;
-                final String sha256 = artifact.getSha256();
-                assert null != sha256;
+                final File file = Objects.requireNonNull(a.getFile());
+                final String sha256 = Objects.requireNonNull(artifact.getSha256());
                 cacheRepositoryFile(environment.logger(), repositoryCache, a.toString(), file, sha256);
                 final String sourceSha256 = artifact.getSourceSha256();
                 if (null != sourceSha256) {
                     final var sourcesArtifact = new SubArtifact(a, "sources", "jar");
                     final String localFilename = ArtifactUtil.artifactToLocalFilename(sourcesArtifact);
-                    final File sourcesFile =
-                            file.toPath().getParent().resolve(localFilename).toFile();
+                    final File sourcesFile = Objects.requireNonNull(
+                                    file.toPath().getParent())
+                            .resolve(localFilename)
+                            .toFile();
 
                     cacheRepositoryFile(
                             environment.logger(),
@@ -233,11 +234,11 @@ public final class Main {
     }
 
     static void cacheRepositoryFile(
-            @Nonnull final Logger logger,
-            @Nonnull final Path repositoryCache,
-            @Nonnull final String label,
-            @Nonnull final File file,
-            @Nonnull final String sha256) {
+            @NonNull final Logger logger,
+            @NonNull final Path repositoryCache,
+            @NonNull final String label,
+            @NonNull final File file,
+            @NonNull final String sha256) {
         final Path targetPath = repositoryCache
                 .resolve("content_addressable")
                 .resolve("sha256")
@@ -255,11 +256,11 @@ public final class Main {
         }
     }
 
-    @Nonnull
+    @NonNull
     private static DependencyNode resolveModel(
-            @Nonnull final Environment environment,
-            @Nonnull final Resolver resolver,
-            @Nonnull final ApplicationModel model)
+            @NonNull final Environment environment,
+            @NonNull final Resolver resolver,
+            @NonNull final ApplicationModel model)
             throws DependencyResolutionException {
         final Logger logger = environment.logger();
         final DependencyResult result = resolver.resolveDependencies(model, (artifactModel, exceptions) -> {
@@ -288,8 +289,8 @@ public final class Main {
         return result.getRoot();
     }
 
-    @Nonnull
-    private static Settings loadSettings(@Nonnull final Environment environment) {
+    @NonNull
+    private static Settings loadSettings(@NonNull final Environment environment) {
         final Path settingsFile = environment.getSettingsFile();
         try {
             return SettingsUtil.loadSettings(settingsFile, environment.logger());
@@ -299,8 +300,8 @@ public final class Main {
         }
     }
 
-    @Nonnull
-    static ApplicationConfig loadConfigFile(@Nonnull final Environment environment) {
+    @NonNull
+    static ApplicationConfig loadConfigFile(@NonNull final Environment environment) {
         final Path configFile = environment.getConfigFile();
         try {
             return ApplicationConfig.load(configFile);
@@ -310,7 +311,7 @@ public final class Main {
         }
     }
 
-    static void setupLogger(@Nonnull final Environment environment) {
+    static void setupLogger(@NonNull final Environment environment) {
         final var handler = new ConsoleHandler();
         handler.setFormatter(new RawFormatter());
         handler.setLevel(Level.ALL);
@@ -320,7 +321,7 @@ public final class Main {
         logger.setLevel(Level.INFO);
     }
 
-    static boolean processOptions(@Nonnull final Environment environment, @Nonnull final String... args) {
+    static boolean processOptions(@NonNull final Environment environment, @NonNull final String... args) {
         // Parse the arguments
         final var parser = new CLArgsParser(args, OPTIONS, lastOptionCode -> CLOption.TEXT_ARGUMENT == lastOptionCode);
 
@@ -512,7 +513,7 @@ public final class Main {
     /**
      * Print out a usage statement
      */
-    static void printUsage(@Nonnull final Environment environment) {
+    static void printUsage(@NonNull final Environment environment) {
         final Logger logger = environment.logger();
         logger.severe("java " + Main.class.getName() + " [options] [command]");
         logger.severe("\tPossible Commands:");

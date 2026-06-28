@@ -9,28 +9,28 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 public final class StarlarkOutput implements AutoCloseable {
     @FunctionalInterface
     public interface Block {
-        void call(@Nonnull StarlarkOutput output) throws IOException;
+        void call(@NonNull StarlarkOutput output) throws IOException;
     }
 
-    @Nonnull
+    @NonNull
     private final OutputStream _outputStream;
 
     private int _indent;
 
-    public StarlarkOutput(@Nonnull final Path extensionFile) throws IOException {
+    public StarlarkOutput(@NonNull final Path extensionFile) throws IOException {
         this(Files.newOutputStream(extensionFile.toFile().toPath()));
     }
 
-    public StarlarkOutput(@Nonnull final OutputStream outputStream) {
+    public StarlarkOutput(@NonNull final OutputStream outputStream) {
         _outputStream = Objects.requireNonNull(outputStream);
     }
 
-    public void write(@Nonnull final String line) throws IOException {
+    public void write(@NonNull final String line) throws IOException {
         for (int i = 0; i < _indent; i++) {
             emit("    ");
         }
@@ -42,7 +42,7 @@ public final class StarlarkOutput implements AutoCloseable {
         emit("\n");
     }
 
-    public void writeMultilineComment(@Nonnull final Block body) throws IOException {
+    public void writeMultilineComment(@NonNull final Block body) throws IOException {
         write("\"\"\"");
         incIndent();
         body.call(this);
@@ -50,14 +50,14 @@ public final class StarlarkOutput implements AutoCloseable {
         write("\"\"\"");
     }
 
-    public void writeIfCondition(@Nonnull final String condition, @Nonnull final Block body) throws IOException {
+    public void writeIfCondition(@NonNull final String condition, @NonNull final Block body) throws IOException {
         write("if " + condition + ":");
         incIndent();
         body.call(this);
         decIndent();
     }
 
-    public void writeMacro(@Nonnull final String name, @Nonnull final List<String> arguments, @Nonnull final Block body)
+    public void writeMacro(@NonNull final String name, @NonNull final List<String> arguments, @NonNull final Block body)
             throws IOException {
         writeMacroStart(name, arguments);
         incIndent();
@@ -65,7 +65,7 @@ public final class StarlarkOutput implements AutoCloseable {
         decIndent();
     }
 
-    void writeMacroStart(@Nonnull final String name, @Nonnull final List<String> arguments) throws IOException {
+    void writeMacroStart(@NonNull final String name, @NonNull final List<String> arguments) throws IOException {
         final int size = arguments.size();
         if (0 == size) {
             write("def " + name + "():");
@@ -85,7 +85,7 @@ public final class StarlarkOutput implements AutoCloseable {
         }
     }
 
-    public void writeCall(@Nonnull final String functionName, @Nonnull final LinkedHashMap<String, Object> arguments)
+    public void writeCall(@NonNull final String functionName, @NonNull final LinkedHashMap<String, Object> arguments)
             throws IOException {
         if (arguments.isEmpty()) {
             write(functionName + "()");
@@ -139,7 +139,7 @@ public final class StarlarkOutput implements AutoCloseable {
         _outputStream.close();
     }
 
-    private void emit(@Nonnull final String string) throws IOException {
+    private void emit(@NonNull final String string) throws IOException {
         _outputStream.write(string.getBytes(StandardCharsets.US_ASCII));
     }
 }

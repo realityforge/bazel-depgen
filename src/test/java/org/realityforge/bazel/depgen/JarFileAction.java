@@ -2,8 +2,8 @@ package org.realityforge.bazel.depgen;
 
 import java.io.IOException;
 import java.util.jar.JarOutputStream;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 public interface JarFileAction {
-    void accept(@Nonnull JarOutputStream outputStream) throws IOException;
+    void accept(@NonNull JarOutputStream outputStream) throws IOException;
 }

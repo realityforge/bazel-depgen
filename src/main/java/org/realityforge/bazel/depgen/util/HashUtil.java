@@ -2,7 +2,7 @@ package org.realityforge.bazel.depgen.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.DepgenConfigurationException;
 
 public final class HashUtil {
@@ -10,8 +10,8 @@ public final class HashUtil {
 
     private HashUtil() {}
 
-    @Nonnull
-    public static String sha256(@Nonnull final byte[]... data) {
+    @NonNull
+    public static String sha256(final byte[]... data) {
         try {
             final MessageDigest digest = MessageDigest.getInstance("SHA-256");
             for (final byte[] datum : data) {
@@ -19,12 +19,12 @@ public final class HashUtil {
             }
             return bytesToHex(digest.digest());
         } catch (final NoSuchAlgorithmException nsae) {
-            throw new DepgenConfigurationException(nsae.getMessage(), nsae);
+            throw new DepgenConfigurationException("SHA-256 digest algorithm is unavailable", nsae);
         }
     }
 
-    @Nonnull
-    private static String bytesToHex(@Nonnull final byte[] bytes) {
+    @NonNull
+    private static String bytesToHex(final byte[] bytes) {
         final char[] hexChars = new char[bytes.length * 2];
         for (int i = 0; i < bytes.length; i++) {
             final int v = bytes[i] & 0xFF;

@@ -4,17 +4,17 @@ import java.io.Console;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 final class Environment {
     @Nullable
     private final Console _console;
 
-    @Nonnull
+    @NonNull
     private Path _currentDirectory;
 
-    @Nonnull
+    @NonNull
     private final Logger _logger;
 
     @Nullable
@@ -34,7 +34,7 @@ final class Environment {
 
     private boolean _resetCachedMetadata;
 
-    Environment(@Nullable final Console console, @Nonnull final Path currentDirectory, @Nonnull final Logger logger) {
+    Environment(@Nullable final Console console, @NonNull final Path currentDirectory, @NonNull final Logger logger) {
         _console = console;
         _currentDirectory = Objects.requireNonNull(currentDirectory);
         _logger = Objects.requireNonNull(logger);
@@ -45,16 +45,16 @@ final class Environment {
         return _console;
     }
 
-    public void setCurrentDirectory(@Nonnull final Path currentDirectory) {
+    public void setCurrentDirectory(@NonNull final Path currentDirectory) {
         _currentDirectory = Objects.requireNonNull(currentDirectory);
     }
 
-    @Nonnull
+    @NonNull
     Path currentDirectory() {
         return _currentDirectory;
     }
 
-    @Nonnull
+    @NonNull
     Logger logger() {
         return _logger;
     }
@@ -63,10 +63,9 @@ final class Environment {
         return null != _configFile;
     }
 
-    @Nonnull
+    @NonNull
     Path getConfigFile() {
-        assert null != _configFile;
-        return _configFile;
+        return Objects.requireNonNull(_configFile);
     }
 
     void setConfigFile(@Nullable final Path configFile) {
@@ -77,10 +76,9 @@ final class Environment {
         return null != _settingsFile;
     }
 
-    @Nonnull
+    @NonNull
     Path getSettingsFile() {
-        assert null != _settingsFile;
-        return _settingsFile;
+        return Objects.requireNonNull(_settingsFile);
     }
 
     void setSettingsFile(@Nullable final Path settingsFile) {
@@ -91,10 +89,9 @@ final class Environment {
         return null != _cacheDir;
     }
 
-    @Nonnull
+    @NonNull
     Path getCacheDir() {
-        assert null != _cacheDir;
-        return _cacheDir;
+        return Objects.requireNonNull(_cacheDir);
     }
 
     void setCacheDir(@Nullable final Path cacheDir) {
@@ -105,10 +102,9 @@ final class Environment {
         return null != _repositoryCacheDir;
     }
 
-    @Nonnull
+    @NonNull
     Path getRepositoryCacheDir() {
-        assert null != _repositoryCacheDir;
-        return _repositoryCacheDir;
+        return Objects.requireNonNull(_repositoryCacheDir);
     }
 
     void setRepositoryCacheDir(@Nullable final Path repositoryCacheDir) {
@@ -119,13 +115,12 @@ final class Environment {
         return null != _command;
     }
 
-    @Nonnull
+    @NonNull
     Command getCommand() {
-        assert null != _command;
-        return _command;
+        return Objects.requireNonNull(_command);
     }
 
-    void setCommand(@Nonnull final Command command) {
+    void setCommand(@NonNull final Command command) {
         _command = Objects.requireNonNull(command);
     }
 

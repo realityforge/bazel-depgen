@@ -20,8 +20,7 @@ public class BazelUtilTest extends AbstractTest {
     public void getDefaultRepositoryCache() {
         // These tests assume that there is no WORKSPACE in parent directory from isolated directory
         // They also assume that bazel is present on build machine
-        final Path repositoryCache = BazelUtil.getDefaultRepositoryCache();
-        assertNotNull(repositoryCache);
+        final Path repositoryCache = requireNonNull(BazelUtil.getDefaultRepositoryCache());
         assertTrue(repositoryCache.toAbsolutePath().toString().endsWith("/cache/repos/v1"));
     }
 
@@ -33,8 +32,7 @@ public class BazelUtilTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         FileUtil.write("WORKSPACE", "");
         writeBazelrc(dir);
-        final Path repositoryCache = BazelUtil.getRepositoryCache(cwd.toFile());
-        assertNotNull(repositoryCache);
+        final Path repositoryCache = requireNonNull(BazelUtil.getRepositoryCache(cwd.toFile()));
         assertEquals(repositoryCache.toAbsolutePath().normalize(), dir);
     }
 
@@ -42,9 +40,8 @@ public class BazelUtilTest extends AbstractTest {
     public void getRepositoryCache_WORKSPACE_notPresent() {
         // These tests assume that there is no WORKSPACE in parent directory from isolated directory
         // They also assume that bazel is present on build machine
-        final Path repositoryCache =
-                BazelUtil.getRepositoryCache(FileUtil.getCurrentDirectory().toFile());
-        assertNotNull(repositoryCache);
+        final Path repositoryCache = requireNonNull(
+                BazelUtil.getRepositoryCache(FileUtil.getCurrentDirectory().toFile()));
         assertTrue(repositoryCache.toAbsolutePath().toString().endsWith("/cache/repos/v1"));
     }
 

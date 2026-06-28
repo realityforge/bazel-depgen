@@ -4,15 +4,15 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 
 final class HashCommand extends ConfigurableCommand {
-    @Nonnull
+    @NonNull
     static final String COMMAND = "hash";
 
     private static final int VERIFY_SHA256_OPT = 1;
@@ -33,7 +33,7 @@ final class HashCommand extends ConfigurableCommand {
     }
 
     @Override
-    boolean processArguments(@Nonnull final Environment environment, @Nonnull final List<CLOption> arguments) {
+    boolean processArguments(@NonNull final Environment environment, @NonNull final List<CLOption> arguments) {
         // Get a list of parsed options
         for (final CLOption option : arguments) {
             switch (option.getId()) {
@@ -53,7 +53,7 @@ final class HashCommand extends ConfigurableCommand {
     }
 
     @Override
-    int run(@Nonnull final Context context) {
+    int run(@NonNull final Context context) {
         final ApplicationModel model = context.loadModel();
         final String configSha256 = model.getConfigSha256();
         final Logger logger = context.environment().logger();

@@ -1,6 +1,6 @@
 package org.realityforge.bazel.depgen.util;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.Tag;

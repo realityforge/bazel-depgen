@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
@@ -37,31 +35,33 @@ import org.eclipse.aether.util.graph.selector.AndDependencySelector;
 import org.eclipse.aether.util.graph.selector.ExclusionDependencySelector;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.eclipse.aether.util.graph.traverser.FatArtifactTraverser;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 
 final class Resolver {
-    @Nonnull
+    @NonNull
     private final Environment _environment;
 
-    @Nonnull
+    @NonNull
     private final RepositorySystem _system;
 
-    @Nonnull
+    @NonNull
     private final RepositorySystemSession _session;
 
-    @Nonnull
+    @NonNull
     private final List<RemoteRepository> _repositories;
 
-    @Nonnull
+    @NonNull
     private final List<RemoteRepository> _defaultRepositories;
 
     Resolver(
-            @Nonnull final Environment environment,
-            @Nonnull final RepositorySystem system,
-            @Nonnull final RepositorySystemSession session,
-            @Nonnull final List<RemoteRepository> repositories,
-            @Nonnull final List<RemoteRepository> defaultRepositories) {
+            @NonNull final Environment environment,
+            @NonNull final RepositorySystem system,
+            @NonNull final RepositorySystemSession session,
+            @NonNull final List<RemoteRepository> repositories,
+            @NonNull final List<RemoteRepository> defaultRepositories) {
         _environment = Objects.requireNonNull(environment);
         _system = Objects.requireNonNull(system);
         _session = Objects.requireNonNull(session);
@@ -69,22 +69,22 @@ final class Resolver {
         _defaultRepositories = Objects.requireNonNull(defaultRepositories);
     }
 
-    @Nonnull
+    @NonNull
     RepositorySystem getSystem() {
         return _system;
     }
 
-    @Nonnull
+    @NonNull
     RepositorySystemSession getSession() {
         return _session;
     }
 
-    @Nonnull
+    @NonNull
     List<RemoteRepository> getRepositories() {
         return _repositories;
     }
 
-    @Nonnull
+    @NonNull
     List<RemoteRepository> getRepositories(@Nullable final ArtifactModel model) {
         if (null == model || model.getRepositories().isEmpty()) {
             return _defaultRepositories;
@@ -93,7 +93,7 @@ final class Resolver {
         }
     }
 
-    @Nonnull
+    @NonNull
     List<AuthenticationContext> getAuthenticationContexts() {
         return _repositories.stream()
                 .map(r -> AuthenticationContext.forRepository(_session, r))
@@ -101,9 +101,9 @@ final class Resolver {
                 .collect(Collectors.toList());
     }
 
-    @Nonnull
+    @NonNull
     DependencyResult resolveDependencies(
-            @Nonnull final ApplicationModel model, @Nonnull final OnInvalidPomFn onInvalidPomFn)
+            @NonNull final ApplicationModel model, @NonNull final OnInvalidPomFn onInvalidPomFn)
             throws DependencyResolutionException {
         final var session = (DefaultRepositorySystemSession) _session;
         final ArrayList<Exclusion> exclusions = ResolverUtil.deriveGlobalExclusions(model);
@@ -119,9 +119,9 @@ final class Resolver {
         return result;
     }
 
-    @Nonnull
+    @NonNull
     private DependencyResult resolveDependencyScopes(
-            @Nonnull final ApplicationModel model, @Nonnull final OnInvalidPomFn onInvalidPomFn)
+            @NonNull final ApplicationModel model, @NonNull final OnInvalidPomFn onInvalidPomFn)
             throws DependencyResolutionException {
         final var scopes = new LinkedHashMap<String, ResolutionScope>();
         model.getArtifacts().stream()
@@ -147,21 +147,21 @@ final class Resolver {
     }
 
     private void addDependencyToScope(
-            @Nonnull final Map<String, ResolutionScope> scopes,
-            @Nonnull final List<RemoteRepository> repositories,
-            @Nonnull final Dependency dependency) {
+            @NonNull final Map<String, ResolutionScope> scopes,
+            @NonNull final List<RemoteRepository> repositories,
+            @NonNull final Dependency dependency) {
         final ResolutionScope scope =
                 scopes.computeIfAbsent(toRepositoryKey(repositories), key -> new ResolutionScope(repositories));
         scope._dependencies.add(dependency);
     }
 
-    @Nonnull
-    private String toRepositoryKey(@Nonnull final List<RemoteRepository> repositories) {
+    @NonNull
+    private String toRepositoryKey(@NonNull final List<RemoteRepository> repositories) {
         return repositories.stream().map(RemoteRepository::getId).collect(Collectors.joining("\n"));
     }
 
-    @Nonnull
-    private DependencyResult mergeDependencyResults(@Nonnull final List<DependencyResult> results) {
+    @NonNull
+    private DependencyResult mergeDependencyResults(@NonNull final List<DependencyResult> results) {
         if (1 == results.size()) {
             return results.get(0);
         }
@@ -187,9 +187,9 @@ final class Resolver {
                 .setArtifactResults(artifactResults);
     }
 
-    @Nonnull
+    @NonNull
     private DependencyResult resolveDependencies(
-            @Nonnull final List<Dependency> dependencies, @Nonnull final List<RemoteRepository> repositories)
+            @NonNull final List<Dependency> dependencies, @NonNull final List<RemoteRepository> repositories)
             throws DependencyResolutionException {
         final var collectRequest = new CollectRequest();
         collectRequest.setDependencies(dependencies);
@@ -200,18 +200,18 @@ final class Resolver {
         return _system.resolveDependencies(_session, new DependencyRequest(collectRequest, filter));
     }
 
-    @Nonnull
+    @NonNull
     List<Dependency> deriveRootDependencies(
-            @Nonnull final ApplicationModel model, @Nonnull final OnInvalidPomFn onInvalidPomFn) {
+            @NonNull final ApplicationModel model, @NonNull final OnInvalidPomFn onInvalidPomFn) {
         final List<ArtifactModel> artifactModels =
                 model.getArtifacts().stream().filter(ArtifactModel::isVersioned).collect(Collectors.toList());
         artifactModels.addAll(model.getSystemArtifacts());
         return deriveDependencies(artifactModels, onInvalidPomFn);
     }
 
-    @Nonnull
+    @NonNull
     private List<Dependency> deriveDependencies(
-            @Nonnull final List<ArtifactModel> artifactModels, @Nonnull final OnInvalidPomFn onInvalidPomFn) {
+            @NonNull final List<ArtifactModel> artifactModels, @NonNull final OnInvalidPomFn onInvalidPomFn) {
         final var dependencies = new ArrayList<Dependency>();
         for (final ArtifactModel artifactModel : artifactModels) {
             dependencies.add(toDependency(artifactModel, e -> onInvalidPomFn.onInvalidPom(artifactModel, e)));
@@ -219,9 +219,9 @@ final class Resolver {
         return dependencies;
     }
 
-    @Nonnull
+    @NonNull
     private Dependency toDependency(
-            @Nonnull final ArtifactModel artifactModel, @Nonnull final Consumer<List<Exception>> onInvalidPomFn) {
+            @NonNull final ArtifactModel artifactModel, @NonNull final Consumer<List<Exception>> onInvalidPomFn) {
         return new Dependency(
                 toArtifact(artifactModel, onInvalidPomFn),
                 Artifact.SCOPE_COMPILE,
@@ -233,9 +233,8 @@ final class Resolver {
      * Retrieve the artifact associated with model from the remote repositories or the local cache and
      * load the associated pom to build complete artifact representation.
      */
-    @Nonnull
     org.eclipse.aether.artifact.Artifact toArtifact(
-            @Nonnull final ArtifactModel model, @Nonnull final Consumer<List<Exception>> onInvalidPomFn) {
+            @NonNull final ArtifactModel model, @NonNull final Consumer<List<Exception>> onInvalidPomFn) {
         final var artifact = new DefaultArtifact(
                 model.getGroup(), model.getId(), model.getClassifier(), model.getType(), model.getVersion());
         try {
@@ -265,11 +264,11 @@ final class Resolver {
 
     @FunctionalInterface
     interface OnInvalidPomFn {
-        void onInvalidPom(@Nonnull ArtifactModel artifactModel, @Nonnull List<Exception> exceptions);
+        void onInvalidPom(@NonNull ArtifactModel artifactModel, @NonNull List<Exception> exceptions);
     }
 
-    @Nonnull
-    private List<RemoteRepository> selectRepositories(@Nonnull final List<String> repositoryIds) {
+    @NonNull
+    private List<RemoteRepository> selectRepositories(@NonNull final List<String> repositoryIds) {
         final var repositories = new ArrayList<RemoteRepository>();
         for (final RemoteRepository repository : _repositories) {
             if (repositoryIds.contains(repository.getId())) {
@@ -280,13 +279,13 @@ final class Resolver {
     }
 
     private static final class ResolutionScope {
-        @Nonnull
+        @NonNull
         private final List<RemoteRepository> _repositories;
 
-        @Nonnull
+        @NonNull
         private final List<Dependency> _dependencies = new ArrayList<>();
 
-        private ResolutionScope(@Nonnull final List<RemoteRepository> repositories) {
+        private ResolutionScope(@NonNull final List<RemoteRepository> repositories) {
             _repositories = Objects.requireNonNull(repositories);
         }
     }

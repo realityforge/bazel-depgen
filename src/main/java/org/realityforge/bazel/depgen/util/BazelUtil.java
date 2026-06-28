@@ -4,22 +4,22 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public final class BazelUtil {
-    @Nonnull
+    @NonNull
     public static final String COMPONENT_SEPARATOR = "__";
 
     private BazelUtil() {}
 
-    @Nonnull
-    public static String cleanNamePart(@Nonnull final String name) {
+    @NonNull
+    public static String cleanNamePart(@NonNull final String name) {
         return name.toLowerCase().replaceAll("[^a-z0-9]", "_");
     }
 
     @Nullable
-    public static File getOutputBase(@Nonnull final File cwd) {
+    public static File getOutputBase(@NonNull final File cwd) {
         try {
             final String repositoryCache =
                     Exec.capture(p -> p.command("bazel", "info", "output_base").directory(cwd), 0);
@@ -30,7 +30,7 @@ public final class BazelUtil {
     }
 
     @Nullable
-    public static Path getRepositoryCache(@Nonnull final File cwd) {
+    public static Path getRepositoryCache(@NonNull final File cwd) {
         try {
             final String repositoryCache = Exec.capture(
                     p -> p.command("bazel", "info", "repository_cache").directory(cwd), 0);

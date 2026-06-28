@@ -139,6 +139,13 @@ _http_file(
 )
 
 _http_file(
+    name = "nullaway",
+    downloaded_file_path = "com/uber/nullaway/nullaway/0.13.7/nullaway-0.13.7.jar",
+    sha256 = "6bcb696ddcfa0f7cc12b90face8e7af041063f278cd9f3f07de2c53262e24d68",
+    urls = ["https://repo.maven.apache.org/maven2/com/uber/nullaway/nullaway/0.13.7/nullaway-0.13.7.jar"],
+)
+
+_http_file(
     name = "commons_codec",
     downloaded_file_path = "commons-codec/commons-codec/1.12/commons-codec-1.12.jar",
     sha256 = "23df58fae9c83d1bcd277b99f9429e9d8c134f0600b73e2e86b2385ed793c81e",
@@ -328,6 +335,20 @@ _http_file(
 )
 
 _http_file(
+    name = "checker_qual",
+    downloaded_file_path = "org/checkerframework/checker-qual/4.0.0/checker-qual-4.0.0.jar",
+    sha256 = "a06f08bc5dfa51d751cc5bd2453443a99a14825d57bd3c576de2648d2c99fcb8",
+    urls = ["https://repo.maven.apache.org/maven2/org/checkerframework/checker-qual/4.0.0/checker-qual-4.0.0.jar"],
+)
+
+_http_file(
+    name = "dataflow_nullaway",
+    downloaded_file_path = "org/checkerframework/dataflow-nullaway/4.0.0/dataflow-nullaway-4.0.0.jar",
+    sha256 = "4038b94f4a58f5895a19dde9c9c04ee4cc8bf25e83d4ef10152428e760783f9a",
+    urls = ["https://repo.maven.apache.org/maven2/org/checkerframework/dataflow-nullaway/4.0.0/dataflow-nullaway-4.0.0.jar"],
+)
+
+_http_file(
     name = "animal_sniffer_annotations",
     downloaded_file_path = "org/codehaus/mojo/animal-sniffer-annotations/1.14/animal-sniffer-annotations-1.14.jar",
     sha256 = "2068320bd6bad744c3673ab048f67e30bef8f518996fa380033556600669905d",
@@ -367,6 +388,13 @@ _http_file(
     downloaded_file_path = "org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar",
     sha256 = "5e62846a89f05cd78cd9c1a553f340d002458380c320455dd1f8fc5497a8a1c1",
     urls = ["https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar"],
+)
+
+_http_file(
+    name = "jspecify",
+    downloaded_file_path = "org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar",
+    sha256 = "1fad6e6be7557781e4d33729d49ae1cdc8fdda6fe477bb0cc68ce351eafdfbab",
+    urls = ["https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar"],
 )
 
 _http_file(
@@ -423,13 +451,6 @@ _http_file(
     downloaded_file_path = "org/realityforge/guiceyloops/guiceyloops/0.113/guiceyloops-0.113.jar",
     sha256 = "b9695819ca72148ba3622949f767575c9d25be2188ca3824ffbf9292f76d6692",
     urls = ["https://repo.maven.apache.org/maven2/org/realityforge/guiceyloops/guiceyloops/0.113/guiceyloops-0.113.jar"],
-)
-
-_http_file(
-    name = "javax_annotation",
-    downloaded_file_path = "org/realityforge/javax/annotation/javax.annotation/1.1.1/javax.annotation-1.1.1.jar",
-    sha256 = "147d086711cd48670097ac626bfe1ed137786144c2a2c46b2aa1bb7292adc77b",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/javax/annotation/javax.annotation/1.1.1/javax.annotation-1.1.1.jar"],
 )
 
 _http_file(

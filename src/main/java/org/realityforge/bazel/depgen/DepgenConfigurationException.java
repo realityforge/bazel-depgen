@@ -1,14 +1,14 @@
 package org.realityforge.bazel.depgen;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 public final class DepgenConfigurationException extends DepgenException {
-    public DepgenConfigurationException(@Nonnull final String message) {
+    public DepgenConfigurationException(@NonNull final String message) {
         super(Objects.requireNonNull(message));
     }
 
-    public DepgenConfigurationException(@Nonnull final String message, @Nonnull final Throwable cause) {
+    public DepgenConfigurationException(@NonNull final String message, @NonNull final Throwable cause) {
         super(message, cause);
     }
 }

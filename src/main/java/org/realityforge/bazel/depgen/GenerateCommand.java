@@ -3,15 +3,16 @@ package org.realityforge.bazel.depgen;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.util.GeneratedSectionWriter;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 
 final class GenerateCommand extends Command {
-    @Nonnull
+    @NonNull
     static final String COMMAND = "generate";
 
     GenerateCommand() {
@@ -29,14 +30,15 @@ final class GenerateCommand extends Command {
     }
 
     @Override
-    int run(@Nonnull final Context context) throws Exception {
+    int run(@NonNull final Context context) throws Exception {
         final ApplicationRecord record = context.loadRecord();
         final OptionsModel options = record.getSource().getOptions();
         final Path extensionFile = options.getExtensionFile();
-        final Path extensionDir = extensionFile.getParent();
+        final Path extensionDir = Objects.requireNonNull(extensionFile.getParent());
         final Path extensionBuildfile = extensionDir.resolve("BUILD.bazel");
-        final Path configBuildfile =
-                record.getSource().getConfigLocation().getParent().resolve("BUILD.bazel");
+        final Path configDir =
+                Objects.requireNonNull(record.getSource().getConfigLocation().getParent());
+        final Path configBuildfile = configDir.resolve("BUILD.bazel");
         final Path moduleFile = options.getModuleFile();
         final boolean requiresExtensionFile = options.requiresExtensionFile();
         final boolean generatesTargetsInExtension = options.isTargetGenerationInExtensionFile();
@@ -102,8 +104,8 @@ final class GenerateCommand extends Command {
         return ExitCodes.SUCCESS_EXIT_CODE;
     }
 
-    @Nonnull
-    private String emit(@Nonnull final Emitter emitter) throws Exception {
+    @NonNull
+    private String emit(@NonNull final Emitter emitter) throws Exception {
         final var baos = new ByteArrayOutputStream();
         try (final var output = new StarlarkOutput(baos)) {
             emitter.emit(output);
@@ -113,6 +115,6 @@ final class GenerateCommand extends Command {
 
     @FunctionalInterface
     private interface Emitter {
-        void emit(@Nonnull StarlarkOutput output) throws Exception;
+        void emit(@NonNull StarlarkOutput output) throws Exception;
     }
 }

@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
@@ -25,6 +24,7 @@ import org.eclipse.aether.util.graph.manager.DependencyManagerUtils;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.model.ExcludeModel;
@@ -35,12 +35,12 @@ import org.realityforge.bazel.depgen.model.RepositoryModel;
 final class ResolverUtil {
     private ResolverUtil() {}
 
-    @Nonnull
+    @NonNull
     static Resolver createResolver(
-            @Nonnull final Environment environment,
-            @Nonnull final Path cacheDir,
-            @Nonnull final ApplicationModel model,
-            @Nonnull final Settings settings) {
+            @NonNull final Environment environment,
+            @NonNull final Path cacheDir,
+            @NonNull final ApplicationModel model,
+            @NonNull final Settings settings) {
         final OptionsModel options = model.getOptions();
         final List<RemoteRepository> repositories =
                 ResolverUtil.getRemoteRepositories(model.getRepositories(), settings);
@@ -58,12 +58,12 @@ final class ResolverUtil {
                 options.failOnInvalidPom());
     }
 
-    @Nonnull
+    @NonNull
     static Resolver createResolver(
-            @Nonnull final Environment environment,
-            @Nonnull final Path cacheDir,
-            @Nonnull final List<RemoteRepository> repositories,
-            @Nonnull final List<RemoteRepository> defaultRepositories,
+            @NonNull final Environment environment,
+            @NonNull final Path cacheDir,
+            @NonNull final List<RemoteRepository> repositories,
+            @NonNull final List<RemoteRepository> defaultRepositories,
             final boolean failOnMissingPom,
             final boolean failOnInvalidPom) {
         final RepositorySystem system = newRepositorySystem(environment);
@@ -72,18 +72,18 @@ final class ResolverUtil {
         return new Resolver(environment, system, session, repositories, defaultRepositories);
     }
 
-    @Nonnull
+    @NonNull
     static Resolver createResolver(
-            @Nonnull final Environment environment,
-            @Nonnull final Path cacheDir,
-            @Nonnull final List<RemoteRepository> repositories,
+            @NonNull final Environment environment,
+            @NonNull final Path cacheDir,
+            @NonNull final List<RemoteRepository> repositories,
             final boolean failOnMissingPom,
             final boolean failOnInvalidPom) {
         return createResolver(environment, cacheDir, repositories, repositories, failOnMissingPom, failOnInvalidPom);
     }
 
-    @Nonnull
-    private static RepositorySystem newRepositorySystem(@Nonnull final Environment environment) {
+    @NonNull
+    private static RepositorySystem newRepositorySystem(@NonNull final Environment environment) {
         // Use the pre-populated DefaultServiceLocator rather than explicitly registering components
         final DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
         locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
@@ -93,7 +93,7 @@ final class ResolverUtil {
         locator.setErrorHandler(new DefaultServiceLocator.ErrorHandler() {
             @Override
             public void serviceCreationFailed(
-                    @Nonnull final Class<?> type, @Nonnull final Class<?> impl, @Nonnull final Throwable exception) {
+                    @NonNull final Class<?> type, @NonNull final Class<?> impl, @NonNull final Throwable exception) {
                 environment
                         .logger()
                         .log(
@@ -111,11 +111,11 @@ final class ResolverUtil {
         return service;
     }
 
-    @Nonnull
+    @NonNull
     private static RepositorySystemSession newRepositorySystemSession(
-            @Nonnull final RepositorySystem system,
-            @Nonnull final Path cacheDir,
-            @Nonnull final Environment environment,
+            @NonNull final RepositorySystem system,
+            @NonNull final Path cacheDir,
+            @NonNull final Environment environment,
             final boolean failOnMissingPom,
             final boolean failOnInvalidPom) {
         final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
@@ -137,9 +137,9 @@ final class ResolverUtil {
         return session;
     }
 
-    @Nonnull
+    @NonNull
     static List<RemoteRepository> getRemoteRepositories(
-            @Nonnull final List<RepositoryModel> repositories, @Nonnull final Settings settings) {
+            @NonNull final List<RepositoryModel> repositories, @NonNull final Settings settings) {
         final var remoteRepositories = new ArrayList<RemoteRepository>();
 
         for (final RepositoryModel repository : repositories) {
@@ -160,8 +160,8 @@ final class ResolverUtil {
         return remoteRepositories;
     }
 
-    @Nonnull
-    static ArrayList<Exclusion> deriveGlobalExclusions(@Nonnull final ApplicationModel model) {
+    @NonNull
+    static ArrayList<Exclusion> deriveGlobalExclusions(@NonNull final ApplicationModel model) {
         final var exclusions = new ArrayList<Exclusion>();
         for (final GlobalExcludeModel exclude : model.getExcludes()) {
             exclusions.add(new Exclusion(exclude.getGroup(), exclude.getId(), "*", "*"));
@@ -169,8 +169,8 @@ final class ResolverUtil {
         return exclusions;
     }
 
-    @Nonnull
-    static ArrayList<Exclusion> deriveExclusions(@Nonnull final ArtifactModel artifactModel) {
+    @NonNull
+    static ArrayList<Exclusion> deriveExclusions(@NonNull final ArtifactModel artifactModel) {
         final var exclusions = new ArrayList<Exclusion>();
         for (final ExcludeModel exclude : artifactModel.getExcludes()) {
             final String id = exclude.getId();

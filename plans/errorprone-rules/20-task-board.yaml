@@ -103,3 +103,72 @@ tasks:
     commit:
       hash: not_required
       message: null
+  - id: EPR-06
+    title: Wire NullAway and JSpecify
+    status: completed
+    priority: high
+    depends_on:
+      - EPR-05
+    acceptance:
+      - Java wrapper rules add `//third_party/java:jspecify` and `//third_party/java:nullaway_plugin` to source-bearing Java targets.
+      - `third_party/java/dependencies.yml` declares NullAway and JSpecify.
+      - Generated dependency outputs are refreshed.
+    files:
+      - third_party/java/rules.bzl
+      - third_party/java/dependencies.yml
+      - third_party/java/BUILD.bazel
+      - MODULE.bazel
+    evidence:
+      - command: tools/update_java_deps.sh
+        result: Regenerated MODULE.bazel and third_party/java/BUILD.bazel successfully after adding NullAway and JSpecify
+      - command: bazel run //:buildifier
+        result: Build completed successfully; buildifier ran on updated BUILD/MODULE/rules files
+      - command: rg -n "nullaway_plugin|name = \"nullaway\"|name = \"jspecify\"|_JSPECIFY|_NULLAWAY_PLUGIN|NullAway|RequireExplicitNullMarking" third_party/java/rules.bzl third_party/java/BUILD.bazel MODULE.bazel
+        result: Confirmed wrapper constants, NullAway javacopts, nullaway_plugin, and generated nullaway/jspecify targets are present
+    commit:
+      hash: not_required
+      message: null
+  - id: EPR-07
+    title: Migrate nullness annotations
+    status: completed
+    priority: high
+    depends_on:
+      - EPR-06
+    acceptance:
+      - Source imports use `org.jspecify.annotations`.
+      - Source packages are explicitly `@NullMarked`.
+      - Source and test BUILD files no longer depend on `//third_party/java:javax_annotation`.
+    files:
+      - src/main/java/**/*.java
+      - src/test/java/**/*.java
+      - src/main/java/**/BUILD.bazel
+      - src/test/java/**/BUILD.bazel
+    evidence:
+      - command: tools/java_format.sh write
+        result: Palantir formatter completed successfully after JSpecify annotation migration
+      - command: bazel build //... --keep_going
+        result: Build completed successfully, 114 targets, with NullAway plugin enabled
+      - command: rg -n "import javax\\.annotation|@Nonnull|//third_party/java:javax_annotation|name = \"javax_annotation\"|org\\.realityforge\\.javax\\.annotation:javax\\.annotation" src/main/java src/test/java third_party/java/dependencies.yml third_party/java/BUILD.bazel MODULE.bazel -g "*.java" -g "BUILD.bazel" -g "*.yml"
+        result: No old imports, annotations, Bazel deps, generated target, or manifest entry remain; only test fixture strings for arbitrary exclude parsing mention the old coordinate
+    commit:
+      hash: not_required
+      message: null
+  - id: EPR-08
+    title: Validate strict NullAway gate
+    status: completed
+    priority: high
+    depends_on:
+      - EPR-07
+    acceptance:
+      - `bazel build //...` passes with NullAway plugin enabled.
+      - `tools/check.sh` passes.
+      - `CHANGELOG.md` records the JSpecify/NullAway migration.
+    files:
+      - CHANGELOG.md
+      - tools/check.sh
+    evidence:
+      - command: tools/check.sh
+        result: Build completed successfully; //third_party/java:verify_config_sha256 PASSED; //src/test/java/org/realityforge/bazel/depgen:all_tests PASSED
+    commit:
+      hash: not_required
+      message: null

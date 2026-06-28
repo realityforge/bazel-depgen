@@ -1,27 +1,27 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.config.Nature;
 
 public final class ReplacementTargetModel {
-    @Nonnull
+    @NonNull
     private final Nature _nature;
 
-    @Nonnull
+    @NonNull
     private final String _target;
 
-    public ReplacementTargetModel(@Nonnull final Nature nature, @Nonnull final String target) {
+    public ReplacementTargetModel(@NonNull final Nature nature, @NonNull final String target) {
         _nature = Objects.requireNonNull(nature);
         _target = Objects.requireNonNull(target);
     }
 
-    @Nonnull
+    @NonNull
     public Nature getNature() {
         return _nature;
     }
 
-    @Nonnull
+    @NonNull
     public String getTarget() {
         return _target;
     }

@@ -1,8 +1,8 @@
 package org.realityforge.bazel.depgen.metadata;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 @FunctionalInterface
 public interface RecordBuildCallback {
-    void onWarning(@Nonnull String message);
+    void onWarning(@NonNull String message);
 }

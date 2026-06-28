@@ -12,9 +12,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.DepgenException;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
@@ -774,13 +774,13 @@ public final class DepgenMetadataTest extends AbstractTest {
         assertEquals(loadPropertiesContent(file), "");
     }
 
-    @Nonnull
-    private DepgenMetadata loadMetadata(@Nonnull final Path dir) throws Exception {
+    @NonNull
+    private DepgenMetadata loadMetadata(@NonNull final Path dir) throws Exception {
         return loadMetadata(dir, "");
     }
 
-    @Nonnull
-    private DepgenMetadata loadMetadata(@Nonnull final Path dir, @Nonnull final String dependenciesContent)
+    @NonNull
+    private DepgenMetadata loadMetadata(@NonNull final Path dir, @NonNull final String dependenciesContent)
             throws Exception {
         writeConfigFile(FileUtil.getCurrentDirectory(), dependenciesContent);
         return DepgenMetadata.fromDirectory(loadApplicationModel(), dir);

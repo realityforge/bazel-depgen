@@ -14,10 +14,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.AuthenticationContext;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
 import org.realityforge.bazel.depgen.DepgenValidationException;
@@ -30,24 +30,24 @@ import org.realityforge.bazel.depgen.model.ReplacementModel;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 
 public final class ApplicationRecord {
-    @Nonnull
+    @NonNull
     private final ApplicationModel _source;
 
-    @Nonnull
+    @NonNull
     private final DependencyNode _node;
 
-    @Nonnull
+    @NonNull
     private final Map<String, ArtifactRecord> _artifacts = new HashMap<>();
 
-    @Nonnull
+    @NonNull
     private final Map<String, AuthenticationContext> _authenticationContexts;
 
-    @Nonnull
+    @NonNull
     public static ApplicationRecord build(
-            @Nonnull final ApplicationModel model,
-            @Nonnull final DependencyNode node,
-            @Nonnull final List<AuthenticationContext> authenticationContexts,
-            @Nonnull final RecordBuildCallback callback) {
+            @NonNull final ApplicationModel model,
+            @NonNull final DependencyNode node,
+            @NonNull final List<AuthenticationContext> authenticationContexts,
+            @NonNull final RecordBuildCallback callback) {
         final var record = new ApplicationRecord(model, node, authenticationContexts);
         node.accept(new DependencyCollector(record, callback));
         propagateNature(record, Nature.J2cl, Nature.J2cl);
@@ -95,9 +95,9 @@ public final class ApplicationRecord {
     }
 
     private static void propagateNature(
-            @Nonnull final ApplicationRecord record,
-            @Nonnull final Nature rootNature,
-            @Nonnull final Nature targetNature) {
+            @NonNull final ApplicationRecord record,
+            @NonNull final Nature rootNature,
+            @NonNull final Nature targetNature) {
         for (final ArtifactRecord artifact : record.getArtifacts()) {
             if (null != artifact.getArtifactModel()
                     && artifact.getNatures().contains(rootNature)
@@ -108,10 +108,10 @@ public final class ApplicationRecord {
     }
 
     private static void checkTransitiveNature(
-            @Nonnull final ArtifactRecord root,
-            @Nonnull final ArtifactRecord artifact,
-            @Nonnull final Nature rootNature,
-            @Nonnull final Nature targetNature) {
+            @NonNull final ArtifactRecord root,
+            @NonNull final ArtifactRecord artifact,
+            @NonNull final Nature rootNature,
+            @NonNull final Nature targetNature) {
         for (final ArtifactRecord dependency : artifact.getDeps()) {
             if (null == dependency.getArtifactModel()) {
                 if (dependency.addNature(targetNature)) {
@@ -169,7 +169,7 @@ public final class ApplicationRecord {
     }
 
     private void ensureUniqueEmittedTargetName(
-            @Nonnull final Map<String, String> names, @Nonnull final String name, @Nonnull final String description) {
+            @NonNull final Map<String, String> names, @NonNull final String name, @NonNull final String description) {
         final String existing = names.get(name);
         if (null != existing) {
             throw new DepgenValidationException("Multiple emitted targets have the same name '" + name + "' which is "
@@ -182,7 +182,7 @@ public final class ApplicationRecord {
     }
 
     private void ensureUniqueEmittedRepositoryName(
-            @Nonnull final Map<String, String> names, @Nonnull final String name, @Nonnull final String description) {
+            @NonNull final Map<String, String> names, @NonNull final String name, @NonNull final String description) {
         final String existing = names.get(name);
         if (null != existing) {
             throw new DepgenValidationException("Multiple emitted repositories have the same name '" + name
@@ -195,9 +195,9 @@ public final class ApplicationRecord {
     }
 
     private ApplicationRecord(
-            @Nonnull final ApplicationModel source,
-            @Nonnull final DependencyNode node,
-            @Nonnull final List<AuthenticationContext> authenticationContexts) {
+            @NonNull final ApplicationModel source,
+            @NonNull final DependencyNode node,
+            @NonNull final List<AuthenticationContext> authenticationContexts) {
         _source = Objects.requireNonNull(source);
         _node = Objects.requireNonNull(node);
         final var contexts = new HashMap<String, AuthenticationContext>();
@@ -205,22 +205,22 @@ public final class ApplicationRecord {
         _authenticationContexts = Collections.unmodifiableMap(contexts);
     }
 
-    @Nonnull
+    @NonNull
     public ApplicationModel getSource() {
         return _source;
     }
 
-    @Nonnull
+    @NonNull
     public DependencyNode getNode() {
         return _node;
     }
 
-    @Nonnull
+    @NonNull
     public Map<String, AuthenticationContext> getAuthenticationContexts() {
         return _authenticationContexts;
     }
 
-    @Nonnull
+    @NonNull
     public List<ArtifactRecord> getArtifacts() {
         return _artifacts.values().stream()
                 .sorted(Comparator.comparing(ArtifactRecord::getKey))
@@ -232,18 +232,18 @@ public final class ApplicationRecord {
      *
      * @return the relative path from the  extension file to the source dependency file.
      */
-    @Nonnull
+    @NonNull
     Path getPathFromExtensionToConfig() {
         final Path configLocation = _source.getConfigLocation();
         final Path extensionFile = _source.getOptions().getExtensionFile();
-        return extensionFile
-                .getParent()
+        final Path extensionDirectory = Objects.requireNonNull(extensionFile.getParent());
+        return extensionDirectory
                 .toAbsolutePath()
                 .normalize()
                 .relativize(configLocation.toAbsolutePath().normalize());
     }
 
-    public void writeBazelExtension(@Nonnull final StarlarkOutput output) throws IOException {
+    public void writeBazelExtension(@NonNull final StarlarkOutput output) throws IOException {
         final OptionsModel options = getSource().getOptions();
         final boolean includeWorkspaceMacro = options.isRepositoryRuleGenerationInExtensionFile();
         final boolean includeTargetMacro = options.isTargetGenerationInExtensionFile();
@@ -272,7 +272,7 @@ public final class ApplicationRecord {
         }
     }
 
-    @Nonnull
+    @NonNull
     private Set<String> getJavaRules() {
         final var javaRules = new HashSet<String>();
         if (getSource().getOptions().verifyConfigSha256()) {
@@ -292,11 +292,11 @@ public final class ApplicationRecord {
         return javaRules;
     }
 
-    public void writeDefaultExtensionBuild(@Nonnull final StarlarkOutput output) throws IOException {
+    public void writeDefaultExtensionBuild(@NonNull final StarlarkOutput output) throws IOException {
         writeDefaultExtensionBuild(output, true);
     }
 
-    public void writeDefaultExtensionBuild(@Nonnull final StarlarkOutput output, final boolean includeTargetMacro)
+    public void writeDefaultExtensionBuild(@NonNull final StarlarkOutput output, final boolean includeTargetMacro)
             throws IOException {
         emitAutoGeneratedComment(output, false);
         output.write("# Contents can be edited and will not be overridden.");
@@ -324,14 +324,14 @@ public final class ApplicationRecord {
         }
     }
 
-    private void emitAutoGeneratedComment(@Nonnull final StarlarkOutput output, final boolean doNotEditWarning)
+    private void emitAutoGeneratedComment(@NonNull final StarlarkOutput output, final boolean doNotEditWarning)
             throws IOException {
         output.write("# " + (doNotEditWarning ? "DO NOT EDIT: " : "") + "File is auto-generated from "
                 + getPathFromExtensionToConfig() + " by https://github.com/realityforge/bazel-depgen version "
                 + DepGenConfig.getVersion());
     }
 
-    public void writeDefaultConfigBuild(@Nonnull final StarlarkOutput output) throws IOException {
+    public void writeDefaultConfigBuild(@NonNull final StarlarkOutput output) throws IOException {
         emitAutoGeneratedComment(output, false);
         output.write("# Contents can be edited and will not be overridden.");
 
@@ -341,14 +341,14 @@ public final class ApplicationRecord {
         output.write("exports_files([\"" + getSource().getConfigLocation().getFileName() + "\"])");
     }
 
-    public void writeBazelModuleSection(@Nonnull final StarlarkOutput output) throws IOException {
+    public void writeBazelModuleSection(@NonNull final StarlarkOutput output) throws IOException {
         emitGeneratedSectionComment(output);
         output.newLine();
         writeRepositoryRuleUseRepoBindingsIfRequired(output);
         writeDirectRepositoryRules(output);
     }
 
-    public void writeBazelBuildSection(@Nonnull final StarlarkOutput output) throws IOException {
+    public void writeBazelBuildSection(@NonNull final StarlarkOutput output) throws IOException {
         emitGeneratedSectionComment(output);
         output.newLine();
         writeTargetLoadsIfRequired(output, true);
@@ -364,9 +364,9 @@ public final class ApplicationRecord {
     }
 
     void artifact(
-            @Nonnull final DependencyNode node,
-            @Nonnull final String sha256,
-            @Nonnull final List<String> urls,
+            @NonNull final DependencyNode node,
+            @NonNull final String sha256,
+            @NonNull final List<String> urls,
             @Nullable final String sourceSha256,
             @Nullable final List<String> sourceUrls,
             @Nullable final String externalAnnotationSha256,
@@ -402,22 +402,22 @@ public final class ApplicationRecord {
         }
     }
 
-    @Nonnull
-    ArtifactRecord getArtifact(@Nonnull final String groupId, @Nonnull final String artifactId) {
+    @NonNull
+    ArtifactRecord getArtifact(@NonNull final String groupId, @NonNull final String artifactId) {
         return Objects.requireNonNull(findArtifact(groupId, artifactId));
     }
 
     @Nullable
-    ArtifactRecord findArtifact(@Nonnull final String groupId, @Nonnull final String artifactId) {
+    ArtifactRecord findArtifact(@NonNull final String groupId, @NonNull final String artifactId) {
         return findArtifact(m -> m.shouldMatch(groupId, artifactId));
     }
 
     @Nullable
-    private ArtifactRecord findArtifact(@Nonnull final Predicate<ArtifactRecord> predicate) {
+    private ArtifactRecord findArtifact(@NonNull final Predicate<ArtifactRecord> predicate) {
         return _artifacts.values().stream().filter(predicate).findAny().orElse(null);
     }
 
-    void writeUpdateGeneratedOutputsTarget(@Nonnull final StarlarkOutput output) throws IOException {
+    void writeUpdateGeneratedOutputsTarget(@NonNull final StarlarkOutput output) throws IOException {
         final String configLabel = getConfigFileLabel();
         final String depgenArtifactLabel = getDepgenArtifactLabel();
         final var arguments = new LinkedHashMap<String, Object>();
@@ -435,11 +435,11 @@ public final class ApplicationRecord {
         output.writeCall("_java_binary", arguments);
     }
 
-    void writeRegenerateExtensionTarget(@Nonnull final StarlarkOutput output) throws IOException {
+    void writeRegenerateExtensionTarget(@NonNull final StarlarkOutput output) throws IOException {
         writeUpdateGeneratedOutputsTarget(output);
     }
 
-    void writeVerifyTarget(@Nonnull final StarlarkOutput output) throws IOException {
+    void writeVerifyTarget(@NonNull final StarlarkOutput output) throws IOException {
         final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", "\"" + _source.verifyTargetName() + "\"");
         arguments.put("size", "\"small\"");
@@ -464,18 +464,18 @@ public final class ApplicationRecord {
         output.writeCall("_java_test", arguments);
     }
 
-    @Nonnull
+    @NonNull
     public String getUpdateGeneratedOutputsTargetName() {
         return _source.getOptions().getNamePrefix() + "update_depgen_generated_outputs";
     }
 
-    @Nonnull
+    @NonNull
     public String getConfigFileLabel() {
         return "//" + getRelativeConfigPath() + ":"
                 + _source.getConfigLocation().getFileName();
     }
 
-    @Nonnull
+    @NonNull
     private String getDepgenArtifactLabel() {
         final ArtifactRecord artifact = findArtifact(DepGenConfig.getGroupId(), DepGenConfig.getArtifactId());
         if (null != artifact) {
@@ -487,25 +487,26 @@ public final class ApplicationRecord {
         }
     }
 
-    @Nonnull
+    @NonNull
     private Path getRelativeConfigDirFromExtension() {
         final Path configLocation = _source.getConfigLocation();
         final Path extensionFile = _source.getOptions().getExtensionFile();
-        return extensionFile
-                .getParent()
+        final Path extensionDirectory = Objects.requireNonNull(extensionFile.getParent());
+        final Path configDirectory = Objects.requireNonNull(configLocation.getParent());
+        return extensionDirectory
                 .toAbsolutePath()
                 .normalize()
-                .relativize(configLocation.getParent().toAbsolutePath().normalize());
+                .relativize(configDirectory.toAbsolutePath().normalize());
     }
 
-    @Nonnull
+    @NonNull
     private Path getRelativeConfigPath() {
         return _source.getOptions()
                 .getWorkspaceDirectory()
-                .relativize(_source.getConfigLocation().getParent());
+                .relativize(Objects.requireNonNull(_source.getConfigLocation().getParent()));
     }
 
-    void writeTargetMacro(@Nonnull final StarlarkOutput output) throws IOException {
+    void writeTargetMacro(@NonNull final StarlarkOutput output) throws IOException {
         final OptionsModel options = getSource().getOptions();
         final boolean supportDependencyOmit = options.supportDependencyOmit();
         output.writeMacro(
@@ -539,7 +540,7 @@ public final class ApplicationRecord {
                 });
     }
 
-    void writeWorkspaceMacro(@Nonnull final StarlarkOutput output) throws IOException {
+    void writeWorkspaceMacro(@NonNull final StarlarkOutput output) throws IOException {
         final OptionsModel options = getSource().getOptions();
         final boolean supportDependencyOmit = options.supportDependencyOmit();
         output.writeMacro(
@@ -574,8 +575,8 @@ public final class ApplicationRecord {
     }
 
     private void writeArtifactHttpRules(
-            @Nonnull final ArtifactRecord artifact,
-            @Nonnull final StarlarkOutput output,
+            @NonNull final ArtifactRecord artifact,
+            @NonNull final StarlarkOutput output,
             final boolean useRepoRuleBindingStyle)
             throws IOException {
         boolean needsNewLine = false;
@@ -606,7 +607,7 @@ public final class ApplicationRecord {
         }
     }
 
-    void writeDependencyGraphIfRequired(@Nonnull final StarlarkOutput output) throws IOException {
+    void writeDependencyGraphIfRequired(@NonNull final StarlarkOutput output) throws IOException {
         final ApplicationModel source = getSource();
         if (source.getOptions().emitDependencyGraph()) {
             output.write("# Dependency Graph Generated from the input data");
@@ -622,7 +623,7 @@ public final class ApplicationRecord {
     }
 
     private void writeExtensionDescription(
-            @Nonnull final StarlarkOutput output, final boolean includeWorkspaceMacro, final boolean includeTargetMacro)
+            @NonNull final StarlarkOutput output, final boolean includeWorkspaceMacro, final boolean includeTargetMacro)
             throws IOException {
         output.writeMultilineComment(o -> {
             if (includeWorkspaceMacro && includeTargetMacro) {
@@ -644,7 +645,7 @@ public final class ApplicationRecord {
         });
     }
 
-    private void writeRepositoryRuleLoadsIfRequired(@Nonnull final StarlarkOutput output, final boolean includeLoads)
+    private void writeRepositoryRuleLoadsIfRequired(@NonNull final StarlarkOutput output, final boolean includeLoads)
             throws IOException {
         if (includeLoads && getArtifacts().stream().anyMatch(ArtifactRecord::emitsRepositoryRules)) {
             output.write("load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", " + "_http_file = \"http_file\""
@@ -653,7 +654,7 @@ public final class ApplicationRecord {
         }
     }
 
-    private void writeRepositoryRuleUseRepoBindingsIfRequired(@Nonnull final StarlarkOutput output) throws IOException {
+    private void writeRepositoryRuleUseRepoBindingsIfRequired(@NonNull final StarlarkOutput output) throws IOException {
         if (getArtifacts().stream().anyMatch(ArtifactRecord::emitsRepositoryRules)) {
             output.write("_http_file = use_repo_rule(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")");
             if (requiresHttpArchive()) {
@@ -664,7 +665,7 @@ public final class ApplicationRecord {
         }
     }
 
-    private void writeTargetLoadsIfRequired(@Nonnull final StarlarkOutput output, final boolean includeLoads)
+    private void writeTargetLoadsIfRequired(@NonNull final StarlarkOutput output, final boolean includeLoads)
             throws IOException {
         if (includeLoads) {
             boolean emittedLoad = false;
@@ -691,13 +692,13 @@ public final class ApplicationRecord {
         return getArtifacts().stream().anyMatch(a -> null != a.getJsAssets() && a.shouldEmitNatureTarget(Nature.J2cl));
     }
 
-    private void emitGeneratedSectionComment(@Nonnull final StarlarkOutput output) throws IOException {
+    private void emitGeneratedSectionComment(@NonNull final StarlarkOutput output) throws IOException {
         output.write("# DO NOT EDIT: Content is auto-generated from " + getConfigFileLabel()
                 + " by https://github.com/realityforge/bazel-depgen version "
                 + DepGenConfig.getVersion());
     }
 
-    private void writeDirectTargets(@Nonnull final StarlarkOutput output) throws IOException {
+    private void writeDirectTargets(@NonNull final StarlarkOutput output) throws IOException {
         if (getSource().getOptions().verifyConfigSha256()) {
             writeVerifyTarget(output);
             output.newLine();
@@ -712,7 +713,7 @@ public final class ApplicationRecord {
         }
     }
 
-    private void writeDirectRepositoryRules(@Nonnull final StarlarkOutput output) throws IOException {
+    private void writeDirectRepositoryRules(@NonNull final StarlarkOutput output) throws IOException {
         int count = 0;
         for (final ArtifactRecord artifact : getArtifacts()) {
             if (artifact.emitsRepositoryRules()) {

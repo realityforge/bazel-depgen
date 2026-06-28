@@ -366,8 +366,7 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final Map<String, AuthenticationContext> contexts = record.getAuthenticationContexts();
         assertEquals(contexts.size(), 1);
-        final AuthenticationContext context = contexts.get("my-repo");
-        assertNotNull(context);
+        final AuthenticationContext context = requireNonNull(contexts.get("my-repo"));
         assertEquals(context.get(AuthenticationContext.USERNAME), "root");
         assertEquals(context.get(AuthenticationContext.PASSWORD), "secret");
     }
@@ -402,8 +401,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertNonSystemArtifactList(record, "com.example:myapp,com.example:mylib,com.example:rtA,com.example:rtB");
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "myapp");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "myapp"));
             assertNotNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:myapp");
             assertEquals(artifactRecord.getName(Nature.Java), "com_example__myapp");
@@ -424,8 +422,7 @@ public class ApplicationRecordTest extends AbstractTest {
         }
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "mylib");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "mylib"));
             assertNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:mylib");
             assertEquals(artifactRecord.getName(Nature.Java), "com_example__mylib");
@@ -441,8 +438,7 @@ public class ApplicationRecordTest extends AbstractTest {
         }
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "rtA");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "rtA"));
             assertNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:rtA");
             assertEquals(artifactRecord.getName(Nature.Java), "com_example__rta");
@@ -457,8 +453,7 @@ public class ApplicationRecordTest extends AbstractTest {
         }
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "rtB");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "rtB"));
             assertNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:rtB");
             assertEquals(artifactRecord.getName(Nature.Java), "com_example__rtb");
@@ -492,8 +487,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertNonSystemArtifactList(record, "com.example:myapp,com.example:mylib");
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "myapp");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "myapp"));
             assertNotNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:myapp");
             assertEquals(artifactRecord.getName(Nature.Java), "com_example__myapp");
@@ -532,8 +526,7 @@ public class ApplicationRecordTest extends AbstractTest {
         }
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "mylib");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "mylib"));
             assertNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:mylib");
             assertEquals(artifactRecord.getName(Nature.Java), "com_example__mylib");
@@ -591,8 +584,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertNonSystemArtifactList(record, "com.example:myapp,com.example:mylib");
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "myapp");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "myapp"));
             assertNotNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:myapp");
             assertEquals(artifactRecord.getName(Nature.Java), "com_example__myapp");
@@ -631,8 +623,7 @@ public class ApplicationRecordTest extends AbstractTest {
         }
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "mylib");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "mylib"));
             assertNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:mylib");
             assertEquals(artifactRecord.getName(Nature.Java), "com_example__mylib");
@@ -1038,8 +1029,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertNonSystemArtifactList(record, "com.example:myapp,com.example:rtA");
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "myapp");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "myapp"));
             assertNotNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:myapp");
             assertEquals(artifactRecord.getName(Nature.Java), "com_example__myapp");
@@ -1052,8 +1042,7 @@ public class ApplicationRecordTest extends AbstractTest {
         }
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "rtA");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "rtA"));
             assertNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:rtA");
             assertEquals(artifactRecord.getName(Nature.Java), "com_example__rta");
@@ -1082,8 +1071,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertNonSystemArtifactList(record, "com.example:myapp,com.example:mylib");
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "myapp");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "myapp"));
             assertNotNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:myapp");
             assertEquals(artifactRecord.getDeps().size(), 1);
@@ -1092,8 +1080,7 @@ public class ApplicationRecordTest extends AbstractTest {
         }
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "mylib");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "mylib"));
             assertNotNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:mylib");
             assertEquals(artifactRecord.getDeps().size(), 0);
@@ -1121,8 +1108,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertNonSystemArtifactList(record, "com.example:myapp,com.example:mylib,com.example:rtA");
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "myapp");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "myapp"));
             assertNotNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:myapp");
             assertEquals(artifactRecord.getDeps().size(), 1);
@@ -1132,8 +1118,7 @@ public class ApplicationRecordTest extends AbstractTest {
         }
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "mylib");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "mylib"));
             assertNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:mylib");
             assertEquals(artifactRecord.getDeps().size(), 0);
@@ -1142,8 +1127,7 @@ public class ApplicationRecordTest extends AbstractTest {
         }
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "rtA");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "rtA"));
             assertNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:rtA");
             assertEquals(artifactRecord.getDeps().size(), 0);
@@ -1175,8 +1159,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertNonSystemArtifactList(record, "com.example:myapp,com.example:mylib");
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "myapp");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "myapp"));
             assertNotNull(artifactRecord.getArtifactModel());
             assertNull(artifactRecord.getReplacementModel());
             assertEquals(artifactRecord.getKey(), "com.example:myapp");
@@ -1189,8 +1172,7 @@ public class ApplicationRecordTest extends AbstractTest {
         }
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "mylib");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "mylib"));
             assertNull(artifactRecord.getArtifactModel());
             assertNotNull(artifactRecord.getReplacementModel());
             assertEquals(artifactRecord.getKey(), "com.example:mylib");
@@ -1255,8 +1237,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertNonSystemArtifactCount(record, 1);
         assertNonSystemArtifactList(record, "com.example:myapp");
 
-        final ArtifactRecord artifactRecord = record.findArtifact("com.example", "myapp");
-        assertNotNull(artifactRecord);
+        final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "myapp"));
         assertNotNull(artifactRecord.getArtifactModel());
         assertEquals(artifactRecord.getKey(), "com.example:myapp");
         assertEquals(artifactRecord.getDeps().size(), 0);
@@ -1283,8 +1264,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertNonSystemArtifactCount(record, 1);
         assertNonSystemArtifactList(record, "com.example:myapp");
 
-        final ArtifactRecord artifactRecord = record.findArtifact("com.example", "myapp");
-        assertNotNull(artifactRecord);
+        final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "myapp"));
         assertNotNull(artifactRecord.getArtifactModel());
         assertEquals(artifactRecord.getKey(), "com.example:myapp");
         assertEquals(artifactRecord.getDeps().size(), 0);
@@ -1308,8 +1288,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertNonSystemArtifactList(record, "com.example:myapp,com.example:mylib");
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "myapp");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "myapp"));
             assertNotNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:myapp");
             assertEquals(artifactRecord.getDeps().size(), 1);
@@ -1318,8 +1297,7 @@ public class ApplicationRecordTest extends AbstractTest {
         }
 
         {
-            final ArtifactRecord artifactRecord = record.findArtifact("com.example", "mylib");
-            assertNotNull(artifactRecord);
+            final ArtifactRecord artifactRecord = requireNonNull(record.findArtifact("com.example", "mylib"));
             assertNull(artifactRecord.getArtifactModel());
             assertEquals(artifactRecord.getKey(), "com.example:mylib");
             assertEquals(artifactRecord.getDeps().size(), 0);
@@ -1336,15 +1314,14 @@ public class ApplicationRecordTest extends AbstractTest {
 
         final ApplicationRecord record = loadApplicationRecord();
 
-        final ArtifactRecord artifact1 = record.findArtifact("com.example", "myapp");
-        assertNotNull(artifact1);
+        final ArtifactRecord artifact1 = requireNonNull(record.findArtifact("com.example", "myapp"));
         assertEquals(artifact1.getKey(), "com.example:myapp");
 
         assertNull(record.findArtifact("com.example", "other-no-exist"));
 
         // Also finds system artifacts
-        final ArtifactRecord artifact2 = record.findArtifact(DepGenConfig.getGroupId(), DepGenConfig.getArtifactId());
-        assertNotNull(artifact2);
+        final ArtifactRecord artifact2 =
+                requireNonNull(record.findArtifact(DepGenConfig.getGroupId(), DepGenConfig.getArtifactId()));
         assertEquals(artifact2.getKey(), DepGenConfig.getGroupId() + ":" + DepGenConfig.getArtifactId());
     }
 

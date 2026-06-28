@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
@@ -350,8 +350,7 @@ public class MainTest extends AbstractTest {
         environment.setConfigFile(file);
         final ApplicationConfig config = Main.loadConfigFile(environment);
         assertEquals(config.getConfigLocation(), file);
-        final List<ArtifactConfig> artifacts = config.getArtifacts();
-        assertNotNull(artifacts);
+        final List<ArtifactConfig> artifacts = requireNonNull(config.getArtifacts());
         assertEquals(artifacts.size(), 1);
     }
 
@@ -611,7 +610,7 @@ public class MainTest extends AbstractTest {
 
         // Writing cacheContent into cache that differs from actual content so we can tell if it has been updated
         final byte[] cacheContent = {1, 2, 3, 4, 0};
-        Files.createDirectories(targetFile.getParent());
+        Files.createDirectories(requireNonNull(targetFile.getParent()));
         Files.write(targetFile, cacheContent);
 
         final var handler = new TestHandler();
@@ -642,7 +641,7 @@ public class MainTest extends AbstractTest {
                 .resolve(sha256)
                 .resolve("file");
 
-        final File dir = targetFile.getParent().toFile();
+        final File dir = requireNonNull(targetFile.getParent()).toFile();
         assertTrue(dir.mkdirs());
         assertTrue(dir.setWritable(false));
 
@@ -939,13 +938,13 @@ public class MainTest extends AbstractTest {
         assertOutputContains(output, "");
     }
 
-    @Nonnull
-    private String runCommand(@Nonnull final String... args) throws Exception {
+    @NonNull
+    private String runCommand(@NonNull final String... args) throws Exception {
         return runCommand(ExitCodes.SUCCESS_EXIT_CODE, args);
     }
 
-    @Nonnull
-    private String runCommand(final int expectedExitCode, @Nonnull final String... args) throws Exception {
+    @NonNull
+    private String runCommand(final int expectedExitCode, @NonNull final String... args) throws Exception {
         final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         environment.logger().setLevel(Level.INFO);
@@ -954,8 +953,8 @@ public class MainTest extends AbstractTest {
         return handler.toString();
     }
 
-    @Nonnull
-    private String failToProcessOptions(@Nonnull final String... args) throws Exception {
+    @NonNull
+    private String failToProcessOptions(@NonNull final String... args) throws Exception {
         final var handler = new TestHandler();
         final Environment environment = newEnvironment(handler);
         assertFalse(Main.processOptions(environment, args));

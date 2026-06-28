@@ -9,9 +9,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.J2clConfig;
@@ -26,7 +27,7 @@ import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 
 final class AddCommand extends ConfigurableCommand {
-    @Nonnull
+    @NonNull
     static final String COMMAND = "add";
 
     private static final int NATURE_OPT = 1;
@@ -159,16 +160,16 @@ final class AddCommand extends ConfigurableCommand {
 
     private boolean _includeExternalAnnotations;
 
-    @Nonnull
+    @NonNull
     private final List<String> _repositories = new ArrayList<>();
 
-    @Nonnull
+    @NonNull
     private final List<String> _excludes = new ArrayList<>();
 
-    @Nonnull
+    @NonNull
     private final List<String> _visibility = new ArrayList<>();
 
-    @Nonnull
+    @NonNull
     private final List<Nature> _natures = new ArrayList<>();
 
     @Nullable
@@ -182,7 +183,7 @@ final class AddCommand extends ConfigurableCommand {
     @Nullable
     private J2clMode _j2clMode;
 
-    @Nonnull
+    @NonNull
     private final List<String> _j2clSuppress = new ArrayList<>();
 
     @Nullable
@@ -196,7 +197,7 @@ final class AddCommand extends ConfigurableCommand {
     }
 
     @Override
-    boolean processArguments(@Nonnull final Environment environment, @Nonnull final List<CLOption> arguments) {
+    boolean processArguments(@NonNull final Environment environment, @NonNull final List<CLOption> arguments) {
         for (final CLOption option : arguments) {
             switch (option.getId()) {
                 case CLOption.TEXT_ARGUMENT: {
@@ -314,7 +315,7 @@ final class AddCommand extends ConfigurableCommand {
         return true;
     }
 
-    private boolean setIncludeSource(@Nonnull final Environment environment, final boolean includeSource) {
+    private boolean setIncludeSource(@NonNull final Environment environment, final boolean includeSource) {
         if (null == _includeSource) {
             _includeSource = includeSource;
             return true;
@@ -328,10 +329,10 @@ final class AddCommand extends ConfigurableCommand {
 
     @Nullable
     private <T extends Enum<T>> T parseEnum(
-            @Nonnull final Environment environment,
-            @Nonnull final String option,
-            @Nonnull final String value,
-            @Nonnull final T[] values) {
+            @NonNull final Environment environment,
+            @NonNull final String option,
+            @NonNull final String value,
+            @NonNull final T[] values) {
         for (final T candidate : values) {
             if (candidate.name().equalsIgnoreCase(value)) {
                 return candidate;
@@ -343,7 +344,7 @@ final class AddCommand extends ConfigurableCommand {
 
     @Nullable
     private Boolean parseBoolean(
-            @Nonnull final Environment environment, @Nonnull final String option, @Nonnull final String value) {
+            @NonNull final Environment environment, @NonNull final String option, @NonNull final String value) {
         if ("true".equalsIgnoreCase(value)) {
             return Boolean.TRUE;
         } else if ("false".equalsIgnoreCase(value)) {
@@ -355,7 +356,7 @@ final class AddCommand extends ConfigurableCommand {
     }
 
     @Override
-    int run(@Nonnull final Context context) throws Exception {
+    int run(@NonNull final Context context) throws Exception {
         final Environment environment = context.environment();
         final Path configFile = environment.getConfigFile();
         final ApplicationModel model = context.loadModel();
@@ -379,11 +380,10 @@ final class AddCommand extends ConfigurableCommand {
         return ExitCodes.SUCCESS_EXIT_CODE;
     }
 
-    @Nonnull
+    @NonNull
     private ArtifactConfig createArtifactConfig() {
         final var config = new ArtifactConfig();
-        assert null != _coord;
-        config.setCoord(_coord);
+        config.setCoord(Objects.requireNonNull(_coord));
         if (null != _nameStrategy) {
             config.setNameStrategy(_nameStrategy);
         }
@@ -471,7 +471,7 @@ final class AddCommand extends ConfigurableCommand {
         return config;
     }
 
-    private void validateNatureSpecificOptions(@Nonnull final ApplicationModel model) {
+    private void validateNatureSpecificOptions(@NonNull final ApplicationModel model) {
         final List<Nature> natures = _natures.isEmpty()
                 ? Collections.singletonList(model.getOptions().getDefaultNature())
                 : _natures;
@@ -496,19 +496,19 @@ final class AddCommand extends ConfigurableCommand {
         }
     }
 
-    private boolean includeSource(@Nonnull final ApplicationModel model) {
+    private boolean includeSource(@NonNull final ApplicationModel model) {
         return null == _includeSource ? model.getOptions().includeSource() : _includeSource;
     }
 
-    private void validateNotDuplicate(@Nonnull final ApplicationModel model, @Nonnull final ArtifactModel artifact) {
+    private void validateNotDuplicate(@NonNull final ApplicationModel model, @NonNull final ArtifactModel artifact) {
         if (null != model.findApplicationArtifact(artifact.getGroup(), artifact.getId())) {
             throw new DepgenValidationException("Dependency '" + artifact.getGroup() + ":" + artifact.getId()
                     + "' already exists in configuration.");
         }
     }
 
-    @Nonnull
-    private String renderArtifact(@Nonnull final ArtifactConfig config) {
+    @NonNull
+    private String renderArtifact(@NonNull final ArtifactConfig config) {
         final var output = new StringBuilder();
         output.append("  - coord: ").append(config.getCoord()).append('\n');
         appendScalar(output, "    ", "nameStrategy", config.getNameStrategy());
@@ -544,9 +544,9 @@ final class AddCommand extends ConfigurableCommand {
     }
 
     private void appendScalar(
-            @Nonnull final StringBuilder output,
-            @Nonnull final String indent,
-            @Nonnull final String name,
+            @NonNull final StringBuilder output,
+            @NonNull final String indent,
+            @NonNull final String name,
             @Nullable final Object value) {
         if (null != value) {
             output.append(indent).append(name).append(": ").append(value).append('\n');
@@ -554,9 +554,9 @@ final class AddCommand extends ConfigurableCommand {
     }
 
     private void appendList(
-            @Nonnull final StringBuilder output,
-            @Nonnull final String indent,
-            @Nonnull final String name,
+            @NonNull final StringBuilder output,
+            @NonNull final String indent,
+            @NonNull final String name,
             @Nullable final List<?> values,
             final boolean quote) {
         if (null != values && !values.isEmpty()) {
@@ -578,8 +578,8 @@ final class AddCommand extends ConfigurableCommand {
         }
     }
 
-    @Nonnull
-    private String insertArtifact(@Nonnull final String content, @Nonnull final String artifact) {
+    @NonNull
+    private String insertArtifact(@NonNull final String content, @NonNull final String artifact) {
         final String normalized = content.endsWith("\n") ? content : content + "\n";
         final String[] lines = normalized.split("\n", -1);
         final int lineCount = lines.length - 1;
@@ -617,7 +617,7 @@ final class AddCommand extends ConfigurableCommand {
         }
     }
 
-    private void validateArtifactsLineShape(@Nonnull final String line) {
+    private void validateArtifactsLineShape(@NonNull final String line) {
         String remainder = line.substring("artifacts:".length()).trim();
         final int commentIndex = remainder.indexOf('#');
         if (-1 != commentIndex) {
@@ -628,7 +628,7 @@ final class AddCommand extends ConfigurableCommand {
         }
     }
 
-    private boolean isTopLevelKey(@Nonnull final String line) {
+    private boolean isTopLevelKey(@NonNull final String line) {
         return !line.isEmpty()
                 && !Character.isWhitespace(line.charAt(0))
                 && '#' != line.charAt(0)
@@ -636,7 +636,7 @@ final class AddCommand extends ConfigurableCommand {
                 && line.indexOf(':') > 0;
     }
 
-    private void writeValidatedConfig(@Nonnull final Path configFile, @Nonnull final String candidateContent)
+    private void writeValidatedConfig(@NonNull final Path configFile, @NonNull final String candidateContent)
             throws Exception {
         Path tempFile = null;
         try {

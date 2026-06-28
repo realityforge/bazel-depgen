@@ -13,11 +13,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.DepgenException;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.RepositoryModel;
@@ -32,31 +32,31 @@ import org.realityforge.bazel.depgen.util.OrderedProperties;
  * registered in <code>dependency.yaml</code> are checked etc.</p>
  */
 public final class DepgenMetadata {
-    @Nonnull
+    @NonNull
     public static final String FILENAME = "_depgen.properties";
 
     static final String SENTINEL = "-";
 
-    @Nonnull
+    @NonNull
     private final ApplicationModel _model;
 
-    @Nonnull
+    @NonNull
     private final Path _file;
 
     @Nullable
     private OrderedProperties _properties;
 
-    @Nonnull
-    public static DepgenMetadata fromDirectory(@Nonnull final ApplicationModel model, @Nonnull final Path dir) {
+    @NonNull
+    public static DepgenMetadata fromDirectory(@NonNull final ApplicationModel model, @NonNull final Path dir) {
         return new DepgenMetadata(model, dir.resolve(FILENAME));
     }
 
-    private DepgenMetadata(@Nonnull final ApplicationModel model, @Nonnull final Path file) {
+    private DepgenMetadata(@NonNull final ApplicationModel model, @NonNull final Path file) {
         _model = Objects.requireNonNull(model);
         _file = Objects.requireNonNull(file);
     }
 
-    public void updateProperty(@Nonnull final String key, @Nonnull final String value) {
+    public void updateProperty(@NonNull final String key, @NonNull final String value) {
         getCachedProperties().setProperty(key, value);
         saveCachedProperties();
     }
@@ -68,8 +68,8 @@ public final class DepgenMetadata {
      * @param file       the artifact file.
      * @return the sha256 of the specified artifact.
      */
-    @Nonnull
-    public String getSha256(@Nonnull final String classifier, @Nonnull final File file) {
+    @NonNull
+    public String getSha256(@NonNull final String classifier, @NonNull final File file) {
         return getOrCompute(classifierAsKey(classifier) + ".sha256", () -> RecordUtil.sha256(file));
     }
 
@@ -82,17 +82,16 @@ public final class DepgenMetadata {
      * @param callback               the callback that used to notify invoker or errors/warnings.
      * @return the urls where the artifact is present.
      */
-    @Nonnull
+    @NonNull
     public List<String> getUrls(
-            @Nonnull final Artifact artifact,
-            @Nonnull final List<RemoteRepository> repositories,
-            @Nonnull final Map<String, AuthenticationContext> authenticationContexts,
-            @Nonnull final RecordBuildCallback callback) {
+            @NonNull final Artifact artifact,
+            @NonNull final List<RemoteRepository> repositories,
+            @NonNull final Map<String, AuthenticationContext> authenticationContexts,
+            @NonNull final RecordBuildCallback callback) {
         final var urls = new ArrayList<String>();
         for (final RemoteRepository remoteRepository : repositories) {
             final String name = remoteRepository.getId();
-            final RepositoryModel repository = _model.findRepository(name);
-            assert null != repository;
+            final RepositoryModel repository = Objects.requireNonNull(_model.findRepository(name));
             final String key = classifierAsKey(artifact.getClassifier()) + "." + name + ".url";
             final Properties properties = getCachedProperties();
             final String existing = properties.getProperty(key);
@@ -128,22 +127,22 @@ public final class DepgenMetadata {
     }
 
     @Nullable
-    public List<String> getProcessors(@Nonnull final File file) {
+    public List<String> getProcessors(@NonNull final File file) {
         final String processors = getOrCompute("processors", () -> RecordUtil.readAnnotationProcessors(file));
         return SENTINEL.equals(processors) ? null : Collections.unmodifiableList(Arrays.asList(processors.split(",")));
     }
 
     @Nullable
-    public List<String> getJsAssets(@Nonnull final File file) {
+    public List<String> getJsAssets(@NonNull final File file) {
         final String assets = getOrCompute("js_assets", () -> RecordUtil.readJsAssets(file));
         return SENTINEL.equals(assets) ? null : Collections.unmodifiableList(Arrays.asList(assets.split(",")));
     }
 
-    @Nonnull
+    @NonNull
     private String lookupArtifact(
-            @Nonnull final Artifact artifact,
-            @Nonnull final RemoteRepository remoteRepository,
-            @Nonnull final Map<String, AuthenticationContext> authenticationContexts) {
+            @NonNull final Artifact artifact,
+            @NonNull final RemoteRepository remoteRepository,
+            @NonNull final Map<String, AuthenticationContext> authenticationContexts) {
         final String url = RecordUtil.lookupArtifactInRepository(artifact, remoteRepository, authenticationContexts);
         return null == url ? SENTINEL : url;
     }
@@ -155,8 +154,8 @@ public final class DepgenMetadata {
      * @param action the action to calculate value.
      * @return the value.
      */
-    @Nonnull
-    private String getOrCompute(@Nonnull final String key, @Nonnull final Supplier<String> action) {
+    @NonNull
+    private String getOrCompute(@NonNull final String key, @NonNull final Supplier<String> action) {
         String existingValue = getCachedProperties().getProperty(key);
         if (null != existingValue && shouldResetCachedProperties()) {
             getCachedProperties().remove(key);
@@ -172,23 +171,23 @@ public final class DepgenMetadata {
         }
     }
 
-    @Nonnull
-    private String classifierAsKey(@Nonnull final String classifier) {
+    @NonNull
+    private String classifierAsKey(@NonNull final String classifier) {
         return classifier.isEmpty() ? "<default>" : classifier;
     }
 
     private void saveCachedProperties() {
-        assert null != _properties;
+        final OrderedProperties properties = Objects.requireNonNull(_properties);
         try {
             try (final Writer writer = Files.newBufferedWriter(_file)) {
-                _properties.store(writer, null);
+                properties.store(writer, null);
             }
         } catch (final IOException ignored) {
             // Ignored. Metadata cache writes are best-effort.
         }
     }
 
-    @Nonnull
+    @NonNull
     private Properties getCachedProperties() {
         if (null == _properties) {
             final var properties = new OrderedProperties();

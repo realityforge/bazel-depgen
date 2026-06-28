@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.HashSet;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
 import org.testng.annotations.Test;
@@ -23,7 +23,7 @@ public class InitCommandTest extends AbstractTest {
         final var handler = new TestHandler();
         final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
-        final Path configDirectory = environment.getConfigFile().getParent();
+        final Path configDirectory = requireNonNull(environment.getConfigFile().getParent());
         deployDepGenArtifactToCacheDir(environment.getCacheDir());
 
         final int exitCode = command.run(new CommandContextImpl(environment));
@@ -38,7 +38,8 @@ public class InitCommandTest extends AbstractTest {
         assertTrue(Files.exists(configDirectory.resolve(OptionsConfig.DEFAULT_EXTENSION_FILE)));
         assertEquals(
                 loadAsString(workspaceFile),
-                "workspace(name = \"" + workspaceFile.getParent().getFileName() + "\")\n" + "\n"
+                "workspace(name = \""
+                        + requireNonNull(workspaceFile.getParent()).getFileName() + "\")\n" + "\n"
                         + "load(\"//thirdparty:dependencies.bzl\", \"generate_workspace_rules\")\n"
                         + "\n"
                         + "generate_workspace_rules()\n");
@@ -68,7 +69,8 @@ public class InitCommandTest extends AbstractTest {
         assertTrue(Files.exists(configDirectory.resolve(OptionsConfig.DEFAULT_EXTENSION_FILE)));
         assertEquals(
                 loadAsString(workspaceFile),
-                "workspace(name = \"" + workspaceFile.getParent().getFileName() + "\")\n" + "\n"
+                "workspace(name = \""
+                        + requireNonNull(workspaceFile.getParent()).getFileName() + "\")\n" + "\n"
                         + "load(\"//subdir/thirdparty:dependencies.bzl\", \"generate_workspace_rules\")\n"
                         + "\n"
                         + "generate_workspace_rules()\n");
@@ -90,7 +92,7 @@ public class InitCommandTest extends AbstractTest {
         final var handler = new TestHandler();
         final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
-        final Path configDirectory = environment.getConfigFile().getParent();
+        final Path configDirectory = requireNonNull(environment.getConfigFile().getParent());
         deployDepGenArtifactToCacheDir(environment.getCacheDir());
 
         assertTrue(command.processOptions(environment, "--no-generate"));
@@ -106,7 +108,8 @@ public class InitCommandTest extends AbstractTest {
         assertFalse(Files.exists(configDirectory.resolve(OptionsConfig.DEFAULT_EXTENSION_FILE)));
         assertEquals(
                 loadAsString(workspaceFile),
-                "workspace(name = \"" + workspaceFile.getParent().getFileName() + "\")\n" + "\n"
+                "workspace(name = \""
+                        + requireNonNull(workspaceFile.getParent()).getFileName() + "\")\n" + "\n"
                         + "load(\"//thirdparty:dependencies.bzl\", \"generate_workspace_rules\")\n"
                         + "\n"
                         + "generate_workspace_rules()\n");
@@ -117,7 +120,7 @@ public class InitCommandTest extends AbstractTest {
         final var handler = new TestHandler();
         final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
-        final Path configDirectory = environment.getConfigFile().getParent();
+        final Path configDirectory = requireNonNull(environment.getConfigFile().getParent());
         deployDepGenArtifactToCacheDir(environment.getCacheDir());
 
         assertTrue(command.processOptions(environment, "--no-generate", "--no-create-workspace"));
@@ -139,7 +142,7 @@ public class InitCommandTest extends AbstractTest {
         final var handler = new TestHandler();
         final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
-        final Path configDirectory = environment.getConfigFile().getParent();
+        final Path configDirectory = requireNonNull(environment.getConfigFile().getParent());
         final Path workspaceFile = environment.currentDirectory().resolve("WORKSPACE");
 
         Files.write(workspaceFile, "# This is a comment".getBytes(StandardCharsets.UTF_8));
@@ -163,7 +166,7 @@ public class InitCommandTest extends AbstractTest {
         final var handler = new TestHandler();
         final var command = new InitCommand();
         final Environment environment = newEnvironment(handler);
-        final Path configDirectory = environment.getConfigFile().getParent();
+        final Path configDirectory = requireNonNull(environment.getConfigFile().getParent());
         deployDepGenArtifactToCacheDir(environment.getCacheDir());
 
         Files.createDirectories(configDirectory);
@@ -185,7 +188,7 @@ public class InitCommandTest extends AbstractTest {
 
         FileUtil.write(environment.currentDirectory().resolve("MODULE.bazel"), "module(name = \"test\")\n");
         FileUtil.write(
-                environment.getConfigFile().getParent().resolve("BUILD.bazel"),
+                requireNonNull(environment.getConfigFile().getParent()).resolve("BUILD.bazel"),
                 "package(default_visibility = [\"//visibility:public\"])\n");
 
         assertTrue(command.processOptions(environment, "--no-generate"));
@@ -208,7 +211,8 @@ public class InitCommandTest extends AbstractTest {
                         + "\n"
                         + "# --- depgen-generated repository rules end ---\n");
         assertEquals(
-                loadAsString(environment.getConfigFile().getParent().resolve("BUILD.bazel")),
+                loadAsString(
+                        requireNonNull(environment.getConfigFile().getParent()).resolve("BUILD.bazel")),
                 "package(default_visibility = [\"//visibility:public\"])\n" + "\n"
                         + "# --- depgen-generated targets start ---\n"
                         + "\n"
@@ -229,7 +233,8 @@ public class InitCommandTest extends AbstractTest {
         assertOutputContains(
                 handler.toString(),
                 "Expected generated output destination file to exist. File: "
-                        + environment.getConfigFile().getParent().resolve("BUILD.bazel"));
+                        + requireNonNull(environment.getConfigFile().getParent())
+                                .resolve("BUILD.bazel"));
         assertFalse(Files.exists(environment.currentDirectory().resolve("WORKSPACE")));
         assertFalse(Files.exists(getExtensionFile(environment)));
     }
@@ -241,7 +246,7 @@ public class InitCommandTest extends AbstractTest {
         final Environment environment = newEnvironment(handler);
 
         final Path configFile = environment.getConfigFile();
-        Files.createDirectories(configFile.getParent());
+        Files.createDirectories(requireNonNull(configFile.getParent()));
         Files.write(configFile, new byte[] {'X'});
 
         final int exitCode = command.run(new CommandContextImpl(environment));
@@ -261,7 +266,7 @@ public class InitCommandTest extends AbstractTest {
         final Environment environment = newEnvironment(handler);
 
         final Path configFile = environment.getConfigFile();
-        final Path configDirectory = configFile.getParent();
+        final Path configDirectory = requireNonNull(configFile.getParent());
         Files.createDirectories(configDirectory);
         final var perms = new HashSet<PosixFilePermission>();
         perms.add(PosixFilePermission.OWNER_READ);
@@ -292,7 +297,7 @@ public class InitCommandTest extends AbstractTest {
         assertOutputContains(
                 output,
                 "Error: Failed to create directory to contain configuration file. Directory: "
-                        + configFile.getParent());
+                        + requireNonNull(configFile.getParent()));
 
         assertNoFilesExist(environment);
 
@@ -339,48 +344,48 @@ public class InitCommandTest extends AbstractTest {
         Files.setPosixFilePermissions(environment.currentDirectory(), perms2);
     }
 
-    private void assertAllFilesExist(@Nonnull final Environment environment) {
+    private void assertAllFilesExist(@NonNull final Environment environment) {
         assertConfigFileExist(environment);
         assertExtensionExist(environment);
         assertWorkspaceExist(environment);
     }
 
-    private void assertWorkspaceExist(@Nonnull final Environment environment) {
+    private void assertWorkspaceExist(@NonNull final Environment environment) {
         assertTrue(Files.exists(environment.currentDirectory().resolve("WORKSPACE")));
     }
 
-    private void assertExtensionExist(@Nonnull final Environment environment) {
+    private void assertExtensionExist(@NonNull final Environment environment) {
         assertTrue(Files.exists(getExtensionFile(environment)));
     }
 
-    private void assertConfigFileExist(@Nonnull final Environment environment) {
+    private void assertConfigFileExist(@NonNull final Environment environment) {
         assertTrue(Files.exists(environment.getConfigFile()));
     }
 
-    private void assertNoFilesExist(@Nonnull final Environment environment) {
+    private void assertNoFilesExist(@NonNull final Environment environment) {
         assertConfigFileNoExist(environment);
         assertExtensionNoExist(environment);
         assertWorkspaceNoExist(environment);
     }
 
-    private void assertWorkspaceNoExist(@Nonnull final Environment environment) {
+    private void assertWorkspaceNoExist(@NonNull final Environment environment) {
         assertFalse(Files.exists(environment.currentDirectory().resolve("WORKSPACE")));
     }
 
-    private void assertExtensionNoExist(@Nonnull final Environment environment) {
+    private void assertExtensionNoExist(@NonNull final Environment environment) {
         assertFalse(Files.exists(getExtensionFile(environment)));
     }
 
-    @Nonnull
-    private Path getExtensionFile(@Nonnull final Environment environment) {
-        return environment.getConfigFile().getParent().resolve(OptionsConfig.DEFAULT_EXTENSION_FILE);
+    @NonNull
+    private Path getExtensionFile(@NonNull final Environment environment) {
+        return requireNonNull(environment.getConfigFile().getParent()).resolve(OptionsConfig.DEFAULT_EXTENSION_FILE);
     }
 
-    private void assertConfigFileNoExist(@Nonnull final Environment environment) {
+    private void assertConfigFileNoExist(@NonNull final Environment environment) {
         assertFalse(Files.exists(environment.getConfigFile()));
     }
 
-    @Nonnull
+    @NonNull
     private String loadTemplate() throws IOException {
         final InputStream inputStream = getClass().getResourceAsStream("templates/dependencies.yml");
         assertNotNull(inputStream);

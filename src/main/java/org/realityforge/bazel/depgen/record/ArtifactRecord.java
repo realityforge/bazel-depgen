@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.DepgenValidationException;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.J2clConfig;
@@ -40,10 +40,10 @@ public final class ArtifactRecord {
      */
     private static final String PLUGIN_SUFFIX = "__plugin";
 
-    @Nonnull
+    @NonNull
     private final ApplicationRecord _application;
 
-    @Nonnull
+    @NonNull
     private final DependencyNode _node;
 
     @Nullable
@@ -92,8 +92,8 @@ public final class ArtifactRecord {
     private List<ArtifactRecord> _reverseRuntimeDepsCache;
 
     ArtifactRecord(
-            @Nonnull final ApplicationRecord application,
-            @Nonnull final DependencyNode node,
+            @NonNull final ApplicationRecord application,
+            @NonNull final DependencyNode node,
             @Nullable final String sha256,
             @Nullable final List<String> urls,
             @Nullable final String sourceSha256,
@@ -193,18 +193,18 @@ public final class ArtifactRecord {
         }
     }
 
-    @Nonnull
+    @NonNull
     public String getKey() {
         final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
         return artifact.getGroupId() + ":" + artifact.getArtifactId();
     }
 
-    @Nonnull
+    @NonNull
     String getSymbol() {
         return getTargetSymbol();
     }
 
-    @Nonnull
+    @NonNull
     private String getTargetSymbol() {
         final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
         final NameStrategy nameStrategy = getNameStrategy();
@@ -224,47 +224,47 @@ public final class ArtifactRecord {
         }
     }
 
-    @Nonnull
+    @NonNull
     private String getRepository() {
         return getRepositoryBaseName();
     }
 
-    @Nonnull
+    @NonNull
     private String getQualifiedBinaryLabel() {
         return "@" + getRepository() + "//file";
     }
 
-    @Nonnull
+    @NonNull
     private String getSourceRepository() {
         return getRepository() + "__sources";
     }
 
-    @Nonnull
+    @NonNull
     private String getJsSourceRepository() {
         return getRepository() + "__js_sources";
     }
 
-    @Nonnull
+    @NonNull
     private String getExternalAnnotationsRepository() {
         return getRepository() + "__annotations";
     }
 
-    @Nonnull
+    @NonNull
     private String getQualifiedSourcesLabel() {
         return "@" + getSourceRepository() + "//file";
     }
 
-    @Nonnull
+    @NonNull
     private String getQualifiedJsSourceRepository() {
         return "@" + getJsSourceRepository() + "//:srcs";
     }
 
-    @Nonnull
+    @NonNull
     String getBaseName() {
         return getRepositoryBaseName();
     }
 
-    @Nonnull
+    @NonNull
     String getRepositoryBaseName() {
         final String repositoryName =
                 null != _artifactModel ? _artifactModel.getSource().getRepositoryName() : null;
@@ -290,14 +290,14 @@ public final class ArtifactRecord {
         }
     }
 
-    @Nonnull
-    String getLabel(@Nonnull final Nature nature) {
+    @NonNull
+    String getLabel(@NonNull final Nature nature) {
         final String target = findReplacementTarget(nature);
         return null != target ? target : ":" + getName(nature);
     }
 
-    @Nonnull
-    String getName(@Nonnull final Nature nature) {
+    @NonNull
+    String getName(@NonNull final Nature nature) {
         String name = null;
         if (null != _artifactModel) {
             final ArtifactConfig source = _artifactModel.getSource();
@@ -315,21 +315,21 @@ public final class ArtifactRecord {
         return null != name ? name : getSymbol() + deriveSuffix(nature);
     }
 
-    @Nonnull
+    @NonNull
     NameStrategy getNameStrategy() {
         final NameStrategy nameStrategy =
                 null != _artifactModel ? _artifactModel.getSource().getNameStrategy() : null;
         return null == nameStrategy ? _application.getSource().getOptions().getNameStrategy() : nameStrategy;
     }
 
-    @Nonnull
+    @NonNull
     NameStrategy getRepositoryNameStrategy() {
         final NameStrategy nameStrategy =
                 null != _artifactModel ? _artifactModel.getSource().getRepositoryNameStrategy() : null;
         return null == nameStrategy ? _application.getSource().getOptions().getRepositoryNameStrategy() : nameStrategy;
     }
 
-    @Nonnull
+    @NonNull
     List<Nature> getNatures() {
         final var natures = new ArrayList<Nature>();
         if (null == _artifactModel) {
@@ -352,22 +352,23 @@ public final class ArtifactRecord {
     }
 
     @SuppressWarnings("SameParameterValue")
-    boolean addNature(@Nonnull final Nature nature) {
+    boolean addNature(@NonNull final Nature nature) {
         assert null == _artifactModel && null != _natures;
-        if (!_natures.contains(nature)) {
-            _natures.add(nature);
+        final List<Nature> natures = Objects.requireNonNull(_natures);
+        if (!natures.contains(nature)) {
+            natures.add(nature);
             return true;
         } else {
             return false;
         }
     }
 
-    boolean isNatureReplaced(@Nonnull final Nature nature) {
+    boolean isNatureReplaced(@NonNull final Nature nature) {
         return null != findReplacementTarget(nature);
     }
 
     @Nullable
-    String findReplacementTarget(@Nonnull final Nature nature) {
+    String findReplacementTarget(@NonNull final Nature nature) {
         return null == _replacementModel ? null : _replacementModel.findTarget(nature);
     }
 
@@ -390,23 +391,22 @@ public final class ArtifactRecord {
         }
     }
 
-    @Nonnull
+    @NonNull
     private String getNamePrefix() {
         return BazelUtil.cleanNamePart(_application.getSource().getOptions().getNamePrefix());
     }
 
-    @Nonnull
+    @NonNull
     String getMavenCoordinatesBazelTag() {
         final org.eclipse.aether.artifact.Artifact artifact = getArtifact();
         return artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion();
     }
 
-    @Nonnull
     public org.eclipse.aether.artifact.Artifact getArtifact() {
         return _node.getArtifact();
     }
 
-    @Nonnull
+    @NonNull
     LinkedHashMap<String, String> getEmittedRepositoryNames() {
         final var names = new LinkedHashMap<String, String>();
         final String artifactName = "artifact '" + getArtifact() + "'";
@@ -425,7 +425,7 @@ public final class ArtifactRecord {
         return names;
     }
 
-    @Nonnull
+    @NonNull
     LinkedHashMap<String, String> getEmittedPublicTargetNames() {
         final var names = new LinkedHashMap<String, String>();
         final String artifactName = "artifact '" + getArtifact() + "'";
@@ -437,7 +437,7 @@ public final class ArtifactRecord {
         return names;
     }
 
-    @Nonnull
+    @NonNull
     LinkedHashMap<String, String> getEmittedPrivateTargetNames() {
         final var names = new LinkedHashMap<String, String>();
         if (shouldEmitNatureTarget(Nature.Plugin)) {
@@ -457,7 +457,7 @@ public final class ArtifactRecord {
         return names;
     }
 
-    @Nonnull
+    @NonNull
     DependencyNode getNode() {
         return _node;
     }
@@ -576,7 +576,7 @@ public final class ArtifactRecord {
         return _jsAssets;
     }
 
-    @Nonnull
+    @NonNull
     List<ArtifactRecord> getDeps() {
         if (null == _depsCache) {
             _depsCache = collectArtifacts(_node.getChildren().stream()
@@ -593,12 +593,12 @@ public final class ArtifactRecord {
         return _depsCache;
     }
 
-    @Nonnull
-    private List<ArtifactRecord> getDeps(@Nonnull final Nature nature) {
+    @NonNull
+    private List<ArtifactRecord> getDeps(@NonNull final Nature nature) {
         return isNatureReplaced(nature) ? Collections.emptyList() : getDeps();
     }
 
-    @Nonnull
+    @NonNull
     List<ArtifactRecord> getReverseDeps() {
         if (null == _reverseDepsCache) {
             _reverseDepsCache = collectArtifacts(
@@ -607,7 +607,7 @@ public final class ArtifactRecord {
         return _reverseDepsCache;
     }
 
-    @Nonnull
+    @NonNull
     List<ArtifactRecord> getRuntimeDeps() {
         if (null == _runtimeDepsCache) {
             _runtimeDepsCache = collectArtifacts(_node.getChildren().stream()
@@ -624,12 +624,12 @@ public final class ArtifactRecord {
         return _runtimeDepsCache;
     }
 
-    @Nonnull
-    private List<ArtifactRecord> getRuntimeDeps(@Nonnull final Nature nature) {
+    @NonNull
+    private List<ArtifactRecord> getRuntimeDeps(@NonNull final Nature nature) {
         return isNatureReplaced(nature) ? Collections.emptyList() : getRuntimeDeps();
     }
 
-    @Nonnull
+    @NonNull
     List<ArtifactRecord> getReverseRuntimeDeps() {
         if (null == _reverseRuntimeDepsCache) {
             _reverseRuntimeDepsCache = collectArtifacts(_application.getArtifacts().stream()
@@ -651,7 +651,7 @@ public final class ArtifactRecord {
                 : _application.getSource().getOptions().includeSource();
     }
 
-    boolean shouldEmitNatureTarget(@Nonnull final Nature nature) {
+    boolean shouldEmitNatureTarget(@NonNull final Nature nature) {
         return getNatures().contains(nature) && !isNatureReplaced(nature);
     }
 
@@ -675,34 +675,34 @@ public final class ArtifactRecord {
         return shouldEmitNatureTarget(Nature.J2cl) && null != getJsAssets() && null != getSourceSha256();
     }
 
-    @Nonnull
-    private List<ArtifactRecord> collectArtifacts(@Nonnull final Stream<ArtifactRecord> stream) {
+    @NonNull
+    private List<ArtifactRecord> collectArtifacts(@NonNull final Stream<ArtifactRecord> stream) {
         return Collections.unmodifiableList(stream.distinct()
                 .sorted(Comparator.comparing(ArtifactRecord::getKey))
                 .collect(Collectors.toList()));
     }
 
-    private boolean shouldIncludeDependency(@Nonnull final String scope, @Nonnull final DependencyNode c) {
+    private boolean shouldIncludeDependency(@NonNull final String scope, @NonNull final DependencyNode c) {
         final boolean includeOptional = null != _artifactModel && _artifactModel.includeOptional();
         return (includeOptional || !c.getDependency().isOptional())
                 && scope.equals(c.getDependency().getScope());
     }
 
-    boolean shouldMatch(@Nonnull final String groupId, @Nonnull final String artifactId) {
+    boolean shouldMatch(@NonNull final String groupId, @NonNull final String artifactId) {
         final DependencyNode node = getNode();
         final org.eclipse.aether.artifact.Artifact artifact =
                 node.getDependency().getArtifact();
         return groupId.equals(artifact.getGroupId()) && artifactId.equals(artifact.getArtifactId());
     }
 
-    void emitJavaImport(@Nonnull final StarlarkOutput output, @Nonnull final String nameSuffix) throws IOException {
+    void emitJavaImport(@NonNull final StarlarkOutput output, @NonNull final String nameSuffix) throws IOException {
         emitJavaImport(output, nameSuffix, Nature.Java);
     }
 
     void emitJavaImport(
-            @Nonnull final StarlarkOutput output,
-            @Nonnull final String nameSuffix,
-            @Nonnull final Nature dependencyNature)
+            @NonNull final StarlarkOutput output,
+            @NonNull final String nameSuffix,
+            @NonNull final Nature dependencyNature)
             throws IOException {
         // nameSuffix is still used so that plugins base library can be satisfied
         final var arguments = new LinkedHashMap<String, Object>();
@@ -751,7 +751,7 @@ public final class ArtifactRecord {
         output.writeCall("_java_import", arguments);
     }
 
-    void writeJ2clLibrary(@Nonnull final StarlarkOutput output) throws IOException {
+    void writeJ2clLibrary(@NonNull final StarlarkOutput output) throws IOException {
         final J2clConfig j2clConfig =
                 null != _artifactModel ? _artifactModel.getSource().getJ2cl() : null;
         final J2clMode mode =
@@ -796,7 +796,7 @@ public final class ArtifactRecord {
         } else {
             assert J2clMode.Import == mode;
             arguments.put("jar", asString(getQualifiedBinaryLabel()));
-            final ArtifactModel artifactModel = getArtifactModel();
+            final ArtifactModel artifactModel = Objects.requireNonNull(getArtifactModel());
             final List<String> visibility = artifactModel.getVisibility();
             if (!visibility.isEmpty()) {
                 arguments.put(
@@ -806,7 +806,7 @@ public final class ArtifactRecord {
         }
     }
 
-    void emitJavaPlugin(@Nonnull final StarlarkOutput output, @Nullable final String processorClass)
+    void emitJavaPlugin(@NonNull final StarlarkOutput output, @Nullable final String processorClass)
             throws IOException {
         final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(pluginName(processorClass)));
@@ -821,7 +821,7 @@ public final class ArtifactRecord {
         output.writeCall("_java_plugin", arguments);
     }
 
-    @Nonnull
+    @NonNull
     String pluginName(@Nullable final String processorClass) {
         return getName(Nature.Java)
                 + (null == processorClass
@@ -830,7 +830,7 @@ public final class ArtifactRecord {
                 + PLUGIN_SUFFIX;
     }
 
-    void writePluginLibrary(@Nonnull final StarlarkOutput output) throws IOException {
+    void writePluginLibrary(@NonNull final StarlarkOutput output) throws IOException {
         emitJavaImport(output, PLUGIN_LIBRARY_SUFFIX, Nature.Plugin);
         final List<String> processors = getProcessors();
         if (null == processors) {
@@ -843,7 +843,7 @@ public final class ArtifactRecord {
         writeJavaPluginLibrary(output);
     }
 
-    void writeJavaPluginLibrary(@Nonnull final StarlarkOutput output) throws IOException {
+    void writeJavaPluginLibrary(@NonNull final StarlarkOutput output) throws IOException {
         final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getName(Nature.Plugin)));
         final var plugins = new ArrayList<String>();
@@ -869,7 +869,7 @@ public final class ArtifactRecord {
         output.writeCall("_java_library", arguments);
     }
 
-    void writeArtifactTargets(@Nonnull final StarlarkOutput output) throws IOException {
+    void writeArtifactTargets(@NonNull final StarlarkOutput output) throws IOException {
         int round = 0;
         for (final Nature nature : getNatures()) {
             if (!shouldEmitNatureTarget(nature)) {
@@ -890,73 +890,68 @@ public final class ArtifactRecord {
         }
     }
 
-    void writeArtifactHttpFileRule(@Nonnull final StarlarkOutput output) throws IOException {
+    void writeArtifactHttpFileRule(@NonNull final StarlarkOutput output) throws IOException {
         final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getRepository()));
-        final org.eclipse.aether.artifact.Artifact a = getNode().getArtifact();
-        assert null != a;
+        final org.eclipse.aether.artifact.Artifact a =
+                Objects.requireNonNull(getNode().getArtifact());
         arguments.put("downloaded_file_path", asString(ArtifactUtil.artifactToPath(a)));
-        final String sha256 = getSha256();
-        assert null != sha256;
+        final String sha256 = Objects.requireNonNull(getSha256());
         arguments.put("sha256", asString(sha256.toLowerCase()));
-        final List<String> urls = getUrls();
-        assert null != urls && !urls.isEmpty();
+        final List<String> urls = Objects.requireNonNull(getUrls());
+        assert !urls.isEmpty();
         arguments.put("urls", urls.stream().map(this::asString).collect(Collectors.toList()));
         output.writeCall("_http_file", arguments);
     }
 
-    void writeArtifactSourcesHttpFileRule(@Nonnull final StarlarkOutput output) throws IOException {
-        final String sourceSha256 = getSourceSha256();
-        assert null != sourceSha256;
+    void writeArtifactSourcesHttpFileRule(@NonNull final StarlarkOutput output) throws IOException {
+        final String sourceSha256 = Objects.requireNonNull(getSourceSha256());
 
         final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getSourceRepository()));
-        final org.eclipse.aether.artifact.Artifact a = getNode().getArtifact();
-        assert null != a;
+        final org.eclipse.aether.artifact.Artifact a =
+                Objects.requireNonNull(getNode().getArtifact());
 
         final String artifactPath =
                 ArtifactUtil.artifactToPath(a.getGroupId(), a.getArtifactId(), a.getVersion(), "sources", "jar");
         arguments.put("downloaded_file_path", asString(artifactPath));
         arguments.put("sha256", asString(sourceSha256.toLowerCase()));
-        final List<String> urls = getSourceUrls();
-        assert null != urls && !urls.isEmpty();
+        final List<String> urls = Objects.requireNonNull(getSourceUrls());
+        assert !urls.isEmpty();
         arguments.put("urls", urls.stream().map(this::asString).collect(Collectors.toList()));
         output.writeCall("_http_file", arguments);
     }
 
-    void writeArtifactAnnotationsHttpFileRule(@Nonnull final StarlarkOutput output) throws IOException {
-        final String sha256 = getExternalAnnotationSha256();
-        assert null != sha256;
+    void writeArtifactAnnotationsHttpFileRule(@NonNull final StarlarkOutput output) throws IOException {
+        final String sha256 = Objects.requireNonNull(getExternalAnnotationSha256());
 
         final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getExternalAnnotationsRepository()));
-        final org.eclipse.aether.artifact.Artifact a = getNode().getArtifact();
-        assert null != a;
+        final org.eclipse.aether.artifact.Artifact a =
+                Objects.requireNonNull(getNode().getArtifact());
 
         final String artifactPath =
                 ArtifactUtil.artifactToPath(a.getGroupId(), a.getArtifactId(), a.getVersion(), "annotations", "jar");
         arguments.put("downloaded_file_path", asString(artifactPath));
         arguments.put("sha256", asString(sha256.toLowerCase()));
-        final List<String> urls = getExternalAnnotationUrls();
-        assert null != urls && !urls.isEmpty();
+        final List<String> urls = Objects.requireNonNull(getExternalAnnotationUrls());
+        assert !urls.isEmpty();
         arguments.put("urls", urls.stream().map(this::asString).collect(Collectors.toList()));
         output.writeCall("_http_file", arguments);
     }
 
     void writeArtifactJsSourcesHttpArchiveRule(
-            @Nonnull final StarlarkOutput output, final boolean useRepoRuleBindingStyle) throws IOException {
-        final String sourceSha256 = getSourceSha256();
-        assert null != sourceSha256;
+            @NonNull final StarlarkOutput output, final boolean useRepoRuleBindingStyle) throws IOException {
+        final String sourceSha256 = Objects.requireNonNull(getSourceSha256());
 
         final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getJsSourceRepository()));
 
         arguments.put("sha256", asString(sourceSha256.toLowerCase()));
-        final List<String> urls = getSourceUrls();
-        assert null != urls && !urls.isEmpty();
+        final List<String> urls = Objects.requireNonNull(getSourceUrls());
+        assert !urls.isEmpty();
         arguments.put("urls", urls.stream().map(this::asString).collect(Collectors.toList()));
-        final List<String> jsAssets = getJsAssets();
-        assert null != jsAssets;
+        final List<String> jsAssets = Objects.requireNonNull(getJsAssets());
 
         final var baos = new ByteArrayOutputStream();
         final var buildContent = new StarlarkOutput(baos);
@@ -973,20 +968,20 @@ public final class ArtifactRecord {
         output.writeCall("_http_archive", arguments);
     }
 
-    @Nonnull
-    private String deriveSuffix(@Nonnull final Nature nature) {
+    @NonNull
+    private String deriveSuffix(@NonNull final Nature nature) {
         return nature.suffix(getNatures().size() > 1, getDefaultNature());
     }
 
-    @Nonnull
+    @NonNull
     private Nature getDefaultNature() {
         return null != getProcessors()
                 ? Nature.Plugin
                 : _application.getSource().getOptions().getDefaultNature();
     }
 
-    @Nonnull
-    private String asString(@Nonnull final String value) {
+    @NonNull
+    private String asString(@NonNull final String value) {
         return value.contains("\n")
                 ? "\"\"\"\n" + value + (value.endsWith("\n") ? "" : "\n") + "\"\"\""
                 : "\"" + value + "\"";

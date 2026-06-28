@@ -1,30 +1,30 @@
 package org.realityforge.bazel.depgen;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import org.eclipse.aether.AbstractRepositoryListener;
 import org.eclipse.aether.RepositoryEvent;
+import org.jspecify.annotations.NonNull;
 
 final class SimpleRepositoryListener extends AbstractRepositoryListener {
-    @Nonnull
+    @NonNull
     private final Environment _environment;
 
-    SimpleRepositoryListener(@Nonnull final Environment environment) {
+    SimpleRepositoryListener(@NonNull final Environment environment) {
         _environment = Objects.requireNonNull(environment);
     }
 
     @Override
-    public void artifactDeployed(@Nonnull final RepositoryEvent event) {
+    public void artifactDeployed(@NonNull final RepositoryEvent event) {
         _environment.logger().fine("Deployed " + event.getArtifact() + " to " + event.getRepository());
     }
 
     @Override
-    public void artifactDeploying(@Nonnull final RepositoryEvent event) {
+    public void artifactDeploying(@NonNull final RepositoryEvent event) {
         _environment.logger().fine("Deploying " + event.getArtifact() + " to " + event.getRepository());
     }
 
     @Override
-    public void artifactDescriptorInvalid(@Nonnull final RepositoryEvent event) {
+    public void artifactDescriptorInvalid(@NonNull final RepositoryEvent event) {
         _environment
                 .logger()
                 .warning("Invalid artifact descriptor for " + event.getArtifact() + ": "
@@ -32,47 +32,47 @@ final class SimpleRepositoryListener extends AbstractRepositoryListener {
     }
 
     @Override
-    public void artifactDescriptorMissing(@Nonnull final RepositoryEvent event) {
+    public void artifactDescriptorMissing(@NonNull final RepositoryEvent event) {
         _environment.logger().warning("Missing artifact descriptor for " + event.getArtifact());
     }
 
     @Override
-    public void artifactResolved(@Nonnull final RepositoryEvent event) {
+    public void artifactResolved(@NonNull final RepositoryEvent event) {
         _environment.logger().fine("Resolved artifact " + event.getArtifact() + " from " + event.getRepository());
     }
 
     @Override
-    public void artifactDownloading(@Nonnull final RepositoryEvent event) {
+    public void artifactDownloading(@NonNull final RepositoryEvent event) {
         _environment.logger().fine("Downloading artifact " + event.getArtifact() + " from " + event.getRepository());
     }
 
     @Override
-    public void artifactDownloaded(@Nonnull final RepositoryEvent event) {
+    public void artifactDownloaded(@NonNull final RepositoryEvent event) {
         _environment.logger().fine("Downloaded artifact " + event.getArtifact() + " from " + event.getRepository());
     }
 
     @Override
-    public void artifactResolving(@Nonnull final RepositoryEvent event) {
+    public void artifactResolving(@NonNull final RepositoryEvent event) {
         _environment.logger().fine("Resolving artifact " + event.getArtifact());
     }
 
     @Override
-    public void metadataDeployed(@Nonnull final RepositoryEvent event) {
+    public void metadataDeployed(@NonNull final RepositoryEvent event) {
         _environment.logger().fine("Deployed " + event.getMetadata() + " to " + event.getRepository());
     }
 
     @Override
-    public void metadataDeploying(@Nonnull final RepositoryEvent event) {
+    public void metadataDeploying(@NonNull final RepositoryEvent event) {
         _environment.logger().fine("Deploying " + event.getMetadata() + " to " + event.getRepository());
     }
 
     @Override
-    public void metadataResolved(@Nonnull final RepositoryEvent event) {
+    public void metadataResolved(@NonNull final RepositoryEvent event) {
         _environment.logger().fine("Resolved metadata " + event.getMetadata() + " from " + event.getRepository());
     }
 
     @Override
-    public void metadataResolving(@Nonnull final RepositoryEvent event) {
+    public void metadataResolving(@NonNull final RepositoryEvent event) {
         _environment.logger().fine("Resolving metadata " + event.getMetadata() + " from " + event.getRepository());
     }
 }

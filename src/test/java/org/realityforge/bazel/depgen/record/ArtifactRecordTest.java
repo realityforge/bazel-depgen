@@ -7,7 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.config.NameStrategy;
@@ -850,8 +850,7 @@ public class ArtifactRecordTest extends AbstractTest {
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
-        final List<String> urls = artifactRecord.getUrls();
-        assertNotNull(urls);
+        final List<String> urls = requireNonNull(artifactRecord.getUrls());
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactHttpFileRule(new StarlarkOutput(outputStream));
@@ -872,8 +871,7 @@ public class ArtifactRecordTest extends AbstractTest {
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
-        final List<String> urls = artifactRecord.getUrls();
-        assertNotNull(urls);
+        final List<String> urls = requireNonNull(artifactRecord.getUrls());
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactSourcesHttpFileRule(new StarlarkOutput(outputStream));
@@ -899,8 +897,7 @@ public class ArtifactRecordTest extends AbstractTest {
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
-        final List<String> urls = artifactRecord.getUrls();
-        assertNotNull(urls);
+        final List<String> urls = requireNonNull(artifactRecord.getUrls());
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactAnnotationsHttpFileRule(new StarlarkOutput(outputStream));
@@ -923,8 +920,7 @@ public class ArtifactRecordTest extends AbstractTest {
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
-        final List<String> sourceUrls = artifactRecord.getSourceUrls();
-        assertNotNull(sourceUrls);
+        final List<String> sourceUrls = requireNonNull(artifactRecord.getSourceUrls());
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactJsSourcesHttpArchiveRule(new StarlarkOutput(outputStream), false);
@@ -953,8 +949,7 @@ public class ArtifactRecordTest extends AbstractTest {
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
-        final List<String> sourceUrls = artifactRecord.getSourceUrls();
-        assertNotNull(sourceUrls);
+        final List<String> sourceUrls = requireNonNull(artifactRecord.getSourceUrls());
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactJsSourcesHttpArchiveRule(new StarlarkOutput(outputStream), true);
@@ -1104,8 +1099,8 @@ public class ArtifactRecordTest extends AbstractTest {
                         + ")\n");
     }
 
-    @Nonnull
-    private ArtifactRecord getArtifactAt(@Nonnull final ApplicationRecord record, final int index) {
+    @NonNull
+    private ArtifactRecord getArtifactAt(@NonNull final ApplicationRecord record, final int index) {
         final List<ArtifactRecord> artifacts = record.getArtifacts();
         assertTrue(artifacts.size() > index, "At least " + (index + 1) + " artifacts present.");
         return artifacts.get(index);

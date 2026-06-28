@@ -2,19 +2,19 @@ package org.realityforge.bazel.depgen;
 
 import java.nio.file.Path;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingResult;
+import org.jspecify.annotations.NonNull;
 
 final class SettingsUtil {
     private SettingsUtil() {}
 
-    @Nonnull
-    static Settings loadSettings(@Nonnull final Path settingsFile, @Nonnull final Logger logger)
+    @NonNull
+    static Settings loadSettings(@NonNull final Path settingsFile, @NonNull final Logger logger)
             throws SettingsBuildingException {
         final SettingsBuildingRequest request =
                 new DefaultSettingsBuildingRequest().setUserSettingsFile(settingsFile.toFile());

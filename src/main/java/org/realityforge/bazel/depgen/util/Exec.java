@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.DepgenException;
 
 /**
@@ -25,8 +25,8 @@ final class Exec {
      * @return the output of the command.
      */
     @SuppressWarnings("SameParameterValue")
-    @Nonnull
-    static String capture(@Nonnull final Consumer<ProcessBuilder> action, @Nullable final Integer expectedExitCode) {
+    @NonNull
+    static String capture(@NonNull final Consumer<ProcessBuilder> action, @Nullable final Integer expectedExitCode) {
         final var baos = new ByteArrayOutputStream();
         exec(action, process -> copy(process.getInputStream(), new BufferedOutputStream(baos)), expectedExitCode);
         return baos.toString();
@@ -41,7 +41,7 @@ final class Exec {
      * @param expectedExitCode the expected exitCode of the process.
      */
     private static void exec(
-            @Nonnull final Consumer<ProcessBuilder> action,
+            @NonNull final Consumer<ProcessBuilder> action,
             @Nullable final Consumer<Process> processHandler,
             @Nullable final Integer expectedExitCode) {
         final var builder = new ProcessBuilder();
@@ -63,7 +63,7 @@ final class Exec {
         }
     }
 
-    private static void copy(@Nonnull final InputStream input, @Nonnull final OutputStream output) {
+    private static void copy(@NonNull final InputStream input, @NonNull final OutputStream output) {
         try {
             // Java9 can use input.transferTo(output)
             try (final InputStream in = input;
@@ -76,7 +76,7 @@ final class Exec {
                 }
             }
         } catch (final IOException ioe) {
-            throw new DepgenException(ioe.getMessage(), ioe);
+            throw new DepgenException("Error copying process output", ioe);
         }
     }
 }

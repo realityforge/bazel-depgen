@@ -16,9 +16,9 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.concurrent.Executors;
-import javax.annotation.Nonnull;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.DepgenConfigurationException;
 import org.realityforge.bazel.depgen.DepgenException;
@@ -158,9 +158,8 @@ public final class RecordUtilTest extends AbstractTest {
 
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
-        final String url = RecordUtil.lookupArtifactInRepository(
-                new DefaultArtifact("com.example:myapp:jar:1.0"), repo, Collections.emptyMap());
-        assertNotNull(url);
+        final String url = requireNonNull(RecordUtil.lookupArtifactInRepository(
+                new DefaultArtifact("com.example:myapp:jar:1.0"), repo, Collections.emptyMap()));
         assertTrue(url.startsWith(repo.getUrl()));
         assertTrue(url.endsWith("com/example/myapp/1.0/myapp-1.0.jar"));
     }
@@ -205,9 +204,8 @@ public final class RecordUtilTest extends AbstractTest {
         try {
             final var repo = new RemoteRepository.Builder("http", "default", server.getBaseURL()).build();
 
-            final String url = RecordUtil.lookupArtifactInRepository(
-                    new DefaultArtifact("com.example:myapp:jar:1.0"), repo, Collections.emptyMap());
-            assertNotNull(url);
+            final String url = requireNonNull(RecordUtil.lookupArtifactInRepository(
+                    new DefaultArtifact("com.example:myapp:jar:1.0"), repo, Collections.emptyMap()));
             assertTrue(url.startsWith(repo.getUrl()));
             assertTrue(url.endsWith("com/example/myapp/1.0/myapp-1.0.jar"));
         } finally {
@@ -254,11 +252,10 @@ public final class RecordUtilTest extends AbstractTest {
             writeConfigFile("repositories:\n" + "  - name: my-repo\n" + "    url: " + repositoryUrl + "\n");
             final ApplicationRecord record = loadApplicationRecord();
 
-            final String url = RecordUtil.lookupArtifactInRepository(
+            final String url = requireNonNull(RecordUtil.lookupArtifactInRepository(
                     new DefaultArtifact("com.example:myapp:jar:1.0"),
                     record.getNode().getRepositories().get(0),
-                    record.getAuthenticationContexts());
-            assertNotNull(url);
+                    record.getAuthenticationContexts()));
             assertTrue(url.startsWith(repositoryUrl));
             assertTrue(url.endsWith("com/example/myapp/1.0/myapp-1.0.jar"));
         } finally {
@@ -295,11 +292,10 @@ public final class RecordUtilTest extends AbstractTest {
             writeConfigFile("repositories:\n" + "  - name: my-repo\n" + "    url: " + repositoryUrl + "\n");
             final ApplicationRecord record = loadApplicationRecord();
 
-            final String url = RecordUtil.lookupArtifactInRepository(
+            final String url = requireNonNull(RecordUtil.lookupArtifactInRepository(
                     new DefaultArtifact("com.example:myapp:jar:1.0"),
                     record.getNode().getRepositories().get(0),
-                    record.getAuthenticationContexts());
-            assertNotNull(url);
+                    record.getAuthenticationContexts()));
             assertTrue(url.startsWith(repositoryUrlSansAuth));
             assertTrue(url.endsWith("com/example/myapp/1.0/myapp-1.0.jar"));
         } finally {
@@ -337,15 +333,15 @@ public final class RecordUtilTest extends AbstractTest {
     }
 
     @SuppressWarnings("SameParameterValue")
-    @Nonnull
+    @NonNull
     private HttpServer serveDirectoryWithBasicAuth(
-            @Nonnull final Path dir, @Nonnull final String username, @Nonnull final String password)
+            @NonNull final Path dir, @NonNull final String username, @NonNull final String password)
             throws IOException {
         final var server = HttpServer.create(new InetSocketAddress(InetAddress.getLocalHost(), 0), 0);
         server.createContext("/", e -> serveFilePath(dir, e)).setAuthenticator(new BasicAuthenticator("MyRealm") {
             @Override
             public boolean checkCredentials(
-                    @Nonnull final String suppliedUsername, @Nonnull final String suppliedPassword) {
+                    @NonNull final String suppliedUsername, @NonNull final String suppliedPassword) {
                 return username.equals(suppliedUsername) && password.equals(suppliedPassword);
             }
         });
@@ -353,8 +349,8 @@ public final class RecordUtilTest extends AbstractTest {
         return server;
     }
 
-    @Nonnull
-    private String toUrl(@Nonnull final HttpServer server) {
+    @NonNull
+    private String toUrl(@NonNull final HttpServer server) {
         final InetSocketAddress address = server.getAddress();
         return "http://" + address.getAddress().getCanonicalHostName() + ":" + address.getPort() + "/";
     }
@@ -373,7 +369,7 @@ public final class RecordUtilTest extends AbstractTest {
         Files.write(settingsFile, settingsContent.getBytes(StandardCharsets.UTF_8));
     }
 
-    private void serveFilePath(@Nonnull final Path baseDirectory, @Nonnull final HttpExchange httpExchange)
+    private void serveFilePath(@NonNull final Path baseDirectory, @NonNull final HttpExchange httpExchange)
             throws IOException {
         final String path = httpExchange.getRequestURI().getPath();
         final Path file = baseDirectory.resolve(path.substring(1));

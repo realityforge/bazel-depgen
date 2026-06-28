@@ -1,12 +1,12 @@
 package org.realityforge.bazel.depgen;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 public final class Constants {
-    @Nonnull
+    @NonNull
     public static final String SOURCE_ARTIFACT_FILENAME = "depgen.sources.filename";
 
-    @Nonnull
+    @NonNull
     public static final String EXTERNAL_ANNOTATIONS_ARTIFACT_FILENAME = "depgen.annotations.filename";
 
     private Constants() {}

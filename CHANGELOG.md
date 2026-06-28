@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Enable strict Error Prone checks in Bazel builds, copying Ariake's rule set while keeping Java 17.
+* Migrate source nullness annotations from `javax.annotation` to JSpecify and enforce NullAway in Bazel builds.
 * Add the `add` subcommand to append dependencies to `dependencies.yml` while preserving unrelated config text and
   validating the candidate configuration before replacing the file.
 

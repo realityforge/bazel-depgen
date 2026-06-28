@@ -44,7 +44,7 @@ public class ApplicationModelTest extends AbstractTest {
         assertEquals(model.getOptions().getWorkspaceDirectory(), FileUtil.getCurrentDirectory());
         assertEquals(
                 model.getOptions().getExtensionFile(),
-                model.getConfigLocation().getParent().resolve(OptionsConfig.DEFAULT_EXTENSION_FILE));
+                requireNonNull(model.getConfigLocation().getParent()).resolve(OptionsConfig.DEFAULT_EXTENSION_FILE));
         assertEquals(model.getArtifacts().size(), 1);
         final ArtifactModel artifactModel = model.getArtifacts().get(0);
         assertEquals(artifactModel.getGroup(), "com.example");
@@ -156,8 +156,7 @@ public class ApplicationModelTest extends AbstractTest {
 
         // Also finds system artifacts
         final ArtifactModel artifactModel2 =
-                model.findArtifact(DepGenConfig.getGroupId(), DepGenConfig.getArtifactId());
-        assertNotNull(artifactModel2);
+                requireNonNull(model.findArtifact(DepGenConfig.getGroupId(), DepGenConfig.getArtifactId()));
         assertEquals(artifactModel2.getGroup(), DepGenConfig.getGroupId());
         assertEquals(artifactModel2.getId(), DepGenConfig.getArtifactId());
     }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
@@ -15,11 +15,11 @@ abstract class ConfigurableCommand extends Command {
     private static final CLOptionDescriptor HELP_DESCRIPTOR = new CLOptionDescriptor(
             "help", CLOptionDescriptor.ARGUMENT_DISALLOWED, HELP_OPT, "print this message and exit");
 
-    @Nonnull
+    @NonNull
     private final CLOptionDescriptor[] _options;
 
     ConfigurableCommand(
-            @Nonnull final String name, @Nonnull final String help, @Nonnull final CLOptionDescriptor[] options) {
+            @NonNull final String name, @NonNull final String help, @NonNull final CLOptionDescriptor[] options) {
         super(name, help);
         _options = new CLOptionDescriptor[options.length + 1];
         _options[0] = HELP_DESCRIPTOR;
@@ -27,7 +27,7 @@ abstract class ConfigurableCommand extends Command {
     }
 
     @Override
-    final boolean processOptions(@Nonnull final Environment environment, @Nonnull final String... args) {
+    final boolean processOptions(@NonNull final Environment environment, @NonNull final String... args) {
         // Parse the arguments
         final var parser = new CLArgsParser(args, _options);
 
@@ -50,12 +50,12 @@ abstract class ConfigurableCommand extends Command {
         return processArguments(environment, argumentsToProcess);
     }
 
-    abstract boolean processArguments(@Nonnull Environment environment, @Nonnull List<CLOption> arguments);
+    abstract boolean processArguments(@NonNull Environment environment, @NonNull List<CLOption> arguments);
 
     /**
      * Print out a usage statement
      */
-    private void printUsage(@Nonnull final Environment environment) {
+    private void printUsage(@NonNull final Environment environment) {
         final Logger logger = environment.logger();
         logger.info(getName() + " Options:");
         final String[] options =

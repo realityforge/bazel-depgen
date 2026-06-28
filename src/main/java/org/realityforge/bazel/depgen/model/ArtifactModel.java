@@ -6,24 +6,24 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.JavaConfig;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.util.BazelUtil;
 
 public final class ArtifactModel {
-    @Nonnull
+    @NonNull
     private static final Pattern REPOSITORY_NAME_PATTERN = Pattern.compile("[a-z][a-z0-9_]*");
 
-    @Nonnull
+    @NonNull
     private final ArtifactConfig _source;
 
-    @Nonnull
+    @NonNull
     private final String _group;
 
-    @Nonnull
+    @NonNull
     private final String _id;
 
     @Nullable
@@ -35,14 +35,14 @@ public final class ArtifactModel {
     @Nullable
     private final String _version;
 
-    @Nonnull
+    @NonNull
     private final List<ExcludeModel> _excludes;
 
-    @Nonnull
+    @NonNull
     private final List<String> _visibility;
 
-    @Nonnull
-    public static ArtifactModel parse(@Nonnull final ArtifactConfig source) {
+    @NonNull
+    public static ArtifactModel parse(@NonNull final ArtifactConfig source) {
         validateRepositoryNamingConfig(source);
         validateUserSpecifiedTargetNames(source);
 
@@ -96,7 +96,7 @@ public final class ArtifactModel {
         return new ArtifactModel(source, group, id, type, classifier, version, aexcludes, avisibility);
     }
 
-    private static void validateRepositoryNamingConfig(@Nonnull final ArtifactConfig source) {
+    private static void validateRepositoryNamingConfig(@NonNull final ArtifactConfig source) {
         final String repositoryName = source.getRepositoryName();
         if (null != repositoryName) {
             if (null != source.getRepositoryNameStrategy()) {
@@ -118,7 +118,7 @@ public final class ArtifactModel {
         }
     }
 
-    private static void validateUserSpecifiedTargetNames(@Nonnull final ArtifactConfig source) {
+    private static void validateUserSpecifiedTargetNames(@NonNull final ArtifactConfig source) {
         validateNameOverride(
                 "java.name", null != source.getJava() ? source.getJava().getName() : null, source);
         validateNameOverride(
@@ -128,7 +128,7 @@ public final class ArtifactModel {
     }
 
     private static void validateNameOverride(
-            @Nonnull final String fieldName, @Nullable final String name, @Nonnull final ArtifactConfig source) {
+            @NonNull final String fieldName, @Nullable final String name, @NonNull final ArtifactConfig source) {
         if (null != name && name.contains(BazelUtil.COMPONENT_SEPARATOR)) {
             throw new InvalidModelException(
                     "The dependency " + fieldName + " property must not contain '" + BazelUtil.COMPONENT_SEPARATOR
@@ -138,14 +138,14 @@ public final class ArtifactModel {
     }
 
     public ArtifactModel(
-            @Nonnull final ArtifactConfig source,
-            @Nonnull final String group,
-            @Nonnull final String id,
+            @NonNull final ArtifactConfig source,
+            @NonNull final String group,
+            @NonNull final String id,
             @Nullable final String type,
             @Nullable final String classifier,
             @Nullable final String version,
-            @Nonnull final List<ExcludeModel> excludes,
-            @Nonnull final List<String> visibility) {
+            @NonNull final List<ExcludeModel> excludes,
+            @NonNull final List<String> visibility) {
         _source = Objects.requireNonNull(source);
         _group = Objects.requireNonNull(group);
         _id = Objects.requireNonNull(id);
@@ -156,22 +156,22 @@ public final class ArtifactModel {
         _visibility = Objects.requireNonNull(visibility);
     }
 
-    @Nonnull
+    @NonNull
     public ArtifactConfig getSource() {
         return _source;
     }
 
-    @Nonnull
+    @NonNull
     public String getGroup() {
         return _group;
     }
 
-    @Nonnull
+    @NonNull
     public String getId() {
         return _id;
     }
 
-    @Nonnull
+    @NonNull
     public String getType() {
         return null == _type ? "jar" : _type;
     }
@@ -190,8 +190,8 @@ public final class ArtifactModel {
         return null != _version;
     }
 
-    @Nonnull
-    public List<Nature> getNatures(@Nonnull final Nature defaultNature) {
+    @NonNull
+    public List<Nature> getNatures(@NonNull final Nature defaultNature) {
         final List<Nature> natures = _source.getNatures();
         return null == natures ? Collections.singletonList(defaultNature) : natures;
     }
@@ -217,23 +217,23 @@ public final class ArtifactModel {
         return null == exportDeps ? defaultExportDeps : exportDeps;
     }
 
-    @Nonnull
+    @NonNull
     public List<String> getRepositories() {
         final List<String> repositories = _source.getRepositories();
         return null == repositories ? Collections.emptyList() : Collections.unmodifiableList(repositories);
     }
 
-    @Nonnull
+    @NonNull
     public List<ExcludeModel> getExcludes() {
         return _excludes;
     }
 
-    @Nonnull
+    @NonNull
     public List<String> getVisibility() {
         return _visibility;
     }
 
-    @Nonnull
+    @NonNull
     public String toCoord() {
         final var sb = new StringBuilder();
         sb.append(getGroup());

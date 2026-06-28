@@ -1,6 +1,6 @@
 package org.realityforge.bazel.depgen.config;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class GlobalJavaConfig {
     @Nullable

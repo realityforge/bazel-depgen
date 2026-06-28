@@ -9,28 +9,28 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import org.eclipse.aether.transfer.AbstractTransferListener;
 import org.eclipse.aether.transfer.ArtifactNotFoundException;
 import org.eclipse.aether.transfer.MetadataNotFoundException;
 import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transfer.TransferResource;
+import org.jspecify.annotations.NonNull;
 
 final class SimpleTransferListener extends AbstractTransferListener {
-    @Nonnull
+    @NonNull
     private final Map<TransferResource, Long> _downloads = new ConcurrentHashMap<>();
 
-    @Nonnull
+    @NonNull
     private final Environment _environment;
 
     private int lastLength;
 
-    SimpleTransferListener(@Nonnull final Environment environment) {
+    SimpleTransferListener(@NonNull final Environment environment) {
         _environment = Objects.requireNonNull(environment);
     }
 
     @Override
-    public void transferInitiated(@Nonnull final TransferEvent event) {
+    public void transferInitiated(@NonNull final TransferEvent event) {
         final Console console = _environment.console();
         if (null != console && _environment.logger().isLoggable(Level.INFO)) {
             final String label = TransferEvent.RequestType.PUT == event.getRequestType() ? "Uploading" : "Downloading";
@@ -39,7 +39,7 @@ final class SimpleTransferListener extends AbstractTransferListener {
     }
 
     @Override
-    public void transferProgressed(@Nonnull final TransferEvent event) {
+    public void transferProgressed(@NonNull final TransferEvent event) {
         final Console console = _environment.console();
         if (null != console && _environment.logger().isLoggable(Level.INFO)) {
             final TransferResource resource = event.getResource();
@@ -64,7 +64,7 @@ final class SimpleTransferListener extends AbstractTransferListener {
     }
 
     @Override
-    public void transferSucceeded(@Nonnull final TransferEvent event) {
+    public void transferSucceeded(@NonNull final TransferEvent event) {
         transferCompleted(event);
 
         final Console console = _environment.console();
@@ -92,13 +92,13 @@ final class SimpleTransferListener extends AbstractTransferListener {
         }
     }
 
-    @Nonnull
-    private String path(@Nonnull final TransferResource resource) {
+    @NonNull
+    private String path(@NonNull final TransferResource resource) {
         return resource.getRepositoryUrl() + resource.getResourceName();
     }
 
     @Override
-    public void transferFailed(@Nonnull final TransferEvent event) {
+    public void transferFailed(@NonNull final TransferEvent event) {
         transferCompleted(event);
 
         final Exception exception = event.getException();
@@ -110,7 +110,7 @@ final class SimpleTransferListener extends AbstractTransferListener {
         }
     }
 
-    private void transferCompleted(@Nonnull final TransferEvent event) {
+    private void transferCompleted(@NonNull final TransferEvent event) {
         _downloads.remove(event.getResource());
 
         final Console console = _environment.console();
@@ -123,7 +123,7 @@ final class SimpleTransferListener extends AbstractTransferListener {
     }
 
     @Override
-    public void transferCorrupted(@Nonnull final TransferEvent event) {
+    public void transferCorrupted(@NonNull final TransferEvent event) {
         final Logger logger = _environment.logger();
         if (logger.isLoggable(Level.WARNING)) {
             logger.log(
@@ -135,7 +135,7 @@ final class SimpleTransferListener extends AbstractTransferListener {
         }
     }
 
-    @Nonnull
+    @NonNull
     private String getStatus(final long complete, final long total) {
         if (total >= 1024) {
             return toKB(complete) + "/" + toKB(total) + " KB ";
@@ -152,7 +152,7 @@ final class SimpleTransferListener extends AbstractTransferListener {
         return (bytes + 1023) / 1024;
     }
 
-    private void pad(@Nonnull final StringBuilder buffer, final int spaces) {
+    private void pad(@NonNull final StringBuilder buffer, final int spaces) {
         for (int i = 0; i < spaces; i++) {
             buffer.append(' ');
         }

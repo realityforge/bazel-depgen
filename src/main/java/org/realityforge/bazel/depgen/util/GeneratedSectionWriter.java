@@ -4,17 +4,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.DepgenException;
 
 public final class GeneratedSectionWriter {
     private GeneratedSectionWriter() {}
 
     public static void replaceSection(
-            @Nonnull final Path path,
-            @Nonnull final String startToken,
-            @Nonnull final String endToken,
-            @Nonnull final String content)
+            @NonNull final Path path,
+            @NonNull final String startToken,
+            @NonNull final String endToken,
+            @NonNull final String content)
             throws IOException {
         if (!Files.exists(path)) {
             throw new DepgenException("Expected generated output destination file to exist. File: " + path);
@@ -44,7 +44,7 @@ public final class GeneratedSectionWriter {
     }
 
     public static boolean ensureSectionExists(
-            @Nonnull final Path path, @Nonnull final String startToken, @Nonnull final String endToken)
+            @NonNull final Path path, @NonNull final String startToken, @NonNull final String endToken)
             throws IOException {
         if (!Files.exists(path)) {
             throw new DepgenException("Expected generated output destination file to exist. File: " + path);

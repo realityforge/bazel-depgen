@@ -11,7 +11,7 @@ Copy Ariake's Error Prone rule strictness into Bazel-Depgen where it can be enfo
 - Add Ariake's test-only Error Prone check if the active Bazel toolchain supports it.
 - Enable Ariake's nullness-related Error Prone options if the active Bazel toolchain and current source accept them.
 - Enable Ariake's `Varifier` check after the explicit follow-up request, accepting the broad mechanical `var` migration required by the current source.
-- Avoid adopting extra plugin/dependency wiring unless the current source needs it to enforce the checks.
+- Adopt Ariake's NullAway plugin/JSpecify wiring after the explicit follow-up request, while removing the old `javax.annotation` dependency from Bazel-Depgen's source dependencies.
 - Update contributor-visible release notes for the stricter build checks.
 
 ## Quality Gates
@@ -47,4 +47,13 @@ Copy Ariake's Error Prone rule strictness into Bazel-Depgen where it can be enfo
   tradeoffs: Keeping it omitted avoids churn but leaves one Ariake check unenforced. Enabling it creates a broad mechanical diff but completes the requested strictness.
   recommended_default: Enable `Varifier` and migrate the current source.
   user_decision: Enable `Varifier` and migrate the current source.
+  artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- id: Q-04
+  status: resolved
+  question: Should Bazel-Depgen now adopt Ariake's NullAway plugin/JSpecify wiring and drop `javax.annotation`?
+  context: The earlier strict-check pass enabled NullAway javacopts without the plugin because the source still used `javax.annotation`. The user explicitly requested migrating annotations to JSpecify, enabling Ariake-style strict NullAway checks, and removing the old dependency.
+  options: Keep the javacopts-only setup, or add the plugin and migrate source/build dependencies to JSpecify.
+  tradeoffs: Keeping javacopts-only minimizes churn but does not enforce NullAway. Adding the plugin and JSpecify annotations enables real nullness checking and removes the legacy annotation artifact, but requires source and BUILD migration.
+  recommended_default: Add the plugin and migrate to JSpecify.
+  user_decision: Add the plugin and migrate to JSpecify.
   artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`

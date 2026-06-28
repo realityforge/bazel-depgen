@@ -1,31 +1,31 @@
 package org.realityforge.bazel.depgen;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 
 final class CommandContextImpl implements Command.Context {
-    @Nonnull
+    @NonNull
     private final Environment _environment;
 
-    CommandContextImpl(@Nonnull final Environment environment) {
+    CommandContextImpl(@NonNull final Environment environment) {
         _environment = Objects.requireNonNull(environment);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Environment environment() {
         return _environment;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public ApplicationModel loadModel() {
         return Main.loadModel(_environment);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public ApplicationRecord loadRecord() throws Exception {
         return Main.loadRecord(_environment);

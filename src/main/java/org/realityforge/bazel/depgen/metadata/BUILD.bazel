@@ -8,13 +8,13 @@ java_library(
         "DepgenMetadata.java",
         "RecordBuildCallback.java",
         "RecordUtil.java",
+        "package-info.java",
     ],
     deps = [
         "//src/main/java/org/realityforge/bazel/depgen:core",
         "//src/main/java/org/realityforge/bazel/depgen/model",
         "//src/main/java/org/realityforge/bazel/depgen/util",
         "//src/main/java/org/realityforge/bazel/depgen/util:ordered_properties",
-        "//third_party/java:javax_annotation",
         "//third_party/java:maven_resolver_api",
     ],
 )

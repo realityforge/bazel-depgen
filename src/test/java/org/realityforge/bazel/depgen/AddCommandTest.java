@@ -5,7 +5,7 @@ import static org.testng.Assert.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.testng.annotations.Test;
 
 public class AddCommandTest extends AbstractTest {
@@ -26,7 +26,7 @@ public class AddCommandTest extends AbstractTest {
         assertOutputContains(
                 handler.toString(),
                 "Added dependency 'com.example:myapp:jar:1.0' to configuration file " + environment.getConfigFile());
-        assertNoTempFiles(environment.getConfigFile().getParent());
+        assertNoTempFiles(requireNonNull(environment.getConfigFile().getParent()));
     }
 
     @Test
@@ -283,7 +283,7 @@ public class AddCommandTest extends AbstractTest {
                 expectThrows(DepgenValidationException.class, () -> command.run(new CommandContextImpl(environment)));
         assertEquals(exception.getMessage(), "The add command only supports block-style artifacts sections.");
         assertEquals(loadAsString(environment.getConfigFile()), original);
-        assertNoTempFiles(environment.getConfigFile().getParent());
+        assertNoTempFiles(requireNonNull(environment.getConfigFile().getParent()));
     }
 
     @Test
@@ -302,7 +302,7 @@ public class AddCommandTest extends AbstractTest {
                 "Artifact 'com.example:myapp' declared a repository named 'missing' but no such repository is declared"
                         + " in the repository section. Known repositories include: central");
         assertEquals(loadAsString(environment.getConfigFile()), original);
-        assertNoTempFiles(environment.getConfigFile().getParent());
+        assertNoTempFiles(requireNonNull(environment.getConfigFile().getParent()));
     }
 
     @Test
@@ -321,7 +321,7 @@ public class AddCommandTest extends AbstractTest {
         assertEquals(handler.toString(), "Error: Invalid value for --nature: Nope");
     }
 
-    private void assertNoTempFiles(@Nonnull final Path configDirectory) throws Exception {
+    private void assertNoTempFiles(@NonNull final Path configDirectory) throws Exception {
         try (var stream = Files.list(configDirectory)) {
             assertFalse(stream.anyMatch(p -> p.getFileName().toString().startsWith(".dependencies")));
         }

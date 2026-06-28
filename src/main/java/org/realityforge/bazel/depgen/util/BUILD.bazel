@@ -4,8 +4,10 @@ package(default_visibility = ["//visibility:public"])
 
 java_library(
     name = "ordered_properties",
-    srcs = ["OrderedProperties.java"],
-    deps = ["//third_party/java:javax_annotation"],
+    srcs = [
+        "OrderedProperties.java",
+        "package-info.java",
+    ],
 )
 
 java_library(
@@ -23,7 +25,6 @@ java_library(
     deps = [
         ":ordered_properties",
         "//src/main/java/org/realityforge/bazel/depgen:core",
-        "//third_party/java:javax_annotation",
         "//third_party/java:maven_resolver_api",
         "//third_party/java:snakeyaml",
     ],

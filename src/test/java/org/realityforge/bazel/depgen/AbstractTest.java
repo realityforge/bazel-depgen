@@ -12,13 +12,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.graph.DependencyNode;
@@ -26,6 +25,8 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
@@ -38,6 +39,12 @@ import org.testng.IHookable;
 import org.testng.ITestResult;
 
 public abstract class AbstractTest implements IHookable {
+    @NonNull
+    protected static <T> T requireNonNull(@Nullable final T value) {
+        assertNotNull(value);
+        return Objects.requireNonNull(value);
+    }
+
     @Override
     public void run(final IHookCallBack callBack, final ITestResult testResult) {
         System.setProperty(DepGenConfig.PROPERTY_KEY, "1");
@@ -53,21 +60,21 @@ public abstract class AbstractTest implements IHookable {
         }
     }
 
-    @Nonnull
+    @NonNull
     protected final ApplicationRecord loadApplicationRecord() throws Exception {
         return loadApplicationRecord(FileUtil.createLocalTempDir());
     }
 
-    @Nonnull
-    protected final ApplicationRecord loadApplicationRecord(@Nonnull final Path cacheDir) throws Exception {
+    @NonNull
+    protected final ApplicationRecord loadApplicationRecord(@NonNull final Path cacheDir) throws Exception {
         final ApplicationModel model = loadApplicationModel();
         final Resolver resolver = createResolver(model, cacheDir);
         final DependencyNode root = resolveDependencies(resolver, model);
         return ApplicationRecord.build(model, root, resolver.getAuthenticationContexts(), Assert::fail);
     }
 
-    @Nonnull
-    private Resolver createResolver(@Nonnull final ApplicationModel model, @Nonnull final Path cacheDir)
+    @NonNull
+    private Resolver createResolver(@NonNull final ApplicationModel model, @NonNull final Path cacheDir)
             throws Exception {
         final Path settingsFile = FileUtil.getCurrentDirectory().resolve("settings.xml");
         return ResolverUtil.createResolver(
@@ -77,18 +84,18 @@ public abstract class AbstractTest implements IHookable {
                 SettingsUtil.loadSettings(settingsFile, Logger.getAnonymousLogger()));
     }
 
-    @Nonnull
+    @NonNull
     final Environment newEnvironment() throws IOException {
         return newEnvironment(Logger.getAnonymousLogger());
     }
 
-    @Nonnull
-    final Environment newEnvironment(@Nonnull final TestHandler handler) throws IOException {
+    @NonNull
+    final Environment newEnvironment(@NonNull final TestHandler handler) throws IOException {
         return newEnvironment(createLogger(handler));
     }
 
-    @Nonnull
-    final Environment newEnvironment(@Nonnull final Logger logger) throws IOException {
+    @NonNull
+    final Environment newEnvironment(@NonNull final Logger logger) throws IOException {
         final var environment = new Environment(null, FileUtil.getCurrentDirectory(), logger);
         environment.setConfigFile(getDefaultConfigFile());
         environment.setSettingsFile(FileUtil.getCurrentDirectory().resolve("settings.xml"));
@@ -97,13 +104,13 @@ public abstract class AbstractTest implements IHookable {
         return environment;
     }
 
-    @Nonnull
+    @NonNull
     protected final Path getDefaultConfigFile() {
         return FileUtil.getCurrentDirectory().resolve("thirdparty").resolve(ApplicationConfig.FILENAME);
     }
 
-    @Nonnull
-    final Resolver createResolver(@Nonnull final Path localRepositoryDirectory) throws Exception {
+    @NonNull
+    final Resolver createResolver(@NonNull final Path localRepositoryDirectory) throws Exception {
         final var remoteRepository = new RemoteRepository.Builder(
                         "local", "default", localRepositoryDirectory.toUri().toString())
                 .build();
@@ -115,8 +122,8 @@ public abstract class AbstractTest implements IHookable {
                 true);
     }
 
-    @Nonnull
-    final DependencyNode resolveDependencies(@Nonnull final Resolver resolver, @Nonnull final ApplicationModel model)
+    @NonNull
+    final DependencyNode resolveDependencies(@NonNull final Resolver resolver, @NonNull final ApplicationModel model)
             throws DependencyResolutionException {
         final DependencyResult result = resolver.resolveDependencies(model, (m, e) -> fail());
 
@@ -127,12 +134,12 @@ public abstract class AbstractTest implements IHookable {
         return root;
     }
 
-    @Nonnull
+    @NonNull
     protected final ApplicationModel loadApplicationModel() throws Exception {
         return ApplicationModel.load(loadApplicationConfig(), false);
     }
 
-    @Nonnull
+    @NonNull
     protected final ApplicationConfig loadApplicationConfig() throws Exception {
         return ApplicationConfig.load(getDefaultConfigFile());
     }
@@ -141,7 +148,7 @@ public abstract class AbstractTest implements IHookable {
         writeBazelrc(FileUtil.createLocalTempDir());
     }
 
-    protected final void writeBazelrc(@Nonnull final Path repositoryCache) throws IOException {
+    protected final void writeBazelrc(@NonNull final Path repositoryCache) throws IOException {
         FileUtil.write(
                 ".bazelrc",
                 "startup --output_user_root " + Files.createTempDirectory("bazel-depgen") + "\n"
@@ -157,16 +164,16 @@ public abstract class AbstractTest implements IHookable {
         FileUtil.write("MODULE.bazel", "module(name = \"test\")\n");
     }
 
-    protected final void writeConfigFile(@Nonnull final Path dir, @Nonnull final String content) throws Exception {
+    protected final void writeConfigFile(@NonNull final Path dir, @NonNull final String content) throws Exception {
         deployDepGenArtifactToLocalRepository(dir);
         writeConfigFile("repositories:\n" + "  - name: local\n" + "    url: " + dir.toUri() + "\n" + content);
     }
 
-    protected final void deployDepGenArtifactToLocalRepository(@Nonnull final Path dir) throws Exception {
+    protected final void deployDepGenArtifactToLocalRepository(@NonNull final Path dir) throws Exception {
         deployArtifactToLocalRepository(dir, DepGenConfig.getCoord());
     }
 
-    final void deployDepGenArtifactToCacheDir(@Nonnull final Path cacheDir) throws Exception {
+    final void deployDepGenArtifactToCacheDir(@NonNull final Path cacheDir) throws Exception {
         deployDepGenArtifactToLocalRepository(cacheDir);
         final String directory = ArtifactUtil.artifactToDirectory(
                 DepGenConfig.getGroupId(), DepGenConfig.getArtifactId(), DepGenConfig.getVersion());
@@ -187,29 +194,29 @@ public abstract class AbstractTest implements IHookable {
                         + "sources.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n");
     }
 
-    protected final void writeConfigFile(@Nonnull final String content) throws IOException {
+    protected final void writeConfigFile(@NonNull final String content) throws IOException {
         FileUtil.write(getDefaultConfigFile(), content);
     }
 
-    protected final void assertOutputContains(@Nonnull final String output, @Nonnull final String text) {
+    protected final void assertOutputContains(@NonNull final String output, @NonNull final String text) {
         assertTrue(
                 output.contains(text),
                 "Expected output\n---\n" + output + "\n---\nto contain text\n---\n" + text + "\n---\n");
     }
 
-    protected final void assertOutputDoesNotContain(@Nonnull final String output, @Nonnull final String text) {
+    protected final void assertOutputDoesNotContain(@NonNull final String output, @NonNull final String text) {
         assertFalse(
                 output.contains(text),
                 "Expected output\n---\n" + output + "\n---\nto not contain text\n---\n" + text + "\n---\n");
     }
 
-    @Nonnull
+    @NonNull
     private Path createTempPomFile(
-            @Nonnull final String group,
-            @Nonnull final String id,
-            @Nonnull final String version,
-            @Nonnull final String type,
-            @Nonnull final String... dependencies)
+            @NonNull final String group,
+            @NonNull final String id,
+            @NonNull final String version,
+            @NonNull final String type,
+            @NonNull final String... dependencies)
             throws IOException {
         final Path pomFile = Files.createTempFile("data", ".pom");
         String pomContents = "<project xmlns=\"http://maven.apache.org/POM/4.0.0\""
@@ -231,8 +238,8 @@ public abstract class AbstractTest implements IHookable {
     }
 
     @SuppressWarnings("StringConcatenationInLoop")
-    @Nonnull
-    private String buildDependenciesSection(@Nonnull final String[] dependencies) throws IOException {
+    @NonNull
+    private String buildDependenciesSection(@NonNull final String[] dependencies) throws IOException {
         if (0 != dependencies.length) {
             String pomContents = "  <dependencies>\n";
             for (final String dependency : dependencies) {
@@ -276,7 +283,7 @@ public abstract class AbstractTest implements IHookable {
     }
 
     protected final void deployArtifactToLocalRepository(
-            @Nonnull final Path localRepository, @Nonnull final String coords, @Nonnull final String... dependencies)
+            @NonNull final Path localRepository, @NonNull final String coords, @NonNull final String... dependencies)
             throws Exception {
         final var sourcesArtifact = new SubArtifact(new DefaultArtifact(coords), "sources", "jar");
         deployTempArtifactToLocalRepository(localRepository, sourcesArtifact.toString());
@@ -284,16 +291,16 @@ public abstract class AbstractTest implements IHookable {
     }
 
     protected final void deployTempArtifactToLocalRepository(
-            @Nonnull final Path localRepository, @Nonnull final String coords, @Nonnull final String... dependencies)
+            @NonNull final Path localRepository, @NonNull final String coords, @NonNull final String... dependencies)
             throws Exception {
         deployTempArtifactToLocalRepository(localRepository, coords, createTempJarFile(), dependencies);
     }
 
     protected final void deployTempArtifactToLocalRepository(
-            @Nonnull final Path localRepository,
-            @Nonnull final String coords,
-            @Nonnull final Path file,
-            @Nonnull final String... dependencies)
+            @NonNull final Path localRepository,
+            @NonNull final String coords,
+            @NonNull final Path file,
+            @NonNull final String... dependencies)
             throws Exception {
         final var artifact = new DefaultArtifact(coords);
         final Path pomFile = createTempPomFile(
@@ -306,10 +313,10 @@ public abstract class AbstractTest implements IHookable {
     }
 
     private void deployTempArtifactToLocalRepository(
-            @Nonnull final Path localRepository,
-            @Nonnull final String coords,
-            @Nonnull final Path file,
-            @Nonnull final Path pomFile)
+            @NonNull final Path localRepository,
+            @NonNull final String coords,
+            @NonNull final Path file,
+            @NonNull final Path pomFile)
             throws Exception {
         final var pomArtifact = new SubArtifact(new DefaultArtifact(coords), "", "pom");
 
@@ -324,35 +331,35 @@ public abstract class AbstractTest implements IHookable {
         resolver.getSystem().deploy(resolver.getSession(), request);
     }
 
-    @Nonnull
-    protected final String loadPropertiesContent(@Nonnull final Path file) throws IOException {
+    @NonNull
+    protected final String loadPropertiesContent(@NonNull final Path file) throws IOException {
         return loadAsString(file).replaceAll("^#[^\n]*\n", "");
     }
 
-    @Nonnull
-    final String loadAsString(@Nonnull final Path file, @Nullable final String sha256, @Nullable final String uri)
+    @NonNull
+    final String loadAsString(@NonNull final Path file, @Nullable final String sha256, @Nullable final String uri)
             throws IOException {
         return cleanContent(loadAsString(file), sha256, uri);
     }
 
-    @Nonnull
-    final String loadAsString(@Nonnull final Path file) throws IOException {
+    @NonNull
+    final String loadAsString(@NonNull final Path file) throws IOException {
         return new String(Files.readAllBytes(file), StandardCharsets.ISO_8859_1);
     }
 
-    @Nonnull
+    @NonNull
     protected final Path createTempJarFile() throws IOException {
         return createJarFile("data.txt", "Hi");
     }
 
-    @Nonnull
-    protected final Path createJarFile(@Nonnull final String filename, @Nonnull final String contents)
+    @NonNull
+    protected final Path createJarFile(@NonNull final String filename, @NonNull final String contents)
             throws IOException {
         return createJarFile(outputStream -> createJarEntry(outputStream, filename, contents));
     }
 
-    @Nonnull
-    protected final Path createJarFile(@Nonnull final JarFileAction action) throws IOException {
+    @NonNull
+    protected final Path createJarFile(@NonNull final JarFileAction action) throws IOException {
         final Path jarFile = Files.createTempFile(FileUtil.getCurrentDirectory(), "data", ".jar");
         try (final var out = new FileOutputStream(jarFile.toFile())) {
             try (final var outputStream = new JarOutputStream(out)) {
@@ -363,7 +370,7 @@ public abstract class AbstractTest implements IHookable {
     }
 
     protected final void createJarEntry(
-            @Nonnull final JarOutputStream outputStream, @Nonnull final String filename, @Nonnull final String contents)
+            @NonNull final JarOutputStream outputStream, @NonNull final String filename, @NonNull final String contents)
             throws IOException {
         final var entry = new JarEntry(filename);
         entry.setCreationTime(FileTime.fromMillis(0));
@@ -374,8 +381,8 @@ public abstract class AbstractTest implements IHookable {
         outputStream.closeEntry();
     }
 
-    @Nonnull
-    final Logger createLogger(@Nonnull final TestHandler handler) {
+    @NonNull
+    final Logger createLogger(@NonNull final TestHandler handler) {
         final Logger logger = Logger.getAnonymousLogger();
         logger.setUseParentHandlers(false);
         logger.addHandler(handler);
@@ -383,17 +390,17 @@ public abstract class AbstractTest implements IHookable {
         return logger;
     }
 
-    @Nonnull
+    @NonNull
     protected final String asCleanString(
-            @Nonnull final ByteArrayOutputStream outputStream,
+            @NonNull final ByteArrayOutputStream outputStream,
             @Nullable final String sha256,
             @Nullable final String uri) {
         return cleanContent(asString(outputStream), sha256, uri);
     }
 
-    @Nonnull
+    @NonNull
     protected final String cleanContent(
-            @Nonnull final String input, @Nullable final String sha256, @Nullable final String uri) {
+            @NonNull final String input, @Nullable final String sha256, @Nullable final String uri) {
         String content = input;
         if (null != sha256) {
             content = content.replace(sha256, "MYSHA");
@@ -404,13 +411,13 @@ public abstract class AbstractTest implements IHookable {
         return content;
     }
 
-    @Nonnull
-    protected final String asString(@Nonnull final ByteArrayOutputStream outputStream) {
+    @NonNull
+    protected final String asString(@NonNull final ByteArrayOutputStream outputStream) {
         return new String(outputStream.toByteArray(), StandardCharsets.US_ASCII);
     }
 
     protected final void assertNonSystemArtifactList(
-            @Nonnull final ApplicationRecord record, @Nonnull final String expected) {
+            @NonNull final ApplicationRecord record, @NonNull final String expected) {
         assertEquals(
                 record.getArtifacts().stream()
                         .filter(a -> !record.getSource()
@@ -423,7 +430,7 @@ public abstract class AbstractTest implements IHookable {
     }
 
     protected final void assertNonSystemArtifactCount(
-            @Nonnull final ApplicationRecord record, final int expectedCount) {
+            @NonNull final ApplicationRecord record, final int expectedCount) {
         assertEquals(
                 record.getArtifacts().size(),
                 expectedCount + record.getSource().getSystemArtifacts().size());

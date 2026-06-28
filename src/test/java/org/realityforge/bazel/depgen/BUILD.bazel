@@ -12,7 +12,6 @@ TEST_DEPS = [
     "//third_party/java:guiceyloops",
     "//third_party/java:httpclient",
     "//third_party/java:httpcore",
-    "//third_party/java:javax_annotation",
     "//third_party/java:javax_inject",
     "//third_party/java:jcl_over_slf4j",
     "//third_party/java:maven_artifact",
@@ -82,6 +81,7 @@ java_library(
         "AbstractTest.java",
         "JarFileAction.java",
         "TestHandler.java",
+        "package-info.java",
     ],
     deps = TEST_DEPS,
 )

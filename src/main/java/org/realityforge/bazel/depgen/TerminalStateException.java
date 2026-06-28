@@ -1,6 +1,6 @@
 package org.realityforge.bazel.depgen;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 class TerminalStateException extends RuntimeException {
     private final int _exitCode;

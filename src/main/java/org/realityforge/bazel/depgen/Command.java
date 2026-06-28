@@ -3,39 +3,39 @@ package org.realityforge.bazel.depgen;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 
 abstract class Command {
     interface Context {
-        @Nonnull
+        @NonNull
         Environment environment();
 
-        @Nonnull
+        @NonNull
         ApplicationModel loadModel();
 
-        @Nonnull
+        @NonNull
         ApplicationRecord loadRecord() throws Exception;
     }
 
-    @Nonnull
+    @NonNull
     private final String _name;
 
-    @Nonnull
+    @NonNull
     private final String _help;
 
-    Command(@Nonnull final String name, @Nonnull final String help) {
+    Command(@NonNull final String name, @NonNull final String help) {
         _name = Objects.requireNonNull(name);
         _help = Objects.requireNonNull(help);
     }
 
-    @Nonnull
+    @NonNull
     String getName() {
         return _name;
     }
 
-    @Nonnull
+    @NonNull
     String getHelp() {
         return _help;
     }
@@ -52,7 +52,7 @@ abstract class Command {
         return false;
     }
 
-    boolean processOptions(@Nonnull final Environment environment, @Nonnull final String... args) {
+    boolean processOptions(@NonNull final Environment environment, @NonNull final String... args) {
         if (args.length > 0) {
             environment
                     .logger()
@@ -65,5 +65,5 @@ abstract class Command {
         }
     }
 
-    abstract int run(@Nonnull Context context) throws Exception;
+    abstract int run(@NonNull Context context) throws Exception;
 }

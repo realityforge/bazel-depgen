@@ -4,8 +4,8 @@ import static org.testng.Assert.*;
 
 import gir.io.FileUtil;
 import java.nio.file.Path;
-import javax.annotation.Nonnull;
 import org.eclipse.aether.graph.DependencyNode;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.testng.annotations.Test;
 
@@ -110,8 +110,8 @@ public class DependencyGraphEmitterTest extends AbstractTest {
                 "\\- com.example:myapp:jar:1.0 [compile]\n" + "   \\- com.example:mylib:jar:1.0 [compile, optional]\n");
     }
 
-    @Nonnull
-    private String collectOutput(@Nonnull final Resolver resolver) throws Exception {
+    @NonNull
+    private String collectOutput(@NonNull final Resolver resolver) throws Exception {
         final ApplicationModel model = loadApplicationModel();
         final DependencyNode root = resolveDependencies(resolver, model);
 

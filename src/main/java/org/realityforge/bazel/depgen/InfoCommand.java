@@ -6,15 +6,15 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 
 final class InfoCommand extends ConfigurableCommand {
-    @Nonnull
+    @NonNull
     static final String COMMAND = "info";
 
-    @Nonnull
+    @NonNull
     private final Set<String> _outputKeys = new HashSet<>();
 
     InfoCommand() {
@@ -22,7 +22,7 @@ final class InfoCommand extends ConfigurableCommand {
     }
 
     @Override
-    boolean processArguments(@Nonnull final Environment environment, @Nonnull final List<CLOption> arguments) {
+    boolean processArguments(@NonNull final Environment environment, @NonNull final List<CLOption> arguments) {
         // Get a list of parsed options
         for (final CLOption option : arguments) {
             assert CLOption.TEXT_ARGUMENT == option.getId();
@@ -33,7 +33,7 @@ final class InfoCommand extends ConfigurableCommand {
     }
 
     @Override
-    int run(@Nonnull final Context context) {
+    int run(@NonNull final Context context) {
         final Environment environment = context.environment();
         printInfo(context, "config-file", environment::getConfigFile);
         printInfo(context, "settings-file", environment::getSettingsFile);
@@ -47,7 +47,7 @@ final class InfoCommand extends ConfigurableCommand {
     }
 
     private void printInfo(
-            @Nonnull final Context context, @Nonnull final String key, @Nonnull final Supplier<Object> accessor) {
+            @NonNull final Context context, @NonNull final String key, @NonNull final Supplier<Object> accessor) {
         if (_outputKeys.isEmpty() || _outputKeys.contains(key)) {
             final Logger logger = context.environment().logger();
             if (logger.isLoggable(Level.WARNING)) {

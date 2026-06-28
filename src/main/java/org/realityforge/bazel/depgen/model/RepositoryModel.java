@@ -1,8 +1,8 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.config.ChecksumPolicy;
 import org.realityforge.bazel.depgen.config.RepositoryConfig;
 
@@ -10,14 +10,14 @@ public final class RepositoryModel {
     @Nullable
     private final RepositoryConfig _source;
 
-    @Nonnull
+    @NonNull
     private final String _name;
 
-    @Nonnull
+    @NonNull
     private final String _url;
 
-    @Nonnull
-    public static RepositoryModel parse(@Nonnull final RepositoryConfig source) {
+    @NonNull
+    public static RepositoryModel parse(@NonNull final RepositoryConfig source) {
         final String url = source.getUrl();
         if (null == url) {
             throw new InvalidModelException("The repository must specify the 'url' property.", source);
@@ -29,13 +29,13 @@ public final class RepositoryModel {
         return new RepositoryModel(source, actualName, url);
     }
 
-    @Nonnull
-    public static RepositoryModel create(@Nonnull final String name, @Nonnull final String url) {
+    @NonNull
+    public static RepositoryModel create(@NonNull final String name, @NonNull final String url) {
         return new RepositoryModel(null, name, url);
     }
 
     private RepositoryModel(
-            @Nullable final RepositoryConfig source, @Nonnull final String name, @Nonnull final String url) {
+            @Nullable final RepositoryConfig source, @NonNull final String name, @NonNull final String url) {
         _source = source;
         _name = Objects.requireNonNull(name);
         _url = Objects.requireNonNull(url);
@@ -46,12 +46,12 @@ public final class RepositoryModel {
         return _source;
     }
 
-    @Nonnull
+    @NonNull
     public String getName() {
         return _name;
     }
 
-    @Nonnull
+    @NonNull
     public String getUrl() {
         return _url;
     }
@@ -66,7 +66,7 @@ public final class RepositoryModel {
         return searchByDefault == null ? true : searchByDefault;
     }
 
-    @Nonnull
+    @NonNull
     public ChecksumPolicy checksumPolicy() {
         final ChecksumPolicy policy = null != _source ? _source.getChecksumPolicy() : null;
         return policy == null ? ChecksumPolicy.fail : policy;

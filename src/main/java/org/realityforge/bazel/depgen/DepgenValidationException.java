@@ -1,9 +1,9 @@
 package org.realityforge.bazel.depgen;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 public final class DepgenValidationException extends DepgenException {
-    public DepgenValidationException(@Nonnull final String message) {
+    public DepgenValidationException(@NonNull final String message) {
         super(message);
     }
 }
