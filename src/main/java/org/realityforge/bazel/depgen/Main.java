@@ -102,6 +102,7 @@ public class Main
         put( PrintGraphCommand.COMMAND, PrintGraphCommand::new );
         put( HashCommand.COMMAND, HashCommand::new );
         put( InitCommand.COMMAND, InitCommand::new );
+        put( AddCommand.COMMAND, AddCommand::new );
         put( InfoCommand.COMMAND, InfoCommand::new );
       }
     } );

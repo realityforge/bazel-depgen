@@ -40,10 +40,6 @@ Where it is unclear why colt is included. Maybe emitting the dependency graph or
 
 * Add command that checks/validates/cleans cache.
 
-* Add `add` command that adds a dependency.
-
-  `add [coord] --alias foo --nature java --nature plugin --include-optional --include-source --export-deps --generates-api --excludes com.example:base --excludes com.example:base --visibility //blah  --visibility //blee --j2cl-suppress blah`
-
 * Add `remove` command that removes a dependency.
 
   `remove [coord]`

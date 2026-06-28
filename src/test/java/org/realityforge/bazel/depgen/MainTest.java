@@ -43,6 +43,7 @@ public class MainTest
                   "\t\tprint-graph: Compute and print the dependency graph for the dependency configuration.\n" +
                   "\t\thash: Generate a hash of the content of the dependency configuration.\n" +
                   "\t\tinit: Initialize an empty dependency configuration and Bazel scaffolding.\n" +
+                  "\t\tadd: Add a dependency to the dependency configuration.\n" +
                   "\t\tinfo: Print runtime info about the tool.\n" +
                   "\tOptions:\n" +
                   "\t--version\n" +
