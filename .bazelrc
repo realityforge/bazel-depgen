@@ -5,3 +5,4 @@ test --explicit_java_test_deps
 # Generate the symlink tree as a peer directory
 # If we generate in the current directory, IDEA can start scanning an ultimately get locked up or crash
 common --symlink_prefix=../.bazel/bazel-depgen/
+common --flag_alias=release_version=//tools/release:version

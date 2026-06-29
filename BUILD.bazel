@@ -34,5 +34,8 @@ buildifier(
 
 test_suite(
     name = "all_tests",
-    tests = ["//src/test/java/org/realityforge/bazel/depgen:all_tests"],
+    tests = [
+        "//src/test/java/org/realityforge/bazel/depgen:all_tests",
+        "//tools/release:all_tests",
+    ],
 )

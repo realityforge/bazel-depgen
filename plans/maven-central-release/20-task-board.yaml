@@ -1,0 +1,114 @@
+tasks:
+  - id: T01
+    title: Record Maven Central release plan
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - Requirements document records resolved decisions and no open questions.
+      - Implementation plan and task board exist under plans/maven-central-release.
+    files:
+      - plans/maven-central-release/00-requirements.md
+      - plans/maven-central-release/10-implementation-plan.md
+      - plans/maven-central-release/20-task-board.yaml
+    evidence:
+      - command: "created planning artifacts from resolved design decisions"
+        result: "plans/maven-central-release documents requirements, implementation plan, and tasks"
+    commit:
+      hash: not_required
+      message: not_required
+  - id: T02
+    title: Implement release artifact builders
+    status: completed
+    priority: high
+    depends_on:
+      - T01
+    acceptance_criteria:
+      - //tools/release:maven_artifacts builds all unsigned Maven artifacts.
+      - Version build setting drives config.properties, POM, and artifact metadata.
+      - Curated all jar is assembled deterministically with strict duplicate handling.
+    files:
+      - .bazelrc
+      - tools/release/**
+      - src/main/java/org/realityforge/bazel/depgen/BUILD.bazel
+    evidence:
+      - command: "bazel build //tools/release:maven_artifacts //tools/release:dist"
+        result: "passed"
+    history:
+      - note: "Focused build exposed duplicate META-INF/sisu service-index files; plan updated to merge them as service metadata."
+      - note: "Focused build exposed duplicate META-INF/plexus/components.xml descriptors; plan updated to merge Plexus component entries."
+    commit:
+      hash: not_required
+      message: not_required
+  - id: T03
+    title: Add release integration test
+    status: completed
+    priority: high
+    depends_on:
+      - T02
+    acceptance_criteria:
+      - Integration test runs java -jar on the all jar with no external classpath.
+      - Test performs init, add, and generate against a generated local Maven repository.
+      - Release tests are included in //tools/release:all_tests and //:all_tests.
+    files:
+      - tools/release/**
+      - BUILD.bazel
+    evidence:
+      - command: "bazel test //tools/release:all_tests"
+        result: "passed"
+    commit:
+      hash: not_required
+      message: not_required
+  - id: T04
+    title: Add release wrapper, docs, changelog, and retire old release path
+    status: completed
+    priority: medium
+    depends_on:
+      - T02
+    acceptance_criteria:
+      - tools/package_maven_central.sh documents and runs the release commands.
+      - CONTRIBUTING.md documents raw commands and wrapper usage.
+      - CHANGELOG.md includes an Unreleased entry.
+      - Old Ruby Maven Central upload path points users at the new wrapper.
+      - /dist is ignored.
+    files:
+      - tools/package_maven_central.sh
+      - CONTRIBUTING.md
+      - CHANGELOG.md
+      - .gitignore
+      - tasks/**
+    evidence:
+      - command: "tools/java_format.sh write"
+        result: "passed"
+      - command: "bazel run //:buildifier"
+        result: "passed"
+    commit:
+      hash: not_required
+      message: not_required
+  - id: T05
+    title: Verify release packaging
+    status: completed
+    priority: high
+    depends_on:
+      - T02
+      - T03
+      - T04
+    acceptance_criteria:
+      - Focused release build passes.
+      - Focused release tests pass.
+      - Side-effecting dist assembly produces the staged repository, signatures, checksums, and upload zip.
+      - tools/check.sh passes.
+    files:
+      - plans/maven-central-release/20-task-board.yaml
+    evidence:
+      - command: "bazel build //tools/release:maven_artifacts //tools/release:dist --release_version=1.2.3"
+        result: "passed"
+      - command: "bazel test //tools/release:all_tests --release_version=1.2.3"
+        result: "passed"
+      - command: "bazel run //tools/release:dist --release_version=1.2.3 -- --gpg-executable /private/tmp/bazel-depgen-test-gpg.<pid>"
+        result: "passed with a controlled test signer; wrote dist/bazel-depgen-1.2.3/, dist/bazel-depgen-1.2.3.zip, and 20 Maven repository entries including .asc, .md5, and .sha1 sidecars"
+      - command: "tools/check.sh"
+        result: "passed; line coverage 95.31%, branch coverage 85.02%"
+    commit:
+      hash: not_required
+      message: not_required

@@ -7,4 +7,5 @@
 /generated
 /reports
 /target
+/dist
 /bazel-*

@@ -1,4 +1,5 @@
 load("//third_party/java:rules.bzl", "java_binary", "java_library")
+load("//tools/release:release.bzl", "release_config_properties")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -36,10 +37,8 @@ DEPGEN_EXTERNAL_DEPS = [
     "//third_party/java:snakeyaml",
 ]
 
-genrule(
+release_config_properties(
     name = "config_properties",
-    outs = ["config.properties"],
-    cmd = "printf 'group=org.realityforge.bazel.depgen\\nid=bazel-depgen\\nversion=0.25\\n' > $@",
 )
 
 java_library(

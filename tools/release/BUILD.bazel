@@ -1,0 +1,174 @@
+load("@rules_java//java:defs.bzl", "java_binary", "java_test")
+load(
+    ":release.bzl",
+    "release_jar",
+    "release_javadoc_jar",
+    "release_pom",
+    "release_source_jar",
+    "release_version",
+    "release_version_file",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+PRODUCTION_JAVA_TARGETS = [
+    "//src/main/java/org/realityforge/bazel/depgen:core",
+    "//src/main/java/org/realityforge/bazel/depgen:dependency_graph_emitter",
+    "//src/main/java/org/realityforge/bazel/depgen:depgen",
+    "//src/main/java/org/realityforge/bazel/depgen/config",
+    "//src/main/java/org/realityforge/bazel/depgen/metadata",
+    "//src/main/java/org/realityforge/bazel/depgen/model",
+    "//src/main/java/org/realityforge/bazel/depgen/record",
+    "//src/main/java/org/realityforge/bazel/depgen/util:ordered_properties",
+    "//src/main/java/org/realityforge/bazel/depgen/util",
+]
+
+ALL_JAR_DEPENDENCY_JARS = [
+    "@commons_codec//file",
+    "@commons_lang3//file",
+    "@getopt4j//file",
+    "@guava//file",
+    "@httpclient//file",
+    "@httpcore//file",
+    "@jcl_over_slf4j//file",
+    "@jspecify//file",
+    "@maven_artifact//file",
+    "@maven_builder_support//file",
+    "@maven_model//file",
+    "@maven_model_builder//file",
+    "@maven_repository_metadata//file",
+    "@maven_resolver_api//file",
+    "@maven_resolver_connector_basic//file",
+    "@maven_resolver_impl//file",
+    "@maven_resolver_provider//file",
+    "@maven_resolver_spi//file",
+    "@maven_resolver_transport_file//file",
+    "@maven_resolver_transport_http//file",
+    "@maven_resolver_util//file",
+    "@maven_settings//file",
+    "@maven_settings_builder//file",
+    "@plexus_cipher//file",
+    "@plexus_component_annotations//file",
+    "@plexus_interpolation//file",
+    "@plexus_sec_dispatcher//file",
+    "@plexus_utils//file",
+    "@slf4j_api//file",
+    "@slf4j_jdk14//file",
+    "@snakeyaml//file",
+]
+
+release_version(
+    name = "version",
+    build_setting_default = "0.0.0-SNAPSHOT",
+)
+
+java_binary(
+    name = "jar_builder",
+    srcs = ["JarBuilder.java"],
+    main_class = "org.realityforge.bazel.depgen.release.JarBuilder",
+)
+
+java_binary(
+    name = "javadoc_jar_builder",
+    srcs = ["JavadocJarBuilder.java"],
+    main_class = "org.realityforge.bazel.depgen.release.JavadocJarBuilder",
+)
+
+java_binary(
+    name = "dist",
+    srcs = ["DistBuilder.java"],
+    args = [
+        "--version-file",
+        "$(rootpath :release_version)",
+        "--artifact",
+        "jar=$(rootpath :bazel_depgen_jar)",
+        "--artifact",
+        "sources=$(rootpath :bazel_depgen_sources_jar)",
+        "--artifact",
+        "javadoc=$(rootpath :bazel_depgen_javadoc_jar)",
+        "--artifact",
+        "all=$(rootpath :bazel_depgen_all_jar)",
+        "--artifact",
+        "pom=$(rootpath :bazel_depgen_pom)",
+    ],
+    data = [
+        ":bazel_depgen_all_jar",
+        ":bazel_depgen_jar",
+        ":bazel_depgen_javadoc_jar",
+        ":bazel_depgen_pom",
+        ":bazel_depgen_sources_jar",
+        ":release_version",
+    ],
+    main_class = "org.realityforge.bazel.depgen.release.DistBuilder",
+)
+
+release_jar(
+    name = "bazel_depgen_jar",
+    out = "bazel-depgen.jar",
+    java_targets = PRODUCTION_JAVA_TARGETS,
+)
+
+release_jar(
+    name = "bazel_depgen_all_jar",
+    out = "bazel-depgen-all.jar",
+    jars = ALL_JAR_DEPENDENCY_JARS,
+    java_targets = PRODUCTION_JAVA_TARGETS,
+    main_class = "org.realityforge.bazel.depgen.Main",
+)
+
+release_source_jar(
+    name = "bazel_depgen_sources_jar",
+    out = "bazel-depgen-sources.jar",
+    java_targets = PRODUCTION_JAVA_TARGETS,
+    resource_entries = [
+        "org/realityforge/bazel/depgen/config.properties",
+        "org/realityforge/bazel/depgen/templates/dependencies.yml",
+    ],
+    resource_files = [
+        "//src/main/java/org/realityforge/bazel/depgen:config_properties",
+        "//src/main/resources/org/realityforge/bazel/depgen/templates:dependencies.yml",
+    ],
+)
+
+release_javadoc_jar(
+    name = "bazel_depgen_javadoc_jar",
+    out = "bazel-depgen-javadoc.jar",
+    classpath = ALL_JAR_DEPENDENCY_JARS,
+    java_targets = PRODUCTION_JAVA_TARGETS,
+)
+
+release_pom(
+    name = "bazel_depgen_pom",
+    out = "bazel-depgen.pom",
+)
+
+release_version_file(
+    name = "release_version",
+    out = "release-version.txt",
+)
+
+filegroup(
+    name = "maven_artifacts",
+    srcs = [
+        ":bazel_depgen_all_jar",
+        ":bazel_depgen_jar",
+        ":bazel_depgen_javadoc_jar",
+        ":bazel_depgen_pom",
+        ":bazel_depgen_sources_jar",
+    ],
+)
+
+java_test(
+    name = "all_jar_integration_test",
+    size = "small",
+    srcs = ["AllJarIntegrationTest.java"],
+    args = ["$(rootpath :bazel_depgen_all_jar)"],
+    data = [":bazel_depgen_all_jar"],
+    main_class = "org.realityforge.bazel.depgen.release.AllJarIntegrationTest",
+    use_testrunner = False,
+)
+
+test_suite(
+    name = "all_tests",
+    tests = [":all_jar_integration_test"],
+)

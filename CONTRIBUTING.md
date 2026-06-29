@@ -35,6 +35,32 @@ When submitting pull requests, make sure to do the following:
 * Maintain the same code style.
 * Maintain the same level of test coverage or improve it.
 
+## Maven Central bundle
+
+Run the full project verification before creating a release bundle:
+
+```bash
+tools/check.sh
+```
+
+Create the signed Maven Central upload zip with the wrapper:
+
+```bash
+tools/package_maven_central.sh 1.2.3 --gpg-key-id KEYID
+```
+
+The wrapper runs the release artifact build, the standalone all-jar integration test, and the dist assembly. The raw
+commands are:
+
+```bash
+bazel build //tools/release:maven_artifacts --release_version=1.2.3
+bazel test //tools/release:all_tests --release_version=1.2.3
+bazel run //tools/release:dist --release_version=1.2.3 -- --gpg-key-id KEYID
+```
+
+The dist command writes the staged repository to `dist/bazel-depgen-1.2.3/` and the upload bundle to
+`dist/bazel-depgen-1.2.3.zip`.
+
 ## Additional Resources
 
 * [General GitHub documentation](http://help.github.com/)
