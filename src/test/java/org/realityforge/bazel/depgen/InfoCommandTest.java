@@ -2,6 +2,8 @@ package org.realityforge.bazel.depgen;
 
 import static org.testng.Assert.*;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.testng.annotations.Test;
 
 public class InfoCommandTest extends AbstractTest {
@@ -71,6 +73,21 @@ public class InfoCommandTest extends AbstractTest {
     }
 
     @Test
+    public void info_skipsOutputWhenWarningsAreDisabled() throws Exception {
+        writeWorkspace();
+        writeConfigFile("");
+
+        final var handler = new TestHandler();
+        final Logger logger = createLogger(handler);
+        logger.setLevel(Level.SEVERE);
+        final var command = new InfoCommand();
+        final Environment environment = newEnvironment(logger);
+        final int exitCode = command.run(new CommandContextImpl(environment));
+        assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
+        assertEquals(handler.toString(), "");
+    }
+
+    @Test
     public void info_badArgs() throws Exception {
         writeWorkspace();
         writeConfigFile("");
@@ -81,5 +98,16 @@ public class InfoCommandTest extends AbstractTest {
         final boolean parsed = command.processOptions(environment, "--something-something");
         assertFalse(parsed);
         assertEquals(handler.toString(), "Error: Unknown option --something-something");
+    }
+
+    @Test
+    public void info_help() throws Exception {
+        final var handler = new TestHandler();
+        final var command = new InfoCommand();
+        final boolean parsed = command.processOptions(newEnvironment(handler), "--help");
+        assertFalse(parsed);
+        final String output = handler.toString();
+        assertOutputContains(output, "info Options:");
+        assertOutputContains(output, "--help");
     }
 }
