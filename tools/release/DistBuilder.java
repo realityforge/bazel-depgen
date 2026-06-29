@@ -54,7 +54,8 @@ public final class DistBuilder {
     private static Options parse(final String[] args) {
         Path versionFile = null;
         String gpgExecutable = "gpg";
-        String gpgKeyId = null;
+        String gpgKeyId = env("GPG_USER");
+        final String gpgPass = env("GPG_PASS");
         final Map<String, Path> artifacts = new LinkedHashMap<>();
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
@@ -87,7 +88,12 @@ public final class DistBuilder {
                 throw new IllegalArgumentException("Missing --artifact " + kind + "=<path>");
             }
         }
-        return new Options(versionFile, artifacts, gpgExecutable, gpgKeyId);
+        return new Options(versionFile, artifacts, gpgExecutable, gpgKeyId, gpgPass);
+    }
+
+    private static String env(final String name) {
+        final String value = System.getenv(name);
+        return value == null || value.isBlank() ? null : value;
     }
 
     private static void validateReleaseVersion(final String version) {
@@ -144,14 +150,20 @@ public final class DistBuilder {
         final Path signature = Path.of(file + ".asc");
         final List<String> command = new ArrayList<>();
         command.add(options.gpgExecutable());
-        command.add("--armor");
-        command.add("--detach-sign");
-        command.add("--output");
-        command.add(signature.toString());
         if (options.gpgKeyId() != null) {
             command.add("--local-user");
             command.add(options.gpgKeyId());
         }
+        command.add("--armor");
+        command.add("--output");
+        command.add(signature.toString());
+        if (options.gpgPass() != null) {
+            command.add("--passphrase");
+            command.add(options.gpgPass());
+        }
+        command.add("--detach-sig");
+        command.add("--batch");
+        command.add("--yes");
         command.add(file.toString());
         final Process process = new ProcessBuilder(command).inheritIO().start();
         final int exit = process.waitFor();
@@ -227,16 +239,19 @@ public final class DistBuilder {
         private final Map<String, Path> _artifacts;
         private final String _gpgExecutable;
         private final String _gpgKeyId;
+        private final String _gpgPass;
 
         private Options(
                 final Path versionFile,
                 final Map<String, Path> artifacts,
                 final String gpgExecutable,
-                final String gpgKeyId) {
+                final String gpgKeyId,
+                final String gpgPass) {
             _versionFile = versionFile;
             _artifacts = artifacts;
             _gpgExecutable = gpgExecutable;
             _gpgKeyId = gpgKeyId;
+            _gpgPass = gpgPass;
         }
 
         private Path versionFile() {
@@ -253,6 +268,10 @@ public final class DistBuilder {
 
         private String gpgKeyId() {
             return _gpgKeyId;
+        }
+
+        private String gpgPass() {
+            return _gpgPass;
         }
     }
 }

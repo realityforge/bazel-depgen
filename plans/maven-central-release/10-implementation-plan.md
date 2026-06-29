@@ -51,8 +51,8 @@
 
 - The side-effecting dist path can be validated with a temporary signer passed via `--gpg-executable`. The signer must
   create the requested `.asc` output so the run exercises staging, signer invocation, signature presence checks, checksum
-  generation, and zip creation without requiring a real private key. Real releases use `gpg` directly or pass
-  `--gpg-key-id`.
+  generation, and zip creation without requiring a real private key. Real releases use `gpg` directly with `GPG_USER`
+  and optional `GPG_PASS`, or pass `--gpg-key-id` to override `GPG_USER`.
 
 ## Decision Log
 

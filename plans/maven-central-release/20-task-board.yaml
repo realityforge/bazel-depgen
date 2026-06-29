@@ -27,6 +27,7 @@ tasks:
       - //tools/release:maven_artifacts builds all unsigned Maven artifacts.
       - Version build setting drives config.properties, POM, and artifact metadata.
       - Curated all jar is assembled deterministically with strict duplicate handling.
+      - Dist signing uses the old Buildr `GPG_USER` and `GPG_PASS` environment defaults.
     files:
       - .bazelrc
       - tools/release/**
@@ -34,6 +35,8 @@ tasks:
     evidence:
       - command: "bazel build //tools/release:maven_artifacts //tools/release:dist"
         result: "passed"
+      - command: "GPG_USER=env-key GPG_PASS=env-pass bazel run //tools/release:dist --release_version=1.2.3 -- --gpg-executable /private/tmp/bazel-depgen-test-gpg.<pid>"
+        result: "passed; fake signer verified --local-user env-key and --passphrase env-pass, and dist zip contained 20 Maven repository entries"
     history:
       - note: "Focused build exposed duplicate META-INF/sisu service-index files; plan updated to merge them as service metadata."
       - note: "Focused build exposed duplicate META-INF/plexus/components.xml descriptors; plan updated to merge Plexus component entries."

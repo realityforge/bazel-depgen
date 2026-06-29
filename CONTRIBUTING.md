@@ -46,16 +46,17 @@ tools/check.sh
 Create the signed Maven Central upload zip with the wrapper:
 
 ```bash
-tools/package_maven_central.sh 1.2.3 --gpg-key-id KEYID
+GPG_USER=KEYID tools/package_maven_central.sh 1.2.3
 ```
 
-The wrapper runs the release artifact build, the standalone all-jar integration test, and the dist assembly. The raw
-commands are:
+The wrapper runs the release artifact build, the standalone all-jar integration test, and the dist assembly. Signing
+matches the previous Buildr release flow: `GPG_USER` selects the key and optional `GPG_PASS` supplies the passphrase.
+Pass `--gpg-key-id KEYID` to override `GPG_USER`. The raw commands are:
 
 ```bash
 bazel build //tools/release:maven_artifacts --release_version=1.2.3
 bazel test //tools/release:all_tests --release_version=1.2.3
-bazel run //tools/release:dist --release_version=1.2.3 -- --gpg-key-id KEYID
+GPG_USER=KEYID bazel run //tools/release:dist --release_version=1.2.3
 ```
 
 The dist command writes the staged repository to `dist/bazel-depgen-1.2.3/` and the upload bundle to

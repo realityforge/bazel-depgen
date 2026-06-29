@@ -41,7 +41,8 @@ The release flow must produce:
   - fail on duplicate non-identical classes or resources.
 - Sources jar includes production `.java` files plus production resources.
 - Javadocs use public/protected visibility and fail on command errors, not warnings.
-- Dist signing uses `gpg` by default, with optional `--gpg-executable` and `--gpg-key-id`.
+- Dist signing uses `gpg` by default, uses `GPG_USER` and `GPG_PASS` like the old Buildr flow, and accepts optional
+  `--gpg-executable` and `--gpg-key-id` overrides.
 - Dist checksums are generated for primary artifacts only.
 - The dist task cleans only the requested version directory and zip.
 - Add `/dist` to `.gitignore`.
@@ -56,8 +57,8 @@ Expected commands:
 ```bash
 bazel build //tools/release:maven_artifacts --release_version=1.2.3
 bazel test //tools/release:all_tests --release_version=1.2.3
-bazel run //tools/release:dist --release_version=1.2.3 -- --gpg-key-id KEYID
-tools/package_maven_central.sh 1.2.3 --gpg-key-id KEYID
+GPG_USER=KEYID bazel run //tools/release:dist --release_version=1.2.3
+GPG_USER=KEYID tools/package_maven_central.sh 1.2.3
 ```
 
 ## Quality Gates
