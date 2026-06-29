@@ -94,5 +94,5 @@ end
 
 desc 'Create Package and deploy to Maven Central'
 task 'upload_to_maven_central' do
-  release_to_maven_central('arez', %w(bazel-depgen))
+  release_to_maven_central('bazel-depgen', %w(bazel-depgen))
 end
