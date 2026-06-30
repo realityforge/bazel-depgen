@@ -43,6 +43,7 @@ TEST_DEPS = [
 TEST_CLASSES = [
     "org.realityforge.bazel.depgen.AddCommandTest",
     "org.realityforge.bazel.depgen.DepGenConfigTest",
+    "org.realityforge.bazel.depgen.DependencyConfigEditorTest",
     "org.realityforge.bazel.depgen.DependencyGraphEmitterTest",
     "org.realityforge.bazel.depgen.GenerateCommandTest",
     "org.realityforge.bazel.depgen.HashCommandTest",
@@ -52,6 +53,7 @@ TEST_CLASSES = [
     "org.realityforge.bazel.depgen.OptionalDependencySelectorTest",
     "org.realityforge.bazel.depgen.PrintGraphCommandTest",
     "org.realityforge.bazel.depgen.RawFormatterTest",
+    "org.realityforge.bazel.depgen.RemoveCommandTest",
     "org.realityforge.bazel.depgen.ResolverTest",
     "org.realityforge.bazel.depgen.ResolverUtilTest",
     "org.realityforge.bazel.depgen.SettingsUtilTest",
@@ -95,6 +97,7 @@ java_test(
     srcs = [
         "AddCommandTest.java",
         "DepGenConfigTest.java",
+        "DependencyConfigEditorTest.java",
         "DependencyGraphEmitterTest.java",
         "GenerateCommandTest.java",
         "HashCommandTest.java",
@@ -104,6 +107,7 @@ java_test(
         "OptionalDependencySelectorTest.java",
         "PrintGraphCommandTest.java",
         "RawFormatterTest.java",
+        "RemoveCommandTest.java",
         "ResolverTest.java",
         "ResolverUtilTest.java",
         "SettingsUtilTest.java",

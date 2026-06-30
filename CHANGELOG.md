@@ -10,6 +10,8 @@
 * Add Bazel-native Maven Central artifact and bundle packaging, including the executable all-jar integration test.
 * Document the Maven Central release workflow, including the split orchestration scripts.
 * Upgrade SnakeYAML to `2.6` and omit Java module descriptors from the executable all-jar merge.
+* Preserve YAML comments in the `add` command using SnakeYAML comment processing instead of manual text patching.
+* Add the `remove` subcommand to remove dependencies from `dependencies.yml` while preserving YAML comments.
 * Remove the legacy Travis CI configuration now that repository verification is driven by Bazel scripts.
 * Remove the remaining legacy Buildr files after the Bazel build, test, package, and release migration.
 

@@ -30,6 +30,19 @@ public class AddCommandTest extends AbstractTest {
     }
 
     @Test
+    public void add_emptyConfig() throws Exception {
+        writeConfigFile("");
+
+        final var command = new AddCommand();
+        final Environment environment = newEnvironment();
+        assertTrue(command.processOptions(environment, "com.example:myapp:1.0"));
+
+        final int exitCode = command.run(new CommandContextImpl(environment));
+        assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
+        assertEquals(loadAsString(environment.getConfigFile()), "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+    }
+
+    @Test
     public void add_ignoresCommentedTemplateArtifactsSection() throws Exception {
         writeConfigFile("#artifacts:\n" + "  #- coord: com.example:sample:1.0\n");
 
@@ -41,7 +54,7 @@ public class AddCommandTest extends AbstractTest {
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
         assertEquals(
                 loadAsString(environment.getConfigFile()),
-                "#artifacts:\n" + "  #- coord: com.example:sample:1.0\n"
+                "#artifacts:\n" + "#- coord: com.example:sample:1.0\n"
                         + "artifacts:\n"
                         + "  - coord: com.example:myapp:1.0\n");
     }
@@ -66,6 +79,25 @@ public class AddCommandTest extends AbstractTest {
                         + "\n"
                         + "excludes:\n"
                         + "  - coord: com.example:unused\n");
+    }
+
+    @Test
+    public void add_existingArtifactsSectionWithComments() throws Exception {
+        writeConfigFile(
+                "# Dependencies\n" + "artifacts:\n" + "  # Existing dependency\n" + "  - coord: com.example:old:1.0\n");
+
+        final var command = new AddCommand();
+        final Environment environment = newEnvironment();
+        assertTrue(command.processOptions(environment, "com.example:myapp:1.0"));
+
+        final int exitCode = command.run(new CommandContextImpl(environment));
+        assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
+        assertEquals(
+                loadAsString(environment.getConfigFile()),
+                "# Dependencies\n" + "artifacts:\n"
+                        + "  - # Existing dependency\n"
+                        + "    coord: com.example:old:1.0\n"
+                        + "  - coord: com.example:myapp:1.0\n");
     }
 
     @Test
@@ -271,18 +303,16 @@ public class AddCommandTest extends AbstractTest {
     }
 
     @Test
-    public void add_unsupportedInlineArtifactsSection() throws Exception {
-        final String original = "artifacts: []\n";
-        writeConfigFile(original);
+    public void add_inlineArtifactsSection() throws Exception {
+        writeConfigFile("artifacts: []\n");
 
         final var command = new AddCommand();
         final Environment environment = newEnvironment();
         assertTrue(command.processOptions(environment, "com.example:myapp:1.0"));
 
-        final DepgenValidationException exception =
-                expectThrows(DepgenValidationException.class, () -> command.run(new CommandContextImpl(environment)));
-        assertEquals(exception.getMessage(), "The add command only supports block-style artifacts sections.");
-        assertEquals(loadAsString(environment.getConfigFile()), original);
+        final int exitCode = command.run(new CommandContextImpl(environment));
+        assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
+        assertEquals(loadAsString(environment.getConfigFile()), "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
         assertNoTempFiles(requireNonNull(environment.getConfigFile().getParent()));
     }
 

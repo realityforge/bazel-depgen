@@ -1,11 +1,7 @@
 package org.realityforge.bazel.depgen;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.AtomicMoveNotSupportedException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +9,6 @@ import java.util.Objects;
 import java.util.logging.Level;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.J2clConfig;
 import org.realityforge.bazel.depgen.config.J2clMode;
@@ -25,6 +20,12 @@ import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.nodes.MappingNode;
+import org.yaml.snakeyaml.nodes.Node;
+import org.yaml.snakeyaml.nodes.NodeTuple;
+import org.yaml.snakeyaml.nodes.SequenceNode;
+import org.yaml.snakeyaml.nodes.Tag;
 
 final class AddCommand extends ConfigurableCommand {
     @NonNull
@@ -366,9 +367,8 @@ final class AddCommand extends ConfigurableCommand {
         validateNatureSpecificOptions(model);
         validateNotDuplicate(model, artifactModel);
 
-        final String content = Files.readString(configFile, StandardCharsets.UTF_8);
-        final String candidateContent = insertArtifact(content, renderArtifact(artifactConfig));
-        writeValidatedConfig(configFile, candidateContent);
+        final String candidateContent = appendArtifact(configFile, artifactConfig);
+        DependencyConfigEditor.writeValidatedConfig(configFile, candidateContent);
 
         if (environment.logger().isLoggable(Level.INFO)) {
             environment
@@ -508,153 +508,83 @@ final class AddCommand extends ConfigurableCommand {
     }
 
     @NonNull
-    private String renderArtifact(@NonNull final ArtifactConfig config) {
-        final var output = new StringBuilder();
-        output.append("  - coord: ").append(config.getCoord()).append('\n');
-        appendScalar(output, "    ", "nameStrategy", config.getNameStrategy());
-        appendScalar(output, "    ", "repositoryNameStrategy", config.getRepositoryNameStrategy());
-        appendScalar(output, "    ", "repositoryName", config.getRepositoryName());
-        appendScalar(output, "    ", "includeOptional", config.getIncludeOptional());
-        appendScalar(output, "    ", "includeSource", config.getIncludeSource());
-        appendScalar(output, "    ", "includeExternalAnnotations", config.getIncludeExternalAnnotations());
-        appendList(output, "    ", "repositories", config.getRepositories(), true);
-        appendList(output, "    ", "excludes", config.getExcludes(), true);
-        appendList(output, "    ", "visibility", config.getVisibility(), true);
-        appendList(output, "    ", "natures", config.getNatures(), false);
+    private String appendArtifact(@NonNull final Path configFile, @NonNull final ArtifactConfig config)
+            throws IOException {
+        final MappingNode root = DependencyConfigEditor.loadRootMapping(configFile);
+        appendArtifact(root, createArtifactNode(config));
+        return DependencyConfigEditor.serialize(root);
+    }
+
+    private void appendArtifact(@NonNull final MappingNode root, @NonNull final MappingNode artifact) {
+        DependencyConfigEditor.getOrCreateTopLevelSequence(root, "artifacts", COMMAND)
+                .getValue()
+                .add(artifact);
+    }
+
+    @NonNull
+    private MappingNode createArtifactNode(@NonNull final ArtifactConfig config) {
+        final var entries = new ArrayList<NodeTuple>();
+        addScalar(entries, "coord", Objects.requireNonNull(config.getCoord()));
+        addScalar(entries, "nameStrategy", config.getNameStrategy());
+        addScalar(entries, "repositoryNameStrategy", config.getRepositoryNameStrategy());
+        addScalar(entries, "repositoryName", config.getRepositoryName());
+        addScalar(entries, "includeOptional", config.getIncludeOptional());
+        addScalar(entries, "includeSource", config.getIncludeSource());
+        addScalar(entries, "includeExternalAnnotations", config.getIncludeExternalAnnotations());
+        addSequence(entries, "repositories", config.getRepositories(), true);
+        addSequence(entries, "excludes", config.getExcludes(), true);
+        addSequence(entries, "visibility", config.getVisibility(), true);
+        addSequence(entries, "natures", config.getNatures(), false);
         final JavaConfig java = config.getJava();
         if (null != java) {
-            output.append("    java:\n");
-            appendScalar(output, "      ", "name", java.getName());
-            appendScalar(output, "      ", "exportDeps", java.getExportDeps());
+            final var javaEntries = new ArrayList<NodeTuple>();
+            addScalar(javaEntries, "name", java.getName());
+            addScalar(javaEntries, "exportDeps", java.getExportDeps());
+            addMapping(entries, "java", javaEntries);
         }
         final J2clConfig j2cl = config.getJ2cl();
         if (null != j2cl) {
-            output.append("    j2cl:\n");
-            appendScalar(output, "      ", "name", j2cl.getName());
-            appendScalar(output, "      ", "mode", j2cl.getMode());
-            appendList(output, "      ", "suppress", j2cl.getSuppress(), true);
+            final var j2clEntries = new ArrayList<NodeTuple>();
+            addScalar(j2clEntries, "name", j2cl.getName());
+            addScalar(j2clEntries, "mode", j2cl.getMode());
+            addSequence(j2clEntries, "suppress", j2cl.getSuppress(), true);
+            addMapping(entries, "j2cl", j2clEntries);
         }
         final PluginConfig plugin = config.getPlugin();
         if (null != plugin) {
-            output.append("    plugin:\n");
-            appendScalar(output, "      ", "name", plugin.getName());
-            appendScalar(output, "      ", "generatesApi", plugin.getGeneratesApi());
+            final var pluginEntries = new ArrayList<NodeTuple>();
+            addScalar(pluginEntries, "name", plugin.getName());
+            addScalar(pluginEntries, "generatesApi", plugin.getGeneratesApi());
+            addMapping(entries, "plugin", pluginEntries);
         }
-        return output.toString();
+        return DependencyConfigEditor.mappingNode(entries);
     }
 
-    private void appendScalar(
-            @NonNull final StringBuilder output,
-            @NonNull final String indent,
-            @NonNull final String name,
-            @Nullable final Object value) {
+    private void addScalar(
+            @NonNull final List<NodeTuple> entries, @NonNull final String name, @Nullable final Object value) {
         if (null != value) {
-            output.append(indent).append(name).append(": ").append(value).append('\n');
+            entries.add(DependencyConfigEditor.tuple(name, DependencyConfigEditor.scalarNode(value)));
         }
     }
 
-    private void appendList(
-            @NonNull final StringBuilder output,
-            @NonNull final String indent,
+    private void addSequence(
+            @NonNull final List<NodeTuple> entries,
             @NonNull final String name,
             @Nullable final List<?> values,
             final boolean quote) {
         if (null != values && !values.isEmpty()) {
-            output.append(indent).append(name).append(": [");
-            for (int i = 0; i < values.size(); i++) {
-                if (i > 0) {
-                    output.append(", ");
-                }
-                final Object value = values.get(i);
-                if (quote) {
-                    output.append('"')
-                            .append(value.toString().replace("\\", "\\\\").replace("\"", "\\\""))
-                            .append('"');
-                } else {
-                    output.append(value);
-                }
+            final var nodes = new ArrayList<Node>();
+            for (final Object value : values) {
+                nodes.add(DependencyConfigEditor.scalarNode(
+                        value, quote ? DumperOptions.ScalarStyle.DOUBLE_QUOTED : DumperOptions.ScalarStyle.PLAIN));
             }
-            output.append("]\n");
+            entries.add(
+                    DependencyConfigEditor.tuple(name, new SequenceNode(Tag.SEQ, nodes, DumperOptions.FlowStyle.FLOW)));
         }
     }
 
-    @NonNull
-    private String insertArtifact(@NonNull final String content, @NonNull final String artifact) {
-        final String normalized = content.endsWith("\n") ? content : content + "\n";
-        final String[] lines = normalized.split("\n", -1);
-        final int lineCount = lines.length - 1;
-        int artifactsLine = -1;
-        for (int i = 0; i < lineCount; i++) {
-            if (lines[i].startsWith("artifacts:")) {
-                artifactsLine = i;
-                validateArtifactsLineShape(lines[i]);
-                break;
-            }
-        }
-        if (-1 == artifactsLine) {
-            return normalized + "artifacts:\n" + artifact;
-        } else {
-            int insertionIndex = lineCount;
-            for (int i = artifactsLine + 1; i < lineCount; i++) {
-                if (isTopLevelKey(lines[i])) {
-                    insertionIndex = i;
-                    while (insertionIndex > artifactsLine + 1
-                            && lines[insertionIndex - 1].trim().isEmpty()) {
-                        insertionIndex--;
-                    }
-                    break;
-                }
-            }
-            final var output = new StringBuilder();
-            for (int i = 0; i < insertionIndex; i++) {
-                output.append(lines[i]).append('\n');
-            }
-            output.append(artifact);
-            for (int i = insertionIndex; i < lineCount; i++) {
-                output.append(lines[i]).append('\n');
-            }
-            return output.toString();
-        }
-    }
-
-    private void validateArtifactsLineShape(@NonNull final String line) {
-        String remainder = line.substring("artifacts:".length()).trim();
-        final int commentIndex = remainder.indexOf('#');
-        if (-1 != commentIndex) {
-            remainder = remainder.substring(0, commentIndex).trim();
-        }
-        if (!remainder.isEmpty()) {
-            throw new DepgenValidationException("The add command only supports block-style artifacts sections.");
-        }
-    }
-
-    private boolean isTopLevelKey(@NonNull final String line) {
-        return !line.isEmpty()
-                && !Character.isWhitespace(line.charAt(0))
-                && '#' != line.charAt(0)
-                && '-' != line.charAt(0)
-                && line.indexOf(':') > 0;
-    }
-
-    private void writeValidatedConfig(@NonNull final Path configFile, @NonNull final String candidateContent)
-            throws Exception {
-        Path tempFile = null;
-        try {
-            tempFile = Files.createTempFile(configFile.getParent(), ".dependencies", ".yml");
-            Files.writeString(tempFile, candidateContent, StandardCharsets.UTF_8);
-            ApplicationModel.load(ApplicationConfig.load(tempFile), false);
-            try {
-                Files.move(tempFile, configFile, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
-            } catch (final AtomicMoveNotSupportedException ignored) {
-                Files.move(tempFile, configFile, StandardCopyOption.REPLACE_EXISTING);
-            }
-            tempFile = null;
-        } catch (final IOException e) {
-            throw new DepgenException("Failed to update configuration file " + configFile, e);
-        } finally {
-            if (null != tempFile) {
-                Files.deleteIfExists(tempFile);
-            }
-        }
+    private void addMapping(
+            @NonNull final List<NodeTuple> entries, @NonNull final String name, @NonNull final List<NodeTuple> values) {
+        entries.add(DependencyConfigEditor.tuple(name, DependencyConfigEditor.mappingNode(values)));
     }
 }

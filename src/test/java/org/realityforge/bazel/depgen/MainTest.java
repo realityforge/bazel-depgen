@@ -41,6 +41,7 @@ public class MainTest extends AbstractTest {
                         + "\t\thash: Generate a hash of the content of the dependency configuration.\n"
                         + "\t\tinit: Initialize an empty dependency configuration and Bazel scaffolding.\n"
                         + "\t\tadd: Add a dependency to the dependency configuration.\n"
+                        + "\t\tremove: Remove a dependency from the dependency configuration.\n"
                         + "\t\tinfo: Print runtime info about the tool.\n"
                         + "\tOptions:\n"
                         + "\t--version\n"
@@ -865,6 +866,12 @@ public class MainTest extends AbstractTest {
 
         final String output = runCommand(ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE, "Bleep");
         assertEquals(output, "Error: Unknown command: Bleep");
+    }
+
+    @Test
+    public void run_removeMissingCoord() throws Exception {
+        final String output = runCommand(ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE, "remove");
+        assertEquals(output, "Error: Missing dependency coordinate.");
     }
 
     @Test

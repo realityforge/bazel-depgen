@@ -105,6 +105,7 @@ public final class Main {
         commands.put(HashCommand.COMMAND, HashCommand::new);
         commands.put(InitCommand.COMMAND, InitCommand::new);
         commands.put(AddCommand.COMMAND, AddCommand::new);
+        commands.put(RemoveCommand.COMMAND, RemoveCommand::new);
         commands.put(InfoCommand.COMMAND, InfoCommand::new);
         return Collections.unmodifiableMap(commands);
     }
@@ -444,10 +445,8 @@ public final class Main {
             return false;
         }
         final String[] unParsedArgs = parser.getUnParsedArgs();
-        if (unParsedArgs.length > 0) {
-            if (!environment.getCommand().processOptions(environment, unParsedArgs)) {
-                return false;
-            }
+        if (!environment.getCommand().processOptions(environment, unParsedArgs)) {
+            return false;
         }
 
         if (environment.hasConfigFile() && environment.getCommand().requireConfigFile()) {
