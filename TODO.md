@@ -60,11 +60,6 @@ Where it is unclear why colt is included. Maybe emitting the dependency graph or
   all the tests pass. It may be possible to enhance [dependabot](https://dependabot.com/) to do this now that it
   is owned by Github. I can probably hack it together via: https://github.com/dependabot/dependabot-core
 
-* Add nature types for `kotlin`, `raw` (modelled as `files`/`filegroups`), `scala`, `aar`, `j2cl` etc. that
-  control how artifacts are defined. Artifacts may support multiple natures.
-  - See [Mabel](https://github.com/menny/mabel) for `aar`, `kotlin`
-  - See[bazel_maven_repository](https://github.com/square/bazel_maven_repository) for `aar`, `kotlin`
-
 * Add support for `neverlink` on artifacts.
 
 * `http_file` now supports basic authentication via `.netrc`. See if we can figure out a way to align the two
