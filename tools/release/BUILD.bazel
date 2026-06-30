@@ -76,6 +76,11 @@ alias(
     actual = "//tools/release/org/realityforge/bazel/depgen/release:dist",
 )
 
+alias(
+    name = "release_lifecycle",
+    actual = "//tools/release/org/realityforge/bazel/depgen/release:release_lifecycle",
+)
+
 release_jar(
     name = "bazel_depgen_jar",
     out = "bazel-depgen.jar",
@@ -138,6 +143,14 @@ test_suite(
 )
 
 test_suite(
+    name = "release_lifecycle_tool_test",
+    tests = ["//tools/release/org/realityforge/bazel/depgen/release:release_lifecycle_tool_test"],
+)
+
+test_suite(
     name = "all_tests",
-    tests = [":all_jar_integration_test"],
+    tests = [
+        ":all_jar_integration_test",
+        ":release_lifecycle_tool_test",
+    ],
 )
