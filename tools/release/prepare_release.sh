@@ -24,6 +24,22 @@ run_prepare() {
   bazel run //tools/release:release_lifecycle -- "${args[@]}"
 }
 
+print_diff() {
+  local label="$1"
+  local before="$2"
+  local after="$3"
+
+  echo
+  echo "${label} diff:"
+  set +e
+  diff -u "${before}" "${after}"
+  local status=$?
+  set -e
+  if [[ ${status} -gt 1 ]]; then
+    exit "${status}"
+  fi
+}
+
 if [[ $# -lt 1 || $# -gt 2 ]]; then
   usage
   exit 1
@@ -65,9 +81,9 @@ if [[ ${DRY_RUN} -eq 1 ]]; then
   cp README.md "${README_COPY}"
 
   run_prepare "${CHANGELOG_COPY}" "${README_COPY}" "${VERSION}"
-  echo "Dry-run prepared release v${VERSION} using temporary files:"
-  echo "  ${CHANGELOG_COPY}"
-  echo "  ${README_COPY}"
+  echo "Dry-run prepared release v${VERSION}. Review the generated diffs before running without --dry-run."
+  print_diff "CHANGELOG.md" CHANGELOG.md "${CHANGELOG_COPY}"
+  print_diff "README.md" README.md "${README_COPY}"
   exit 0
 fi
 

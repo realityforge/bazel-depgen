@@ -38,6 +38,8 @@ Prepare the release with an explicit version and inspect the result without chan
 tools/release/prepare_release.sh <version> --dry-run
 ```
 
+The dry run prints the `CHANGELOG.md` and `README.md` diffs that would be applied.
+
 Prepare the release for real when the dry run looks correct:
 
 ```bash

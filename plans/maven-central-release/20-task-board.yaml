@@ -217,7 +217,7 @@ tasks:
       - command: "tools/release/next_version.sh"
         result: "passed; printed 0.26"
       - command: "tools/release/prepare_release.sh 1.2.3 --dry-run"
-        result: "passed; exercised changelog and README mutation on temporary copies"
+        result: "passed; printed CHANGELOG.md and README.md diffs without mutating the working tree"
     commit:
       hash: 948785b
       message: "feat(release): add release orchestration scripts"
@@ -278,9 +278,11 @@ tasks:
       - command: "tools/release/next_version.sh"
         result: "passed; printed 0.26"
       - command: "tools/release/prepare_release.sh 1.2.3 --dry-run"
-        result: "passed; prepared temporary CHANGELOG.md and README.md copies"
+        result: "passed; printed CHANGELOG.md and README.md diffs without mutating the working tree"
       - command: "MAVEN_CENTRAL_PASSWORD=dummy PATH=<stubbed git/curl> tools/release/upload_maven_central.sh 1.2.3"
         result: "passed; exited before curl with HEAD must be exactly tagged v1.2.3"
+      - command: "iterative plan implementation review round 1"
+        result: "valid dry-run inspection finding fixed by printing reviewable diffs"
     commit:
       hash: not_required
       message: not_required
