@@ -1,11 +1,11 @@
 tasks:
   - id: T01
-    title: Record Maven Central release plan
+    title: Record Maven Central release package plan
     status: completed
     priority: high
     depends_on: []
     acceptance_criteria:
-      - Requirements document records resolved decisions and no open questions.
+      - Requirements document records resolved packaging decisions and no open questions.
       - Implementation plan and task board exist under plans/maven-central-release.
     files:
       - plans/maven-central-release/00-requirements.md
@@ -28,7 +28,7 @@ tasks:
       - Version build setting drives config.properties, POM, and artifact metadata.
       - Curated all jar is assembled deterministically with strict duplicate handling.
       - Dist signing uses the old Buildr `GPG_USER` and `GPG_PASS` environment defaults.
-      - Release Java helper binaries and tests use the repository strict Java macros and the Bazel JDK 25 tool runtime.
+      - Release Java helper binaries and tests use the repository strict Java macros.
     files:
       - .bazelrc
       - tools/release/**
@@ -37,9 +37,9 @@ tasks:
       - command: "bazel build //tools/release:maven_artifacts //tools/release:dist"
         result: "passed"
       - command: "GPG_USER=env-key GPG_PASS=env-pass bazel run //tools/release:dist --release_version=1.2.3 -- --gpg-executable /private/tmp/bazel-depgen-test-gpg.<pid>"
-        result: "passed; fake signer verified --local-user env-key and --passphrase env-pass, and dist zip contained 20 Maven repository entries"
+        result: "passed; fake signer verified --local-user env-key and --passphrase env-pass"
       - command: "bazel test //tools/release:all_tests --release_version=1.2.3"
-        result: "passed after moving release Java tools under their package path, compiling them with the strict Java macros, and pinning the Bazel tool runtime to JDK 25"
+        result: "passed after moving release Java tools under their package path and compiling them with the strict Java macros"
     history:
       - note: "Focused build exposed duplicate META-INF/sisu service-index files; plan updated to merge them as service metadata."
       - note: "Focused build exposed duplicate META-INF/plexus/components.xml descriptors; plan updated to merge Plexus component entries."
@@ -66,7 +66,7 @@ tasks:
       hash: not_required
       message: not_required
   - id: T04
-    title: Add release wrapper, docs, changelog, and retire old release path
+    title: Add release wrapper, docs, changelog, and retire old Maven packaging path
     status: completed
     priority: medium
     depends_on:
@@ -112,9 +112,175 @@ tasks:
       - command: "bazel test //tools/release:all_tests --release_version=1.2.3"
         result: "passed"
       - command: "bazel run //tools/release:dist --release_version=1.2.3 -- --gpg-executable /private/tmp/bazel-depgen-test-gpg.<pid>"
-        result: "passed with a controlled test signer; wrote dist/bazel-depgen-1.2.3/, dist/bazel-depgen-1.2.3.zip, and 20 Maven repository entries including .asc, .md5, and .sha1 sidecars"
+        result: "passed with a controlled test signer; wrote dist/bazel-depgen-1.2.3/, dist/bazel-depgen-1.2.3.zip, and Maven repository sidecars"
       - command: "tools/check.sh"
         result: "passed; line coverage 95.31%, branch coverage 85.02%"
+    commit:
+      hash: not_required
+      message: not_required
+  - id: T06
+    title: Record release orchestration plan
+    status: completed
+    priority: high
+    depends_on:
+      - T05
+    acceptance_criteria:
+      - Requirements document records resolved release lifecycle decisions Q42-Q65.
+      - Implementation plan records ordered orchestration phases and decision log.
+      - Task board records implementation tasks and plan approval gate.
+      - User review is explicitly requested before implementation starts.
+    files:
+      - plans/maven-central-release/00-requirements.md
+      - plans/maven-central-release/10-implementation-plan.md
+      - plans/maven-central-release/20-task-board.yaml
+    evidence:
+      - command: "ruby -e 'require \"yaml\"; YAML.load_file(\"plans/maven-central-release/20-task-board.yaml\"); puts \"yaml ok\"'"
+        result: "passed; yaml ok"
+      - command: "ruby -e 'files=Dir[\"plans/maven-central-release/*\"]; marker=\"status: \"+\"open\"; open=[]; files.each{|f| File.readlines(f).each_with_index{|line,i| open << \"#{f}:#{i+1}\" if line.include?(marker)}}; abort(open.join(\"\\n\")) unless open.empty?; puts \"no open questions\"'"
+        result: "no unresolved open questions found"
+    history:
+      - note: "Round 1 plan review found underspecified Central API contract, default-branch guard, changelog format, and helper target name; plan artifacts were updated."
+      - note: "Round 2 plan review found the origin reachability guard contradicted the accepted push-after-publication sequence; guard was revised to require local default branch based on refreshed origin."
+      - note: "Round 3 plan review reported Findings: none."
+    commit:
+      hash: not_required
+      message: not_required
+  - id: PLAN-APPROVAL
+    title: User review and plan acceptance
+    status: completed
+    priority: high
+    depends_on:
+      - T06
+    acceptance_criteria:
+      - User is asked to review the latest plan.
+      - Feedback is incorporated into requirements, implementation plan, and task board.
+      - Plan status is changed to accepted only after user approval.
+    files:
+      - plans/maven-central-release/00-requirements.md
+      - plans/maven-central-release/10-implementation-plan.md
+      - plans/maven-central-release/20-task-board.yaml
+    evidence:
+      - command: "user requested implementation in subagent after iterative plan review"
+        result: "plan accepted for implementation"
+    commit:
+      hash: not_required
+      message: not_required
+  - id: T07
+    title: Implement Java release lifecycle helper
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-APPROVAL
+    acceptance_criteria:
+      - Helper derives previous and next versions from CHANGELOG.md.
+      - Helper patches release changelog and post-release Unreleased section idempotently.
+      - Helper extracts release notes for a version.
+      - Helper updates README version and fails when previous version is absent.
+      - Helper exposes a public //tools/release:release_lifecycle target.
+      - Focused Java tests cover helper behavior.
+      - Helper target uses strict Java macros and is included in //tools/release:all_tests.
+    files:
+      - tools/release/org/realityforge/bazel/depgen/release/**
+      - tools/release/BUILD.bazel
+    evidence:
+      - command: "bazel run //tools/release:release_lifecycle -- --help"
+        result: "passed; printed usage"
+      - command: "bazel test //tools/release:all_tests --release_version=1.2.3"
+        result: "passed; release_lifecycle_tool_test and all_jar_integration_test passed"
+      - command: "git diff --check"
+        result: "passed"
+    commit:
+      hash: 92c613b
+      message: "feat(release): add release lifecycle helper"
+  - id: T08
+    title: Add release orchestration scripts
+    status: completed
+    priority: high
+    depends_on:
+      - T07
+    acceptance_criteria:
+      - check_ready.sh implements repo-native readiness and external prerequisite checks.
+      - next_version.sh is read-only.
+      - prepare_release.sh validates explicit version, clean git state, changelog/README mutation, commits, tag, and dry-run.
+      - upload_maven_central.sh validates tag guard, uploads with legacy credentials, defaults to automatic publication, and polls to terminal status.
+      - upload_maven_central.sh implements the locked Central Portal API contract and 30-minute polling timeout.
+      - upload_maven_central.sh refreshes origin default branch and tags, verifies local default branch is current, and does not require the release tag to be pushed before Central publication.
+      - finalize_release.sh is rerunnable enough for recovery and uses gh for release/milestone operations.
+      - perform_release.sh orchestrates the split scripts in order.
+      - Shell scripts pass syntax checks.
+    files:
+      - tools/release/*.sh
+      - tools/package_maven_central.sh
+    evidence:
+      - command: "bash -n tools/release/*.sh tools/package_maven_central.sh"
+        result: "passed"
+      - command: "tools/release/next_version.sh"
+        result: "passed; printed 0.26"
+      - command: "tools/release/prepare_release.sh 1.2.3 --dry-run"
+        result: "passed; exercised changelog and README mutation on temporary copies"
+    commit:
+      hash: 948785b
+      message: "feat(release): add release orchestration scripts"
+  - id: T09
+    title: Document release workflow and redirect old Ruby release task
+    status: completed
+    priority: medium
+    depends_on:
+      - T08
+    acceptance_criteria:
+      - tools/release/README.md documents full and split release workflows.
+      - CONTRIBUTING.md points to the release README.
+      - tasks/release.rake aborts with a pointer to the new scripts.
+      - Existing Maven packaging Rake aborts stay aligned.
+      - CHANGELOG.md records the release orchestration change under Unreleased.
+    files:
+      - tools/release/README.md
+      - CONTRIBUTING.md
+      - tasks/release.rake
+      - tasks/package_for_maven_central.rake
+      - CHANGELOG.md
+    evidence:
+      - command: "ruby -c tasks/release.rake"
+        result: "passed; Syntax OK"
+      - command: "ruby -c tasks/package_for_maven_central.rake"
+        result: "passed; Syntax OK"
+      - command: "git diff --check"
+        result: "passed"
+    commit:
+      hash: 9853190
+      message: "docs(release): document Maven Central workflow"
+  - id: T10
+    title: Validate release orchestration implementation
+    status: completed
+    priority: high
+    depends_on:
+      - T07
+      - T08
+      - T09
+    acceptance_criteria:
+      - Targeted helper tests pass.
+      - Shell syntax checks pass.
+      - Prepare dry-run succeeds in controlled local conditions.
+      - Central upload guard behavior is validated without contacting Central Portal.
+      - Full tools/check.sh gate passes.
+      - Task board evidence and commit metadata are updated.
+    files:
+      - plans/maven-central-release/20-task-board.yaml
+    evidence:
+      - command: "tools/check.sh"
+        result: "passed; release helper and all-jar integration tests passed; line coverage 95.31%, branch coverage 85.02%"
+      - command: "bazel test //tools/release:all_tests --release_version=1.2.3"
+        result: "passed; release_lifecycle_tool_test and all_jar_integration_test passed"
+      - command: "bazel run //tools/release:release_lifecycle -- --help"
+        result: "passed; printed usage"
+      - command: "bash -n tools/release/*.sh tools/package_maven_central.sh"
+        result: "passed"
+      - command: "tools/release/next_version.sh"
+        result: "passed; printed 0.26"
+      - command: "tools/release/prepare_release.sh 1.2.3 --dry-run"
+        result: "passed; prepared temporary CHANGELOG.md and README.md copies"
+      - command: "MAVEN_CENTRAL_PASSWORD=dummy PATH=<stubbed git/curl> tools/release/upload_maven_central.sh 1.2.3"
+        result: "passed; exited before curl with HEAD must be exactly tagged v1.2.3"
     commit:
       hash: not_required
       message: not_required
