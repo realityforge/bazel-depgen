@@ -6,6 +6,10 @@ complete as there is too much un-said.
 
 * Add `upgrade` command that updates depgen dependency. (If verifyConfigSha256 then depgen will be part of jar, otherwise this option will be ignored. The parameter to command will bump the version specified by that. If upgrade specified and it is not the current then we will re-run resolve at end)
 
+* Stop using maven central as the release process and instead upload to github release instead.
+
+* Stop keeping CHANGELOG updated over the entire history. Instead just using it as a since last release list that is deleted on release and used to create the release notes.
+
 * Optionally pass output through [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier).
 
 * Consider adding `buildifier` back into the build project. It can either verify that the output bazel files do not
