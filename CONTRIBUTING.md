@@ -35,32 +35,23 @@ When submitting pull requests, make sure to do the following:
 * Maintain the same code style.
 * Maintain the same level of test coverage or improve it.
 
-## Maven Central bundle
+## Maven Central release
 
-Run the full project verification before creating a release bundle:
+The Maven Central release workflow is documented in [tools/release/README.md](tools/release/README.md). Run the full
+project verification before packaging or releasing:
 
 ```bash
 tools/check.sh
 ```
 
-Create the signed Maven Central upload zip with the wrapper:
+Create the signed Maven Central upload zip with:
 
 ```bash
-GPG_USER=KEYID tools/package_maven_central.sh 1.2.3
+tools/package_maven_central.sh 1.2.3
 ```
 
-The wrapper runs the release artifact build, the standalone all-jar integration test, and the dist assembly. Signing
-matches the previous Buildr release flow: `GPG_USER` selects the key and optional `GPG_PASS` supplies the passphrase.
-Pass `--gpg-key-id KEYID` to override `GPG_USER`. The raw commands are:
-
-```bash
-bazel build //tools/release:maven_artifacts --release_version=1.2.3
-bazel test //tools/release:all_tests --release_version=1.2.3
-GPG_USER=KEYID bazel run //tools/release:dist --release_version=1.2.3
-```
-
-The dist command writes the staged repository to `dist/bazel-depgen-1.2.3/` and the upload bundle to
-`dist/bazel-depgen-1.2.3.zip`.
+`GPG_USER` selects the signing key and optional `GPG_PASS` supplies the passphrase. Pass `--gpg-key-id KEYID` to override
+`GPG_USER`.
 
 ## Additional Resources
 

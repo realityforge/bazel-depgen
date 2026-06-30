@@ -8,6 +8,8 @@
 * Add the `add` subcommand to append dependencies to `dependencies.yml` while preserving unrelated config text and
   validating the candidate configuration before replacing the file.
 * Add Bazel-native Maven Central artifact and bundle packaging, including the executable all-jar integration test.
+* Document the Maven Central release workflow, including the split orchestration scripts, and redirect the old Ruby
+  release flow to the new scripts.
 
 ### [v0.25](https://github.com/realityforge/bazel-depgen/tree/v0.25) (2026-06-26) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.24...v0.25)
 

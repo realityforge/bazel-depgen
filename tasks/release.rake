@@ -1,18 +1,28 @@
-require 'buildr/release_tool'
+def abort_release_flow_replaced
+  abort <<~MESSAGE
+    The Ruby release flow has been replaced.
 
-Buildr::ReleaseTool.define_release_task do |t|
-  t.extract_version_from_changelog
-  t.zapwhite
-  t.ensure_git_clean
-  t.verify_no_todo
-  t.build
-  t.patch_changelog('realityforge/bazel-depgen')
-  t.patch_maven_version_in_readme
-  t.tag_project
-  t.stage('MavenCentralPublish', 'Publish archive to Maven Central') do
-    sh "bundle exec buildr upload_to_maven_central PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']}#{ENV['TEST'].nil? ? '' : " TEST=#{ENV['TEST']}"}#{Buildr.application.options.trace ? ' --trace' : ''}"
-  end
-  t.patch_changelog_post_release
-  t.push_changes
-  t.github_release('realityforge/bazel-depgen')
+    Run the all-in-one release workflow:
+      tools/release/perform_release.sh <version>
+
+    Or rerun individual split steps:
+      tools/release/check_ready.sh
+      tools/release/next_version.sh
+      tools/release/prepare_release.sh <version> [--dry-run]
+      tools/package_maven_central.sh <version>
+      tools/release/upload_maven_central.sh <version>
+      tools/release/finalize_release.sh <version>
+
+    See tools/release/README.md for the Maven Central release workflow.
+  MESSAGE
+end
+
+desc 'Release bazel-depgen'
+task 'release' do
+  abort_release_flow_replaced
+end
+
+desc 'Release bazel-depgen'
+task 'perform_release' do
+  abort_release_flow_replaced
 end
