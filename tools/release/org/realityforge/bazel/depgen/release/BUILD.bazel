@@ -74,6 +74,18 @@ java_test(
 )
 
 java_test(
+    name = "jar_builder_test",
+    size = "small",
+    srcs = [
+        "JarBuilder.java",
+        "JarBuilderTest.java",
+        "package-info.java",
+    ],
+    main_class = "org.realityforge.bazel.depgen.release.JarBuilderTest",
+    use_testrunner = False,
+)
+
+java_test(
     name = "release_lifecycle_tool_test",
     size = "small",
     srcs = [

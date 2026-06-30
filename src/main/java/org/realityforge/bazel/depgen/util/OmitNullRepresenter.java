@@ -1,12 +1,17 @@
 package org.realityforge.bazel.depgen.util;
 
 import org.jspecify.annotations.Nullable;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 final class OmitNullRepresenter extends Representer {
+    OmitNullRepresenter(final DumperOptions options) {
+        super(options);
+    }
+
     @Override
     @Nullable
     protected NodeTuple representJavaBeanProperty(

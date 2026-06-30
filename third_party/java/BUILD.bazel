@@ -12,7 +12,7 @@ _java_plugin(
 # DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.25
 
 # SHA256 of the configuration content that generated this content
-_CONFIG_SHA256 = "859147E5BE02C7A121C8A198BBBA6EA20426C614CEC07F2ED15B563904539409"
+_CONFIG_SHA256 = "7843B1AC479DF40D782EE2397C0B89BDF983638154500F06C6BF629306218E12"
 
 exports_files(["dependencies.yml"])
 
@@ -116,7 +116,7 @@ exports_files(["dependencies.yml"])
 # |  \- org.slf4j:slf4j-api:jar:1.7.25 [compile]
 # +- org.slf4j:jcl-over-slf4j:jar:1.7.25 [compile]
 # |  \- org.slf4j:slf4j-api:jar:1.7.25 [compile]
-# +- org.yaml:snakeyaml:jar:1.24 [compile]
+# +- org.yaml:snakeyaml:jar:2.6 [compile]
 # +- org.realityforge.gir:gir-core:jar:0.12 [compile]
 # |  \- org.realityforge.braincheck:braincheck-core:jar:1.31.0 [compile]
 # +- org.realityforge.guiceyloops:guiceyloops:jar:0.113 [compile]
@@ -138,7 +138,7 @@ exports_files(["dependencies.yml"])
 # |  +- org.apache.ant:ant:jar:1.10.9 [compile, optional]
 # |  +- com.google.inject:guice:jar:no_aop:4.2.3 [compile, optional] (conflicts with 4.0)
 # |  +- junit:junit:jar:4.12 [compile, optional]
-# |  \- org.yaml:snakeyaml:jar:1.21 [compile, optional] (conflicts with 1.24)
+# |  \- org.yaml:snakeyaml:jar:1.21 [compile, optional] (conflicts with 2.6)
 # +- com.beust:jcommander:jar:1.78 [compile]
 # +- org.webjars:jquery:jar:3.5.1 [compile]
 # +- com.palantir.javaformat:palantir-java-format:jar:2.93.0 [compile]
@@ -837,7 +837,7 @@ _java_import(
 _java_import(
     name = "snakeyaml",
     jars = ["@snakeyaml//file"],
-    tags = ["maven_coordinates=org.yaml:snakeyaml:1.24"],
+    tags = ["maven_coordinates=org.yaml:snakeyaml:2.6"],
 )
 
 # --- depgen-generated targets end ---

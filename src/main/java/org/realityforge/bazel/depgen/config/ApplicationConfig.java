@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -42,7 +43,8 @@ public final class ApplicationConfig {
 
     @NonNull
     public static ApplicationConfig load(@NonNull final Path path) throws Exception {
-        final var yaml = new Yaml(new Constructor(ApplicationConfig.class));
+        final var loaderOptions = new LoaderOptions();
+        final var yaml = new Yaml(new Constructor(ApplicationConfig.class, loaderOptions));
         final ApplicationConfig config = yaml.load(new FileReader(path.toFile()));
         final ApplicationConfig applicationConfig = null == config ? new ApplicationConfig() : config;
         applicationConfig.setConfigLocation(path);

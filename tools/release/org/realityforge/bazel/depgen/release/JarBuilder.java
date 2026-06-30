@@ -131,9 +131,17 @@ public final class JarBuilder {
         if ("META-INF/MANIFEST.MF".equalsIgnoreCase(name)) {
             return true;
         }
+        if (isModuleDescriptor(name)) {
+            return true;
+        }
         final var upper = name.toUpperCase(Locale.ROOT);
         return upper.startsWith("META-INF/")
                 && (upper.endsWith(".SF") || upper.endsWith(".RSA") || upper.endsWith(".DSA") || upper.endsWith(".EC"));
+    }
+
+    private static boolean isModuleDescriptor(final String name) {
+        return "module-info.class".equals(name)
+                || (name.startsWith("META-INF/versions/") && name.endsWith("/module-info.class"));
     }
 
     private static boolean isLegalMetadata(final String name) {

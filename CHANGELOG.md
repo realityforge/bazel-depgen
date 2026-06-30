@@ -9,6 +9,7 @@
   validating the candidate configuration before replacing the file.
 * Add Bazel-native Maven Central artifact and bundle packaging, including the executable all-jar integration test.
 * Document the Maven Central release workflow, including the split orchestration scripts.
+* Upgrade SnakeYAML to `2.6` and omit Java module descriptors from the executable all-jar merge.
 * Remove the legacy Travis CI configuration now that repository verification is driven by Bazel scripts.
 * Remove the remaining legacy Buildr files after the Bazel build, test, package, and release migration.
 

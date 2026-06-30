@@ -9,6 +9,8 @@ public final class YamlUtil {
     private YamlUtil() {}
 
     public static String asYamlString(@NonNull final Object object) {
-        return new Yaml(new OmitNullRepresenter()).dumpAs(object, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
+        final var options = new DumperOptions();
+        return new Yaml(new OmitNullRepresenter(options), options)
+                .dumpAs(object, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
     }
 }

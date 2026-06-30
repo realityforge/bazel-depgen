@@ -47,6 +47,22 @@ public class ApplicationConfigTest extends AbstractTest {
     }
 
     @Test
+    public void parseConfigWithComments() throws Exception {
+        writeConfigFile("# Configuration comment\n"
+                + "repositories:\n"
+                + "  # Repository comment\n"
+                + "  - name: central\n"
+                + "    url: http://repo1.maven.org/maven2\n");
+        final ApplicationConfig config = loadApplicationConfig();
+        final List<RepositoryConfig> repositories = requireNonNull(config.getRepositories());
+
+        assertEquals(repositories.size(), 1);
+        final RepositoryConfig repository = repositories.get(0);
+        assertEquals(repository.getName(), "central");
+        assertEquals(repository.getUrl(), "http://repo1.maven.org/maven2");
+    }
+
+    @Test
     public void parseDependencyWithCoords() throws Exception {
         writeConfigFile("artifacts:\n" + "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n");
         final ApplicationConfig config = loadApplicationConfig();

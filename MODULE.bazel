@@ -511,9 +511,9 @@ _http_file(
 
 _http_file(
     name = "snakeyaml",
-    downloaded_file_path = "org/yaml/snakeyaml/1.24/snakeyaml-1.24.jar",
-    sha256 = "d3f7f09989d5b0ce5c4791818ef937ee7663f1e359c2ef2d312f938aad0763da",
-    urls = ["https://repo.maven.apache.org/maven2/org/yaml/snakeyaml/1.24/snakeyaml-1.24.jar"],
+    downloaded_file_path = "org/yaml/snakeyaml/2.6/snakeyaml-2.6.jar",
+    sha256 = "c8f7a98e7394adda02f6317249710e4d1b4c7a25aa8c7eace0c2eea52eb8bf85",
+    urls = ["https://repo.maven.apache.org/maven2/org/yaml/snakeyaml/2.6/snakeyaml-2.6.jar"],
 )
 
 # --- depgen-generated repository rules end ---

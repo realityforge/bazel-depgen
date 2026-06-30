@@ -152,5 +152,6 @@ test_suite(
     tests = [
         ":all_jar_integration_test",
         ":release_lifecycle_tool_test",
+        "//tools/release/org/realityforge/bazel/depgen/release:jar_builder_test",
     ],
 )
