@@ -2,13 +2,9 @@
 * -text
 *.java text
 *.md text
-*.rake text
 *.yaml text
 *.yml text
 .bazelversion text
 .gitattributes text
 .gitignore text
-.ruby-version text
-Gemfile text
 LICENSE text
-buildfile text

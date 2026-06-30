@@ -97,5 +97,3 @@ The split scripts are the recovery path. Rerun the step that failed after fixing
 * Upload failure after Central accepts the deployment: inspect the Central Portal deployment id printed by the script
   before rerunning, so a duplicate deployment is not created unintentionally.
 * Finalize failure after Central reports `PUBLISHED`: rerun `tools/release/finalize_release.sh <version>`.
-
-Do not return to the old Ruby release flow. It now aborts and points back to these scripts.
