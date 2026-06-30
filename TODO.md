@@ -16,8 +16,6 @@ complete as there is too much un-said.
   generate any warnings by running `buildifier --lint=warn` on any generated file as part of our build process _or_
   we could run `buildifier --lint=fix` when we output files for a slightly improved forward compatibility?
 
-* Separate `dependenciez.bzl` so that workspace macro goes in `deps.bzl` and target macro into `rules.bzl`?
-
 * Currently, even if an artifact is restricted to a repository it is looked up in all repositories. Figure out a
   way to restrict it to a specific repository.
 
