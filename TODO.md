@@ -42,10 +42,6 @@ Where it is unclear why colt is included. Maybe emitting the dependency graph or
 
 * Add command that checks/validates/cleans cache.
 
-* Add `remove` command that removes a dependency.
-
-  `remove [coord]`
-
 * Add `update` command that updates the version of a dependency.
 
   `update [2-part coord] version`
