@@ -2,19 +2,15 @@
 
 ### Unreleased
 
-* Enable strict Error Prone checks in Bazel builds.
+* Enable strict Error Prone checks.
 * Migrate source nullness annotations from `javax.annotation` to JSpecify and enforce NullAway in Bazel builds.
 * Add a coverage threshold check to the standard Bazel verification script.
-* Add the `add` subcommand to append dependencies to `dependencies.yml` while preserving unrelated config text and
-  validating the candidate configuration before replacing the file.
+* Add the `add` subcommand to append dependencies to `dependencies.yml`.
 * Add the `update` subcommand to update direct dependency versions in `dependencies.yml`.
-* Add Bazel-native Maven Central artifact and bundle packaging, including the executable all-jar integration test.
-* Document the Maven Central release workflow, including the split orchestration scripts.
+* Add the `remove` subcommand to remove dependencies from `dependencies.yml`.
+* Move from Buildr to Bazel build system.
 * Upgrade SnakeYAML to `2.6` and omit Java module descriptors from the executable all-jar merge.
-* Preserve YAML comments in the `add` command using SnakeYAML comment processing instead of manual text patching.
-* Add the `remove` subcommand to remove dependencies from `dependencies.yml` while preserving YAML comments.
 * Remove the legacy Travis CI configuration now that repository verification is driven by Bazel scripts.
-* Remove the remaining legacy Buildr files after the Bazel build, test, package, and release migration.
 
 ### [v0.25](https://github.com/realityforge/bazel-depgen/tree/v0.25) (2026-06-26) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.24...v0.25)
 
