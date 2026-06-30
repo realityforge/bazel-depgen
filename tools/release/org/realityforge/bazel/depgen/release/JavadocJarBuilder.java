@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen.release;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -13,6 +14,7 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 
 public final class JavadocJarBuilder {
     private static final long STABLE_TIME = 0L;
@@ -20,9 +22,9 @@ public final class JavadocJarBuilder {
     private JavadocJarBuilder() {}
 
     public static void main(final String[] args) throws Exception {
-        Path output = null;
-        final List<Path> sourceJars = new ArrayList<>();
-        final List<Path> classpath = new ArrayList<>();
+        @Nullable Path output = null;
+        final var sourceJars = new ArrayList<Path>();
+        final var classpath = new ArrayList<Path>();
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
                 case "--output":
@@ -45,17 +47,17 @@ public final class JavadocJarBuilder {
     }
 
     private static void build(final Path output, final List<Path> sourceJars, final List<Path> classpath)
-            throws Exception {
-        final Path work = Files.createTempDirectory("bazel-depgen-javadoc");
-        final Path sources = work.resolve("sources");
-        final Path docs = work.resolve("docs");
+            throws IOException, InterruptedException {
+        final var work = Files.createTempDirectory("bazel-depgen-javadoc");
+        final var sources = work.resolve("sources");
+        final var docs = work.resolve("docs");
         Files.createDirectories(sources);
         Files.createDirectories(docs);
         try {
             for (final Path sourceJar : sourceJars) {
                 extractSources(sourceJar, sources);
             }
-            final List<Path> sourceFiles = collectSourceFiles(sources);
+            final var sourceFiles = collectSourceFiles(sources);
             runJavadoc(docs, sourceFiles, classpath);
             writeJar(output, docs);
         } finally {
@@ -65,15 +67,15 @@ public final class JavadocJarBuilder {
 
     private static void extractSources(final Path sourceJar, final Path output) throws IOException {
         try (JarFile jar = new JarFile(sourceJar.toFile())) {
-            final List<? extends JarEntry> entries = Collections.list(jar.entries());
+            final var entries = Collections.list(jar.entries());
             entries.sort((a, b) -> a.getName().compareTo(b.getName()));
             for (final JarEntry entry : entries) {
                 if (!entry.isDirectory() && entry.getName().endsWith(".java")) {
-                    final Path target = output.resolve(entry.getName());
+                    final var target = output.resolve(entry.getName());
                     Files.createDirectories(target.getParent());
-                    final byte[] content = jar.getInputStream(entry).readAllBytes();
+                    final var content = jar.getInputStream(entry).readAllBytes();
                     if (Files.exists(target)) {
-                        final byte[] existing = Files.readAllBytes(target);
+                        final var existing = Files.readAllBytes(target);
                         if (!java.util.Arrays.equals(existing, content)) {
                             throw new IOException("Duplicate non-identical source entry: " + entry.getName());
                         }
@@ -87,7 +89,7 @@ public final class JavadocJarBuilder {
 
     private static List<Path> collectSourceFiles(final Path sources) throws IOException {
         try (Stream<Path> stream = Files.walk(sources)) {
-            final List<Path> files = stream.filter(path -> path.toString().endsWith(".java"))
+            final var files = stream.filter(path -> path.toString().endsWith(".java"))
                     .sorted()
                     .collect(Collectors.toList());
             if (files.isEmpty()) {
@@ -98,9 +100,9 @@ public final class JavadocJarBuilder {
     }
 
     private static void runJavadoc(final Path docs, final List<Path> sourceFiles, final List<Path> classpath)
-            throws Exception {
-        final Path argsFile = Files.createTempFile("bazel-depgen-javadoc", ".args");
-        final List<String> argLines = new ArrayList<>();
+            throws IOException, InterruptedException {
+        final var argsFile = Files.createTempFile("bazel-depgen-javadoc", ".args");
+        final var argLines = new ArrayList<String>();
         argLines.add("-quiet");
         argLines.add("-d");
         argLines.add(docs.toString());
@@ -113,14 +115,13 @@ public final class JavadocJarBuilder {
         if (!classpath.isEmpty()) {
             argLines.add("-classpath");
             argLines.add(String.join(
-                    System.getProperty("path.separator"),
-                    classpath.stream().map(Path::toString).collect(Collectors.toList())));
+                    File.pathSeparator, classpath.stream().map(Path::toString).collect(Collectors.toList())));
         }
         sourceFiles.stream().map(Path::toString).forEach(argLines::add);
         Files.write(argsFile, argLines, StandardCharsets.UTF_8);
 
-        final Path javadoc = Path.of(System.getProperty("java.home"), "bin", "javadoc");
-        final Process process = new ProcessBuilder(javadoc.toString(), "@" + argsFile)
+        final var javadoc = javaTool("javadoc");
+        final var process = new ProcessBuilder(javadoc.toString(), "@" + argsFile)
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
                 .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                 .start();
@@ -139,14 +140,22 @@ public final class JavadocJarBuilder {
                 files = stream.filter(Files::isRegularFile).sorted().collect(Collectors.toList());
             }
             for (final Path file : files) {
-                final String name = docs.relativize(file).toString().replace('\\', '/');
-                final JarEntry entry = new JarEntry(name);
+                final var name = docs.relativize(file).toString().replace('\\', '/');
+                final var entry = new JarEntry(name);
                 entry.setTime(STABLE_TIME);
                 out.putNextEntry(entry);
                 Files.copy(file, out);
                 out.closeEntry();
             }
         }
+    }
+
+    private static Path javaTool(final String name) throws IOException {
+        @Nullable final String javaHome = System.getProperty("java.home");
+        if (javaHome == null) {
+            throw new IOException("java.home system property is not set");
+        }
+        return Path.of(javaHome, "bin", name);
     }
 
     private static void deleteTree(final Path root) throws IOException {

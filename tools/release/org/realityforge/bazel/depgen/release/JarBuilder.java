@@ -20,6 +20,7 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
+import org.jspecify.annotations.Nullable;
 
 public final class JarBuilder {
     private static final long STABLE_TIME = 0L;
@@ -31,10 +32,10 @@ public final class JarBuilder {
             throw new IllegalArgumentException("Usage: merge --output <jar> [--main-class <class>] --input <jar>...");
         }
 
-        final List<Path> inputs = new ArrayList<>();
-        final List<Resource> resources = new ArrayList<>();
-        Path output = null;
-        String mainClass = null;
+        final var inputs = new ArrayList<Path>();
+        final var resources = new ArrayList<Resource>();
+        @Nullable Path output = null;
+        @Nullable String mainClass = null;
         for (int i = 1; i < args.length; i++) {
             switch (args[i]) {
                 case "--output":
@@ -68,11 +69,14 @@ public final class JarBuilder {
     }
 
     private static void merge(
-            final Path output, final String mainClass, final List<Path> inputs, final List<Resource> resources)
+            final Path output,
+            @Nullable final String mainClass,
+            final List<Path> inputs,
+            final List<Resource> resources)
             throws IOException {
-        final Map<String, byte[]> entries = new LinkedHashMap<>();
-        final Map<String, LinkedHashSet<String>> services = new TreeMap<>();
-        final List<String> plexusComponents = new ArrayList<>();
+        final var entries = new LinkedHashMap<String, byte[]>();
+        final var services = new TreeMap<String, LinkedHashSet<String>>();
+        final var plexusComponents = new ArrayList<String>();
 
         for (final Path input : inputs) {
             mergeJar(input, entries, services, plexusComponents);
@@ -87,9 +91,9 @@ public final class JarBuilder {
         }
     }
 
-    private static Manifest manifest(final String mainClass) {
-        final Manifest manifest = new Manifest();
-        final Attributes attributes = manifest.getMainAttributes();
+    private static Manifest manifest(@Nullable final String mainClass) {
+        final var manifest = new Manifest();
+        final var attributes = manifest.getMainAttributes();
         attributes.put(Attributes.Name.MANIFEST_VERSION, "1.0");
         if (mainClass != null && !mainClass.isBlank()) {
             attributes.put(Attributes.Name.MAIN_CLASS, mainClass);
@@ -104,7 +108,7 @@ public final class JarBuilder {
             final List<String> plexusComponents)
             throws IOException {
         try (JarFile jar = new JarFile(input.toFile())) {
-            final List<? extends JarEntry> jarEntries = Collections.list(jar.entries());
+            final var jarEntries = Collections.list(jar.entries());
             jarEntries.sort((a, b) -> a.getName().compareTo(b.getName()));
             for (final JarEntry entry : jarEntries) {
                 final String name = entry.getName();
@@ -127,13 +131,13 @@ public final class JarBuilder {
         if ("META-INF/MANIFEST.MF".equalsIgnoreCase(name)) {
             return true;
         }
-        final String upper = name.toUpperCase(Locale.ROOT);
+        final var upper = name.toUpperCase(Locale.ROOT);
         return upper.startsWith("META-INF/")
                 && (upper.endsWith(".SF") || upper.endsWith(".RSA") || upper.endsWith(".DSA") || upper.endsWith(".EC"));
     }
 
     private static boolean isLegalMetadata(final String name) {
-        final String upper = name.toUpperCase(Locale.ROOT);
+        final var upper = name.toUpperCase(Locale.ROOT);
         return upper.startsWith("META-INF/LICENSE")
                 || upper.startsWith("META-INF/NOTICE")
                 || upper.startsWith("META-INF/DEPENDENCIES");
@@ -151,8 +155,8 @@ public final class JarBuilder {
 
     private static void mergeService(
             final Map<String, LinkedHashSet<String>> services, final String name, final byte[] content) {
-        final LinkedHashSet<String> lines = services.computeIfAbsent(name, ignored -> new LinkedHashSet<>());
-        final String text = new String(content, StandardCharsets.UTF_8);
+        final var lines = services.computeIfAbsent(name, ignored -> new LinkedHashSet<>());
+        final var text = new String(content, StandardCharsets.UTF_8);
         for (final String line : text.split("\\R")) {
             final String trimmed = line.trim();
             if (!trimmed.isEmpty() && !trimmed.startsWith("#")) {
@@ -162,7 +166,7 @@ public final class JarBuilder {
     }
 
     private static String extractPlexusComponents(final byte[] content) throws IOException {
-        final String text = new String(content, StandardCharsets.UTF_8);
+        final var text = new String(content, StandardCharsets.UTF_8);
         final int start = text.indexOf("<components>");
         final int end = text.lastIndexOf("</components>");
         if (start < 0 || end < start) {
@@ -174,7 +178,7 @@ public final class JarBuilder {
     private static void addEntry(
             final Map<String, byte[]> entries, final String name, final byte[] content, final boolean keepFirst)
             throws IOException {
-        final byte[] existing = entries.get(name);
+        final byte @Nullable [] existing = entries.get(name);
         if (existing == null) {
             entries.put(name, content);
         } else if (keepFirst || java.util.Arrays.equals(existing, content)) {
@@ -190,12 +194,12 @@ public final class JarBuilder {
             final Map<String, LinkedHashSet<String>> services,
             final List<String> plexusComponents)
             throws IOException {
-        final TreeMap<String, byte[]> sortedEntries = new TreeMap<>(entries);
+        final var sortedEntries = new TreeMap<>(entries);
         for (final Map.Entry<String, byte[]> entry : sortedEntries.entrySet()) {
             writeEntry(out, entry.getKey(), entry.getValue());
         }
         for (final Map.Entry<String, LinkedHashSet<String>> service : services.entrySet()) {
-            final ByteArrayOutputStream content = new ByteArrayOutputStream();
+            final var content = new ByteArrayOutputStream();
             for (final String line : service.getValue()) {
                 content.write(line.getBytes(StandardCharsets.UTF_8));
                 content.write('\n');
@@ -203,7 +207,7 @@ public final class JarBuilder {
             writeEntry(out, service.getKey(), content.toByteArray());
         }
         if (!plexusComponents.isEmpty()) {
-            final ByteArrayOutputStream content = new ByteArrayOutputStream();
+            final var content = new ByteArrayOutputStream();
             content.write("<component-set>\n  <components>\n".getBytes(StandardCharsets.UTF_8));
             for (final String component : plexusComponents) {
                 content.write(component.getBytes(StandardCharsets.UTF_8));
@@ -216,7 +220,7 @@ public final class JarBuilder {
 
     private static void writeEntry(final JarOutputStream out, final String name, final byte[] content)
             throws IOException {
-        final JarEntry entry = new JarEntry(name);
+        final var entry = new JarEntry(name);
         entry.setTime(STABLE_TIME);
         out.putNextEntry(entry);
         out.write(content);

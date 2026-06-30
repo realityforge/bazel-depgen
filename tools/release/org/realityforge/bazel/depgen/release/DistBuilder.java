@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.jspecify.annotations.Nullable;
 
 public final class DistBuilder {
     private static final String GROUP_PATH = "org/realityforge/bazel/depgen";
@@ -24,22 +25,22 @@ public final class DistBuilder {
     private DistBuilder() {}
 
     public static void main(final String[] args) throws Exception {
-        final Options options = parse(args);
-        final String version = Files.readString(resolve(options.versionFile())).trim();
+        final var options = parse(args);
+        final var version = Files.readString(resolve(options.versionFile())).trim();
         validateReleaseVersion(version);
 
-        final Path workspace = workspace();
-        final Path dist = workspace.resolve("dist");
-        final Path stagingRoot = dist.resolve(ARTIFACT_ID + "-" + version);
-        final Path repositoryDir =
+        final var workspace = workspace();
+        final var dist = workspace.resolve("dist");
+        final var stagingRoot = dist.resolve(ARTIFACT_ID + "-" + version);
+        final var repositoryDir =
                 stagingRoot.resolve(GROUP_PATH).resolve(ARTIFACT_ID).resolve(version);
-        final Path zip = dist.resolve(ARTIFACT_ID + "-" + version + ".zip");
+        final var zip = dist.resolve(ARTIFACT_ID + "-" + version + ".zip");
 
         deleteTree(stagingRoot);
         Files.deleteIfExists(zip);
         Files.createDirectories(repositoryDir);
 
-        final List<Path> primaryFiles = stageArtifacts(options.artifacts(), repositoryDir, version);
+        final var primaryFiles = stageArtifacts(options.artifacts(), repositoryDir, version);
         for (final Path file : primaryFiles) {
             sign(options, file);
             writeChecksum(file, "MD5", ".md5");
@@ -52,18 +53,18 @@ public final class DistBuilder {
     }
 
     private static Options parse(final String[] args) {
-        Path versionFile = null;
+        @Nullable Path versionFile = null;
         String gpgExecutable = "gpg";
-        String gpgKeyId = env("GPG_USER");
-        final String gpgPass = env("GPG_PASS");
-        final Map<String, Path> artifacts = new LinkedHashMap<>();
+        @Nullable String gpgKeyId = env("GPG_USER");
+        @Nullable final String gpgPass = env("GPG_PASS");
+        final var artifacts = new LinkedHashMap<String, Path>();
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
                 case "--version-file":
                     versionFile = Path.of(args[++i]);
                     break;
                 case "--artifact":
-                    final String artifact = args[++i];
+                    final var artifact = args[++i];
                     final int index = artifact.indexOf('=');
                     if (index <= 0 || index == artifact.length() - 1) {
                         throw new IllegalArgumentException("Expected --artifact <kind>=<path>");
@@ -91,8 +92,9 @@ public final class DistBuilder {
         return new Options(versionFile, artifacts, gpgExecutable, gpgKeyId, gpgPass);
     }
 
+    @Nullable
     private static String env(final String name) {
-        final String value = System.getenv(name);
+        @Nullable final String value = System.getenv(name);
         return value == null || value.isBlank() ? null : value;
     }
 
@@ -104,21 +106,30 @@ public final class DistBuilder {
     }
 
     private static Path workspace() {
-        final String workspace = System.getenv("BUILD_WORKSPACE_DIRECTORY");
+        @Nullable final String workspace = System.getenv("BUILD_WORKSPACE_DIRECTORY");
         return Path.of(workspace == null ? "." : workspace).toAbsolutePath().normalize();
     }
 
     private static List<Path> stageArtifacts(
             final Map<String, Path> artifacts, final Path repositoryDir, final String version) throws IOException {
-        final List<Path> primaryFiles = new ArrayList<>();
-        primaryFiles.add(copy(artifacts.get("jar"), repositoryDir.resolve(ARTIFACT_ID + "-" + version + ".jar")));
+        final var primaryFiles = new ArrayList<Path>();
+        primaryFiles.add(copy(artifact(artifacts, "jar"), repositoryDir.resolve(ARTIFACT_ID + "-" + version + ".jar")));
+        primaryFiles.add(copy(
+                artifact(artifacts, "sources"), repositoryDir.resolve(ARTIFACT_ID + "-" + version + "-sources.jar")));
+        primaryFiles.add(copy(
+                artifact(artifacts, "javadoc"), repositoryDir.resolve(ARTIFACT_ID + "-" + version + "-javadoc.jar")));
         primaryFiles.add(
-                copy(artifacts.get("sources"), repositoryDir.resolve(ARTIFACT_ID + "-" + version + "-sources.jar")));
-        primaryFiles.add(
-                copy(artifacts.get("javadoc"), repositoryDir.resolve(ARTIFACT_ID + "-" + version + "-javadoc.jar")));
-        primaryFiles.add(copy(artifacts.get("all"), repositoryDir.resolve(ARTIFACT_ID + "-" + version + "-all.jar")));
-        primaryFiles.add(copy(artifacts.get("pom"), repositoryDir.resolve(ARTIFACT_ID + "-" + version + ".pom")));
+                copy(artifact(artifacts, "all"), repositoryDir.resolve(ARTIFACT_ID + "-" + version + "-all.jar")));
+        primaryFiles.add(copy(artifact(artifacts, "pom"), repositoryDir.resolve(ARTIFACT_ID + "-" + version + ".pom")));
         return primaryFiles;
+    }
+
+    private static Path artifact(final Map<String, Path> artifacts, final String kind) {
+        @Nullable final Path path = artifacts.get(kind);
+        if (path == null) {
+            throw new IllegalArgumentException("Missing --artifact " + kind + "=<path>");
+        }
+        return path;
     }
 
     private static Path copy(final Path source, final Path target) throws IOException {
@@ -133,11 +144,11 @@ public final class DistBuilder {
         for (final String env : List.of("RUNFILES_DIR", "JAVA_RUNFILES", "TEST_SRCDIR")) {
             final String root = System.getenv(env);
             if (root != null) {
-                final Path candidate = Path.of(root).resolve(path);
+                final var candidate = Path.of(root).resolve(path);
                 if (Files.exists(candidate)) {
                     return candidate.toAbsolutePath().normalize();
                 }
-                final Path mainCandidate = Path.of(root).resolve("_main").resolve(path);
+                final var mainCandidate = Path.of(root).resolve("_main").resolve(path);
                 if (Files.exists(mainCandidate)) {
                     return mainCandidate.toAbsolutePath().normalize();
                 }
@@ -146,9 +157,9 @@ public final class DistBuilder {
         throw new IllegalArgumentException("File does not exist: " + path);
     }
 
-    private static void sign(final Options options, final Path file) throws Exception {
-        final Path signature = Path.of(file + ".asc");
-        final List<String> command = new ArrayList<>();
+    private static void sign(final Options options, final Path file) throws IOException, InterruptedException {
+        final var signature = Path.of(file + ".asc");
+        final var command = new ArrayList<String>();
         command.add(options.gpgExecutable());
         if (options.gpgKeyId() != null) {
             command.add("--local-user");
@@ -165,7 +176,7 @@ public final class DistBuilder {
         command.add("--batch");
         command.add("--yes");
         command.add(file.toString());
-        final Process process = new ProcessBuilder(command).inheritIO().start();
+        final var process = new ProcessBuilder(command).inheritIO().start();
         final int exit = process.waitFor();
         if (exit != 0) {
             throw new IOException("gpg exited with status " + exit);
@@ -181,7 +192,7 @@ public final class DistBuilder {
     }
 
     private static String digest(final Path file, final String algorithm) throws IOException, NoSuchAlgorithmException {
-        final MessageDigest digest = MessageDigest.getInstance(algorithm);
+        final var digest = MessageDigest.getInstance(algorithm);
         try (InputStream input = Files.newInputStream(file)) {
             final byte[] buffer = new byte[8192];
             while (true) {
@@ -196,7 +207,7 @@ public final class DistBuilder {
     }
 
     private static String toHex(final byte[] bytes) {
-        final StringBuilder sb = new StringBuilder(bytes.length * 2);
+        final var sb = new StringBuilder(bytes.length * 2);
         for (final byte b : bytes) {
             sb.append(Character.forDigit((b >> 4) & 0xF, 16));
             sb.append(Character.forDigit(b & 0xF, 16));
@@ -211,8 +222,7 @@ public final class DistBuilder {
         }
         try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zip))) {
             for (final Path file : files) {
-                final ZipEntry entry =
-                        new ZipEntry(root.relativize(file).toString().replace('\\', '/'));
+                final var entry = new ZipEntry(root.relativize(file).toString().replace('\\', '/'));
                 entry.setTime(STABLE_TIME);
                 out.putNextEntry(entry);
                 Files.copy(file, out);
@@ -238,15 +248,19 @@ public final class DistBuilder {
         private final Path _versionFile;
         private final Map<String, Path> _artifacts;
         private final String _gpgExecutable;
+
+        @Nullable
         private final String _gpgKeyId;
+
+        @Nullable
         private final String _gpgPass;
 
         private Options(
                 final Path versionFile,
                 final Map<String, Path> artifacts,
                 final String gpgExecutable,
-                final String gpgKeyId,
-                final String gpgPass) {
+                @Nullable final String gpgKeyId,
+                @Nullable final String gpgPass) {
             _versionFile = versionFile;
             _artifacts = artifacts;
             _gpgExecutable = gpgExecutable;
@@ -266,10 +280,12 @@ public final class DistBuilder {
             return _gpgExecutable;
         }
 
+        @Nullable
         private String gpgKeyId() {
             return _gpgKeyId;
         }
 
+        @Nullable
         private String gpgPass() {
             return _gpgPass;
         }

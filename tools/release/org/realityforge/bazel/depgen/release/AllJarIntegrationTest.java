@@ -15,6 +15,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 
 public final class AllJarIntegrationTest {
     private AllJarIntegrationTest() {}
@@ -23,12 +24,12 @@ public final class AllJarIntegrationTest {
         if (args.length != 1) {
             throw new IllegalArgumentException("Expected path to bazel-depgen-all.jar");
         }
-        final Path allJar = resolve(args[0]);
-        final Path root = Files.createTempDirectory("bazel-depgen-all-jar-test");
+        final var allJar = resolve(args[0]);
+        final var root = Files.createTempDirectory("bazel-depgen-all-jar-test");
         try {
-            final Path repository = root.resolve("repo");
-            final Path work = root.resolve("work");
-            final Path cache = root.resolve("cache");
+            final var repository = root.resolve("repo");
+            final var work = root.resolve("work");
+            final var cache = root.resolve("cache");
             Files.createDirectories(repository);
             Files.createDirectories(work);
             Files.createDirectories(cache);
@@ -37,8 +38,8 @@ public final class AllJarIntegrationTest {
             installDepgenArtifact(repository, allJar);
             run(allJar, work, cache, "init", "--no-generate");
 
-            final Path config = work.resolve("thirdparty").resolve("dependencies.yml");
-            final String content = Files.readString(config)
+            final var config = work.resolve("thirdparty").resolve("dependencies.yml");
+            final var content = Files.readString(config)
                     .replace(
                             "https://repo.maven.apache.org/maven2/",
                             repository.toUri().toString());
@@ -56,13 +57,13 @@ public final class AllJarIntegrationTest {
     }
 
     private static Path resolve(final String path) {
-        final Path direct = Path.of(path);
+        final var direct = Path.of(path);
         if (Files.exists(direct)) {
             return direct.toAbsolutePath().normalize();
         }
-        final String runfiles = System.getenv("RUNFILES_DIR");
+        @Nullable final String runfiles = System.getenv("RUNFILES_DIR");
         if (runfiles != null) {
-            final Path inRunfiles = Path.of(runfiles).resolve(path);
+            final var inRunfiles = Path.of(runfiles).resolve(path);
             if (Files.exists(inRunfiles)) {
                 return inRunfiles.toAbsolutePath().normalize();
             }
@@ -71,7 +72,7 @@ public final class AllJarIntegrationTest {
     }
 
     private static void installArtifact(final Path repository) throws Exception {
-        final Path directory =
+        final var directory =
                 repository.resolve("com").resolve("example").resolve("demo").resolve("1.0");
         Files.createDirectories(directory);
 
@@ -98,8 +99,8 @@ public final class AllJarIntegrationTest {
     }
 
     private static void installDepgenArtifact(final Path repository, final Path allJar) throws Exception {
-        final String version = readDepgenVersion(allJar);
-        final Path directory = repository
+        final var version = readDepgenVersion(allJar);
+        final var directory = repository
                 .resolve("org")
                 .resolve("realityforge")
                 .resolve("bazel")
@@ -108,7 +109,7 @@ public final class AllJarIntegrationTest {
                 .resolve(version);
         Files.createDirectories(directory);
 
-        final Path allArtifact = directory.resolve("bazel-depgen-" + version + "-all.jar");
+        final var allArtifact = directory.resolve("bazel-depgen-" + version + "-all.jar");
         Files.copy(allJar, allArtifact);
         writeJar(
                 directory.resolve("bazel-depgen-" + version + "-sources.jar"),
@@ -135,21 +136,25 @@ public final class AllJarIntegrationTest {
 
     private static String readDepgenVersion(final Path allJar) throws IOException {
         try (JarFile jar = new JarFile(allJar.toFile())) {
-            final JarEntry entry = jar.getJarEntry("org/realityforge/bazel/depgen/config.properties");
+            @Nullable final JarEntry entry = jar.getJarEntry("org/realityforge/bazel/depgen/config.properties");
             if (entry == null) {
                 throw new IOException("Unable to find config.properties in " + allJar);
             }
-            final Properties properties = new Properties();
+            final var properties = new Properties();
             try (InputStream input = jar.getInputStream(entry)) {
                 properties.load(input);
             }
-            return properties.getProperty("version");
+            @Nullable final String version = properties.getProperty("version");
+            if (version == null) {
+                throw new IOException("Unable to find version in config.properties in " + allJar);
+            }
+            return version;
         }
     }
 
     private static void writeJar(final Path path, final String entryName, final String content) throws IOException {
         try (JarOutputStream out = new JarOutputStream(Files.newOutputStream(path))) {
-            final JarEntry entry = new JarEntry(entryName);
+            final var entry = new JarEntry(entryName);
             entry.setTime(0L);
             out.putNextEntry(entry);
             out.write(content.getBytes(StandardCharsets.UTF_8));
@@ -167,7 +172,7 @@ public final class AllJarIntegrationTest {
     }
 
     private static String digest(final Path file, final String algorithm) throws IOException, NoSuchAlgorithmException {
-        final MessageDigest digest = MessageDigest.getInstance(algorithm);
+        final var digest = MessageDigest.getInstance(algorithm);
         try (InputStream input = Files.newInputStream(file)) {
             final byte[] buffer = new byte[8192];
             while (true) {
@@ -182,7 +187,7 @@ public final class AllJarIntegrationTest {
     }
 
     private static String toHex(final byte[] bytes) {
-        final StringBuilder sb = new StringBuilder(bytes.length * 2);
+        final var sb = new StringBuilder(bytes.length * 2);
         for (final byte b : bytes) {
             sb.append(Character.forDigit((b >> 4) & 0xF, 16));
             sb.append(Character.forDigit(b & 0xF, 16));
@@ -191,9 +196,9 @@ public final class AllJarIntegrationTest {
     }
 
     private static void run(final Path allJar, final Path work, final Path cache, final String... command)
-            throws Exception {
-        final Path java = Path.of(System.getProperty("java.home"), "bin", "java");
-        final List<String> args = new ArrayList<>();
+            throws IOException, InterruptedException {
+        final var java = javaTool("java");
+        final var args = new ArrayList<String>();
         args.add(java.toString());
         args.add("-jar");
         args.add(allJar.toString());
@@ -205,9 +210,8 @@ public final class AllJarIntegrationTest {
             args.add(arg);
         }
 
-        final Process process =
-                new ProcessBuilder(args).redirectErrorStream(true).start();
-        final ByteArrayOutputStream output = new ByteArrayOutputStream();
+        final var process = new ProcessBuilder(args).redirectErrorStream(true).start();
+        final var output = new ByteArrayOutputStream();
         try (InputStream input = process.getInputStream()) {
             input.transferTo(output);
         }
@@ -216,6 +220,14 @@ public final class AllJarIntegrationTest {
             throw new IOException("Command failed with exit code " + exitCode + ": " + String.join(" ", args) + "\n"
                     + output.toString(StandardCharsets.UTF_8));
         }
+    }
+
+    private static Path javaTool(final String name) throws IOException {
+        @Nullable final String javaHome = System.getProperty("java.home");
+        if (javaHome == null) {
+            throw new IOException("java.home system property is not set");
+        }
+        return Path.of(javaHome, "bin", name);
     }
 
     private static void assertExists(final Path path) throws IOException {

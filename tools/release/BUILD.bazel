@@ -1,4 +1,3 @@
-load("@rules_java//java:defs.bzl", "java_binary", "java_test")
 load(
     ":release.bzl",
     "release_jar",
@@ -62,44 +61,19 @@ release_version(
     build_setting_default = "0.0.0-SNAPSHOT",
 )
 
-java_binary(
+alias(
     name = "jar_builder",
-    srcs = ["JarBuilder.java"],
-    main_class = "org.realityforge.bazel.depgen.release.JarBuilder",
+    actual = "//tools/release/org/realityforge/bazel/depgen/release:jar_builder",
 )
 
-java_binary(
+alias(
     name = "javadoc_jar_builder",
-    srcs = ["JavadocJarBuilder.java"],
-    main_class = "org.realityforge.bazel.depgen.release.JavadocJarBuilder",
+    actual = "//tools/release/org/realityforge/bazel/depgen/release:javadoc_jar_builder",
 )
 
-java_binary(
+alias(
     name = "dist",
-    srcs = ["DistBuilder.java"],
-    args = [
-        "--version-file",
-        "$(rootpath :release_version)",
-        "--artifact",
-        "jar=$(rootpath :bazel_depgen_jar)",
-        "--artifact",
-        "sources=$(rootpath :bazel_depgen_sources_jar)",
-        "--artifact",
-        "javadoc=$(rootpath :bazel_depgen_javadoc_jar)",
-        "--artifact",
-        "all=$(rootpath :bazel_depgen_all_jar)",
-        "--artifact",
-        "pom=$(rootpath :bazel_depgen_pom)",
-    ],
-    data = [
-        ":bazel_depgen_all_jar",
-        ":bazel_depgen_jar",
-        ":bazel_depgen_javadoc_jar",
-        ":bazel_depgen_pom",
-        ":bazel_depgen_sources_jar",
-        ":release_version",
-    ],
-    main_class = "org.realityforge.bazel.depgen.release.DistBuilder",
+    actual = "//tools/release/org/realityforge/bazel/depgen/release:dist",
 )
 
 release_jar(
@@ -158,14 +132,9 @@ filegroup(
     ],
 )
 
-java_test(
+test_suite(
     name = "all_jar_integration_test",
-    size = "small",
-    srcs = ["AllJarIntegrationTest.java"],
-    args = ["$(rootpath :bazel_depgen_all_jar)"],
-    data = [":bazel_depgen_all_jar"],
-    main_class = "org.realityforge.bazel.depgen.release.AllJarIntegrationTest",
-    use_testrunner = False,
+    tests = ["//tools/release/org/realityforge/bazel/depgen/release:all_jar_integration_test"],
 )
 
 test_suite(

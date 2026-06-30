@@ -1,0 +1,65 @@
+load("//third_party/java:rules.bzl", "java_binary", "java_test")
+
+package(default_visibility = ["//visibility:public"])
+
+java_binary(
+    name = "jar_builder",
+    srcs = [
+        "JarBuilder.java",
+        "package-info.java",
+    ],
+    main_class = "org.realityforge.bazel.depgen.release.JarBuilder",
+)
+
+java_binary(
+    name = "javadoc_jar_builder",
+    srcs = [
+        "JavadocJarBuilder.java",
+        "package-info.java",
+    ],
+    main_class = "org.realityforge.bazel.depgen.release.JavadocJarBuilder",
+)
+
+java_binary(
+    name = "dist",
+    srcs = [
+        "DistBuilder.java",
+        "package-info.java",
+    ],
+    args = [
+        "--version-file",
+        "$(rootpath //tools/release:release_version)",
+        "--artifact",
+        "jar=$(rootpath //tools/release:bazel_depgen_jar)",
+        "--artifact",
+        "sources=$(rootpath //tools/release:bazel_depgen_sources_jar)",
+        "--artifact",
+        "javadoc=$(rootpath //tools/release:bazel_depgen_javadoc_jar)",
+        "--artifact",
+        "all=$(rootpath //tools/release:bazel_depgen_all_jar)",
+        "--artifact",
+        "pom=$(rootpath //tools/release:bazel_depgen_pom)",
+    ],
+    data = [
+        "//tools/release:bazel_depgen_all_jar",
+        "//tools/release:bazel_depgen_jar",
+        "//tools/release:bazel_depgen_javadoc_jar",
+        "//tools/release:bazel_depgen_pom",
+        "//tools/release:bazel_depgen_sources_jar",
+        "//tools/release:release_version",
+    ],
+    main_class = "org.realityforge.bazel.depgen.release.DistBuilder",
+)
+
+java_test(
+    name = "all_jar_integration_test",
+    size = "small",
+    srcs = [
+        "AllJarIntegrationTest.java",
+        "package-info.java",
+    ],
+    args = ["$(rootpath //tools/release:bazel_depgen_all_jar)"],
+    data = ["//tools/release:bazel_depgen_all_jar"],
+    main_class = "org.realityforge.bazel.depgen.release.AllJarIntegrationTest",
+    use_testrunner = False,
+)
