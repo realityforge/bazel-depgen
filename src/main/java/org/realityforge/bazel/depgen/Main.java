@@ -105,6 +105,7 @@ public final class Main {
         commands.put(HashCommand.COMMAND, HashCommand::new);
         commands.put(InitCommand.COMMAND, InitCommand::new);
         commands.put(AddCommand.COMMAND, AddCommand::new);
+        commands.put(UpdateCommand.COMMAND, UpdateCommand::new);
         commands.put(RemoveCommand.COMMAND, RemoveCommand::new);
         commands.put(InfoCommand.COMMAND, InfoCommand::new);
         return Collections.unmodifiableMap(commands);

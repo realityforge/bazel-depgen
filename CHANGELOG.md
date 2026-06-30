@@ -7,6 +7,7 @@
 * Add a coverage threshold check to the standard Bazel verification script.
 * Add the `add` subcommand to append dependencies to `dependencies.yml` while preserving unrelated config text and
   validating the candidate configuration before replacing the file.
+* Add the `update` subcommand to update direct dependency versions in `dependencies.yml`.
 * Add Bazel-native Maven Central artifact and bundle packaging, including the executable all-jar integration test.
 * Document the Maven Central release workflow, including the split orchestration scripts.
 * Upgrade SnakeYAML to `2.6` and omit Java module descriptors from the executable all-jar merge.

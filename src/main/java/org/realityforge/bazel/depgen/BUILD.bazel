@@ -100,6 +100,7 @@ java_library(
         "SimpleTransferListener.java",
         "SourceDownloaderVisitor.java",
         "TerminalStateException.java",
+        "UpdateCommand.java",
     ],
     resources = [
         "//src/main/resources/org/realityforge/bazel/depgen/templates:dependencies.yml",

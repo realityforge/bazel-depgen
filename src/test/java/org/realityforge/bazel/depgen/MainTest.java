@@ -41,6 +41,7 @@ public class MainTest extends AbstractTest {
                         + "\t\thash: Generate a hash of the content of the dependency configuration.\n"
                         + "\t\tinit: Initialize an empty dependency configuration and Bazel scaffolding.\n"
                         + "\t\tadd: Add a dependency to the dependency configuration.\n"
+                        + "\t\tupdate: Update a dependency version in the dependency configuration.\n"
                         + "\t\tremove: Remove a dependency from the dependency configuration.\n"
                         + "\t\tinfo: Print runtime info about the tool.\n"
                         + "\tOptions:\n"

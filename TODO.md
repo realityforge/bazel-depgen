@@ -42,10 +42,6 @@ Where it is unclear why colt is included. Maybe emitting the dependency graph or
 
 * Add command that checks/validates/cleans cache.
 
-* Add `update` command that updates the version of a dependency.
-
-  `update [2-part coord] version`
-
 * Refactor tests so that by default they don't call out to bazel except when needed. This should speed
   up tests. The places where this seems to be used is when we invoke `"bazel info output_base"` and
   `"bazel info repository_cache"` which slows down the build substantially.

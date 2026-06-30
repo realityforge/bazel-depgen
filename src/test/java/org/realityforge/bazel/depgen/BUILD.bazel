@@ -57,6 +57,7 @@ TEST_CLASSES = [
     "org.realityforge.bazel.depgen.ResolverTest",
     "org.realityforge.bazel.depgen.ResolverUtilTest",
     "org.realityforge.bazel.depgen.SettingsUtilTest",
+    "org.realityforge.bazel.depgen.UpdateCommandTest",
     "org.realityforge.bazel.depgen.config.ApplicationConfigTest",
     "org.realityforge.bazel.depgen.config.NatureTest",
     "org.realityforge.bazel.depgen.metadata.DepgenMetadataTest",
@@ -111,6 +112,7 @@ java_test(
         "ResolverTest.java",
         "ResolverUtilTest.java",
         "SettingsUtilTest.java",
+        "UpdateCommandTest.java",
     ],
     args = [
         "-testclass",
