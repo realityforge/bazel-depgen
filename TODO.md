@@ -20,9 +20,6 @@ complete as there is too much un-said.
   generate any warnings by running `buildifier --lint=warn` on any generated file as part of our build process _or_
   we could run `buildifier --lint=fix` when we output files for a slightly improved forward compatibility?
 
-* Currently, even if an artifact is restricted to a repository it is looked up in all repositories. Figure out a
-  way to restrict it to a specific repository.
-
 * If the j2cl artifact already has -j2cl suffix ... then don't add another?
 
 * order omits based on omit key rather than underlying artifact key
