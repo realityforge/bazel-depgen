@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +23,6 @@ import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.util.BazelUtil.BazelInfo;
-import org.realityforge.guiceyloops.shared.ValueUtil;
 import org.testng.annotations.Test;
 
 public class MainTest extends AbstractTest {
@@ -823,8 +823,8 @@ public class MainTest extends AbstractTest {
             artifacts:
               - coord: com.example:myapp:1.0
             """);
-        final var jarFile1 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
-        final var jarFile2 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
+        final var jarFile1 = createJarFile(randomString() + ".jar", randomString());
+        final var jarFile2 = createJarFile(randomString() + ".jar", randomString());
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0", jarFile1);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0", jarFile2);
 
@@ -869,7 +869,7 @@ public class MainTest extends AbstractTest {
               - coord: com.example:myapp:1.0
                 includeSource: false
             """);
-        final var jarFile2 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
+        final var jarFile2 = createJarFile(randomString() + ".jar", randomString());
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0", jarFile2);
 
         final var record = loadApplicationRecord();
@@ -906,8 +906,8 @@ public class MainTest extends AbstractTest {
             artifacts:
               - coord: com.example:myapp:1.0
             """);
-        final var jarFile1 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
-        final var jarFile2 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
+        final var jarFile1 = createJarFile(randomString() + ".jar", randomString());
+        final var jarFile2 = createJarFile(randomString() + ".jar", randomString());
         deployTempArtifactToLocalRepository(dir, "com.example:mylib:jar:sources:1.0");
         deployTempArtifactToLocalRepository(dir, "com.example:mylib:1.0", jarFile1);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0");
@@ -1151,6 +1151,11 @@ public class MainTest extends AbstractTest {
         final var environment = newEnvironment(handler);
         assertFalse(Main.processOptions(environment, args));
         return handler.toString();
+    }
+
+    private static String randomString() {
+        final var string = UUID.randomUUID().toString();
+        return string.substring(0, Math.min(50, string.length()));
     }
 
     private static final class FakeBazelInfoProvider implements Main.BazelInfoProvider {

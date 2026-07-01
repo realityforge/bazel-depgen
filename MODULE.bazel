@@ -321,13 +321,6 @@ _http_file(
 )
 
 _http_file(
-    name = "guiceyloops",
-    downloaded_file_path = "org/realityforge/guiceyloops/guiceyloops/0.113/guiceyloops-0.113.jar",
-    sha256 = "b9695819ca72148ba3622949f767575c9d25be2188ca3824ffbf9292f76d6692",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/guiceyloops/guiceyloops/0.113/guiceyloops-0.113.jar"],
-)
-
-_http_file(
     name = "jcl_over_slf4j",
     downloaded_file_path = "org/slf4j/jcl-over-slf4j/1.7.25/jcl-over-slf4j-1.7.25.jar",
     sha256 = "5e938457e79efcbfb3ab64bc29c43ec6c3b95fffcda3c155f4a86cc320c11e14",

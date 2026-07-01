@@ -22,8 +22,6 @@ import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.DepgenConfigurationException;
 import org.realityforge.bazel.depgen.DepgenException;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
-import org.realityforge.guiceyloops.server.http.TinyHttpd;
-import org.realityforge.guiceyloops.server.http.TinyHttpdFactory;
 import org.testng.annotations.Test;
 
 public final class RecordUtilTest extends AbstractTest {

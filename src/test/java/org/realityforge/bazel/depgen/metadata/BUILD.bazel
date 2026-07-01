@@ -6,7 +6,6 @@ DEPS = [
     "//src/main/java/org/realityforge/bazel/depgen",
     "//src/test/java/org/realityforge/bazel/depgen:test_support",
     "//third_party/java:gir_core",
-    "//third_party/java:guiceyloops",
     "//third_party/java:maven_resolver_api",
     "//third_party/java:testng",
 ]
@@ -29,6 +28,8 @@ java_testng_test(
     size = "small",
     srcs = [
         "RecordUtilTest.java",
+        "TinyHttpd.java",
+        "TinyHttpdFactory.java",
         "package-info.java",
     ],
     test_classes = [

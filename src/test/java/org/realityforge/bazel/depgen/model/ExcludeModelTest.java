@@ -2,16 +2,15 @@ package org.realityforge.bazel.depgen.model;
 
 import static org.testng.Assert.*;
 
-import org.realityforge.bazel.depgen.AbstractTest;
-import org.realityforge.guiceyloops.shared.ValueUtil;
+import java.util.UUID;
 import org.testng.annotations.Test;
 
-public class ExcludeModelTest extends AbstractTest {
+public class ExcludeModelTest {
     @Test
     public void createWithId() {
-        final String group = ValueUtil.randomString().replace("-", "_");
-        final String id = ValueUtil.randomString().replace("-", "_");
-        final ExcludeModel model = ExcludeModel.parse(group + ":" + id);
+        final var group = randomString().replace("-", "_");
+        final var id = randomString().replace("-", "_");
+        final var model = ExcludeModel.parse(group + ":" + id);
 
         assertEquals(model.getGroup(), group);
         assertTrue(model.hasId());
@@ -20,11 +19,16 @@ public class ExcludeModelTest extends AbstractTest {
 
     @Test
     public void createWithoutId() {
-        final String group = ValueUtil.randomString().replace("-", "_");
-        final ExcludeModel model = ExcludeModel.parse(group);
+        final var group = randomString().replace("-", "_");
+        final var model = ExcludeModel.parse(group);
 
         assertEquals(model.getGroup(), group);
         assertFalse(model.hasId());
         assertNull(model.getId());
+    }
+
+    private static String randomString() {
+        final var string = UUID.randomUUID().toString();
+        return string.substring(0, Math.min(50, string.length()));
     }
 }

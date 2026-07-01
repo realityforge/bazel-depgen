@@ -12,7 +12,7 @@ _java_plugin(
 # DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.25
 
 # SHA256 of the configuration content that generated this content
-_CONFIG_SHA256 = "7C0A766397CF19F58AE20ED268533F491D9B186E92842CA343C533E4F6BD8F9B"
+_CONFIG_SHA256 = "428644F1F9FED87BB897C3A8D3ACB4ECC0107BD4DBBD25F858496AE19397F5E9"
 
 exports_files(["dependencies.yml"])
 
@@ -112,8 +112,6 @@ exports_files(["dependencies.yml"])
 # +- org.yaml:snakeyaml:jar:2.6 [compile]
 # +- org.realityforge.gir:gir-core:jar:0.12 [compile]
 # |  \- org.realityforge.braincheck:braincheck-core:jar:1.31.0 [compile]
-# +- org.realityforge.guiceyloops:guiceyloops:jar:0.113 [compile]
-# |  \- com.google.guava:guava:jar:30.1-jre [compile] (conflicts with 20.0)
 # +- org.testng:testng:jar:7.4.0 [compile]
 # |  +- com.beust:jcommander:jar:1.78 [compile]
 # |  \- org.webjars:jquery:jar:3.5.1 [compile]
@@ -583,13 +581,6 @@ _java_import(
     jars = ["@gir_core//file"],
     tags = ["maven_coordinates=org.realityforge.gir:gir-core:0.12"],
     deps = [":braincheck_core"],
-)
-
-_java_import(
-    name = "guiceyloops",
-    jars = ["@guiceyloops//file"],
-    tags = ["maven_coordinates=org.realityforge.guiceyloops:guiceyloops:0.113"],
-    deps = [":guava"],
 )
 
 _java_import(

@@ -59,19 +59,6 @@ artifacts:
   - coord: org.slf4j:jcl-over-slf4j:1.7.25
   - coord: org.yaml:snakeyaml:2.6
   - coord: org.realityforge.gir:gir-core:0.12
-  - coord: org.realityforge.guiceyloops:guiceyloops:0.113
-    excludes:
-      - aopalliance:aopalliance
-      - com.google.guava:failureaccess
-      - com.google.inject:guice
-      - com.icegreen:greenmail
-      - fish.payara.extras:payara-embedded-all
-      - net.bytebuddy:byte-buddy
-      - org.hamcrest:hamcrest
-      - org.mockito:mockito-core
-      - org.objenesis:objenesis
-      - org.ow2.asm:asm
-      - org.realityforge.jndikit:jndikit
   - coord: org.testng:testng:7.4.0
     excludes:
       - com.google.inject:guice

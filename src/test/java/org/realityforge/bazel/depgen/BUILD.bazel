@@ -9,7 +9,6 @@ TEST_DEPS = [
     "//third_party/java:getopt4j",
     "//third_party/java:gir_core",
     "//third_party/java:guava",
-    "//third_party/java:guiceyloops",
     "//third_party/java:httpclient",
     "//third_party/java:httpcore",
     "//third_party/java:javax_inject",
