@@ -21,8 +21,6 @@ import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
-import org.realityforge.bazel.depgen.record.ApplicationRecord;
-import org.realityforge.bazel.depgen.record.ArtifactRecord;
 import org.realityforge.bazel.depgen.util.BazelUtil.BazelInfo;
 import org.realityforge.guiceyloops.shared.ValueUtil;
 import org.testng.annotations.Test;
@@ -31,7 +29,7 @@ public class MainTest extends AbstractTest {
     @Test
     public void printUsage() throws Exception {
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         // We set the level to warning which is equivalent to --quiet so that we know that output
         // occurs even if the --quiet argument is passed.
         environment.logger().setLevel(Level.WARNING);
@@ -83,11 +81,11 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         environment.setConfigFile(null);
         environment.setSettingsFile(null);
         assertFalse(Main.processOptions(environment, "generate"));
-        final String output = handler.toString();
+        final var output = handler.toString();
         assertOutputContains(output, "Error: Default config file does not exist: ");
     }
 
@@ -96,7 +94,7 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final String output = failToProcessOptions("Bleep");
+        final var output = failToProcessOptions("Bleep");
         assertOutputContains(output, "Error: Unknown command: Bleep");
     }
 
@@ -104,7 +102,7 @@ public class MainTest extends AbstractTest {
     public void processOptions_specifiedConfigFileMissing() throws Exception {
         writeWorkspace();
 
-        final String output = failToProcessOptions("--config-file", "deps.txt", "generate");
+        final var output = failToProcessOptions("--config-file", "deps.txt", "generate");
         assertOutputContains(
                 output,
                 "Error: Specified config file does not exist. Specified value: "
@@ -116,7 +114,7 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         assertFalse(environment.shouldResetCachedMetadata());
         assertTrue(Main.processOptions(environment, "init"));
         assertFalse(environment.getConfigFile().toFile().exists());
@@ -129,7 +127,7 @@ public class MainTest extends AbstractTest {
         writeConfigFile("");
         FileUtil.write("StoreMeHere", "NotADir");
 
-        final String output = failToProcessOptions("--cache-directory", "StoreMeHere", "generate");
+        final var output = failToProcessOptions("--cache-directory", "StoreMeHere", "generate");
         assertOutputContains(
                 output, "Error: Specified cache directory exists but is not a directory. Specified value: StoreMeHere");
     }
@@ -139,7 +137,7 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         FileUtil.write("RunMeHere", "NotADir");
 
-        final String output = failToProcessOptions("--directory", "RunMeHere", "generate");
+        final var output = failToProcessOptions("--directory", "RunMeHere", "generate");
         assertOutputContains(output, "Error: Specified directory is not a directory. Specified value: RunMeHere");
     }
 
@@ -147,24 +145,24 @@ public class MainTest extends AbstractTest {
     public void processOptions_specifiedDirectoryNoExist() throws Exception {
         writeWorkspace();
 
-        final String output = failToProcessOptions("--directory", "RunMeHere", "generate");
+        final var output = failToProcessOptions("--directory", "RunMeHere", "generate");
         assertOutputContains(output, "Error: Specified directory does not exist. Specified value: RunMeHere");
     }
 
     @Test
     public void processOptions_specifyDirectory() throws Exception {
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         FileUtil.write(dir.resolve(".bazelrc"), "build --repository_cache " + FileUtil.createLocalTempDir() + "\n");
         FileUtil.write(dir.resolve("WORKSPACE"), "");
-        final Path configFile = dir.resolve("thirdparty").resolve(ApplicationConfig.FILENAME);
+        final var configFile = dir.resolve("thirdparty").resolve(ApplicationConfig.FILENAME);
         FileUtil.write(configFile, "");
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         environment.setConfigFile(null);
         environment.logger().setLevel(Level.INFO);
-        final int exitCode = Main.run(environment, "--directory", dir.toString(), "info", "config-file");
+        final var exitCode = Main.run(environment, "--directory", dir.toString(), "info", "config-file");
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
         assertEquals(environment.currentDirectory(), dir);
         assertEquals(handler.toString(), "config-file=" + configFile);
@@ -175,7 +173,7 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final String output = failToProcessOptions("generate", "generate");
+        final var output = failToProcessOptions("generate", "generate");
         assertOutputContains(output, "Error: Unknown arguments to generate command. Arguments: [generate]");
     }
 
@@ -189,7 +187,7 @@ public class MainTest extends AbstractTest {
               - name: central    url: http://repo1.maven.org/maven2
             """);
 
-        final String output = failToProcessOptions("--settings-file", "some_settings.xml", "generate");
+        final var output = failToProcessOptions("--settings-file", "some_settings.xml", "generate");
         assertOutputContains(
                 output, "Error: Specified settings file does not exist. Specified value: some_settings.xml");
     }
@@ -199,7 +197,7 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final String output = failToProcessOptions("--help");
+        final var output = failToProcessOptions("--help");
         assertOutputContains(output, "-h, --help\n");
         assertOutputContains(output, "-q, --quiet\n");
         assertOutputContains(output, "-v, --verbose\n");
@@ -214,7 +212,7 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final String output = failToProcessOptions("--version");
+        final var output = failToProcessOptions("--version");
         assertEquals(output, "DepGen Version: 1");
     }
 
@@ -223,7 +221,7 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final String output = failToProcessOptions("--some-command-no-exist");
+        final var output = failToProcessOptions("--some-command-no-exist");
         assertEquals(output, "Error: Unknown option --some-command-no-exist");
     }
 
@@ -233,7 +231,7 @@ public class MainTest extends AbstractTest {
         writeConfigFile("");
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         environment.setConfigFile(null);
         environment.setSettingsFile(null);
         assertTrue(Main.processOptions(environment, "generate"));
@@ -253,7 +251,7 @@ public class MainTest extends AbstractTest {
         FileUtil.write("dependencies2.yml", "");
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         assertTrue(Main.processOptions(environment, "--config-file", "dependencies2.yml", "generate"));
         assertEquals(environment.getConfigFile(), FileUtil.getCurrentDirectory().resolve("dependencies2.yml"));
     }
@@ -262,10 +260,10 @@ public class MainTest extends AbstractTest {
     public void processOptions_specifyCacheDir() throws Exception {
         writeWorkspace();
         writeConfigFile("");
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         assertTrue(Main.processOptions(environment, "--cache-directory", dir.toString(), "generate"));
         assertTrue(environment.hasCacheDir());
         assertEquals(environment.getCacheDir(), dir);
@@ -276,7 +274,7 @@ public class MainTest extends AbstractTest {
         FileUtil.write("dependencies2.yml", "");
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         environment.setCacheDir(null);
         assertFalse(Main.processOptions(environment, "--config-file", "dependencies2.yml", "generate"));
         assertOutputContains(
@@ -293,7 +291,7 @@ public class MainTest extends AbstractTest {
         writeConfigFile("");
 
         final var provider = new FakeBazelInfoProvider();
-        final Environment environment = newEnvironment();
+        final var environment = newEnvironment();
         assertTrue(Main.processOptions(environment, provider, "generate"));
         assertEquals(provider.invocationCount(), 0);
     }
@@ -303,12 +301,12 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final Path outputBase = FileUtil.createLocalTempDir();
-        final Path repositoryCache = FileUtil.createLocalTempDir();
+        final var outputBase = FileUtil.createLocalTempDir();
+        final var repositoryCache = FileUtil.createLocalTempDir();
         final var provider = new FakeBazelInfoProvider();
         provider.info = new BazelInfo(outputBase.toFile(), repositoryCache);
 
-        final Environment environment = newEnvironment();
+        final var environment = newEnvironment();
         environment.setCacheDir(null);
         environment.setRepositoryCacheDir(null);
         assertTrue(Main.processOptions(environment, provider, "generate"));
@@ -325,12 +323,12 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final Path outputBase = FileUtil.createLocalTempDir();
+        final var outputBase = FileUtil.createLocalTempDir();
         final var provider = new FakeBazelInfoProvider();
         provider.outputBase = outputBase.toFile();
 
-        final Environment environment = newEnvironment();
-        final Path repositoryCache = environment.getRepositoryCacheDir();
+        final var environment = newEnvironment();
+        final var repositoryCache = environment.getRepositoryCacheDir();
         environment.setCacheDir(null);
         assertTrue(Main.processOptions(environment, provider, "generate"));
         assertEquals(environment.getCacheDir(), outputBase.resolve(".depgen-cache"));
@@ -346,12 +344,12 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final Path repositoryCache = FileUtil.createLocalTempDir();
+        final var repositoryCache = FileUtil.createLocalTempDir();
         final var provider = new FakeBazelInfoProvider();
         provider.repositoryCache = repositoryCache;
 
-        final Environment environment = newEnvironment();
-        final Path cacheDir = environment.getCacheDir();
+        final var environment = newEnvironment();
+        final var cacheDir = environment.getCacheDir();
         environment.setRepositoryCacheDir(null);
         assertTrue(Main.processOptions(environment, provider, "generate"));
         assertEquals(environment.getCacheDir(), cacheDir);
@@ -370,7 +368,7 @@ public class MainTest extends AbstractTest {
         final var handler = new TestHandler();
         final var provider = new FakeBazelInfoProvider();
         provider.info = null;
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         environment.setCacheDir(null);
         environment.setRepositoryCacheDir(null);
 
@@ -390,13 +388,13 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final Path outputBase = FileUtil.createLocalTempDir();
-        final Path defaultRepositoryCache = FileUtil.createLocalTempDir();
+        final var outputBase = FileUtil.createLocalTempDir();
+        final var defaultRepositoryCache = FileUtil.createLocalTempDir();
         final var provider = new FakeBazelInfoProvider();
         provider.info = new BazelInfo(outputBase.toFile(), null);
         provider.defaultRepositoryCache = defaultRepositoryCache;
 
-        final Environment environment = newEnvironment();
+        final var environment = newEnvironment();
         environment.setCacheDir(null);
         environment.setRepositoryCacheDir(null);
         assertTrue(Main.processOptions(environment, provider, "generate"));
@@ -429,10 +427,10 @@ public class MainTest extends AbstractTest {
               </servers>
             </settings>
             """);
-        final Path path = FileUtil.getCurrentDirectory().resolve("settings.xml");
+        final var path = FileUtil.getCurrentDirectory().resolve("settings.xml");
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         assertTrue(Main.processOptions(environment, "--settings-file", path.toString(), "generate"));
         assertTrue(environment.hasSettingsFile());
         assertEquals(environment.getSettingsFile(), path);
@@ -444,7 +442,7 @@ public class MainTest extends AbstractTest {
         writeConfigFile("");
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         environment.logger().setLevel(Level.OFF);
         assertTrue(Main.processOptions(environment, "--verbose", "generate"));
         assertEquals(environment.logger().getLevel(), Level.ALL);
@@ -456,7 +454,7 @@ public class MainTest extends AbstractTest {
         writeConfigFile("");
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         environment.logger().setLevel(Level.OFF);
         assertTrue(Main.processOptions(environment, "--quiet", "generate"));
         assertEquals(environment.logger().getLevel(), Level.WARNING);
@@ -468,7 +466,7 @@ public class MainTest extends AbstractTest {
         writeConfigFile("");
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         assertFalse(environment.shouldResetCachedMetadata());
         assertTrue(Main.processOptions(environment, "--reset-cached-metadata", "generate"));
         assertTrue(environment.shouldResetCachedMetadata());
@@ -482,8 +480,8 @@ public class MainTest extends AbstractTest {
               - coord: com.example:zeapp:2.0
             """);
 
-        final Environment environment = newEnvironment();
-        final Path file = getDefaultConfigFile();
+        final var environment = newEnvironment();
+        final var file = getDefaultConfigFile();
         environment.setConfigFile(file);
         final ApplicationConfig config = Main.loadConfigFile(environment);
         assertEquals(config.getConfigLocation(), file);
@@ -495,8 +493,8 @@ public class MainTest extends AbstractTest {
     public void loadConfigFile_error() throws Exception {
         writeWorkspace();
 
-        final Environment environment = newEnvironment();
-        final Path file = getDefaultConfigFile();
+        final var environment = newEnvironment();
+        final var file = getDefaultConfigFile();
         environment.setConfigFile(file);
         final TerminalStateException exception =
                 expectThrows(TerminalStateException.class, () -> Main.loadConfigFile(environment));
@@ -512,9 +510,9 @@ public class MainTest extends AbstractTest {
               - coord: com.example:zeapp:2.0
             """);
 
-        final Environment environment = newEnvironment();
+        final var environment = newEnvironment();
 
-        final Path file = getDefaultConfigFile();
+        final var file = getDefaultConfigFile();
         environment.setConfigFile(file);
 
         final ApplicationModel model = Main.loadModel(environment);
@@ -533,7 +531,7 @@ public class MainTest extends AbstractTest {
               - coord: com.example:zeapp:2.0
             """);
 
-        final Environment environment = newEnvironment();
+        final var environment = newEnvironment();
         environment.markResetCachedMetadata();
 
         final ApplicationModel model = Main.loadModel(environment);
@@ -545,19 +543,19 @@ public class MainTest extends AbstractTest {
 
     @Test
     public void loadRecord_noDependencies() throws Exception {
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         writeWorkspace();
         writeConfigFile(dir, "");
 
-        final ApplicationRecord record = Main.loadRecord(newEnvironment());
+        final var record = Main.loadRecord(newEnvironment());
         assertNonSystemArtifactCount(record, 0);
         assertEquals(record.getAuthenticationContexts().size(), 0);
     }
 
     @Test
     public void loadRecord_singleDependency() throws Exception {
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         writeWorkspace();
         writeConfigFile(dir, """
@@ -566,20 +564,20 @@ public class MainTest extends AbstractTest {
             """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
-        final ApplicationRecord record = Main.loadRecord(newEnvironment());
+        final var record = Main.loadRecord(newEnvironment());
         assertNonSystemArtifactCount(record, 1);
     }
 
     @Test
     public void loadRecord_invalidSettings() throws Exception {
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         writeWorkspace();
         writeConfigFile(dir, "");
 
-        final Environment environment = newEnvironment();
+        final var environment = newEnvironment();
 
-        final Path settingsFile = FileUtil.getCurrentDirectory().resolve("settings.xml");
+        final var settingsFile = FileUtil.getCurrentDirectory().resolve("settings.xml");
         environment.setSettingsFile(settingsFile);
 
         FileUtil.write(settingsFile.toString(), "JHSGDJHDS()*&(&Y*&");
@@ -592,7 +590,7 @@ public class MainTest extends AbstractTest {
 
     @Test
     public void loadRecord_validSettings() throws Exception {
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         writeWorkspace();
         writeConfigFile(dir, """
@@ -601,9 +599,9 @@ public class MainTest extends AbstractTest {
             """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
-        final Environment environment = newEnvironment();
+        final var environment = newEnvironment();
 
-        final Path settingsFile = FileUtil.getCurrentDirectory().resolve("settings.xml");
+        final var settingsFile = FileUtil.getCurrentDirectory().resolve("settings.xml");
         environment.setSettingsFile(settingsFile);
         FileUtil.write(settingsFile.toString(), """
             <settings xmlns="http://maven.apache.org/POM/4.0.0">
@@ -617,13 +615,13 @@ public class MainTest extends AbstractTest {
             </settings>
             """);
 
-        final ApplicationRecord record = Main.loadRecord(environment);
+        final var record = Main.loadRecord(environment);
         assertEquals(record.getAuthenticationContexts().size(), 1);
     }
 
     @Test
     public void loadRecord_ensureInvalidCacheMessagePropagated() throws Exception {
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         writeWorkspace();
         writeConfigFile(dir, """
@@ -633,12 +631,12 @@ public class MainTest extends AbstractTest {
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
 
-        final Path cacheDir = FileUtil.createLocalTempDir();
+        final var cacheDir = FileUtil.createLocalTempDir();
         environment.setCacheDir(cacheDir);
 
-        final Path metadataCache = cacheDir.resolve("com/example/myapp/1.0").resolve(DepgenMetadata.FILENAME);
+        final var metadataCache = cacheDir.resolve("com/example/myapp/1.0").resolve(DepgenMetadata.FILENAME);
         Files.createDirectories(metadataCache.getParent());
         Files.writeString(metadataCache, "<default>.local.url=badUrl\n", StandardCharsets.ISO_8859_1);
 
@@ -651,7 +649,7 @@ public class MainTest extends AbstractTest {
 
     @Test
     public void loadRecord_circularDependencies() throws Exception {
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         writeWorkspace();
         writeConfigFile(dir, """
@@ -675,7 +673,7 @@ public class MainTest extends AbstractTest {
     @Test
     public void loadRecord_errorResolving() throws Exception {
         // Make the cache directory un-writeable and thus error saving pom
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         writeWorkspace();
         writeConfigFile(dir, """
@@ -685,9 +683,9 @@ public class MainTest extends AbstractTest {
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "com.example:mylib:1.0");
 
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
 
-        final Path cacheDir = FileUtil.createLocalTempDir();
+        final var cacheDir = FileUtil.createLocalTempDir();
         environment.setCacheDir(cacheDir);
         final TerminalStateException exception;
         try {
@@ -710,8 +708,8 @@ public class MainTest extends AbstractTest {
 
     @Test
     public void setupLogger() throws Exception {
-        final Logger logger = Logger.getAnonymousLogger();
-        final Environment environment = newEnvironment(logger);
+        final var logger = Logger.getAnonymousLogger();
+        final var environment = newEnvironment(logger);
         assertEquals(logger.getHandlers().length, 0);
         assertTrue(logger.getUseParentHandlers());
         logger.setLevel(Level.OFF);
@@ -726,14 +724,14 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final Path cacheDir = FileUtil.createLocalTempDir();
-        final Path file = FileUtil.createLocalTempDir().resolve("somefile.txt");
-        final byte[] content = {1, 2, 3, 4};
+        final var cacheDir = FileUtil.createLocalTempDir();
+        final var file = FileUtil.createLocalTempDir().resolve("somefile.txt");
+        final var content = new byte[] {1, 2, 3, 4};
         Files.write(file, content);
 
-        final String sha256 = "9F64A747E1B97F131FABB6B447296C9B6F0201E79FB3C5356E6C77E89B6A806A";
+        final var sha256 = "9F64A747E1B97F131FABB6B447296C9B6F0201E79FB3C5356E6C77E89B6A806A";
 
-        final Path targetFile = cacheDir.resolve("content_addressable")
+        final var targetFile = cacheDir.resolve("content_addressable")
                 .resolve("sha256")
                 .resolve(sha256)
                 .resolve("file");
@@ -755,20 +753,20 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final Path cacheDir = FileUtil.createLocalTempDir();
-        final Path file = FileUtil.createLocalTempDir().resolve("somefile.txt");
+        final var cacheDir = FileUtil.createLocalTempDir();
+        final var file = FileUtil.createLocalTempDir().resolve("somefile.txt");
 
         Files.write(file, new byte[] {1, 2, 3, 4});
 
-        final String sha256 = "9F64A747E1B97F131FABB6B447296C9B6F0201E79FB3C5356E6C77E89B6A806A";
+        final var sha256 = "9F64A747E1B97F131FABB6B447296C9B6F0201E79FB3C5356E6C77E89B6A806A";
 
-        final Path targetFile = cacheDir.resolve("content_addressable")
+        final var targetFile = cacheDir.resolve("content_addressable")
                 .resolve("sha256")
                 .resolve(sha256)
                 .resolve("file");
 
         // Writing cacheContent into cache that differs from actual content so we can tell if it has been updated
-        final byte[] cacheContent = {1, 2, 3, 4, 0};
+        final var cacheContent = new byte[] {1, 2, 3, 4, 0};
         Files.createDirectories(requireNonNull(targetFile.getParent()));
         Files.write(targetFile, cacheContent);
 
@@ -788,14 +786,14 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final Path cacheDir = FileUtil.createLocalTempDir();
-        final Path file = FileUtil.createLocalTempDir().resolve("somefile.txt");
-        final byte[] content = {1, 2, 3, 4};
+        final var cacheDir = FileUtil.createLocalTempDir();
+        final var file = FileUtil.createLocalTempDir().resolve("somefile.txt");
+        final var content = new byte[] {1, 2, 3, 4};
         Files.write(file, content);
 
-        final String sha256 = "9F64A747E1B97F131FABB6B447296C9B6F0201E79FB3C5356E6C77E89B6A806A";
+        final var sha256 = "9F64A747E1B97F131FABB6B447296C9B6F0201E79FB3C5356E6C77E89B6A806A";
 
-        final Path targetFile = cacheDir.resolve("content_addressable")
+        final var targetFile = cacheDir.resolve("content_addressable")
                 .resolve("sha256")
                 .resolve(sha256)
                 .resolve("file");
@@ -816,38 +814,38 @@ public class MainTest extends AbstractTest {
 
     @Test
     public void cacheArtifactsInRepositoryCache() throws Exception {
-        final Path repositoryCacheDir = FileUtil.createLocalTempDir();
+        final var repositoryCacheDir = FileUtil.createLocalTempDir();
         writeBazelrc(repositoryCacheDir);
         FileUtil.write("WORKSPACE", "");
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         writeConfigFile(dir, """
             artifacts:
               - coord: com.example:myapp:1.0
             """);
-        final Path jarFile1 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
-        final Path jarFile2 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
+        final var jarFile1 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
+        final var jarFile2 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0", jarFile1);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0", jarFile2);
 
-        final ApplicationRecord record = loadApplicationRecord();
+        final var record = loadApplicationRecord();
 
-        final ArtifactRecord artifactRecord = record.getArtifacts().get(0);
-        final String sha256 = artifactRecord.getSha256();
+        final var artifactRecord = record.getArtifacts().get(0);
+        final var sha256 = artifactRecord.getSha256();
         assertNotNull(sha256);
-        final String sourceSha256 = artifactRecord.getSourceSha256();
+        final var sourceSha256 = artifactRecord.getSourceSha256();
         assertNotNull(sourceSha256);
 
-        final Path cacheBase = repositoryCacheDir.resolve("content_addressable").resolve("sha256");
-        final Path targetFile = cacheBase.resolve(sha256).resolve("file");
-        final Path sourceTargetFile = cacheBase.resolve(sourceSha256).resolve("file");
+        final var cacheBase = repositoryCacheDir.resolve("content_addressable").resolve("sha256");
+        final var targetFile = cacheBase.resolve(sha256).resolve("file");
+        final var sourceTargetFile = cacheBase.resolve(sourceSha256).resolve("file");
 
         final var handler = new TestHandler();
 
         assertFalse(Files.exists(targetFile));
         assertFalse(Files.exists(sourceTargetFile));
 
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         environment.setRepositoryCacheDir(repositoryCacheDir);
         Main.cacheArtifactsInRepositoryCache(environment, record);
         assertOutputContains(
@@ -861,34 +859,34 @@ public class MainTest extends AbstractTest {
 
     @Test
     public void cacheArtifactsInRepositoryCache_minusSourcesClassifier() throws Exception {
-        final Path repositoryCacheDir = FileUtil.createLocalTempDir();
+        final var repositoryCacheDir = FileUtil.createLocalTempDir();
         writeBazelrc(repositoryCacheDir);
         FileUtil.write("WORKSPACE", "");
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         writeConfigFile(dir, """
             artifacts:
               - coord: com.example:myapp:1.0
                 includeSource: false
             """);
-        final Path jarFile2 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
+        final var jarFile2 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0", jarFile2);
 
-        final ApplicationRecord record = loadApplicationRecord();
+        final var record = loadApplicationRecord();
 
-        final ArtifactRecord artifactRecord = record.getArtifacts().get(0);
-        final String sha256 = artifactRecord.getSha256();
+        final var artifactRecord = record.getArtifacts().get(0);
+        final var sha256 = artifactRecord.getSha256();
         assertNotNull(sha256);
         assertNull(artifactRecord.getSourceSha256());
 
-        final Path cacheBase = repositoryCacheDir.resolve("content_addressable").resolve("sha256");
-        final Path targetFile = cacheBase.resolve(sha256).resolve("file");
+        final var cacheBase = repositoryCacheDir.resolve("content_addressable").resolve("sha256");
+        final var targetFile = cacheBase.resolve(sha256).resolve("file");
 
         final var handler = new TestHandler();
 
         assertFalse(Files.exists(targetFile));
 
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         environment.setRepositoryCacheDir(repositoryCacheDir);
         Main.cacheArtifactsInRepositoryCache(environment, record);
         assertOutputContains(
@@ -899,40 +897,40 @@ public class MainTest extends AbstractTest {
 
     @Test
     public void cacheArtifactsInRepositoryCache_multipleArtifacts() throws Exception {
-        final Path repositoryCacheDir = FileUtil.createLocalTempDir();
+        final var repositoryCacheDir = FileUtil.createLocalTempDir();
         writeBazelrc(repositoryCacheDir);
         FileUtil.write("WORKSPACE", "");
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         writeConfigFile(dir, """
             artifacts:
               - coord: com.example:myapp:1.0
             """);
-        final Path jarFile1 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
-        final Path jarFile2 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
+        final var jarFile1 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
+        final var jarFile2 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
         deployTempArtifactToLocalRepository(dir, "com.example:mylib:jar:sources:1.0");
         deployTempArtifactToLocalRepository(dir, "com.example:mylib:1.0", jarFile1);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0");
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0", jarFile2, "com.example:mylib:1.0");
 
-        final ApplicationRecord record = loadApplicationRecord();
+        final var record = loadApplicationRecord();
 
-        final List<ArtifactRecord> artifacts = record.getArtifacts();
-        final String file1Sha256 = artifacts.get(0).getSha256();
-        final String file2Sha256 = artifacts.get(1).getSha256();
+        final var artifacts = record.getArtifacts();
+        final var file1Sha256 = artifacts.get(0).getSha256();
+        final var file2Sha256 = artifacts.get(1).getSha256();
         assertNotNull(file1Sha256);
         assertNotNull(file2Sha256);
 
-        final Path cacheBase = repositoryCacheDir.resolve("content_addressable").resolve("sha256");
-        final Path targetFile1 = cacheBase.resolve(file1Sha256).resolve("file");
-        final Path targetFile2 = cacheBase.resolve(file2Sha256).resolve("file");
+        final var cacheBase = repositoryCacheDir.resolve("content_addressable").resolve("sha256");
+        final var targetFile1 = cacheBase.resolve(file1Sha256).resolve("file");
+        final var targetFile2 = cacheBase.resolve(file2Sha256).resolve("file");
 
         final var handler = new TestHandler();
 
         assertFalse(Files.exists(targetFile1));
         assertFalse(Files.exists(targetFile2));
 
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         environment.setRepositoryCacheDir(repositoryCacheDir);
         Main.cacheArtifactsInRepositoryCache(environment, record);
         assertEquals(handler.toString(), """
@@ -947,7 +945,7 @@ public class MainTest extends AbstractTest {
 
     @Test
     public void run_validDependencySpec() throws Exception {
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
@@ -957,7 +955,7 @@ public class MainTest extends AbstractTest {
               - coord: com.example:myapp:jar:1.0
                 excludes: ['org.realityforge.javax.annotation:javax.annotation']
             """);
-        final String output = runCommand("generate");
+        final var output = runCommand("generate");
         assertEquals(output, "");
     }
 
@@ -969,7 +967,7 @@ public class MainTest extends AbstractTest {
               - coord: com.example:myapp:1.0
                 excludes: ['org.realityforge.javax.annotation:javax.annotation']
             """);
-        final String output = runCommand("hash");
+        final var output = runCommand("hash");
         assertEquals(output, "Content SHA256: 2DDCEE0CE8D16EE57C89A175877115495555796D3C1598EB32DC7652CA37204A");
     }
 
@@ -981,7 +979,7 @@ public class MainTest extends AbstractTest {
               - coord: org.realityforge.gir
             """);
 
-        final String output = runCommand(ExitCodes.ERROR_CONSTRUCTING_MODEL_CODE, "generate");
+        final var output = runCommand(ExitCodes.ERROR_CONSTRUCTING_MODEL_CODE, "generate");
         assertOutputContains(output, """
             The 'coord' property on the dependency must specify 2-5 components separated by the ':' character.\
              The 'coords' must be in one of the forms; 'group:id', 'group:id:version',\
@@ -1000,7 +998,7 @@ public class MainTest extends AbstractTest {
               - group: org.realityforge.gir
             """);
 
-        final String output = runCommand(ExitCodes.ERROR_LOADING_CONFIG_CODE, "generate");
+        final var output = runCommand(ExitCodes.ERROR_LOADING_CONFIG_CODE, "generate");
         assertOutputContains(output, "Error: Failed to load config file ");
         assertOutputContains(output, "Cause: while scanning a quoted scalar");
         assertOutputDoesNotContain(output, "\tat org.yaml.snakeyaml.Yaml.load(");
@@ -1014,7 +1012,7 @@ public class MainTest extends AbstractTest {
               - group: org.realityforge.gir
             """);
 
-        final String output = runCommand(ExitCodes.ERROR_LOADING_CONFIG_CODE, "--verbose", "generate");
+        final var output = runCommand(ExitCodes.ERROR_LOADING_CONFIG_CODE, "--verbose", "generate");
         assertOutputContains(output, "Error: Failed to load config file ");
         assertOutputContains(output, "Cause: while scanning a quoted scalar");
         assertOutputContains(output, "found unexpected end of stream");
@@ -1022,7 +1020,7 @@ public class MainTest extends AbstractTest {
 
     @Test
     public void run_invalidConfig() throws Exception {
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
@@ -1034,7 +1032,7 @@ public class MainTest extends AbstractTest {
                   - NotExist
             """);
 
-        final String output = runCommand(ExitCodes.ERROR_CONFIG_VALIDATION_CODE, "--verbose", "generate");
+        final var output = runCommand(ExitCodes.ERROR_CONFIG_VALIDATION_CODE, "--verbose", "generate");
         assertEquals(
                 output,
                 "Artifact 'com.example:myapp' declared a repository named 'NotExist' but no such repository is"
@@ -1046,13 +1044,13 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile("");
 
-        final String output = runCommand(ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE, "Bleep");
+        final var output = runCommand(ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE, "Bleep");
         assertEquals(output, "Error: Unknown command: Bleep");
     }
 
     @Test
     public void run_removeMissingCoord() throws Exception {
-        final String output = runCommand(ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE, "remove");
+        final var output = runCommand(ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE, "remove");
         assertEquals(output, "Error: Missing dependency coordinate.");
     }
 
@@ -1061,13 +1059,13 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile(FileUtil.createLocalTempDir(), "");
 
-        final String output = runCommand("generate");
+        final var output = runCommand("generate");
         assertEquals(output, "");
     }
 
     @Test
     public void run_printGraph() throws Exception {
-        final Path dir = FileUtil.createLocalTempDir();
+        final var dir = FileUtil.createLocalTempDir();
 
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
@@ -1077,7 +1075,7 @@ public class MainTest extends AbstractTest {
               - coord: com.example:myapp:1.0
             """);
 
-        final String output = runCommand("print-graph");
+        final var output = runCommand("print-graph");
         assertEquals(output, "Dependency Graph:\n" + "\\- com.example:myapp:jar:1.0 [compile]");
     }
 
@@ -1107,7 +1105,7 @@ public class MainTest extends AbstractTest {
             </settings>
             """);
 
-        final String output = runCommand("generate");
+        final var output = runCommand("generate");
         assertOutputContains(output, "");
     }
 
@@ -1128,7 +1126,7 @@ public class MainTest extends AbstractTest {
             </settings>
             """);
 
-        final String output = runCommand("--settings-file", "some_settings.xml", "generate");
+        final var output = runCommand("--settings-file", "some_settings.xml", "generate");
         assertOutputContains(output, "");
     }
 
@@ -1140,7 +1138,7 @@ public class MainTest extends AbstractTest {
     @NonNull
     private String runCommand(final int expectedExitCode, @NonNull final String... args) throws Exception {
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         environment.logger().setLevel(Level.INFO);
         final int exitCode = Main.run(environment, args);
         assertEquals(expectedExitCode, exitCode);
@@ -1150,7 +1148,7 @@ public class MainTest extends AbstractTest {
     @NonNull
     private String failToProcessOptions(@NonNull final String... args) throws Exception {
         final var handler = new TestHandler();
-        final Environment environment = newEnvironment(handler);
+        final var environment = newEnvironment(handler);
         assertFalse(Main.processOptions(environment, args));
         return handler.toString();
     }
