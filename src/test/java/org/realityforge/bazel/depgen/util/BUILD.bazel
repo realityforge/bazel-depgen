@@ -36,7 +36,7 @@ java_testng_test(
 
 java_testng_test(
     name = "bazel_util_integration_test",
-    size = "medium",
+    size = "small",
     srcs = [
         "BazelUtilIntegrationTest.java",
         "package-info.java",
