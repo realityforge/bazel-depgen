@@ -41,10 +41,6 @@ Where it is unclear why colt is included. Maybe emitting the dependency graph or
 
 * Add command that checks/validates/cleans cache.
 
-* Refactor tests so that by default they don't call out to bazel except when needed. This should speed
-  up tests. The places where this seems to be used is when we invoke `"bazel info output_base"` and
-  `"bazel info repository_cache"` which slows down the build substantially.
-
 * Consider converting to commandline tool named `bzt`
 
 * Consider adding a Github Action that bumps dependencies and runs tests as appropriate. It could generate a PR if
