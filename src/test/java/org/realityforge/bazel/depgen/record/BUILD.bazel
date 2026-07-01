@@ -1,13 +1,18 @@
-load("//third_party/java:rules.bzl", "java_library")
+load("//third_party/java:rules.bzl", "java_testng_test")
 
 package(default_visibility = ["//visibility:public"])
 
-java_library(
-    name = "record_tests",
+java_testng_test(
+    name = "all_tests",
+    size = "small",
     srcs = [
         "ApplicationRecordTest.java",
         "ArtifactRecordTest.java",
         "package-info.java",
+    ],
+    test_classes = [
+        "org.realityforge.bazel.depgen.record.ApplicationRecordTest",
+        "org.realityforge.bazel.depgen.record.ArtifactRecordTest",
     ],
     deps = [
         "//src/main/java/org/realityforge/bazel/depgen",

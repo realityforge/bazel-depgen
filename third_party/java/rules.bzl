@@ -155,3 +155,16 @@ def java_test(name, srcs = [], javacopts = [], deps = [], plugins = [], jvm_flag
         jvm_flags = _JAVA_TEST_JVM_FLAGS + jvm_flags,
         **kwargs
     )
+
+def java_testng_test(name, test_classes, **kwargs):
+    java_test(
+        name = name,
+        args = [
+            "-testclass",
+            ",".join(test_classes),
+        ],
+        env_inherit = ["PATH"],
+        main_class = "org.testng.TestNG",
+        use_testrunner = False,
+        **kwargs
+    )

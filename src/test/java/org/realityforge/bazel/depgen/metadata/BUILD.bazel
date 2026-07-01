@@ -1,13 +1,18 @@
-load("//third_party/java:rules.bzl", "java_library")
+load("//third_party/java:rules.bzl", "java_testng_test")
 
 package(default_visibility = ["//visibility:public"])
 
-java_library(
-    name = "metadata_tests",
+java_testng_test(
+    name = "all_tests",
+    size = "small",
     srcs = [
         "DepgenMetadataTest.java",
         "RecordUtilTest.java",
         "package-info.java",
+    ],
+    test_classes = [
+        "org.realityforge.bazel.depgen.metadata.DepgenMetadataTest",
+        "org.realityforge.bazel.depgen.metadata.RecordUtilTest",
     ],
     deps = [
         "//src/main/java/org/realityforge/bazel/depgen",

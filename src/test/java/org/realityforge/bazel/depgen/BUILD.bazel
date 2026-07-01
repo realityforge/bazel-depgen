@@ -1,4 +1,4 @@
-load("//third_party/java:rules.bzl", "java_library", "java_test")
+load("//third_party/java:rules.bzl", "java_library", "java_testng_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -40,46 +40,6 @@ TEST_DEPS = [
     "//third_party/java:testng",
 ]
 
-TEST_CLASSES = [
-    "org.realityforge.bazel.depgen.AddCommandTest",
-    "org.realityforge.bazel.depgen.DepGenConfigTest",
-    "org.realityforge.bazel.depgen.DependencyConfigEditorTest",
-    "org.realityforge.bazel.depgen.DependencyGraphEmitterTest",
-    "org.realityforge.bazel.depgen.GenerateCommandTest",
-    "org.realityforge.bazel.depgen.HashCommandTest",
-    "org.realityforge.bazel.depgen.InfoCommandTest",
-    "org.realityforge.bazel.depgen.InitCommandTest",
-    "org.realityforge.bazel.depgen.MainTest",
-    "org.realityforge.bazel.depgen.OptionalDependencySelectorTest",
-    "org.realityforge.bazel.depgen.PrintGraphCommandTest",
-    "org.realityforge.bazel.depgen.RawFormatterTest",
-    "org.realityforge.bazel.depgen.RemoveCommandTest",
-    "org.realityforge.bazel.depgen.ResolverTest",
-    "org.realityforge.bazel.depgen.ResolverUtilTest",
-    "org.realityforge.bazel.depgen.SettingsUtilTest",
-    "org.realityforge.bazel.depgen.UpdateCommandTest",
-    "org.realityforge.bazel.depgen.config.ApplicationConfigTest",
-    "org.realityforge.bazel.depgen.config.NatureTest",
-    "org.realityforge.bazel.depgen.metadata.DepgenMetadataTest",
-    "org.realityforge.bazel.depgen.metadata.RecordUtilTest",
-    "org.realityforge.bazel.depgen.model.ApplicationModelTest",
-    "org.realityforge.bazel.depgen.model.ArtifactModelTest",
-    "org.realityforge.bazel.depgen.model.ExcludeModelTest",
-    "org.realityforge.bazel.depgen.model.GlobalExcludeModelTest",
-    "org.realityforge.bazel.depgen.model.OptionsModelTest",
-    "org.realityforge.bazel.depgen.model.ReplacementModelTest",
-    "org.realityforge.bazel.depgen.model.RepositoryModelTest",
-    "org.realityforge.bazel.depgen.record.ApplicationRecordTest",
-    "org.realityforge.bazel.depgen.record.ArtifactRecordTest",
-    "org.realityforge.bazel.depgen.util.ArtifactUtilTest",
-    "org.realityforge.bazel.depgen.util.BazelUtilTest",
-    "org.realityforge.bazel.depgen.util.GeneratedSectionWriterTest",
-    "org.realityforge.bazel.depgen.util.HashUtilTest",
-    "org.realityforge.bazel.depgen.util.OrderedPropertiesTest",
-    "org.realityforge.bazel.depgen.util.StarlarkOutputTest",
-    "org.realityforge.bazel.depgen.util.YamlUtilTest",
-]
-
 java_library(
     name = "test_support",
     srcs = [
@@ -91,42 +51,112 @@ java_library(
     deps = TEST_DEPS,
 )
 
-java_test(
-    name = "all_tests",
-    size = "large",
-    timeout = "long",
+java_testng_test(
+    name = "command_edit_tests",
+    size = "medium",
     srcs = [
         "AddCommandTest.java",
-        "DepGenConfigTest.java",
         "DependencyConfigEditorTest.java",
-        "DependencyGraphEmitterTest.java",
+        "RemoveCommandTest.java",
+        "UpdateCommandTest.java",
+    ],
+    test_classes = [
+        "org.realityforge.bazel.depgen.AddCommandTest",
+        "org.realityforge.bazel.depgen.DependencyConfigEditorTest",
+        "org.realityforge.bazel.depgen.RemoveCommandTest",
+        "org.realityforge.bazel.depgen.UpdateCommandTest",
+    ],
+    deps = TEST_DEPS + [
+        ":test_support",
+    ],
+)
+
+java_testng_test(
+    name = "command_output_tests",
+    size = "medium",
+    srcs = [
         "GenerateCommandTest.java",
         "HashCommandTest.java",
+        "PrintGraphCommandTest.java",
+    ],
+    test_classes = [
+        "org.realityforge.bazel.depgen.GenerateCommandTest",
+        "org.realityforge.bazel.depgen.HashCommandTest",
+        "org.realityforge.bazel.depgen.PrintGraphCommandTest",
+    ],
+    deps = TEST_DEPS + [
+        ":test_support",
+    ],
+)
+
+java_testng_test(
+    name = "cli_tests",
+    size = "medium",
+    srcs = [
         "InfoCommandTest.java",
         "InitCommandTest.java",
         "MainTest.java",
+    ],
+    test_classes = [
+        "org.realityforge.bazel.depgen.InfoCommandTest",
+        "org.realityforge.bazel.depgen.InitCommandTest",
+        "org.realityforge.bazel.depgen.MainTest",
+    ],
+    deps = TEST_DEPS + [
+        ":test_support",
+    ],
+)
+
+java_testng_test(
+    name = "resolver_tests",
+    size = "medium",
+    srcs = [
         "OptionalDependencySelectorTest.java",
-        "PrintGraphCommandTest.java",
-        "RawFormatterTest.java",
-        "RemoveCommandTest.java",
         "ResolverTest.java",
         "ResolverUtilTest.java",
         "SettingsUtilTest.java",
-        "UpdateCommandTest.java",
     ],
-    args = [
-        "-testclass",
-        ",".join(TEST_CLASSES),
+    test_classes = [
+        "org.realityforge.bazel.depgen.OptionalDependencySelectorTest",
+        "org.realityforge.bazel.depgen.ResolverTest",
+        "org.realityforge.bazel.depgen.ResolverUtilTest",
+        "org.realityforge.bazel.depgen.SettingsUtilTest",
     ],
-    env_inherit = ["PATH"],
-    main_class = "org.testng.TestNG",
-    use_testrunner = False,
     deps = TEST_DEPS + [
         ":test_support",
-        "//src/test/java/org/realityforge/bazel/depgen/config:config_tests",
-        "//src/test/java/org/realityforge/bazel/depgen/metadata:metadata_tests",
-        "//src/test/java/org/realityforge/bazel/depgen/model:model_tests",
-        "//src/test/java/org/realityforge/bazel/depgen/record:record_tests",
-        "//src/test/java/org/realityforge/bazel/depgen/util:util_tests",
+    ],
+)
+
+java_testng_test(
+    name = "core_tests",
+    size = "small",
+    srcs = [
+        "DepGenConfigTest.java",
+        "DependencyGraphEmitterTest.java",
+        "RawFormatterTest.java",
+    ],
+    test_classes = [
+        "org.realityforge.bazel.depgen.DepGenConfigTest",
+        "org.realityforge.bazel.depgen.DependencyGraphEmitterTest",
+        "org.realityforge.bazel.depgen.RawFormatterTest",
+    ],
+    deps = TEST_DEPS + [
+        ":test_support",
+    ],
+)
+
+test_suite(
+    name = "all_tests",
+    tests = [
+        ":cli_tests",
+        ":command_edit_tests",
+        ":command_output_tests",
+        ":core_tests",
+        ":resolver_tests",
+        "//src/test/java/org/realityforge/bazel/depgen/config:all_tests",
+        "//src/test/java/org/realityforge/bazel/depgen/metadata:all_tests",
+        "//src/test/java/org/realityforge/bazel/depgen/model:all_tests",
+        "//src/test/java/org/realityforge/bazel/depgen/record:all_tests",
+        "//src/test/java/org/realityforge/bazel/depgen/util:all_tests",
     ],
 )
