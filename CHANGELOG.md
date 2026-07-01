@@ -4,7 +4,7 @@
 
 * Enable strict Error Prone checks.
 * Migrate source nullness annotations from `javax.annotation` to JSpecify and enforce NullAway.
-* Add a coverage threshold check to the standard Bazel verification script.
+* Add a coverage threshold check.
 * Add the `add` subcommand to append dependencies to `dependencies.yml`.
 * Add the `update` subcommand to update direct dependency versions in `dependencies.yml`.
 * Add the `remove` subcommand to remove dependencies from `dependencies.yml`.
