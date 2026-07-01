@@ -1,0 +1,249 @@
+plan:
+  id: test-speed
+  status: completed
+  required_full_gate: tools/check.sh
+
+tasks:
+  - id: PLAN-01
+    title: Establish test-speed requirements and plan
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - Requirements document exists with stable open question IDs.
+      - Implementation plan exists and maps decisions to planned phases.
+      - Task board exists and tracks user approval separately.
+      - Existing repository and timing evidence is reflected in the plan.
+    files:
+      - plans/test-speed/00-requirements.md
+      - plans/test-speed/10-implementation-plan.md
+      - plans/test-speed/20-task-board.yaml
+    evidence:
+      - command: git status --short
+        result: clean before planning started
+      - command: prior measured evidence
+        result: BazelUtil integration target is the current split-suite critical path at roughly 15-18 seconds; split suite preserves 515 TestNG methods.
+      - command: prior measured evidence
+        result: bazel info output_base repository_cache returns both required values in one Bazel process in this workspace.
+      - command: iterative plan review round 1
+        result: Accepted findings on changelog sequencing, BazelUtil test layout, batched info semantics, check-script target-diff evidence, and measurable split criteria; plan artifacts updated.
+      - command: iterative plan review round 2
+        result: Accepted findings on combined-reader task ownership, subjective split wording, and same-task changelog handling for test target structure; plan artifacts updated.
+      - command: iterative plan review round 3
+        result: Accepted finding on same-task changelog handling for SPEED-02 target membership changes; plan artifacts updated.
+    commit:
+      hash: not_required
+      message: Planning task only; implementation commits will be tracked on SPEED-* tasks.
+
+  - id: PLAN-APPROVAL
+    title: User review and acceptance of latest plan
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-01
+    acceptance_criteria:
+      - User review of the latest plan is explicitly requested.
+      - User feedback is incorporated into requirements, plan, and task board.
+      - Plan status is updated to accepted only after approval.
+    files:
+      - plans/test-speed/00-requirements.md
+      - plans/test-speed/10-implementation-plan.md
+      - plans/test-speed/20-task-board.yaml
+    evidence: []
+    commit:
+      hash: not_required
+      message: Approval checkpoint only; implementation commits will be tracked on SPEED-* tasks.
+
+  - id: SPEED-01
+    title: Confirm baseline timing and target overlap
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-APPROVAL
+    acceptance_criteria:
+      - Current split-suite target list is recorded.
+      - Current uncached timing for the BazelUtil integration target is recorded.
+      - Overlap between normal test execution and coverage execution in tools/check.sh is confirmed.
+      - Coverage thresholds are recorded before behavior changes.
+    files:
+      - plans/test-speed/20-task-board.yaml
+      - tools/check.sh
+      - src/test/java/org/realityforge/bazel/depgen/**/BUILD.bazel
+    evidence:
+      - command: bazel query 'tests(//...)'
+        result: "Returned 15 tests total: 11 main Java test targets plus verify_config_sha256 and three release-tool tests."
+      - command: bazel query 'tests(//src/test/java/org/realityforge/bazel/depgen:all_tests)'
+        result: Returned the 11 main Java test targets covered by the coverage aggregate.
+      - command: bazel query 'tests(//...) except tests(//src/test/java/org/realityforge/bazel/depgen:all_tests)'
+        result: Returned //third_party/java:verify_config_sha256 and the three //tools/release/... tests.
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen/util:bazel_util_integration_test --test_output=errors --cache_test_results=no
+        result: "Passed in 16.8s test time; elapsed 20.297s; critical path 19.33s."
+      - command: rg -n "check_coverage|COVERAGE_FILTER|bazel coverage|bazel test" tools/check.sh
+        result: Coverage gate uses 0.95 line and 0.85 branch thresholds.
+    commit:
+      hash: not_required
+      message: Baseline evidence task; implementation commits will be tracked on later SPEED-* tasks.
+
+  - id: SPEED-02
+    title: Make BazelUtil tests fast by default
+    status: completed
+    priority: high
+    depends_on:
+      - SPEED-01
+    acceptance_criteria:
+      - BazelUtil parsing, fallback, and failure behavior is covered without invoking real Bazel.
+      - BazelUtilTest.java is fake-backed and included by util:unit_tests.
+      - BazelUtilIntegrationTest.java owns real Bazel coverage and is included by util:bazel_util_integration_test.
+      - util:all_tests includes both the fast unit target and the integration target.
+      - util:unit_tests performs zero real Bazel process starts.
+      - util:bazel_util_integration_test performs at most two real Bazel process starts.
+      - BazelUtil may introduce the combined info reader, but Main wiring is deferred to SPEED-03.
+      - CHANGELOG.md is updated in this same task if the target membership change is developer-facing.
+      - Targeted BazelUtil tests pass with uncached execution.
+    files:
+      - CHANGELOG.md
+      - src/main/java/org/realityforge/bazel/depgen/util/BazelUtil.java
+      - src/test/java/org/realityforge/bazel/depgen/util/BazelUtilTest.java
+      - src/test/java/org/realityforge/bazel/depgen/util/BazelUtilIntegrationTest.java
+      - src/test/java/org/realityforge/bazel/depgen/util/BUILD.bazel
+      - plans/test-speed/20-task-board.yaml
+    evidence:
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen/util:unit_tests --test_output=errors --cache_test_results=no
+        result: "Passed in 0.9s test time; elapsed 1.580s."
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen/util:bazel_util_integration_test --test_output=errors --cache_test_results=no
+        result: "Passed in 7.9s test time; elapsed 8.250s; critical path 8.14s."
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen/util:all_tests --test_output=errors --cache_test_results=no
+        result: "Passed both util targets; integration target 7.0s and unit target 0.6s."
+    commit:
+      hash: fbe3d092c1b22a4636cf3b9ccfeb7772385ac6a9
+      message: "perf(tests): reduce Bazel test critical path"
+
+  - id: SPEED-03
+    title: Batch production Bazel info lookups
+    status: completed
+    priority: high
+    depends_on:
+      - SPEED-02
+    acceptance_criteria:
+      - Code paths that need both output_base and repository_cache can get them from one Bazel process.
+      - Main is wired to the combined info reader introduced or prepared in SPEED-02.
+      - Existing single-value behavior remains covered where directly used.
+      - Missing repository_cache output still falls back as expected.
+      - Combined lookup failure while cache directory is required preserves the current Main option-processing failure order.
+      - Main-level tests cover both-missing, one-explicit, output-base failure, missing repository-cache output, and fallback preservation.
+      - Main command tests pass.
+    files:
+      - src/main/java/org/realityforge/bazel/depgen/Main.java
+      - src/main/java/org/realityforge/bazel/depgen/util/BazelUtil.java
+      - src/test/java/org/realityforge/bazel/depgen/MainTest.java
+      - src/test/java/org/realityforge/bazel/depgen/util/BazelUtilTest.java
+      - plans/test-speed/20-task-board.yaml
+    evidence:
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen:cli_tests --test_output=errors --cache_test_results=no
+        result: "Passed in 5.5s test time; elapsed 5.996s."
+    commit:
+      hash: fbe3d092c1b22a4636cf3b9ccfeb7772385ac6a9
+      message: "perf(tests): reduce Bazel test critical path"
+
+  - id: SPEED-04
+    title: Remove duplicate main-suite execution from check script
+    status: completed
+    priority: medium
+    depends_on:
+      - SPEED-03
+    acceptance_criteria:
+      - The exact outputs of `bazel query 'tests(//...)'`, `bazel query 'tests(//src/test/java/org/realityforge/bazel/depgen:all_tests)'`, and the `except` query are recorded before editing.
+      - tools/check.sh no longer runs the same main Java suite under both normal test and coverage modes unless evidence shows both are needed.
+      - Non-overlapping tests still run in tools/check.sh.
+      - Build, formatting, buildifier, dependency sync, coverage generation, and coverage threshold checks remain in the full gate.
+      - CHANGELOG.md is updated in this same task if check behavior changes in a developer-facing way.
+      - tools/check.sh passes.
+    files:
+      - CHANGELOG.md
+      - tools/check.sh
+      - plans/test-speed/20-task-board.yaml
+    evidence:
+      - command: bazel query 'tests(//...)'
+        result: Same baseline evidence recorded in SPEED-01; 15 total test targets.
+      - command: bazel query 'tests(//src/test/java/org/realityforge/bazel/depgen:all_tests)'
+        result: Same baseline evidence recorded in SPEED-01; 11 main Java test targets.
+      - command: bazel query 'tests(//...) except tests(//src/test/java/org/realityforge/bazel/depgen:all_tests)'
+        result: Same baseline evidence recorded in SPEED-01; four non-overlapping test targets.
+      - command: bash -n tools/check.sh
+        result: Passed.
+      - command: bazel test //third_party/java:verify_config_sha256 //tools/release/org/realityforge/bazel/depgen/release:all_jar_integration_test //tools/release/org/realityforge/bazel/depgen/release:jar_builder_test //tools/release/org/realityforge/bazel/depgen/release:release_lifecycle_tool_test --test_output=errors --cache_test_results=no
+        result: "Passed four non-overlapping targets; elapsed 2.622s; critical path 2.52s."
+    commit:
+      hash: fbe3d092c1b22a4636cf3b9ccfeb7772385ac6a9
+      message: "perf(tests): reduce Bazel test critical path"
+
+  - id: SPEED-05
+    title: Evaluate remaining high-density TestNG targets
+    status: completed
+    priority: medium
+    depends_on:
+      - SPEED-04
+    acceptance_criteria:
+      - Timing evidence after SPEED-02 through SPEED-04 is recorded.
+      - A candidate is split only if it is among the three slowest non-integration targets and either takes at least five uncached seconds or accounts for at least 20% of aggregate wall time.
+      - "`record:all_tests` is split only if it meets the measurable threshold; otherwise the no-split decision is recorded."
+      - "`cli_tests`, `model:all_tests`, and `metadata:all_tests` are split only if they meet the measurable threshold."
+      - Method-group splits are used only when semantic groups are clear and before/after TestNG method counts match.
+      - If no further split is justified, the no-split decision and evidence are recorded.
+      - Test source files remain directly owned by individual test targets.
+      - Aggregate all_tests targets continue to include the split targets.
+      - CHANGELOG.md is updated in this same task if target-structure changes are developer-facing.
+      - Main TestNG aggregate passes.
+    files:
+      - CHANGELOG.md
+      - src/test/java/org/realityforge/bazel/depgen/BUILD.bazel
+      - src/test/java/org/realityforge/bazel/depgen/record/BUILD.bazel
+      - src/test/java/org/realityforge/bazel/depgen/model/BUILD.bazel
+      - src/test/java/org/realityforge/bazel/depgen/metadata/BUILD.bazel
+      - plans/test-speed/20-task-board.yaml
+    evidence:
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen:all_tests --test_output=errors --cache_test_results=no
+        result: "Before additional splits, passed 11 targets in 48.270s elapsed; slowest non-integration targets were cli_tests 48.0s, record:all_tests 13.6s, and metadata:all_tests 7.9s."
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen:cli_tests --test_output=errors --cache_test_results=no
+        result: "Passed split CLI suite in 5.312s elapsed: main_tests 4.7s, init_command_tests 1.0s, info_command_tests 0.5s."
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen/record:all_tests --test_output=errors --cache_test_results=no
+        result: "Passed split record suite: application_record_tests 8.5s and artifact_record_tests 4.1s."
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen/metadata:all_tests --test_output=errors --cache_test_results=no
+        result: "Passed split metadata suite: record_util_tests 6.5s and depgen_metadata_tests 1.9s."
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen:all_tests --test_output=errors --cache_test_results=no
+        result: "After splits, passed 15 main Java targets in 12.840s elapsed; critical path 12.75s."
+      - command: bazel query 'tests(//...)'
+        result: "Returned 19 tests total: 15 main Java test targets plus verify_config_sha256 and three release-tool tests."
+      - command: bazel query 'tests(//src/test/java/org/realityforge/bazel/depgen:all_tests)'
+        result: Returned the 15 main Java test targets covered by the coverage aggregate.
+      - command: bazel query 'tests(//...) except tests(//src/test/java/org/realityforge/bazel/depgen:all_tests)'
+        result: Returned //third_party/java:verify_config_sha256 and the three //tools/release/... tests.
+    commit:
+      hash: fbe3d092c1b22a4636cf3b9ccfeb7772385ac6a9
+      message: "perf(tests): reduce Bazel test critical path"
+
+  - id: SPEED-06
+    title: Final validation and release note alignment
+    status: completed
+    priority: high
+    depends_on:
+      - SPEED-05
+    acceptance_criteria:
+      - tools/check.sh passes.
+      - Coverage thresholds still pass.
+      - CHANGELOG.md entries required by prior tasks are already present in those same tasks.
+      - Task board records all command evidence and commit hashes.
+      - Working tree is clean after requested commits.
+    files:
+      - CHANGELOG.md
+      - plans/test-speed/20-task-board.yaml
+    evidence:
+      - command: tools/check.sh
+        result: "Passed; coverage line 95.47% (3309/3466), branch 85.45% (1398/1636)."
+      - command: ruby -e 'require "yaml"; YAML.load_file("plans/test-speed/20-task-board.yaml"); puts "yaml ok"'
+        result: Passed.
+      - command: git diff --check
+        result: Passed.
+    commit:
+      hash: fbe3d092c1b22a4636cf3b9ccfeb7772385ac6a9
+      message: "perf(tests): reduce Bazel test critical path"
