@@ -90,20 +90,53 @@ java_testng_test(
 )
 
 java_testng_test(
-    name = "cli_tests",
-    size = "medium",
+    name = "info_command_tests",
+    size = "small",
     srcs = [
         "InfoCommandTest.java",
-        "InitCommandTest.java",
-        "MainTest.java",
     ],
     test_classes = [
         "org.realityforge.bazel.depgen.InfoCommandTest",
+    ],
+    deps = TEST_DEPS + [
+        ":test_support",
+    ],
+)
+
+java_testng_test(
+    name = "init_command_tests",
+    size = "small",
+    srcs = [
+        "InitCommandTest.java",
+    ],
+    test_classes = [
         "org.realityforge.bazel.depgen.InitCommandTest",
+    ],
+    deps = TEST_DEPS + [
+        ":test_support",
+    ],
+)
+
+java_testng_test(
+    name = "main_tests",
+    size = "medium",
+    srcs = [
+        "MainTest.java",
+    ],
+    test_classes = [
         "org.realityforge.bazel.depgen.MainTest",
     ],
     deps = TEST_DEPS + [
         ":test_support",
+    ],
+)
+
+test_suite(
+    name = "cli_tests",
+    tests = [
+        ":info_command_tests",
+        ":init_command_tests",
+        ":main_tests",
     ],
 )
 

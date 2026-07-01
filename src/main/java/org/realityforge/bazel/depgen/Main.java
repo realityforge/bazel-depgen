@@ -23,6 +23,7 @@ import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.InvalidModelException;
@@ -30,6 +31,7 @@ import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
 import org.realityforge.bazel.depgen.util.ArtifactUtil;
 import org.realityforge.bazel.depgen.util.BazelUtil;
+import org.realityforge.bazel.depgen.util.BazelUtil.BazelInfo;
 import org.realityforge.bazel.depgen.util.YamlUtil;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
@@ -49,6 +51,34 @@ public final class Main {
     private static final int CACHE_DIR_OPT = 'r';
     private static final int SETTINGS_FILE_OPT = 's';
     private static final int CONFIG_FILE_OPT = 'c';
+
+    @NonNull
+    private static final BazelInfoProvider BAZEL_INFO_PROVIDER = new BazelInfoProvider() {
+        @Nullable
+        @Override
+        public File getOutputBase(@NonNull final File cwd) {
+            return BazelUtil.getOutputBase(cwd);
+        }
+
+        @Nullable
+        @Override
+        public Path getRepositoryCache(@NonNull final File cwd) {
+            return BazelUtil.getRepositoryCache(cwd);
+        }
+
+        @Nullable
+        @Override
+        public BazelInfo getInfo(@NonNull final File cwd) {
+            return BazelUtil.getInfo(cwd);
+        }
+
+        @Nullable
+        @Override
+        public Path getDefaultRepositoryCache() {
+            return BazelUtil.getDefaultRepositoryCache();
+        }
+    };
+
     private static final CLOptionDescriptor[] OPTIONS = new CLOptionDescriptor[] {
         new CLOptionDescriptor(
                 "version", CLOptionDescriptor.ARGUMENT_DISALLOWED, VERSION_OPT, "print the version and exit"),
@@ -324,6 +354,13 @@ public final class Main {
     }
 
     static boolean processOptions(@NonNull final Environment environment, @NonNull final String... args) {
+        return processOptions(environment, BAZEL_INFO_PROVIDER, args);
+    }
+
+    static boolean processOptions(
+            @NonNull final Environment environment,
+            @NonNull final BazelInfoProvider bazelInfoProvider,
+            @NonNull final String... args) {
         // Parse the arguments
         final var parser = new CLArgsParser(args, OPTIONS, lastOptionCode -> CLOption.TEXT_ARGUMENT == lastOptionCode);
 
@@ -484,10 +521,45 @@ public final class Main {
             environment.setSettingsFile(settingsFile);
         }
 
-        if (!environment.hasCacheDir() && environment.getCommand().mayUseArtifactCache()) {
-            final File repositoryCache =
-                    BazelUtil.getOutputBase(environment.currentDirectory().toFile());
-            if (null == repositoryCache) {
+        final boolean needsCacheDir =
+                !environment.hasCacheDir() && environment.getCommand().mayUseArtifactCache();
+        final boolean needsRepositoryCacheDir =
+                !environment.hasRepositoryCacheDir() && environment.getCommand().mayUseRepositoryCache();
+
+        if (needsCacheDir && needsRepositoryCacheDir) {
+            final BazelInfo bazelInfo =
+                    bazelInfoProvider.getInfo(environment.currentDirectory().toFile());
+            if (null == bazelInfo) {
+                logger.log(
+                        Level.SEVERE,
+                        "Error: Cache directory not specified and unable to derive default "
+                                + "directory (Is the bazel command on the path?). Explicitly pass the "
+                                + "cache directory as an option.");
+                return false;
+            }
+            final File outputBase = bazelInfo.getOutputBase();
+            if (null == outputBase) {
+                logger.log(
+                        Level.SEVERE,
+                        "Error: Cache directory not specified and unable to derive default "
+                                + "directory (Is the bazel command on the path?). Explicitly pass the "
+                                + "cache directory as an option.");
+                return false;
+            }
+            environment.setCacheDir(outputBase.toPath().resolve(".depgen-cache"));
+            final Path repositoryCache = bazelInfo.getRepositoryCache();
+            if (null != repositoryCache) {
+                environment.setRepositoryCacheDir(repositoryCache);
+            } else {
+                final Path defaultRepositoryCache = bazelInfoProvider.getDefaultRepositoryCache();
+                if (null != defaultRepositoryCache) {
+                    environment.setRepositoryCacheDir(defaultRepositoryCache);
+                }
+            }
+        } else if (needsCacheDir) {
+            final File outputBase = bazelInfoProvider.getOutputBase(
+                    environment.currentDirectory().toFile());
+            if (null == outputBase) {
                 logger.log(
                         Level.SEVERE,
                         "Error: Cache directory not specified and unable to derive default "
@@ -495,19 +567,31 @@ public final class Main {
                                 + "cache directory as an option.");
                 return false;
             } else {
-                environment.setCacheDir(repositoryCache.toPath().resolve(".depgen-cache"));
+                environment.setCacheDir(outputBase.toPath().resolve(".depgen-cache"));
             }
-        }
-
-        if (!environment.hasRepositoryCacheDir() && environment.getCommand().mayUseRepositoryCache()) {
-            final Path repositoryCache =
-                    BazelUtil.getRepositoryCache(environment.currentDirectory().toFile());
+        } else if (needsRepositoryCacheDir) {
+            final Path repositoryCache = bazelInfoProvider.getRepositoryCache(
+                    environment.currentDirectory().toFile());
             if (null != repositoryCache) {
                 environment.setRepositoryCacheDir(repositoryCache);
             }
         }
 
         return true;
+    }
+
+    interface BazelInfoProvider {
+        @Nullable
+        File getOutputBase(@NonNull File cwd);
+
+        @Nullable
+        Path getRepositoryCache(@NonNull File cwd);
+
+        @Nullable
+        BazelInfo getInfo(@NonNull File cwd);
+
+        @Nullable
+        Path getDefaultRepositoryCache();
     }
 
     /**

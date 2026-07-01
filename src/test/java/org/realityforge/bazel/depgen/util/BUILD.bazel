@@ -7,6 +7,7 @@ java_testng_test(
     size = "small",
     srcs = [
         "ArtifactUtilTest.java",
+        "BazelUtilTest.java",
         "GeneratedSectionWriterTest.java",
         "HashUtilTest.java",
         "OrderedPropertiesTest.java",
@@ -16,6 +17,7 @@ java_testng_test(
     ],
     test_classes = [
         "org.realityforge.bazel.depgen.util.ArtifactUtilTest",
+        "org.realityforge.bazel.depgen.util.BazelUtilTest",
         "org.realityforge.bazel.depgen.util.GeneratedSectionWriterTest",
         "org.realityforge.bazel.depgen.util.HashUtilTest",
         "org.realityforge.bazel.depgen.util.OrderedPropertiesTest",
@@ -36,11 +38,11 @@ java_testng_test(
     name = "bazel_util_integration_test",
     size = "medium",
     srcs = [
-        "BazelUtilTest.java",
+        "BazelUtilIntegrationTest.java",
         "package-info.java",
     ],
     test_classes = [
-        "org.realityforge.bazel.depgen.util.BazelUtilTest",
+        "org.realityforge.bazel.depgen.util.BazelUtilIntegrationTest",
     ],
     deps = [
         "//src/main/java/org/realityforge/bazel/depgen",

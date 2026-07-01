@@ -11,9 +11,11 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
@@ -21,6 +23,7 @@ import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
 import org.realityforge.bazel.depgen.record.ArtifactRecord;
+import org.realityforge.bazel.depgen.util.BazelUtil.BazelInfo;
 import org.realityforge.guiceyloops.shared.ValueUtil;
 import org.testng.annotations.Test;
 
@@ -278,6 +281,127 @@ public class MainTest extends AbstractTest {
                         + " the path?). Explicitly pass the cache directory as an option.");
 
         assertFalse(environment.hasCacheDir());
+    }
+
+    @Test
+    public void processOptions_explicitCacheAndRepositoryCacheDoesNotUseBazelInfo() throws Exception {
+        writeWorkspace();
+        writeConfigFile("");
+
+        final var provider = new FakeBazelInfoProvider();
+        final Environment environment = newEnvironment();
+        assertTrue(Main.processOptions(environment, provider, "generate"));
+        assertEquals(provider.invocationCount(), 0);
+    }
+
+    @Test
+    public void processOptions_defaultCacheAndRepositoryCacheDirsUseCombinedInfo() throws Exception {
+        writeWorkspace();
+        writeConfigFile("");
+
+        final Path outputBase = FileUtil.createLocalTempDir();
+        final Path repositoryCache = FileUtil.createLocalTempDir();
+        final var provider = new FakeBazelInfoProvider();
+        provider.info = new BazelInfo(outputBase.toFile(), repositoryCache);
+
+        final Environment environment = newEnvironment();
+        environment.setCacheDir(null);
+        environment.setRepositoryCacheDir(null);
+        assertTrue(Main.processOptions(environment, provider, "generate"));
+        assertEquals(environment.getCacheDir(), outputBase.resolve(".depgen-cache"));
+        assertEquals(environment.getRepositoryCacheDir(), repositoryCache);
+        assertEquals(provider.outputBaseInvocations.get(), 0);
+        assertEquals(provider.repositoryCacheInvocations.get(), 0);
+        assertEquals(provider.infoInvocations.get(), 1);
+        assertEquals(provider.defaultRepositoryCacheInvocations.get(), 0);
+    }
+
+    @Test
+    public void processOptions_defaultCacheDirWithExplicitRepositoryCacheDirUsesOutputBaseOnly() throws Exception {
+        writeWorkspace();
+        writeConfigFile("");
+
+        final Path outputBase = FileUtil.createLocalTempDir();
+        final var provider = new FakeBazelInfoProvider();
+        provider.outputBase = outputBase.toFile();
+
+        final Environment environment = newEnvironment();
+        final Path repositoryCache = environment.getRepositoryCacheDir();
+        environment.setCacheDir(null);
+        assertTrue(Main.processOptions(environment, provider, "generate"));
+        assertEquals(environment.getCacheDir(), outputBase.resolve(".depgen-cache"));
+        assertEquals(environment.getRepositoryCacheDir(), repositoryCache);
+        assertEquals(provider.outputBaseInvocations.get(), 1);
+        assertEquals(provider.repositoryCacheInvocations.get(), 0);
+        assertEquals(provider.infoInvocations.get(), 0);
+        assertEquals(provider.defaultRepositoryCacheInvocations.get(), 0);
+    }
+
+    @Test
+    public void processOptions_explicitCacheDirWithDefaultRepositoryCacheUsesRepositoryCacheOnly() throws Exception {
+        writeWorkspace();
+        writeConfigFile("");
+
+        final Path repositoryCache = FileUtil.createLocalTempDir();
+        final var provider = new FakeBazelInfoProvider();
+        provider.repositoryCache = repositoryCache;
+
+        final Environment environment = newEnvironment();
+        final Path cacheDir = environment.getCacheDir();
+        environment.setRepositoryCacheDir(null);
+        assertTrue(Main.processOptions(environment, provider, "generate"));
+        assertEquals(environment.getCacheDir(), cacheDir);
+        assertEquals(environment.getRepositoryCacheDir(), repositoryCache);
+        assertEquals(provider.outputBaseInvocations.get(), 0);
+        assertEquals(provider.repositoryCacheInvocations.get(), 1);
+        assertEquals(provider.infoInvocations.get(), 0);
+        assertEquals(provider.defaultRepositoryCacheInvocations.get(), 0);
+    }
+
+    @Test
+    public void processOptions_combinedInfoFailureFailsBeforeRepositoryCacheFallback() throws Exception {
+        writeWorkspace();
+        writeConfigFile("");
+
+        final var handler = new TestHandler();
+        final var provider = new FakeBazelInfoProvider();
+        provider.info = null;
+        final Environment environment = newEnvironment(handler);
+        environment.setCacheDir(null);
+        environment.setRepositoryCacheDir(null);
+
+        assertFalse(Main.processOptions(environment, provider, "generate"));
+        assertOutputContains(
+                handler.toString(),
+                "Error: Cache directory not specified and unable to derive default directory (Is the bazel command on"
+                        + " the path?). Explicitly pass the cache directory as an option.");
+        assertFalse(environment.hasCacheDir());
+        assertFalse(environment.hasRepositoryCacheDir());
+        assertEquals(provider.infoInvocations.get(), 1);
+        assertEquals(provider.defaultRepositoryCacheInvocations.get(), 0);
+    }
+
+    @Test
+    public void processOptions_combinedInfoMissingRepositoryCacheUsesDefaultFallback() throws Exception {
+        writeWorkspace();
+        writeConfigFile("");
+
+        final Path outputBase = FileUtil.createLocalTempDir();
+        final Path defaultRepositoryCache = FileUtil.createLocalTempDir();
+        final var provider = new FakeBazelInfoProvider();
+        provider.info = new BazelInfo(outputBase.toFile(), null);
+        provider.defaultRepositoryCache = defaultRepositoryCache;
+
+        final Environment environment = newEnvironment();
+        environment.setCacheDir(null);
+        environment.setRepositoryCacheDir(null);
+        assertTrue(Main.processOptions(environment, provider, "generate"));
+        assertEquals(environment.getCacheDir(), outputBase.resolve(".depgen-cache"));
+        assertEquals(environment.getRepositoryCacheDir(), defaultRepositoryCache);
+        assertEquals(provider.outputBaseInvocations.get(), 0);
+        assertEquals(provider.repositoryCacheInvocations.get(), 0);
+        assertEquals(provider.infoInvocations.get(), 1);
+        assertEquals(provider.defaultRepositoryCacheInvocations.get(), 1);
     }
 
     @Test
@@ -967,5 +1091,66 @@ public class MainTest extends AbstractTest {
         final Environment environment = newEnvironment(handler);
         assertFalse(Main.processOptions(environment, args));
         return handler.toString();
+    }
+
+    private static final class FakeBazelInfoProvider implements Main.BazelInfoProvider {
+        @Nullable
+        private File outputBase;
+
+        @Nullable
+        private Path repositoryCache;
+
+        @Nullable
+        private BazelInfo info;
+
+        @Nullable
+        private Path defaultRepositoryCache;
+
+        @NonNull
+        private final AtomicInteger outputBaseInvocations = new AtomicInteger();
+
+        @NonNull
+        private final AtomicInteger repositoryCacheInvocations = new AtomicInteger();
+
+        @NonNull
+        private final AtomicInteger infoInvocations = new AtomicInteger();
+
+        @NonNull
+        private final AtomicInteger defaultRepositoryCacheInvocations = new AtomicInteger();
+
+        @Override
+        @Nullable
+        public File getOutputBase(@NonNull final File cwd) {
+            outputBaseInvocations.incrementAndGet();
+            return outputBase;
+        }
+
+        @Override
+        @Nullable
+        public Path getRepositoryCache(@NonNull final File cwd) {
+            repositoryCacheInvocations.incrementAndGet();
+            return repositoryCache;
+        }
+
+        @Override
+        @Nullable
+        public BazelInfo getInfo(@NonNull final File cwd) {
+            infoInvocations.incrementAndGet();
+            return info;
+        }
+
+        @Override
+        @Nullable
+        public Path getDefaultRepositoryCache() {
+            defaultRepositoryCacheInvocations.incrementAndGet();
+            return defaultRepositoryCache;
+        }
+
+        private int invocationCount() {
+            return outputBaseInvocations.get()
+                    + repositoryCacheInvocations.get()
+                    + infoInvocations.get()
+                    + defaultRepositoryCacheInvocations.get();
+        }
     }
 }

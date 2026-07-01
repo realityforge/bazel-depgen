@@ -11,6 +11,10 @@ tools/update_java_deps.sh
 bazel run //:buildifier_check
 tools/java_format.sh check
 bazel build //...
-bazel test //...
+bazel test \
+  //third_party/java:verify_config_sha256 \
+  //tools/release/org/realityforge/bazel/depgen/release:all_jar_integration_test \
+  //tools/release/org/realityforge/bazel/depgen/release:jar_builder_test \
+  //tools/release/org/realityforge/bazel/depgen/release:release_lifecycle_tool_test
 bazel coverage //src/test/java/org/realityforge/bazel/depgen:all_tests --combined_report=lcov --instrumentation_filter="${COVERAGE_FILTER}"
 tools/check_coverage.py "${COVERAGE_REPORT}" 0.95 0.85
