@@ -1,4 +1,4 @@
-load("@rules_java//java:defs.bzl", _java_binary = "java_binary", _java_import = "java_import", _java_library = "java_library", _java_plugin = "java_plugin", _java_test = "java_test")
+load("@rules_java//java:defs.bzl", _java_binary = "java_binary", _java_import = "java_import", _java_plugin = "java_plugin", _java_test = "java_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -12,7 +12,7 @@ _java_plugin(
 # DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.25
 
 # SHA256 of the configuration content that generated this content
-_CONFIG_SHA256 = "7843B1AC479DF40D782EE2397C0B89BDF983638154500F06C6BF629306218E12"
+_CONFIG_SHA256 = "7C0A766397CF19F58AE20ED268533F491D9B186E92842CA343C533E4F6BD8F9B"
 
 exports_files(["dependencies.yml"])
 
@@ -51,9 +51,6 @@ exports_files(["dependencies.yml"])
 # +- org.apache.httpcomponents:httpclient:jar:4.5.6 [compile]
 # |  +- org.apache.httpcomponents:httpcore:jar:4.4.10 [compile]
 # |  +- commons-logging:commons-logging:jar:1.2 [compile]
-# |  |  +- log4j:log4j:jar:1.2.17 [compile, optional]
-# |  |  +- logkit:logkit:jar:1.0.1 [compile, optional]
-# |  |  \- avalon-framework:avalon-framework:jar:4.1.5 [compile, optional]
 # |  \- commons-codec:commons-codec:jar:1.10 [compile] (conflicts with 1.12)
 # +- org.apache.maven:maven-resolver-provider:jar:3.5.0 [compile]
 # |  +- org.apache.maven:maven-model:jar:3.5.0 [compile]
@@ -65,7 +62,6 @@ exports_files(["dependencies.yml"])
 # |  +- org.apache.maven.resolver:maven-resolver-impl:jar:1.0.3 [compile] (conflicts with 1.3.3)
 # |  +- org.codehaus.plexus:plexus-component-annotations:jar:1.7.1 [compile]
 # |  +- org.codehaus.plexus:plexus-utils:jar:3.0.24 [compile]
-# |  +- com.google.inject:guice:jar:no_aop:4.0 [compile, optional]
 # |  \- org.apache.commons:commons-lang3:jar:3.5 [compile]
 # +- org.apache.commons:commons-lang3:jar:3.5 [compile]
 # +- commons-codec:commons-codec:jar:1.12 [compile]
@@ -107,10 +103,7 @@ exports_files(["dependencies.yml"])
 # +- org.apache.maven:maven-settings:jar:3.5.0 [compile]
 # |  \- org.codehaus.plexus:plexus-utils:jar:3.0.24 [compile]
 # +- com.google.guava:guava:jar:20.0 [compile]
-# |  +- com.google.code.findbugs:jsr305:jar:1.3.9 [compile]
-# |  +- com.google.errorprone:error_prone_annotations:jar:2.0.12 [compile, optional]
-# |  +- com.google.j2objc:j2objc-annotations:jar:1.1 [compile, optional]
-# |  \- org.codehaus.mojo:animal-sniffer-annotations:jar:1.14 [compile, optional]
+# |  \- com.google.code.findbugs:jsr305:jar:1.3.9 [compile]
 # +- org.slf4j:slf4j-api:jar:1.7.25 [compile]
 # +- org.slf4j:slf4j-jdk14:jar:1.7.25 [compile]
 # |  \- org.slf4j:slf4j-api:jar:1.7.25 [compile]
@@ -120,25 +113,10 @@ exports_files(["dependencies.yml"])
 # +- org.realityforge.gir:gir-core:jar:0.12 [compile]
 # |  \- org.realityforge.braincheck:braincheck-core:jar:1.31.0 [compile]
 # +- org.realityforge.guiceyloops:guiceyloops:jar:0.113 [compile]
-# |  +- org.realityforge.jndikit:jndikit:jar:1.4 [compile, optional]
-# |  +- com.icegreen:greenmail:jar:1.4.0 [compile, optional]
-# |  +- fish.payara.extras:payara-embedded-all:jar:5.2022.5 [compile, optional]
-# |  +- org.mockito:mockito-core:jar:4.5.1 [compile]
-# |  +- net.bytebuddy:byte-buddy:jar:1.12.9 [compile]
-# |  +- org.objenesis:objenesis:jar:3.2 [compile]
-# |  +- org.hamcrest:hamcrest:jar:2.2 [compile]
-# |  +- com.google.inject:guice:jar:5.1.0 [compile]
-# |  +- com.google.guava:guava:jar:30.1-jre [compile] (conflicts with 20.0)
-# |  +- com.google.guava:failureaccess:jar:1.0.1 [compile]
-# |  +- aopalliance:aopalliance:jar:1.0 [compile]
-# |  \- org.ow2.asm:asm:jar:9.2 [compile]
+# |  \- com.google.guava:guava:jar:30.1-jre [compile] (conflicts with 20.0)
 # +- org.testng:testng:jar:7.4.0 [compile]
 # |  +- com.beust:jcommander:jar:1.78 [compile]
-# |  +- org.webjars:jquery:jar:3.5.1 [compile]
-# |  +- org.apache.ant:ant:jar:1.10.9 [compile, optional]
-# |  +- com.google.inject:guice:jar:no_aop:4.2.3 [compile, optional] (conflicts with 4.0)
-# |  +- junit:junit:jar:4.12 [compile, optional]
-# |  \- org.yaml:snakeyaml:jar:1.21 [compile, optional] (conflicts with 2.6)
+# |  \- org.webjars:jquery:jar:3.5.1 [compile]
 # +- com.beust:jcommander:jar:1.78 [compile]
 # +- org.webjars:jquery:jar:3.5.1 [compile]
 # +- com.palantir.javaformat:palantir-java-format:jar:2.93.0 [compile]
@@ -207,20 +185,6 @@ _java_binary(
     ],
     visibility = ["//visibility:private"],
     runtime_deps = [":bazel_depgen"],
-)
-
-_java_import(
-    name = "aopalliance",
-    jars = ["@aopalliance//file"],
-    tags = ["maven_coordinates=aopalliance:aopalliance:1.0"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
-    name = "avalon_framework",
-    jars = ["@avalon_framework//file"],
-    tags = ["maven_coordinates=avalon-framework:avalon-framework:4.1.5"],
-    visibility = ["//visibility:private"],
 )
 
 _java_import(
@@ -297,45 +261,10 @@ _java_import(
 )
 
 _java_import(
-    name = "error_prone_annotations",
-    jars = ["@error_prone_annotations//file"],
-    tags = ["maven_coordinates=com.google.errorprone:error_prone_annotations:2.0.12"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
-    name = "failureaccess",
-    jars = ["@failureaccess//file"],
-    tags = ["maven_coordinates=com.google.guava:failureaccess:1.0.1"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
     name = "guava",
     jars = ["@guava//file"],
     tags = ["maven_coordinates=com.google.guava:guava:20.0"],
     deps = [":jsr305"],
-)
-
-_java_import(
-    name = "guice",
-    jars = ["@guice//file"],
-    tags = ["maven_coordinates=com.google.inject:guice:5.1.0"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
-    name = "j2objc_annotations",
-    jars = ["@j2objc_annotations//file"],
-    tags = ["maven_coordinates=com.google.j2objc:j2objc-annotations:1.1"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
-    name = "greenmail",
-    jars = ["@greenmail//file"],
-    tags = ["maven_coordinates=com.icegreen:greenmail:1.4.0"],
-    visibility = ["//visibility:private"],
 )
 
 _java_import(
@@ -393,76 +322,9 @@ _java_import(
 )
 
 _java_import(
-    name = "payara_embedded_all__plugin_library",
-    jars = ["@payara_embedded_all//file"],
-    tags = ["maven_coordinates=fish.payara.extras:payara-embedded-all:5.2022.5"],
-    visibility = ["//visibility:private"],
-)
-
-_java_plugin(
-    name = "payara_embedded_all__org_eclipse_persistence_internal_jpa_modelgen_canonicalmodelprocessor__plugin",
-    generates_api = True,
-    processor_class = "org.eclipse.persistence.internal.jpa.modelgen.CanonicalModelProcessor",
-    visibility = ["//visibility:private"],
-    deps = [":payara_embedded_all__plugin_library"],
-)
-
-_java_plugin(
-    name = "payara_embedded_all__org_glassfish_admin_rest_annotation_processor_restmodelextensionprocessor__plugin",
-    generates_api = True,
-    processor_class = "org.glassfish.admin.rest.annotation.processor.RestModelExtensionProcessor",
-    visibility = ["//visibility:private"],
-    deps = [":payara_embedded_all__plugin_library"],
-)
-
-_java_library(
-    name = "payara_embedded_all",
-    exported_plugins = [
-        "payara_embedded_all__org_eclipse_persistence_internal_jpa_modelgen_canonicalmodelprocessor__plugin",
-        "payara_embedded_all__org_glassfish_admin_rest_annotation_processor_restmodelextensionprocessor__plugin",
-    ],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
     name = "javax_inject",
     jars = ["@javax_inject//file"],
     tags = ["maven_coordinates=javax.inject:javax.inject:1"],
-)
-
-_java_import(
-    name = "junit",
-    jars = ["@junit//file"],
-    tags = ["maven_coordinates=junit:junit:4.12"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
-    name = "log4j",
-    jars = ["@log4j//file"],
-    tags = ["maven_coordinates=log4j:log4j:1.2.17"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
-    name = "logkit",
-    jars = ["@logkit//file"],
-    tags = ["maven_coordinates=logkit:logkit:1.0.1"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
-    name = "byte_buddy",
-    jars = ["@byte_buddy//file"],
-    tags = ["maven_coordinates=net.bytebuddy:byte-buddy:1.12.9"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
-    name = "ant",
-    jars = ["@ant//file"],
-    tags = ["maven_coordinates=org.apache.ant:ant:1.10.9"],
-    visibility = ["//visibility:private"],
 )
 
 _java_import(
@@ -667,13 +529,6 @@ _java_import(
 )
 
 _java_import(
-    name = "animal_sniffer_annotations",
-    jars = ["@animal_sniffer_annotations//file"],
-    tags = ["maven_coordinates=org.codehaus.mojo:animal-sniffer-annotations:1.14"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
     name = "plexus_component_annotations",
     jars = ["@plexus_component_annotations//file"],
     tags = ["maven_coordinates=org.codehaus.plexus:plexus-component-annotations:1.7.1"],
@@ -699,37 +554,9 @@ _java_import(
 )
 
 _java_import(
-    name = "hamcrest",
-    jars = ["@hamcrest//file"],
-    tags = ["maven_coordinates=org.hamcrest:hamcrest:2.2"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
     name = "jspecify",
     jars = ["@jspecify//file"],
     tags = ["maven_coordinates=org.jspecify:jspecify:1.0.0"],
-)
-
-_java_import(
-    name = "mockito_core",
-    jars = ["@mockito_core//file"],
-    tags = ["maven_coordinates=org.mockito:mockito-core:4.5.1"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
-    name = "objenesis",
-    jars = ["@objenesis//file"],
-    tags = ["maven_coordinates=org.objenesis:objenesis:3.2"],
-    visibility = ["//visibility:private"],
-)
-
-_java_import(
-    name = "asm",
-    jars = ["@asm//file"],
-    tags = ["maven_coordinates=org.ow2.asm:asm:9.2"],
-    visibility = ["//visibility:private"],
 )
 
 _java_import(
@@ -762,24 +589,7 @@ _java_import(
     name = "guiceyloops",
     jars = ["@guiceyloops//file"],
     tags = ["maven_coordinates=org.realityforge.guiceyloops:guiceyloops:0.113"],
-    deps = [
-        ":aopalliance",
-        ":asm",
-        ":byte_buddy",
-        ":failureaccess",
-        ":guava",
-        ":guice",
-        ":hamcrest",
-        ":mockito_core",
-        ":objenesis",
-    ],
-)
-
-_java_import(
-    name = "jndikit",
-    jars = ["@jndikit//file"],
-    tags = ["maven_coordinates=org.realityforge.jndikit:jndikit:1.4"],
-    visibility = ["//visibility:private"],
+    deps = [":guava"],
 )
 
 _java_import(

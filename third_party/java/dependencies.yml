@@ -28,7 +28,13 @@ artifacts:
   - coord: org.apache.maven.resolver:maven-resolver-transport-http:1.3.3
   - coord: org.apache.httpcomponents:httpcore:4.4.10
   - coord: org.apache.httpcomponents:httpclient:4.5.6
+    excludes:
+      - avalon-framework:avalon-framework
+      - log4j:log4j
+      - logkit:logkit
   - coord: org.apache.maven:maven-resolver-provider:3.5.0
+    excludes:
+      - com.google.inject:guice
   - coord: org.apache.commons:commons-lang3:3.5
   - coord: commons-codec:commons-codec:1.12
   - coord: org.apache.maven:maven-model:3.5.0
@@ -44,13 +50,34 @@ artifacts:
   - coord: org.apache.maven:maven-settings-builder:3.5.0
   - coord: org.apache.maven:maven-settings:3.5.0
   - coord: com.google.guava:guava:20.0
+    excludes:
+      - com.google.errorprone:error_prone_annotations
+      - com.google.j2objc:j2objc-annotations
+      - org.codehaus.mojo:animal-sniffer-annotations
   - coord: org.slf4j:slf4j-api:1.7.25
   - coord: org.slf4j:slf4j-jdk14:1.7.25
   - coord: org.slf4j:jcl-over-slf4j:1.7.25
   - coord: org.yaml:snakeyaml:2.6
   - coord: org.realityforge.gir:gir-core:0.12
   - coord: org.realityforge.guiceyloops:guiceyloops:0.113
+    excludes:
+      - aopalliance:aopalliance
+      - com.google.guava:failureaccess
+      - com.google.inject:guice
+      - com.icegreen:greenmail
+      - fish.payara.extras:payara-embedded-all
+      - net.bytebuddy:byte-buddy
+      - org.hamcrest:hamcrest
+      - org.mockito:mockito-core
+      - org.objenesis:objenesis
+      - org.ow2.asm:asm
+      - org.realityforge.jndikit:jndikit
   - coord: org.testng:testng:7.4.0
+    excludes:
+      - com.google.inject:guice
+      - junit:junit
+      - org.apache.ant:ant
+      - org.yaml:snakeyaml
   - coord: com.beust:jcommander:1.78
   - coord: org.webjars:jquery:3.5.1
   - coord: com.palantir.javaformat:palantir-java-format:2.93.0
