@@ -19,7 +19,6 @@ import java.util.zip.ZipEntry;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.DepgenConfigurationException;
 import org.realityforge.bazel.depgen.DepgenException;
@@ -29,8 +28,7 @@ import org.realityforge.bazel.depgen.util.HashUtil;
 final class RecordUtil {
     private RecordUtil() {}
 
-    @NonNull
-    static String sha256(@NonNull final File file) {
+    static String sha256(final File file) {
         try {
             return HashUtil.sha256(Files.readAllBytes(file.toPath()));
         } catch (final IOException ioe) {
@@ -40,9 +38,9 @@ final class RecordUtil {
 
     @Nullable
     static String lookupArtifactInRepository(
-            @NonNull final Artifact artifact,
-            @NonNull final RemoteRepository remoteRepository,
-            @NonNull final Map<String, AuthenticationContext> authenticationContexts) {
+            final Artifact artifact,
+            final RemoteRepository remoteRepository,
+            final Map<String, AuthenticationContext> authenticationContexts) {
         try {
             final String repoUrl = remoteRepository.getUrl();
             final var uri =
@@ -95,8 +93,7 @@ final class RecordUtil {
         return null;
     }
 
-    @NonNull
-    static String readAnnotationProcessors(@NonNull final File file) {
+    static String readAnnotationProcessors(final File file) {
         if (isJarFile(file)) {
             try {
                 try (final var jar = new JarFile(file)) {
@@ -125,8 +122,7 @@ final class RecordUtil {
         return DepgenMetadata.SENTINEL;
     }
 
-    @NonNull
-    static String readJsAssets(@NonNull final File file) {
+    static String readJsAssets(final File file) {
         if (isJarFile(file)) {
             try {
                 try (final var jar = new JarFile(file)) {
@@ -147,7 +143,7 @@ final class RecordUtil {
         return DepgenMetadata.SENTINEL;
     }
 
-    private static boolean isJarFile(@NonNull final File file) {
+    private static boolean isJarFile(final File file) {
         return file.getName().endsWith(".jar");
     }
 }

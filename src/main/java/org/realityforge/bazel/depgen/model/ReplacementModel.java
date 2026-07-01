@@ -4,27 +4,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.ReplacementConfig;
 import org.realityforge.bazel.depgen.config.ReplacementTargetConfig;
 
 public final class ReplacementModel {
-    @NonNull
     private final ReplacementConfig _source;
 
-    @NonNull
     private final String _group;
 
-    @NonNull
     private final String _id;
 
-    @NonNull
     private final List<ReplacementTargetModel> _targets;
 
-    @NonNull
-    public static ReplacementModel parse(@NonNull final ReplacementConfig source, @NonNull final Nature defaultNature) {
+    public static ReplacementModel parse(final ReplacementConfig source, final Nature defaultNature) {
         final String coord = source.getCoord();
         final List<ReplacementTargetConfig> targets = source.getTargets();
         if (null == targets) {
@@ -58,32 +52,28 @@ public final class ReplacementModel {
     }
 
     private ReplacementModel(
-            @NonNull final ReplacementConfig source,
-            @NonNull final String group,
-            @NonNull final String id,
-            @NonNull final List<ReplacementTargetModel> targets) {
+            final ReplacementConfig source,
+            final String group,
+            final String id,
+            final List<ReplacementTargetModel> targets) {
         _source = Objects.requireNonNull(source);
         _group = Objects.requireNonNull(group);
         _id = Objects.requireNonNull(id);
         _targets = Collections.unmodifiableList(Objects.requireNonNull(targets));
     }
 
-    @NonNull
     public ReplacementConfig getSource() {
         return _source;
     }
 
-    @NonNull
     public String getGroup() {
         return _group;
     }
 
-    @NonNull
     public String getId() {
         return _id;
     }
 
-    @NonNull
     public List<ReplacementTargetModel> getTargets() {
         return _targets;
     }
@@ -95,8 +85,7 @@ public final class ReplacementModel {
      * @return the target.
      * @throws NullPointerException if no target found.
      */
-    @NonNull
-    public String getTarget(@NonNull final Nature nature) {
+    public String getTarget(final Nature nature) {
         return Objects.requireNonNull(findTarget(nature));
     }
 
@@ -107,7 +96,7 @@ public final class ReplacementModel {
      * @return the target or null if no such target can be found.
      */
     @Nullable
-    public String findTarget(@NonNull final Nature nature) {
+    public String findTarget(final Nature nature) {
         return _targets.stream()
                 .filter(target -> target.getNature() == nature)
                 .map(ReplacementTargetModel::getTarget)

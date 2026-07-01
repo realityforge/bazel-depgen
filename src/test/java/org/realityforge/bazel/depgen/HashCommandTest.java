@@ -9,7 +9,10 @@ public class HashCommandTest extends AbstractTest {
     @Test
     public void hash() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final var handler = new TestHandler();
         final var command = new HashCommand();
@@ -22,7 +25,10 @@ public class HashCommandTest extends AbstractTest {
     @Test
     public void hash_verify_success() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final var handler = new TestHandler();
         final var command = new HashCommand();
@@ -39,7 +45,10 @@ public class HashCommandTest extends AbstractTest {
     @Test
     public void hash_verify_success_quiet() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final var handler = new TestHandler();
         final var command = new HashCommand();
@@ -56,7 +65,10 @@ public class HashCommandTest extends AbstractTest {
     @Test
     public void hash_verify_failure() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final var handler = new TestHandler();
         final var command = new HashCommand();
@@ -65,20 +77,24 @@ public class HashCommandTest extends AbstractTest {
         assertTrue(parsed);
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.ERROR_BAD_SHA256_CONFIG_CODE);
-        assertEquals(
-                handler.toString(),
-                "Content SHA256: 0A8DBED4B09238126BA5E065EB4E392A1B631FA1A20FCA9AE1DF5AA364F59C96 (Expected XXXX)\n"
-                        + "Depgen generated outputs for configuration file 'thirdparty/dependencies.yml' are out of"
-                        + " date.\n"
-                        + "Please run command 'bazel run //thirdparty:update_depgen_generated_outputs' to update the"
-                        + " generated outputs.");
+        assertEquals(handler.toString(), """
+            Content SHA256: 0A8DBED4B09238126BA5E065EB4E392A1B631FA1A20FCA9AE1DF5AA364F59C96 (Expected XXXX)
+            Depgen generated outputs for configuration file 'thirdparty/dependencies.yml' are out of\
+             date.
+            Please run command 'bazel run //thirdparty:update_depgen_generated_outputs' to update the\
+             generated outputs.\
+            """);
     }
 
     @Test
     public void hash_verify_failure_when_verifyConfigSha256_false() throws Exception {
         writeWorkspace();
-        writeConfigFile(
-                "options:\n" + "  verifyConfigSha256: false\n" + "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            options:
+              verifyConfigSha256: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final var handler = new TestHandler();
         final var command = new HashCommand();
@@ -95,7 +111,10 @@ public class HashCommandTest extends AbstractTest {
     @Test
     public void hash_badArgs() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final var handler = new TestHandler();
         final var command = new HashCommand();
@@ -108,7 +127,10 @@ public class HashCommandTest extends AbstractTest {
     @Test
     public void hash_unknownArgs() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final var handler = new TestHandler();
         final var command = new HashCommand();

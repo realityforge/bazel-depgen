@@ -343,6 +343,7 @@ final class AddCommand extends ConfigurableCommand {
         return null;
     }
 
+    @SuppressWarnings("SameParameterValue")
     @Nullable
     private Boolean parseBoolean(
             @NonNull final Environment environment, @NonNull final String option, @NonNull final String value) {

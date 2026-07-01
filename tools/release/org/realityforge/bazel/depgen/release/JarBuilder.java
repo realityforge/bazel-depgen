@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -34,8 +35,8 @@ public final class JarBuilder {
 
         final var inputs = new ArrayList<Path>();
         final var resources = new ArrayList<Resource>();
-        @Nullable Path output = null;
-        @Nullable String mainClass = null;
+        Path output = null;
+        String mainClass = null;
         for (int i = 1; i < args.length; i++) {
             switch (args[i]) {
                 case "--output":
@@ -109,7 +110,7 @@ public final class JarBuilder {
             throws IOException {
         try (JarFile jar = new JarFile(input.toFile())) {
             final var jarEntries = Collections.list(jar.entries());
-            jarEntries.sort((a, b) -> a.getName().compareTo(b.getName()));
+            jarEntries.sort(Comparator.comparing(ZipEntry::getName));
             for (final JarEntry entry : jarEntries) {
                 final String name = entry.getName();
                 if (entry.isDirectory() || shouldSkip(name)) {
@@ -186,7 +187,7 @@ public final class JarBuilder {
     private static void addEntry(
             final Map<String, byte[]> entries, final String name, final byte[] content, final boolean keepFirst)
             throws IOException {
-        final byte @Nullable [] existing = entries.get(name);
+        final byte[] existing = entries.get(name);
         if (existing == null) {
             entries.put(name, content);
         } else if (keepFirst || java.util.Arrays.equals(existing, content)) {

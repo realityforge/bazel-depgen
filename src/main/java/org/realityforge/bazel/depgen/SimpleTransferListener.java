@@ -1,6 +1,5 @@
 package org.realityforge.bazel.depgen;
 
-import java.io.Console;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -8,7 +7,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.aether.transfer.AbstractTransferListener;
 import org.eclipse.aether.transfer.ArtifactNotFoundException;
 import org.eclipse.aether.transfer.MetadataNotFoundException;
@@ -31,30 +29,30 @@ final class SimpleTransferListener extends AbstractTransferListener {
 
     @Override
     public void transferInitiated(@NonNull final TransferEvent event) {
-        final Console console = _environment.console();
+        final var console = _environment.console();
         if (null != console && _environment.logger().isLoggable(Level.INFO)) {
-            final String label = TransferEvent.RequestType.PUT == event.getRequestType() ? "Uploading" : "Downloading";
+            final var label = TransferEvent.RequestType.PUT == event.getRequestType() ? "Uploading" : "Downloading";
             console.writer().println(label + ": " + path(event.getResource()));
         }
     }
 
     @Override
     public void transferProgressed(@NonNull final TransferEvent event) {
-        final Console console = _environment.console();
+        final var console = _environment.console();
         if (null != console && _environment.logger().isLoggable(Level.INFO)) {
-            final TransferResource resource = event.getResource();
+            final var resource = event.getResource();
             _downloads.put(resource, event.getTransferredBytes());
 
             final var buffer = new StringBuilder(64);
 
-            for (final Map.Entry<TransferResource, Long> entry : _downloads.entrySet()) {
-                final long total = entry.getKey().getContentLength();
-                final long complete = entry.getValue();
+            for (final var entry : _downloads.entrySet()) {
+                final var total = entry.getKey().getContentLength();
+                final var complete = entry.getValue();
 
                 buffer.append(getStatus(complete, total)).append("  ");
             }
 
-            final int pad = lastLength - buffer.length();
+            final var pad = lastLength - buffer.length();
             lastLength = buffer.length();
             pad(buffer, pad);
             buffer.append('\r');
@@ -67,26 +65,25 @@ final class SimpleTransferListener extends AbstractTransferListener {
     public void transferSucceeded(@NonNull final TransferEvent event) {
         transferCompleted(event);
 
-        final Console console = _environment.console();
+        final var console = _environment.console();
         if (null != console && _environment.logger().isLoggable(Level.INFO)) {
-            final TransferResource resource = event.getResource();
-            final long contentLength = event.getTransferredBytes();
+            final var resource = event.getResource();
+            final var contentLength = event.getTransferredBytes();
             if (contentLength >= 0) {
-                final String len = contentLength >= 1024 ? toKB(contentLength) + " KB" : contentLength + " B";
+                final var len = contentLength >= 1024 ? toKB(contentLength) + " KB" : contentLength + " B";
 
-                final long duration = System.currentTimeMillis() - resource.getTransferStartTime();
+                final var duration = System.currentTimeMillis() - resource.getTransferStartTime();
                 final String throughput;
                 if (duration > 0) {
-                    final long bytes = contentLength - resource.getResumeOffset();
+                    final var bytes = contentLength - resource.getResumeOffset();
                     final var format = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.ENGLISH));
-                    final double kbPerSec = (bytes / 1024.0) / (duration / 1000.0);
+                    final var kbPerSec = (bytes / 1024.0) / (duration / 1000.0);
                     throughput = " at " + format.format(kbPerSec) + " KB/sec";
                 } else {
                     throughput = "";
                 }
 
-                final String label =
-                        TransferEvent.RequestType.PUT == event.getRequestType() ? "Uploaded" : "Downloaded";
+                final var label = TransferEvent.RequestType.PUT == event.getRequestType() ? "Uploaded" : "Downloaded";
                 console.writer().println(label + ": " + path(resource) + " (" + len + throughput + ")");
             }
         }
@@ -101,9 +98,9 @@ final class SimpleTransferListener extends AbstractTransferListener {
     public void transferFailed(@NonNull final TransferEvent event) {
         transferCompleted(event);
 
-        final Exception exception = event.getException();
+        final var exception = event.getException();
         if (!(exception instanceof MetadataNotFoundException) && !(exception instanceof ArtifactNotFoundException)) {
-            final Logger logger = _environment.logger();
+            final var logger = _environment.logger();
             if (logger.isLoggable(Level.INFO)) {
                 logger.log(Level.INFO, "Transfer Failed: " + event.getResource().getResourceName(), exception);
             }
@@ -113,7 +110,7 @@ final class SimpleTransferListener extends AbstractTransferListener {
     private void transferCompleted(@NonNull final TransferEvent event) {
         _downloads.remove(event.getResource());
 
-        final Console console = _environment.console();
+        final var console = _environment.console();
         if (null != console && _environment.logger().isLoggable(Level.INFO)) {
             final var buffer = new StringBuilder(64);
             pad(buffer, lastLength);
@@ -124,7 +121,7 @@ final class SimpleTransferListener extends AbstractTransferListener {
 
     @Override
     public void transferCorrupted(@NonNull final TransferEvent event) {
-        final Logger logger = _environment.logger();
+        final var logger = _environment.logger();
         if (logger.isLoggable(Level.WARNING)) {
             logger.log(
                     Level.WARNING,
@@ -153,8 +150,6 @@ final class SimpleTransferListener extends AbstractTransferListener {
     }
 
     private void pad(@NonNull final StringBuilder buffer, final int spaces) {
-        for (int i = 0; i < spaces; i++) {
-            buffer.append(' ');
-        }
+        buffer.append(" ".repeat(Math.max(0, spaces)));
     }
 }

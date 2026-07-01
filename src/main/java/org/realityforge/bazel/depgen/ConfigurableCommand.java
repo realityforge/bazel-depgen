@@ -3,7 +3,6 @@ package org.realityforge.bazel.depgen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jspecify.annotations.NonNull;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
@@ -19,7 +18,9 @@ abstract class ConfigurableCommand extends Command {
     private final CLOptionDescriptor[] _options;
 
     ConfigurableCommand(
-            @NonNull final String name, @NonNull final String help, @NonNull final CLOptionDescriptor[] options) {
+            @NonNull final String name,
+            @NonNull final String help,
+            @NonNull final CLOptionDescriptor @NonNull [] options) {
         super(name, help);
         _options = new CLOptionDescriptor[options.length + 1];
         _options[0] = HELP_DESCRIPTOR;
@@ -32,15 +33,15 @@ abstract class ConfigurableCommand extends Command {
         final var parser = new CLArgsParser(args, _options);
 
         // Make sure that there was no errors parsing arguments
-        final Logger logger = environment.logger();
+        final var logger = environment.logger();
         if (null != parser.getErrorString()) {
             logger.log(Level.SEVERE, "Error: " + parser.getErrorString());
             return false;
         }
         // Get a list of parsed options
-        final List<CLOption> arguments = parser.getArguments();
+        final var arguments = parser.getArguments();
         final var argumentsToProcess = new ArrayList<>(arguments);
-        for (final CLOption option : arguments) {
+        for (final var option : arguments) {
             if (HELP_OPT == option.getId()) {
                 argumentsToProcess.remove(option);
                 printUsage(environment);
@@ -56,11 +57,10 @@ abstract class ConfigurableCommand extends Command {
      * Print out a usage statement
      */
     private void printUsage(@NonNull final Environment environment) {
-        final Logger logger = environment.logger();
+        final var logger = environment.logger();
         logger.info(getName() + " Options:");
-        final String[] options =
-                CLUtil.describeOptions(_options).toString().split(System.getProperty("line.separator"));
-        for (final String line : options) {
+        final var options = CLUtil.describeOptions(_options).toString().split(System.getProperty("line.separator"));
+        for (final var line : options) {
             logger.info(line);
         }
     }

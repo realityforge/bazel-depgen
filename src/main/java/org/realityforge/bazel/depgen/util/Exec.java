@@ -47,11 +47,11 @@ final class Exec {
         final var builder = new ProcessBuilder();
         action.accept(builder);
         try {
-            final Process process = builder.start();
+            final var process = builder.start();
             if (null != processHandler) {
                 processHandler.accept(process);
             }
-            final int exitCode = process.waitFor();
+            final var exitCode = process.waitFor();
             if (null != expectedExitCode && exitCode != expectedExitCode) {
                 throw new DepgenException("Unexpected exit code for command " + builder.command() + ". " + "Actual: "
                         + exitCode + " Expected: " + expectedExitCode);
@@ -66,10 +66,10 @@ final class Exec {
     private static void copy(@NonNull final InputStream input, @NonNull final OutputStream output) {
         try {
             // Java9 can use input.transferTo(output)
-            try (final InputStream in = input;
-                    final OutputStream out = output) {
-                final byte[] buffer = new byte[BUFFER_SIZE];
-                int bytesRead = in.read(buffer);
+            try (final var in = input;
+                    final var out = output) {
+                final var buffer = new byte[BUFFER_SIZE];
+                var bytesRead = in.read(buffer);
                 while (-1 != bytesRead) {
                     out.write(buffer, 0, bytesRead);
                     bytesRead = in.read(buffer);

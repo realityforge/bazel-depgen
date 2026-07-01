@@ -20,7 +20,10 @@ public class ArtifactRecordTest extends AbstractTest {
     public void parseSimpleArtifact() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
@@ -57,61 +60,69 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+            )
+            """);
     }
 
     @Test
     public void emitJavaImport_simpleArtifact_visibilitySpecified() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                        + "    visibility: ['//some/package:__pkg__', '//other/package:__subpackages__']\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                visibility: ['//some/package:__pkg__', '//other/package:__subpackages__']
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + "    visibility = [\n"
-                        + "        \"//some/package:__pkg__\",\n"
-                        + "        \"//other/package:__subpackages__\",\n"
-                        + "    ],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+                visibility = [
+                    "//some/package:__pkg__",
+                    "//other/package:__subpackages__",
+                ],
+            )
+            """);
     }
 
     @Test
     public void emitJavaImport_simpleArtifact_withNamePrefix() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir, "options:\n" + "  namePrefix: zeapp\n" + "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            options:
+              namePrefix: zeapp
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"zeapp_com_example__myapp\",\n"
-                        + "    jars = [\"@zeapp_com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@zeapp_com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "zeapp_com_example__myapp",
+                jars = ["@zeapp_com_example__myapp__1_0//file"],
+                srcjar = "@zeapp_com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+            )
+            """);
     }
 
     @Test
@@ -125,13 +136,14 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "__library");
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp__library\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp__library",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+            )
+            """);
     }
 
     @Test
@@ -145,13 +157,14 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+            )
+            """);
     }
 
     @Test
@@ -166,26 +179,28 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + "    deps = [\":com_example__mylib\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+                deps = [":com_example__mylib"],
+            )
+            """);
     }
 
     @Test
     public void emitJavaImport_simpleArtifact_withExportDeps() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "options:\n" + "  java:\n"
-                        + "    exportDeps: true\n"
-                        + "artifacts:\n"
-                        + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            options:
+              java:
+                exportDeps: true
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "com.example:mylib:1.0");
         deployArtifactToLocalRepository(dir, "com.example:mylib:1.0");
 
@@ -193,15 +208,16 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + "    deps = [\":com_example__mylib\"],\n"
-                        + "    exports = [\":com_example__mylib\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+                deps = [":com_example__mylib"],
+                exports = [":com_example__mylib"],
+            )
+            """);
     }
 
     @Test
@@ -215,22 +231,26 @@ public class ArtifactRecordTest extends AbstractTest {
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
         // Output does not declare data with verify task included
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"org_realityforge_bazel_depgen__bazel_depgen\",\n"
-                        + "    jars = [\"@org_realityforge_bazel_depgen__bazel_depgen__1//file\"],\n"
-                        + "    srcjar = \"@org_realityforge_bazel_depgen__bazel_depgen__1__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "org_realityforge_bazel_depgen__bazel_depgen",
+                jars = ["@org_realityforge_bazel_depgen__bazel_depgen__1//file"],
+                srcjar = "@org_realityforge_bazel_depgen__bazel_depgen__1__sources//file",
+                tags = ["maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:1"],
+            )
+            """);
     }
 
     @Test
     public void emitJavaImport_shouldExportDeps() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    java:\n" + "      exportDeps: true\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                java:
+                  exportDeps: true
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "com.example:mylib:1.0");
         deployArtifactToLocalRepository(dir, "com.example:mylib:1.0");
 
@@ -238,15 +258,16 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + "    deps = [\":com_example__mylib\"],\n"
-                        + "    exports = [\":com_example__mylib\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+                deps = [":com_example__mylib"],
+                exports = [":com_example__mylib"],
+            )
+            """);
     }
 
     @Test
@@ -261,14 +282,15 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + "    runtime_deps = [\":com_example__mylib\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+                runtime_deps = [":com_example__mylib"],
+            )
+            """);
     }
 
     @Test
@@ -297,42 +319,45 @@ public class ArtifactRecordTest extends AbstractTest {
             final ArtifactRecord artifactRecord = getArtifactAt(record, 0);
             final var outputStream = new ByteArrayOutputStream();
             artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-            assertEquals(
-                    asString(outputStream),
-                    "_java_import(\n" + "    name = \"com_example__myapp\",\n"
-                            + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                            + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                            + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                            + "    runtime_deps = [\":com_example__rta\"],\n"
-                            + "    deps = [\":com_example__mylib\"],\n"
-                            + ")\n");
+            assertEquals(asString(outputStream), """
+                _java_import(
+                    name = "com_example__myapp",
+                    jars = ["@com_example__myapp__1_0//file"],
+                    srcjar = "@com_example__myapp__1_0__sources//file",
+                    tags = ["maven_coordinates=com.example:myapp:1.0"],
+                    runtime_deps = [":com_example__rta"],
+                    deps = [":com_example__mylib"],
+                )
+                """);
         }
         {
             final ArtifactRecord artifactRecord = getArtifactAt(record, 1);
             final var outputStream = new ByteArrayOutputStream();
             artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-            assertEquals(
-                    asString(outputStream),
-                    "_java_import(\n" + "    name = \"com_example__mylib\",\n"
-                            + "    jars = [\"@com_example__mylib__1_0//file\"],\n"
-                            + "    srcjar = \"@com_example__mylib__1_0__sources//file\",\n"
-                            + "    tags = [\"maven_coordinates=com.example:mylib:1.0\"],\n"
-                            + "    visibility = [\"//visibility:private\"],\n"
-                            + "    runtime_deps = [\":com_example__rtb\"],\n"
-                            + ")\n");
+            assertEquals(asString(outputStream), """
+                _java_import(
+                    name = "com_example__mylib",
+                    jars = ["@com_example__mylib__1_0//file"],
+                    srcjar = "@com_example__mylib__1_0__sources//file",
+                    tags = ["maven_coordinates=com.example:mylib:1.0"],
+                    visibility = ["//visibility:private"],
+                    runtime_deps = [":com_example__rtb"],
+                )
+                """);
         }
         {
             final ArtifactRecord artifactRecord = getArtifactAt(record, 2);
             final var outputStream = new ByteArrayOutputStream();
             artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-            assertEquals(
-                    asString(outputStream),
-                    "_java_import(\n" + "    name = \"com_example__rta\",\n"
-                            + "    jars = [\"@com_example__rta__33_0//file\"],\n"
-                            + "    srcjar = \"@com_example__rta__33_0__sources//file\",\n"
-                            + "    tags = [\"maven_coordinates=com.example:rtA:33.0\"],\n"
-                            + "    visibility = [\"//visibility:private\"],\n"
-                            + ")\n");
+            assertEquals(asString(outputStream), """
+                _java_import(
+                    name = "com_example__rta",
+                    jars = ["@com_example__rta__33_0//file"],
+                    srcjar = "@com_example__rta__33_0__sources//file",
+                    tags = ["maven_coordinates=com.example:rtA:33.0"],
+                    visibility = ["//visibility:private"],
+                )
+                """);
         }
     }
 
@@ -340,7 +365,10 @@ public class ArtifactRecordTest extends AbstractTest {
     public void getNameStrategy_implicit() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
@@ -354,9 +382,11 @@ public class ArtifactRecordTest extends AbstractTest {
     public void getNameStrategy_locallySpecified_GroupIdAndArtifactId() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    nameStrategy: GroupIdAndArtifactId\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                nameStrategy: GroupIdAndArtifactId
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
@@ -368,9 +398,12 @@ public class ArtifactRecordTest extends AbstractTest {
     public void getNameStrategy_locallySpecified_ArtifactId() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "options:\n" + "  nameStrategy: ArtifactId\n" + "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            options:
+              nameStrategy: ArtifactId
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
@@ -383,10 +416,11 @@ public class ArtifactRecordTest extends AbstractTest {
     public void getNameStrategy_locallySpecified_GroupIdAndArtifactIdAndVersion() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                        + "    nameStrategy: GroupIdAndArtifactIdAndVersion\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                nameStrategy: GroupIdAndArtifactIdAndVersion
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
@@ -398,11 +432,12 @@ public class ArtifactRecordTest extends AbstractTest {
     public void getRepositoryNameStrategy_globallySpecified_ArtifactId() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "options:\n" + "  repositoryNameStrategy: ArtifactId\n"
-                        + "artifacts:\n"
-                        + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            options:
+              repositoryNameStrategy: ArtifactId
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
@@ -416,12 +451,13 @@ public class ArtifactRecordTest extends AbstractTest {
     public void getRepositoryBaseName_explicitRepositoryNameBypassesPrefix() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "options:\n" + "  namePrefix: myapp\n"
-                        + "artifacts:\n"
-                        + "  - coord: com.example:myapp:1.0\n"
-                        + "    repositoryName: custom_repo\n");
+        writeConfigFile(dir, """
+            options:
+              namePrefix: myapp
+            artifacts:
+              - coord: com.example:myapp:1.0
+                repositoryName: custom_repo
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
@@ -433,16 +469,17 @@ public class ArtifactRecordTest extends AbstractTest {
     public void emitJavaImport_nameOverrides() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                        + "    natures: [Java, J2cl, Plugin]\n"
-                        + "    java:\n"
-                        + "      name: myapp-java-a\n"
-                        + "    j2cl:\n"
-                        + "      name: myapp-j2cl-a\n"
-                        + "    plugin:\n"
-                        + "      name: myapp-plugin-a\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [Java, J2cl, Plugin]
+                java:
+                  name: myapp-java-a
+                j2cl:
+                  name: myapp-j2cl-a
+                plugin:
+                  name: myapp-plugin-a
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
@@ -450,35 +487,38 @@ public class ArtifactRecordTest extends AbstractTest {
         {
             final var outputStream = new ByteArrayOutputStream();
             artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-            assertEquals(
-                    asString(outputStream),
-                    "_java_import(\n" + "    name = \"myapp-java-a\",\n"
-                            + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                            + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                            + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                            + ")\n");
+            assertEquals(asString(outputStream), """
+                _java_import(
+                    name = "myapp-java-a",
+                    jars = ["@com_example__myapp__1_0//file"],
+                    srcjar = "@com_example__myapp__1_0__sources//file",
+                    tags = ["maven_coordinates=com.example:myapp:1.0"],
+                )
+                """);
         }
         {
             final var outputStream = new ByteArrayOutputStream();
             artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-            assertEquals(
-                    asString(outputStream),
-                    "_java_import(\n" + "    name = \"myapp-java-a\",\n"
-                            + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                            + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                            + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                            + ")\n");
+            assertEquals(asString(outputStream), """
+                _java_import(
+                    name = "myapp-java-a",
+                    jars = ["@com_example__myapp__1_0//file"],
+                    srcjar = "@com_example__myapp__1_0__sources//file",
+                    tags = ["maven_coordinates=com.example:myapp:1.0"],
+                )
+                """);
         }
         {
             final var outputStream = new ByteArrayOutputStream();
             artifactRecord.emitJavaImport(new StarlarkOutput(outputStream), "");
-            assertEquals(
-                    asString(outputStream),
-                    "_java_import(\n" + "    name = \"myapp-java-a\",\n"
-                            + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                            + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                            + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                            + ")\n");
+            assertEquals(asString(outputStream), """
+                _java_import(
+                    name = "myapp-java-a",
+                    jars = ["@com_example__myapp__1_0//file"],
+                    srcjar = "@com_example__myapp__1_0__sources//file",
+                    tags = ["maven_coordinates=com.example:myapp:1.0"],
+                )
+                """);
         }
     }
 
@@ -486,26 +526,35 @@ public class ArtifactRecordTest extends AbstractTest {
     public void emitJavaPlugin_nullProcessor() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [Plugin]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [Plugin]
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaPlugin(new StarlarkOutput(outputStream), null);
-        assertEquals(
-                asString(outputStream),
-                "_java_plugin(\n" + "    name = \"com_example__myapp__plugin\",\n"
-                        + "    visibility = [\"//visibility:private\"],\n"
-                        + "    deps = [\":com_example__myapp__plugin_library\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_plugin(
+                name = "com_example__myapp__plugin",
+                visibility = ["//visibility:private"],
+                deps = [":com_example__myapp__plugin_library"],
+            )
+            """);
     }
 
     @Test
     public void emitJavaPlugin_withProcessor() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [Plugin]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [Plugin]
+            """);
         final Path jarFile = createJarFile(
                 "META-INF/services/javax.annotation.processing.Processor", "arez.processor.ArezProcessor\n");
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0");
@@ -515,26 +564,28 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaPlugin(new StarlarkOutput(outputStream), "arez.processor.ArezProcessor");
-        assertEquals(
-                asString(outputStream),
-                "_java_plugin(\n" + "    name = \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n"
-                        + "    generates_api = True,\n"
-                        + "    processor_class = \"arez.processor.ArezProcessor\",\n"
-                        + "    visibility = [\"//visibility:private\"],\n"
-                        + "    deps = [\":com_example__myapp__plugin_library\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_plugin(
+                name = "com_example__myapp__arez_processor_arezprocessor__plugin",
+                generates_api = True,
+                processor_class = "arez.processor.ArezProcessor",
+                visibility = ["//visibility:private"],
+                deps = [":com_example__myapp__plugin_library"],
+            )
+            """);
     }
 
     @Test
     public void emitJavaPlugin_withProcessorNoGeneratesApi() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                        + "    natures: [Plugin]\n"
-                        + "    plugin:\n"
-                        + "      generatesApi: false\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [Plugin]
+                plugin:
+                  generatesApi: false
+            """);
         final Path jarFile = createJarFile(
                 "META-INF/services/javax.annotation.processing.Processor", "arez.processor.ArezProcessor\n");
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0");
@@ -544,85 +595,99 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.emitJavaPlugin(new StarlarkOutput(outputStream), "arez.processor.ArezProcessor");
-        assertEquals(
-                asString(outputStream),
-                "_java_plugin(\n" + "    name = \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n"
-                        + "    processor_class = \"arez.processor.ArezProcessor\",\n"
-                        + "    visibility = [\"//visibility:private\"],\n"
-                        + "    deps = [\":com_example__myapp__plugin_library\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_plugin(
+                name = "com_example__myapp__arez_processor_arezprocessor__plugin",
+                processor_class = "arez.processor.ArezProcessor",
+                visibility = ["//visibility:private"],
+                deps = [":com_example__myapp__plugin_library"],
+            )
+            """);
     }
 
     @Test
     public void writeJ2clLibrary() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [J2cl]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_j2cl_library(\n" + "    name = \"com_example__myapp-j2cl\",\n"
-                        + "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _j2cl_library(
+                name = "com_example__myapp-j2cl",
+                srcs = ["@com_example__myapp__1_0__sources//file"],
+            )
+            """);
     }
 
     @Test
     public void writeJ2clLibrary_suppressPresent() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                        + "    natures: [J2cl]\n"
-                        + "    j2cl:\n"
-                        + "      suppress: [\"checkDebuggerStatement\"]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  suppress: ["checkDebuggerStatement"]
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_j2cl_library(\n" + "    name = \"com_example__myapp-j2cl\",\n"
-                        + "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n"
-                        + "    js_suppress = [\"checkDebuggerStatement\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _j2cl_library(
+                name = "com_example__myapp-j2cl",
+                srcs = ["@com_example__myapp__1_0__sources//file"],
+                js_suppress = ["checkDebuggerStatement"],
+            )
+            """);
     }
 
     @Test
     public void writeJ2clLibrary_modeImport() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                        + "    natures: [J2cl]\n"
-                        + "    j2cl:\n"
-                        + "      mode: Import\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_j2cl_import(\n" + "    name = \"com_example__myapp-j2cl\",\n"
-                        + "    jar = \"@com_example__myapp__1_0//file\",\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _j2cl_import(
+                name = "com_example__myapp-j2cl",
+                jar = "@com_example__myapp__1_0//file",
+            )
+            """);
     }
 
     @Test
     public void writeJ2clLibrary_singleDepsPresent() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [J2cl]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "com.example:mylib:1.0");
         deployArtifactToLocalRepository(dir, "com.example:mylib:1.0");
 
@@ -630,19 +695,24 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_j2cl_library(\n" + "    name = \"com_example__myapp-j2cl\",\n"
-                        + "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n"
-                        + "    deps = [\":com_example__mylib-j2cl\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _j2cl_library(
+                name = "com_example__myapp-j2cl",
+                srcs = ["@com_example__myapp__1_0__sources//file"],
+                deps = [":com_example__mylib-j2cl"],
+            )
+            """);
     }
 
     @Test
     public void writeJ2clLibrary_multipleDepsPresent() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [J2cl]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
         deployArtifactToLocalRepository(
                 dir, "com.example:myapp:1.0", "com.example:mylib:1.0", "com.example:mylib2:1.0");
         deployArtifactToLocalRepository(dir, "com.example:mylib:1.0");
@@ -652,15 +722,16 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_j2cl_library(\n" + "    name = \"com_example__myapp-j2cl\",\n"
-                        + "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n"
-                        + "    deps = [\n"
-                        + "        \":com_example__mylib-j2cl\",\n"
-                        + "        \":com_example__mylib2-j2cl\",\n"
-                        + "    ],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _j2cl_library(
+                name = "com_example__myapp-j2cl",
+                srcs = ["@com_example__myapp__1_0__sources//file"],
+                deps = [
+                    ":com_example__mylib-j2cl",
+                    ":com_example__mylib2-j2cl",
+                ],
+            )
+            """);
     }
 
     @Test
@@ -682,10 +753,14 @@ public class ArtifactRecordTest extends AbstractTest {
     public void writePluginLibrary_withProcessors() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
-        final Path jarFile = createJarFile(
-                "META-INF/services/javax.annotation.processing.Processor",
-                "arez.processor.ArezProcessor\n" + "react4j.processor.ReactProcessor\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
+        final Path jarFile = createJarFile("META-INF/services/javax.annotation.processing.Processor", """
+            arez.processor.ArezProcessor
+            react4j.processor.ReactProcessor
+            """);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0");
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0", jarFile);
 
@@ -693,102 +768,117 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writePluginLibrary(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp__plugin_library\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + ")\n"
-                        + "_java_plugin(\n"
-                        + "    name = \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n"
-                        + "    generates_api = True,\n"
-                        + "    processor_class = \"arez.processor.ArezProcessor\",\n"
-                        + "    visibility = [\"//visibility:private\"],\n"
-                        + "    deps = [\":com_example__myapp__plugin_library\"],\n"
-                        + ")\n"
-                        + "_java_plugin(\n"
-                        + "    name = \"com_example__myapp__react4j_processor_reactprocessor__plugin\",\n"
-                        + "    generates_api = True,\n"
-                        + "    processor_class = \"react4j.processor.ReactProcessor\",\n"
-                        + "    visibility = [\"//visibility:private\"],\n"
-                        + "    deps = [\":com_example__myapp__plugin_library\"],\n"
-                        + ")\n"
-                        + "_java_library(\n"
-                        + "    name = \"com_example__myapp\",\n"
-                        + "    exported_plugins = [\n"
-                        + "        \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n"
-                        + "        \"com_example__myapp__react4j_processor_reactprocessor__plugin\",\n"
-                        + "    ],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp__plugin_library",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+            )
+            _java_plugin(
+                name = "com_example__myapp__arez_processor_arezprocessor__plugin",
+                generates_api = True,
+                processor_class = "arez.processor.ArezProcessor",
+                visibility = ["//visibility:private"],
+                deps = [":com_example__myapp__plugin_library"],
+            )
+            _java_plugin(
+                name = "com_example__myapp__react4j_processor_reactprocessor__plugin",
+                generates_api = True,
+                processor_class = "react4j.processor.ReactProcessor",
+                visibility = ["//visibility:private"],
+                deps = [":com_example__myapp__plugin_library"],
+            )
+            _java_library(
+                name = "com_example__myapp",
+                exported_plugins = [
+                    "com_example__myapp__arez_processor_arezprocessor__plugin",
+                    "com_example__myapp__react4j_processor_reactprocessor__plugin",
+                ],
+            )
+            """);
     }
 
     @Test
     public void writePluginLibrary_withNoProcessors() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [Plugin]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [Plugin]
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writePluginLibrary(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp__plugin_library\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + ")\n"
-                        + "_java_plugin(\n"
-                        + "    name = \"com_example__myapp__plugin\",\n"
-                        + "    visibility = [\"//visibility:private\"],\n"
-                        + "    deps = [\":com_example__myapp__plugin_library\"],\n"
-                        + ")\n"
-                        + "_java_library(\n"
-                        + "    name = \"com_example__myapp\",\n"
-                        + "    exported_plugins = [\"com_example__myapp__plugin\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp__plugin_library",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+            )
+            _java_plugin(
+                name = "com_example__myapp__plugin",
+                visibility = ["//visibility:private"],
+                deps = [":com_example__myapp__plugin_library"],
+            )
+            _java_library(
+                name = "com_example__myapp",
+                exported_plugins = ["com_example__myapp__plugin"],
+            )
+            """);
     }
 
     @Test
     public void writePluginLibrary_withMultipleNatures() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [Plugin, Java]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [Plugin, Java]
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writePluginLibrary(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp__plugin_library\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + ")\n"
-                        + "_java_plugin(\n"
-                        + "    name = \"com_example__myapp__plugin\",\n"
-                        + "    visibility = [\"//visibility:private\"],\n"
-                        + "    deps = [\":com_example__myapp__plugin_library\"],\n"
-                        + ")\n"
-                        + "_java_library(\n"
-                        + "    name = \"com_example__myapp-plugin\",\n"
-                        + "    exported_plugins = [\"com_example__myapp__plugin\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp__plugin_library",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+            )
+            _java_plugin(
+                name = "com_example__myapp__plugin",
+                visibility = ["//visibility:private"],
+                deps = [":com_example__myapp__plugin_library"],
+            )
+            _java_library(
+                name = "com_example__myapp-plugin",
+                exported_plugins = ["com_example__myapp__plugin"],
+            )
+            """);
     }
 
     @Test
     public void writeJavaPluginLibrary_withProcessors() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
-        final Path jarFile = createJarFile(
-                "META-INF/services/javax.annotation.processing.Processor",
-                "arez.processor.ArezProcessor\n" + "react4j.processor.ReactProcessor\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
+        final Path jarFile = createJarFile("META-INF/services/javax.annotation.processing.Processor", """
+            arez.processor.ArezProcessor
+            react4j.processor.ReactProcessor
+            """);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0");
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0", jarFile);
 
@@ -796,57 +886,71 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJavaPluginLibrary(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_java_library(\n" + "    name = \"com_example__myapp\",\n"
-                        + "    exported_plugins = [\n"
-                        + "        \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n"
-                        + "        \"com_example__myapp__react4j_processor_reactprocessor__plugin\",\n"
-                        + "    ],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_library(
+                name = "com_example__myapp",
+                exported_plugins = [
+                    "com_example__myapp__arez_processor_arezprocessor__plugin",
+                    "com_example__myapp__react4j_processor_reactprocessor__plugin",
+                ],
+            )
+            """);
     }
 
     @Test
     public void writeJavaPluginLibrary_withNoProcessors() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [Plugin]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [Plugin]
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJavaPluginLibrary(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_java_library(\n" + "    name = \"com_example__myapp\",\n"
-                        + "    exported_plugins = [\"com_example__myapp__plugin\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_library(
+                name = "com_example__myapp",
+                exported_plugins = ["com_example__myapp__plugin"],
+            )
+            """);
     }
 
     @Test
     public void writeJavaPluginLibrary_withMultipleNatures() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [Plugin, Java]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [Plugin, Java]
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeJavaPluginLibrary(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_java_library(\n" + "    name = \"com_example__myapp-plugin\",\n"
-                        + "    exported_plugins = [\"com_example__myapp__plugin\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_library(
+                name = "com_example__myapp-plugin",
+                exported_plugins = ["com_example__myapp__plugin"],
+            )
+            """);
     }
 
     @Test
     public void writeArtifactHttpFileRule() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
@@ -867,7 +971,10 @@ public class ArtifactRecordTest extends AbstractTest {
     public void writeArtifactSourcesHttpFileRule() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
@@ -888,11 +995,12 @@ public class ArtifactRecordTest extends AbstractTest {
     public void writeArtifactAnnotationsHttpFileRule() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "options:\n" + "  includeExternalAnnotations: true\n"
-                        + "artifacts:\n"
-                        + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            options:
+              includeExternalAnnotations: true
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:annotations:1.0");
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
@@ -914,7 +1022,11 @@ public class ArtifactRecordTest extends AbstractTest {
     public void writeArtifactJsSourcesHttpArchiveRule_extensionStyle() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [J2cl]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
         final Path sourceJar = createJarFile("foo.js", "");
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0", sourceJar);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
@@ -923,7 +1035,7 @@ public class ArtifactRecordTest extends AbstractTest {
         final List<String> sourceUrls = requireNonNull(artifactRecord.getSourceUrls());
 
         final var outputStream = new ByteArrayOutputStream();
-        artifactRecord.writeArtifactJsSourcesHttpArchiveRule(new StarlarkOutput(outputStream), false);
+        artifactRecord.writeArtifactJsSourcesHttpArchiveRule(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
                 "_http_archive(\n" + "    name = \"com_example__myapp__1_0__js_sources\",\n"
@@ -943,7 +1055,11 @@ public class ArtifactRecordTest extends AbstractTest {
     public void writeArtifactJsSourcesHttpArchiveRule_moduleStyle() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [J2cl]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
         final Path sourceJar = createJarFile("foo.js", "");
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0", sourceJar);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
@@ -952,7 +1068,7 @@ public class ArtifactRecordTest extends AbstractTest {
         final List<String> sourceUrls = requireNonNull(artifactRecord.getSourceUrls());
 
         final var outputStream = new ByteArrayOutputStream();
-        artifactRecord.writeArtifactJsSourcesHttpArchiveRule(new StarlarkOutput(outputStream), true);
+        artifactRecord.writeArtifactJsSourcesHttpArchiveRule(new StarlarkOutput(outputStream));
         assertEquals(
                 asString(outputStream),
                 "_http_archive(\n" + "    name = \"com_example__myapp__1_0__js_sources\",\n"
@@ -972,30 +1088,38 @@ public class ArtifactRecordTest extends AbstractTest {
     public void writeArtifactTargets_Library() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+            )
+            """);
     }
 
     @Test
     public void writeArtifactTargets_Plugin() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
-        final Path jarFile = createJarFile(
-                "META-INF/services/javax.annotation.processing.Processor",
-                "arez.processor.ArezProcessor\n" + "react4j.processor.ReactProcessor\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
+        final Path jarFile = createJarFile("META-INF/services/javax.annotation.processing.Processor", """
+            arez.processor.ArezProcessor
+            react4j.processor.ReactProcessor
+            """);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0");
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0", jarFile);
 
@@ -1003,100 +1127,113 @@ public class ArtifactRecordTest extends AbstractTest {
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_java_import(\n" + "    name = \"com_example__myapp__plugin_library\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + ")\n"
-                        + "_java_plugin(\n"
-                        + "    name = \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n"
-                        + "    generates_api = True,\n"
-                        + "    processor_class = \"arez.processor.ArezProcessor\",\n"
-                        + "    visibility = [\"//visibility:private\"],\n"
-                        + "    deps = [\":com_example__myapp__plugin_library\"],\n"
-                        + ")\n"
-                        + "_java_plugin(\n"
-                        + "    name = \"com_example__myapp__react4j_processor_reactprocessor__plugin\",\n"
-                        + "    generates_api = True,\n"
-                        + "    processor_class = \"react4j.processor.ReactProcessor\",\n"
-                        + "    visibility = [\"//visibility:private\"],\n"
-                        + "    deps = [\":com_example__myapp__plugin_library\"],\n"
-                        + ")\n"
-                        + "_java_library(\n"
-                        + "    name = \"com_example__myapp\",\n"
-                        + "    exported_plugins = [\n"
-                        + "        \"com_example__myapp__arez_processor_arezprocessor__plugin\",\n"
-                        + "        \"com_example__myapp__react4j_processor_reactprocessor__plugin\",\n"
-                        + "    ],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "com_example__myapp__plugin_library",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+            )
+            _java_plugin(
+                name = "com_example__myapp__arez_processor_arezprocessor__plugin",
+                generates_api = True,
+                processor_class = "arez.processor.ArezProcessor",
+                visibility = ["//visibility:private"],
+                deps = [":com_example__myapp__plugin_library"],
+            )
+            _java_plugin(
+                name = "com_example__myapp__react4j_processor_reactprocessor__plugin",
+                generates_api = True,
+                processor_class = "react4j.processor.ReactProcessor",
+                visibility = ["//visibility:private"],
+                deps = [":com_example__myapp__plugin_library"],
+            )
+            _java_library(
+                name = "com_example__myapp",
+                exported_plugins = [
+                    "com_example__myapp__arez_processor_arezprocessor__plugin",
+                    "com_example__myapp__react4j_processor_reactprocessor__plugin",
+                ],
+            )
+            """);
     }
 
     @Test
     public void writeArtifactTargets_J2cl() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [J2cl]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_j2cl_library(\n" + "    name = \"com_example__myapp-j2cl\",\n"
-                        + "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _j2cl_library(
+                name = "com_example__myapp-j2cl",
+                srcs = ["@com_example__myapp__1_0__sources//file"],
+            )
+            """);
     }
 
     @Test
     public void writeArtifactTargets_J2cl_no_verify_config_sha256() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir,
-                "options:\n" + "  verifyConfigSha256: false\n"
-                        + "artifacts:\n"
-                        + "  - coord: com.example:myapp:1.0\n"
-                        + "    natures: [J2cl]\n");
+        writeConfigFile(dir, """
+            options:
+              verifyConfigSha256: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_j2cl_library(\n" + "    name = \"com_example__myapp-j2cl\",\n"
-                        + "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _j2cl_library(
+                name = "com_example__myapp-j2cl",
+                srcs = ["@com_example__myapp__1_0__sources//file"],
+            )
+            """);
     }
 
     @Test
     public void writeArtifactTargets_multipleNatures() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    natures: [J2cl, Java]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl, Java]
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
         artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
-        assertEquals(
-                asString(outputStream),
-                "_j2cl_library(\n" + "    name = \"com_example__myapp-j2cl\",\n"
-                        + "    srcs = [\"@com_example__myapp__1_0__sources//file\"],\n"
-                        + ")\n"
-                        + "\n"
-                        + "_java_import(\n"
-                        + "    name = \"com_example__myapp\",\n"
-                        + "    jars = [\"@com_example__myapp__1_0//file\"],\n"
-                        + "    srcjar = \"@com_example__myapp__1_0__sources//file\",\n"
-                        + "    tags = [\"maven_coordinates=com.example:myapp:1.0\"],\n"
-                        + ")\n");
+        assertEquals(asString(outputStream), """
+            _j2cl_library(
+                name = "com_example__myapp-j2cl",
+                srcs = ["@com_example__myapp__1_0__sources//file"],
+            )
+
+            _java_import(
+                name = "com_example__myapp",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+            )
+            """);
     }
 
     @NonNull

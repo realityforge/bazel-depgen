@@ -204,19 +204,23 @@ public class InitCommandTest extends AbstractTest {
         assertOutputContains(config, "repositoryRuleGenerationStrategy: module");
         assertOutputContains(config, "targetGenerationStrategy: build");
 
-        assertEquals(
-                loadAsString(environment.currentDirectory().resolve("MODULE.bazel")),
-                "module(name = \"test\")\n" + "\n"
-                        + "# --- depgen-generated repository rules start ---\n"
-                        + "\n"
-                        + "# --- depgen-generated repository rules end ---\n");
+        assertEquals(loadAsString(environment.currentDirectory().resolve("MODULE.bazel")), """
+            module(name = "test")
+
+            # --- depgen-generated repository rules start ---
+
+            # --- depgen-generated repository rules end ---
+            """);
         assertEquals(
                 loadAsString(
                         requireNonNull(environment.getConfigFile().getParent()).resolve("BUILD.bazel")),
-                "package(default_visibility = [\"//visibility:public\"])\n" + "\n"
-                        + "# --- depgen-generated targets start ---\n"
-                        + "\n"
-                        + "# --- depgen-generated targets end ---\n");
+                """
+                package(default_visibility = ["//visibility:public"])
+
+                # --- depgen-generated targets start ---
+
+                # --- depgen-generated targets end ---
+                """);
     }
 
     @Test

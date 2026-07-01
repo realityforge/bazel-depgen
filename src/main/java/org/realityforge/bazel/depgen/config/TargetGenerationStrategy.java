@@ -1,20 +1,17 @@
 package org.realityforge.bazel.depgen.config;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public enum TargetGenerationStrategy {
     ExtensionFile("extensionFile"),
     Build("build");
 
-    @NonNull
     private final String _id;
 
-    TargetGenerationStrategy(@NonNull final String id) {
+    TargetGenerationStrategy(final String id) {
         _id = id;
     }
 
-    @NonNull
     public String getId() {
         return _id;
     }

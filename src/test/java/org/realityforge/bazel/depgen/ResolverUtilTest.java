@@ -29,16 +29,17 @@ public class ResolverUtilTest extends AbstractTest {
                 RepositoryModel.create("central", "https://repo1.maven.org/maven2"),
                 RepositoryModel.create("example", "https://example.com/maven2"));
 
-        FileUtil.write(
-                "settings.xml",
-                "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" + "  <servers>\n"
-                        + "    <server>\n"
-                        + "      <id>example</id>\n"
-                        + "      <username>root</username>\n"
-                        + "      <password>secret</password>\n"
-                        + "    </server>\n"
-                        + "  </servers>\n"
-                        + "</settings>\n");
+        FileUtil.write("settings.xml", """
+            <settings xmlns="http://maven.apache.org/POM/4.0.0">
+              <servers>
+                <server>
+                  <id>example</id>
+                  <username>root</username>
+                  <password>secret</password>
+                </server>
+              </servers>
+            </settings>
+            """);
 
         final Settings settings = SettingsUtil.loadSettings(
                 FileUtil.getCurrentDirectory().resolve("settings.xml"), Logger.getAnonymousLogger());
@@ -155,7 +156,11 @@ public class ResolverUtilTest extends AbstractTest {
 
     @Test
     public void deriveGlobalExclusions() throws Exception {
-        writeConfigFile("excludes:\n" + "  - coord: org.oss:app\n" + "  - coord: com.biz:zelib\n");
+        writeConfigFile("""
+            excludes:
+              - coord: org.oss:app
+              - coord: com.biz:zelib
+            """);
         final ApplicationModel model = loadApplicationModel();
 
         final ArrayList<Exclusion> exclusions = ResolverUtil.deriveGlobalExclusions(model);

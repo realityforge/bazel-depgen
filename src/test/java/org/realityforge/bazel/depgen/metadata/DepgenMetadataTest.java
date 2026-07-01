@@ -268,21 +268,21 @@ public final class DepgenMetadataTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
 
-        Files.write(
-                file,
-                ("<default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar\n"
-                                + "<default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar\n"
-                                + "<default>.dir3.url=-\n")
-                        .getBytes(StandardCharsets.ISO_8859_1));
+        Files.write(file, ("""
+            <default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar
+            <default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar
+            <default>.dir3.url=-
+            """).getBytes(StandardCharsets.ISO_8859_1));
 
-        final DepgenMetadata metadata = loadMetadata(
-                dir,
-                "repositories:\n" + "  - name: dir1\n"
-                        + "    url: http://a.com\n"
-                        + "  - name: dir2\n"
-                        + "    url: http://b.com\n"
-                        + "  - name: dir3\n"
-                        + "    url: http://c.com\n");
+        final DepgenMetadata metadata = loadMetadata(dir, """
+            repositories:
+              - name: dir1
+                url: http://a.com
+              - name: dir2
+                url: http://b.com
+              - name: dir3
+                url: http://c.com
+            """);
 
         final var repo1 = new RemoteRepository.Builder("dir1", "default", "http://a.com").build();
         final var repo2 = new RemoteRepository.Builder("dir2", "default", "http://b.com").build();
@@ -303,21 +303,21 @@ public final class DepgenMetadataTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
 
-        Files.write(
-                file,
-                ("<default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar\n"
-                                + "<default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar\n"
-                                + "<default>.dir3.url=-\n")
-                        .getBytes(StandardCharsets.ISO_8859_1));
+        Files.write(file, ("""
+            <default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar
+            <default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar
+            <default>.dir3.url=-
+            """).getBytes(StandardCharsets.ISO_8859_1));
 
-        final DepgenMetadata metadata = loadMetadata(
-                dir,
-                "repositories:\n" + "  - name: dir1\n"
-                        + "    url: http://a.com\n"
-                        + "  - name: dir2\n"
-                        + "    url: http://b.com\n"
-                        + "  - name: dir3\n"
-                        + "    url: http://c.com\n");
+        final DepgenMetadata metadata = loadMetadata(dir, """
+            repositories:
+              - name: dir1
+                url: http://a.com
+              - name: dir2
+                url: http://b.com
+              - name: dir3
+                url: http://c.com
+            """);
 
         final var repo1 = new RemoteRepository.Builder("dir1", "default", "http://a.com").build();
         final var repo2 = new RemoteRepository.Builder("dir2", "default", "http://b.com").build();
@@ -342,15 +342,16 @@ public final class DepgenMetadataTest extends AbstractTest {
 
         final URI uri = dir1.toUri();
 
-        final DepgenMetadata metadata = loadMetadata(
-                dir,
-                "repositories:\n" + "  - name: dir1\n"
-                        + "    url: http://a.com\n"
-                        + "    cacheLookups: false\n"
-                        + "  - name: dir2\n"
-                        + "    url: http://b.com\n"
-                        + "  - name: dir3\n"
-                        + "    url: http://c.com\n");
+        final DepgenMetadata metadata = loadMetadata(dir, """
+            repositories:
+              - name: dir1
+                url: http://a.com
+                cacheLookups: false
+              - name: dir2
+                url: http://b.com
+              - name: dir3
+                url: http://c.com
+            """);
 
         final var repo1 = new RemoteRepository.Builder("dir1", "default", uri.toString()).build();
         final var repo2 = new RemoteRepository.Builder("dir2", "default", "http://b.com").build();
@@ -380,9 +381,10 @@ public final class DepgenMetadataTest extends AbstractTest {
 
         assertTrue(file.toFile().exists());
 
-        assertEquals(
-                loadPropertiesContent(file),
-                "<default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar\n" + "<default>.dir3.url=-\n");
+        assertEquals(loadPropertiesContent(file), """
+            <default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar
+            <default>.dir3.url=-
+            """);
     }
 
     @Test
@@ -398,12 +400,11 @@ public final class DepgenMetadataTest extends AbstractTest {
 
         // dir1 has a http protocol in cache but our configuration uses file protocol so we should end up
         // searching remote repository and updating cache.
-        Files.write(
-                file,
-                ("<default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar\n"
-                                + "<default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar\n"
-                                + "<default>.dir3.url=-\n")
-                        .getBytes(StandardCharsets.ISO_8859_1));
+        Files.write(file, ("""
+            <default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar
+            <default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar
+            <default>.dir3.url=-
+            """).getBytes(StandardCharsets.ISO_8859_1));
 
         deployTempArtifactToLocalRepository(dir1, "com.example:myapp:1.0");
 
@@ -531,9 +532,10 @@ public final class DepgenMetadataTest extends AbstractTest {
 
         final DepgenMetadata metadata = loadMetadata(dir);
 
-        final Path path = createJarFile(
-                "META-INF/services/javax.annotation.processing.Processor",
-                "react4j.processor.ReactProcessor\n" + "arez.processor.ArezProcessor\n");
+        final Path path = createJarFile("META-INF/services/javax.annotation.processing.Processor", """
+            react4j.processor.ReactProcessor
+            arez.processor.ArezProcessor
+            """);
         final List<String> processors = metadata.getProcessors(path.toFile());
         assertNotNull(processors);
         assertEquals(processors, Arrays.asList("react4j.processor.ReactProcessor", "arez.processor.ArezProcessor"));
@@ -575,9 +577,10 @@ public final class DepgenMetadataTest extends AbstractTest {
 
         final DepgenMetadata metadata = loadMetadata(dir);
 
-        final Path path = createJarFile(
-                "META-INF/services/javax.annotation.processing.Processor",
-                "react4j.processor.ReactProcessor\n" + "arez.processor.ArezProcessor\n");
+        final Path path = createJarFile("META-INF/services/javax.annotation.processing.Processor", """
+            react4j.processor.ReactProcessor
+            arez.processor.ArezProcessor
+            """);
         final List<String> processors = metadata.getProcessors(path.toFile());
         assertNotNull(processors);
         assertEquals(processors, Arrays.asList("react4j.processor.ReactProcessor", "arez.processor.ArezProcessor"));

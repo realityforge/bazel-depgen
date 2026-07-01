@@ -31,7 +31,7 @@ public final class StarlarkOutput implements AutoCloseable {
     }
 
     public void write(@NonNull final String line) throws IOException {
-        for (int i = 0; i < _indent; i++) {
+        for (var i = 0; i < _indent; i++) {
             emit("    ");
         }
         emit(line);
@@ -66,7 +66,7 @@ public final class StarlarkOutput implements AutoCloseable {
     }
 
     void writeMacroStart(@NonNull final String name, @NonNull final List<String> arguments) throws IOException {
-        final int size = arguments.size();
+        final var size = arguments.size();
         if (0 == size) {
             write("def " + name + "():");
         } else if (1 == size) {
@@ -75,8 +75,8 @@ public final class StarlarkOutput implements AutoCloseable {
             write("def " + name + "(");
             incIndent();
             incIndent();
-            int index = 0;
-            for (final String argument : arguments) {
+            var index = 0;
+            for (final var argument : arguments) {
                 index++;
                 write(argument + (index == size ? "):" : ","));
             }
@@ -101,8 +101,7 @@ public final class StarlarkOutput implements AutoCloseable {
                     write(key + " = True,");
                 } else if (Boolean.FALSE == value) {
                     write(key + " = False,");
-                } else if (value instanceof List) {
-                    final var arg = (List<?>) value;
+                } else if (value instanceof final List<?> arg) {
                     if (arg.isEmpty()) {
                         write(key + " = [],");
                     } else if (1 == arg.size()) {

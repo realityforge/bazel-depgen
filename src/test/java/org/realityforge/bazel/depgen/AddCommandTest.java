@@ -11,7 +11,10 @@ import org.testng.annotations.Test;
 public class AddCommandTest extends AbstractTest {
     @Test
     public void add_noArtifactsSection() throws Exception {
-        writeConfigFile("options:\n" + "  verifyConfigSha256: false\n");
+        writeConfigFile("""
+            options:
+              verifyConfigSha256: false
+            """);
 
         final var handler = new TestHandler();
         final var command = new AddCommand();
@@ -20,9 +23,12 @@ public class AddCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(
-                loadAsString(environment.getConfigFile()),
-                "options:\n" + "  verifyConfigSha256: false\n" + "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            options:
+              verifyConfigSha256: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         assertOutputContains(
                 handler.toString(),
                 "Added dependency 'com.example:myapp:jar:1.0' to configuration file " + environment.getConfigFile());
@@ -39,12 +45,18 @@ public class AddCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(loadAsString(environment.getConfigFile()), "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
     }
 
     @Test
     public void add_ignoresCommentedTemplateArtifactsSection() throws Exception {
-        writeConfigFile("#artifacts:\n" + "  #- coord: com.example:sample:1.0\n");
+        writeConfigFile("""
+            #artifacts:
+              #- coord: com.example:sample:1.0
+            """);
 
         final var command = new AddCommand();
         final Environment environment = newEnvironment();
@@ -52,19 +64,23 @@ public class AddCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(
-                loadAsString(environment.getConfigFile()),
-                "#artifacts:\n" + "#- coord: com.example:sample:1.0\n"
-                        + "artifacts:\n"
-                        + "  - coord: com.example:myapp:1.0\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            #artifacts:
+            #- coord: com.example:sample:1.0
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
     }
 
     @Test
     public void add_existingArtifactsSection() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:old:1.0\n"
-                + "\n"
-                + "excludes:\n"
-                + "  - coord: com.example:unused\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:old:1.0
+
+            excludes:
+              - coord: com.example:unused
+            """);
 
         final var command = new AddCommand();
         final Environment environment = newEnvironment();
@@ -72,19 +88,24 @@ public class AddCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(
-                loadAsString(environment.getConfigFile()),
-                "artifacts:\n" + "  - coord: com.example:old:1.0\n"
-                        + "  - coord: com.example:myapp:1.0\n"
-                        + "\n"
-                        + "excludes:\n"
-                        + "  - coord: com.example:unused\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            artifacts:
+              - coord: com.example:old:1.0
+              - coord: com.example:myapp:1.0
+
+            excludes:
+              - coord: com.example:unused
+            """);
     }
 
     @Test
     public void add_existingArtifactsSectionWithComments() throws Exception {
-        writeConfigFile(
-                "# Dependencies\n" + "artifacts:\n" + "  # Existing dependency\n" + "  - coord: com.example:old:1.0\n");
+        writeConfigFile("""
+            # Dependencies
+            artifacts:
+              # Existing dependency
+              - coord: com.example:old:1.0
+            """);
 
         final var command = new AddCommand();
         final Environment environment = newEnvironment();
@@ -92,22 +113,26 @@ public class AddCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(
-                loadAsString(environment.getConfigFile()),
-                "# Dependencies\n" + "artifacts:\n"
-                        + "  - # Existing dependency\n"
-                        + "    coord: com.example:old:1.0\n"
-                        + "  - coord: com.example:myapp:1.0\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            # Dependencies
+            artifacts:
+              - # Existing dependency
+                coord: com.example:old:1.0
+              - coord: com.example:myapp:1.0
+            """);
     }
 
     @Test
     public void add_allOptions() throws Exception {
-        writeConfigFile("repositories:\n" + "  - name: central\n"
-                + "    url: https://repo.maven.apache.org/maven2/\n"
-                + "options:\n"
-                + "  includeSource: false\n"
-                + "artifacts:\n"
-                + "  - coord: org.example:old:1.0\n");
+        writeConfigFile("""
+            repositories:
+              - name: central
+                url: https://repo.maven.apache.org/maven2/
+            options:
+              includeSource: false
+            artifacts:
+              - coord: org.example:old:1.0
+            """);
 
         final var command = new AddCommand();
         final Environment environment = newEnvironment();
@@ -149,39 +174,43 @@ public class AddCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(
-                loadAsString(environment.getConfigFile()),
-                "repositories:\n" + "  - name: central\n"
-                        + "    url: https://repo.maven.apache.org/maven2/\n"
-                        + "options:\n"
-                        + "  includeSource: false\n"
-                        + "artifacts:\n"
-                        + "  - coord: org.example:old:1.0\n"
-                        + "  - coord: org.example:lib:1.2\n"
-                        + "    nameStrategy: ArtifactId\n"
-                        + "    repositoryName: lib_repo\n"
-                        + "    includeOptional: true\n"
-                        + "    includeSource: true\n"
-                        + "    includeExternalAnnotations: true\n"
-                        + "    repositories: [\"central\"]\n"
-                        + "    excludes: [\"com.example:base\"]\n"
-                        + "    visibility: [\"//visibility:public\"]\n"
-                        + "    natures: [Java, Plugin, J2cl]\n"
-                        + "    java:\n"
-                        + "      name: lib_java\n"
-                        + "      exportDeps: true\n"
-                        + "    j2cl:\n"
-                        + "      name: lib_j2cl\n"
-                        + "      mode: Library\n"
-                        + "      suppress: [\"checkDebuggerStatement\"]\n"
-                        + "    plugin:\n"
-                        + "      name: lib_plugin\n"
-                        + "      generatesApi: false\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            repositories:
+              - name: central
+                url: https://repo.maven.apache.org/maven2/
+            options:
+              includeSource: false
+            artifacts:
+              - coord: org.example:old:1.0
+              - coord: org.example:lib:1.2
+                nameStrategy: ArtifactId
+                repositoryName: lib_repo
+                includeOptional: true
+                includeSource: true
+                includeExternalAnnotations: true
+                repositories: ["central"]
+                excludes: ["com.example:base"]
+                visibility: ["//visibility:public"]
+                natures: [Java, Plugin, J2cl]
+                java:
+                  name: lib_java
+                  exportDeps: true
+                j2cl:
+                  name: lib_j2cl
+                  mode: Library
+                  suppress: ["checkDebuggerStatement"]
+                plugin:
+                  name: lib_plugin
+                  generatesApi: false
+            """);
     }
 
     @Test
     public void add_repositoryNameStrategy() throws Exception {
-        writeConfigFile("options:\n" + "  verifyConfigSha256: false\n");
+        writeConfigFile("""
+            options:
+              verifyConfigSha256: false
+            """);
 
         final var command = new AddCommand();
         final Environment environment = newEnvironment();
@@ -190,17 +219,21 @@ public class AddCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(
-                loadAsString(environment.getConfigFile()),
-                "options:\n" + "  verifyConfigSha256: false\n"
-                        + "artifacts:\n"
-                        + "  - coord: org.example:lib:1.2\n"
-                        + "    repositoryNameStrategy: GroupIdAndArtifactId\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            options:
+              verifyConfigSha256: false
+            artifacts:
+              - coord: org.example:lib:1.2
+                repositoryNameStrategy: GroupIdAndArtifactId
+            """);
     }
 
     @Test
     public void add_noIncludeSource() throws Exception {
-        writeConfigFile("options:\n" + "  verifyConfigSha256: false\n");
+        writeConfigFile("""
+            options:
+              verifyConfigSha256: false
+            """);
 
         final var command = new AddCommand();
         final Environment environment = newEnvironment();
@@ -208,17 +241,21 @@ public class AddCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(
-                loadAsString(environment.getConfigFile()),
-                "options:\n" + "  verifyConfigSha256: false\n"
-                        + "artifacts:\n"
-                        + "  - coord: org.example:lib:1.2\n"
-                        + "    includeSource: false\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            options:
+              verifyConfigSha256: false
+            artifacts:
+              - coord: org.example:lib:1.2
+                includeSource: false
+            """);
     }
 
     @Test
     public void add_j2clNatureRequiresIncludeSource() throws Exception {
-        final String original = "options:\n" + "  includeSource: false\n";
+        final String original = """
+            options:
+              includeSource: false
+            """;
         writeConfigFile(original);
 
         final var command = new AddCommand();
@@ -244,7 +281,10 @@ public class AddCommandTest extends AbstractTest {
 
     @Test
     public void add_j2clSuppressRequiresLibraryMode() throws Exception {
-        final String original = "options:\n" + "  verifyConfigSha256: false\n";
+        final String original = """
+            options:
+              verifyConfigSha256: false
+            """;
         writeConfigFile(original);
 
         final var command = new AddCommand();
@@ -288,7 +328,10 @@ public class AddCommandTest extends AbstractTest {
 
     @Test
     public void add_natureSpecificOptionWithoutMatchingNature() throws Exception {
-        final String original = "options:\n" + "  defaultNature: Java\n";
+        final String original = """
+            options:
+              defaultNature: Java
+            """;
         writeConfigFile(original);
 
         final var command = new AddCommand();
@@ -312,13 +355,19 @@ public class AddCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(loadAsString(environment.getConfigFile()), "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         assertNoTempFiles(requireNonNull(environment.getConfigFile().getParent()));
     }
 
     @Test
     public void add_candidateValidationFailureLeavesFileUnchangedAndCleansTempFile() throws Exception {
-        final String original = "artifacts:\n" + "  - coord: com.example:old:1.0\n";
+        final String original = """
+            artifacts:
+              - coord: com.example:old:1.0
+            """;
         writeConfigFile(original);
 
         final var command = new AddCommand();

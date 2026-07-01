@@ -14,16 +14,17 @@ import org.testng.annotations.Test;
 public class SettingsUtilTest extends AbstractTest {
     @Test
     public void loadSettings() throws Exception {
-        FileUtil.write(
-                "settings.xml",
-                "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" + "  <servers>\n"
-                        + "    <server>\n"
-                        + "      <id>my-repo</id>\n"
-                        + "      <username>root</username>\n"
-                        + "      <password>secret</password>\n"
-                        + "    </server>\n"
-                        + "  </servers>\n"
-                        + "</settings>\n");
+        FileUtil.write("settings.xml", """
+            <settings xmlns="http://maven.apache.org/POM/4.0.0">
+              <servers>
+                <server>
+                  <id>my-repo</id>
+                  <username>root</username>
+                  <password>secret</password>
+                </server>
+              </servers>
+            </settings>
+            """);
         final Path path = FileUtil.getCurrentDirectory().resolve("settings.xml");
         final var handler = new TestHandler();
 
@@ -40,21 +41,22 @@ public class SettingsUtilTest extends AbstractTest {
 
     @Test
     public void loadSettings_withNonFatalWarnings() throws Exception {
-        FileUtil.write(
-                "settings.xml",
-                "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" + "  <servers>\n"
-                        + "    <server>\n"
-                        + "      <id>my-repo</id>\n"
-                        + "      <username>root</username>\n"
-                        + "      <password>secret</password>\n"
-                        + "    </server>\n"
-                        + "    <server>\n"
-                        + "      <id>my-repo</id>\n"
-                        + "      <username>root</username>\n"
-                        + "      <password>secret</password>\n"
-                        + "    </server>\n"
-                        + "  </servers>\n"
-                        + "</settings>\n");
+        FileUtil.write("settings.xml", """
+            <settings xmlns="http://maven.apache.org/POM/4.0.0">
+              <servers>
+                <server>
+                  <id>my-repo</id>
+                  <username>root</username>
+                  <password>secret</password>
+                </server>
+                <server>
+                  <id>my-repo</id>
+                  <username>root</username>
+                  <password>secret</password>
+                </server>
+              </servers>
+            </settings>
+            """);
         final Path path = FileUtil.getCurrentDirectory().resolve("settings.xml");
         final var handler = new TestHandler();
         final Settings settings = SettingsUtil.loadSettings(path, createLogger(handler));

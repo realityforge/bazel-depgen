@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen.config;
 
 import java.util.Objects;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public final class ExcludeConfig {
@@ -13,7 +12,7 @@ public final class ExcludeConfig {
         return coord;
     }
 
-    public void setCoord(@NonNull final String coord) {
+    public void setCoord(final String coord) {
         this.coord = Objects.requireNonNull(coord);
     }
 }

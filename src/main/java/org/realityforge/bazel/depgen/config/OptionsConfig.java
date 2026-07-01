@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen.config;
 
 import java.util.Objects;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public final class OptionsConfig {
@@ -102,7 +101,7 @@ public final class OptionsConfig {
         return workspaceDirectory;
     }
 
-    public void setWorkspaceDirectory(@NonNull final String workspaceDirectory) {
+    public void setWorkspaceDirectory(final String workspaceDirectory) {
         this.workspaceDirectory = workspaceDirectory;
     }
 
@@ -111,7 +110,7 @@ public final class OptionsConfig {
         return extensionFile;
     }
 
-    public void setExtensionFile(@NonNull final String extensionFile) {
+    public void setExtensionFile(final String extensionFile) {
         this.extensionFile = Objects.requireNonNull(extensionFile);
     }
 
@@ -120,7 +119,7 @@ public final class OptionsConfig {
         return workspaceMacroName;
     }
 
-    public void setWorkspaceMacroName(@NonNull final String workspaceMacroName) {
+    public void setWorkspaceMacroName(final String workspaceMacroName) {
         this.workspaceMacroName = Objects.requireNonNull(workspaceMacroName);
     }
 
@@ -129,7 +128,7 @@ public final class OptionsConfig {
         return targetMacroName;
     }
 
-    public void setTargetMacroName(@NonNull final String targetMacroName) {
+    public void setTargetMacroName(final String targetMacroName) {
         this.targetMacroName = Objects.requireNonNull(targetMacroName);
     }
 
@@ -138,7 +137,7 @@ public final class OptionsConfig {
         return repositoryRuleGenerationStrategy;
     }
 
-    public void setRepositoryRuleGenerationStrategy(@NonNull final String repositoryRuleGenerationStrategy) {
+    public void setRepositoryRuleGenerationStrategy(final String repositoryRuleGenerationStrategy) {
         this.repositoryRuleGenerationStrategy = Objects.requireNonNull(repositoryRuleGenerationStrategy);
     }
 
@@ -147,7 +146,7 @@ public final class OptionsConfig {
         return targetGenerationStrategy;
     }
 
-    public void setTargetGenerationStrategy(@NonNull final String targetGenerationStrategy) {
+    public void setTargetGenerationStrategy(final String targetGenerationStrategy) {
         this.targetGenerationStrategy = Objects.requireNonNull(targetGenerationStrategy);
     }
 
@@ -156,7 +155,7 @@ public final class OptionsConfig {
         return repositoryRuleStartToken;
     }
 
-    public void setRepositoryRuleStartToken(@NonNull final String repositoryRuleStartToken) {
+    public void setRepositoryRuleStartToken(final String repositoryRuleStartToken) {
         this.repositoryRuleStartToken = Objects.requireNonNull(repositoryRuleStartToken);
     }
 
@@ -165,7 +164,7 @@ public final class OptionsConfig {
         return repositoryRuleEndToken;
     }
 
-    public void setRepositoryRuleEndToken(@NonNull final String repositoryRuleEndToken) {
+    public void setRepositoryRuleEndToken(final String repositoryRuleEndToken) {
         this.repositoryRuleEndToken = Objects.requireNonNull(repositoryRuleEndToken);
     }
 
@@ -174,7 +173,7 @@ public final class OptionsConfig {
         return targetStartToken;
     }
 
-    public void setTargetStartToken(@NonNull final String targetStartToken) {
+    public void setTargetStartToken(final String targetStartToken) {
         this.targetStartToken = Objects.requireNonNull(targetStartToken);
     }
 
@@ -183,7 +182,7 @@ public final class OptionsConfig {
         return targetEndToken;
     }
 
-    public void setTargetEndToken(@NonNull final String targetEndToken) {
+    public void setTargetEndToken(final String targetEndToken) {
         this.targetEndToken = Objects.requireNonNull(targetEndToken);
     }
 
@@ -192,7 +191,7 @@ public final class OptionsConfig {
         return namePrefix;
     }
 
-    public void setNamePrefix(@NonNull final String namePrefix) {
+    public void setNamePrefix(final String namePrefix) {
         this.namePrefix = Objects.requireNonNull(namePrefix);
     }
 
@@ -201,7 +200,7 @@ public final class OptionsConfig {
         return _nameStrategy;
     }
 
-    public void setNameStrategy(@NonNull final NameStrategy nameStrategy) {
+    public void setNameStrategy(final NameStrategy nameStrategy) {
         this._nameStrategy = Objects.requireNonNull(nameStrategy);
     }
 
@@ -210,7 +209,7 @@ public final class OptionsConfig {
         return _repositoryNameStrategy;
     }
 
-    public void setRepositoryNameStrategy(@NonNull final NameStrategy repositoryNameStrategy) {
+    public void setRepositoryNameStrategy(final NameStrategy repositoryNameStrategy) {
         this._repositoryNameStrategy = Objects.requireNonNull(repositoryNameStrategy);
     }
 
@@ -219,7 +218,7 @@ public final class OptionsConfig {
         return defaultNature;
     }
 
-    public void setDefaultNature(@NonNull final Nature defaultNature) {
+    public void setDefaultNature(final Nature defaultNature) {
         this.defaultNature = Objects.requireNonNull(defaultNature);
     }
 
@@ -228,7 +227,7 @@ public final class OptionsConfig {
         return failOnInvalidPom;
     }
 
-    public void setFailOnInvalidPom(@NonNull final Boolean failOnInvalidPom) {
+    public void setFailOnInvalidPom(final Boolean failOnInvalidPom) {
         this.failOnInvalidPom = Objects.requireNonNull(failOnInvalidPom);
     }
 
@@ -237,7 +236,7 @@ public final class OptionsConfig {
         return failOnMissingPom;
     }
 
-    public void setFailOnMissingPom(@NonNull final Boolean failOnMissingPom) {
+    public void setFailOnMissingPom(final Boolean failOnMissingPom) {
         this.failOnMissingPom = Objects.requireNonNull(failOnMissingPom);
     }
 
@@ -246,7 +245,7 @@ public final class OptionsConfig {
         return emitDependencyGraph;
     }
 
-    public void setEmitDependencyGraph(@NonNull final Boolean emitDependencyGraph) {
+    public void setEmitDependencyGraph(final Boolean emitDependencyGraph) {
         this.emitDependencyGraph = Objects.requireNonNull(emitDependencyGraph);
     }
 
@@ -255,7 +254,7 @@ public final class OptionsConfig {
         return includeSource;
     }
 
-    public void setIncludeSource(@NonNull final Boolean includeSource) {
+    public void setIncludeSource(final Boolean includeSource) {
         this.includeSource = Objects.requireNonNull(includeSource);
     }
 
@@ -264,7 +263,7 @@ public final class OptionsConfig {
         return includeExternalAnnotations;
     }
 
-    public void setIncludeExternalAnnotations(@NonNull final Boolean includeExternalAnnotations) {
+    public void setIncludeExternalAnnotations(final Boolean includeExternalAnnotations) {
         this.includeExternalAnnotations = Objects.requireNonNull(includeExternalAnnotations);
     }
 
@@ -273,7 +272,7 @@ public final class OptionsConfig {
         return supportDependencyOmit;
     }
 
-    public void setSupportDependencyOmit(@NonNull final Boolean supportDependencyOmit) {
+    public void setSupportDependencyOmit(final Boolean supportDependencyOmit) {
         this.supportDependencyOmit = Objects.requireNonNull(supportDependencyOmit);
     }
 
@@ -282,7 +281,7 @@ public final class OptionsConfig {
         return verifyConfigSha256;
     }
 
-    public void setVerifyConfigSha256(@NonNull final Boolean verifyConfigSha256) {
+    public void setVerifyConfigSha256(final Boolean verifyConfigSha256) {
         this.verifyConfigSha256 = Objects.requireNonNull(verifyConfigSha256);
     }
 
@@ -291,7 +290,7 @@ public final class OptionsConfig {
         return java;
     }
 
-    public void setJava(@NonNull final GlobalJavaConfig java) {
+    public void setJava(final GlobalJavaConfig java) {
         this.java = Objects.requireNonNull(java);
     }
 }

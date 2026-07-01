@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -16,11 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.SettingsBuildingException;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.graph.DependencyCycle;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.resolution.DependencyResolutionException;
-import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -28,7 +24,6 @@ import org.realityforge.bazel.depgen.config.ApplicationConfig;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.InvalidModelException;
 import org.realityforge.bazel.depgen.record.ApplicationRecord;
-import org.realityforge.bazel.depgen.record.ArtifactRecord;
 import org.realityforge.bazel.depgen.util.ArtifactUtil;
 import org.realityforge.bazel.depgen.util.BazelUtil;
 import org.realityforge.bazel.depgen.util.BazelUtil.BazelInfo;
@@ -162,8 +157,8 @@ public final class Main {
         try {
             return environment.getCommand().run(new CommandContextImpl(environment));
         } catch (final InvalidModelException ime) {
-            final Logger logger = environment.logger();
-            final String message = ime.getMessage();
+            final var logger = environment.logger();
+            final var message = ime.getMessage();
             if (null != message) {
                 logger.log(Level.WARNING, message, ime.getCause());
             }
@@ -174,11 +169,11 @@ public final class Main {
 
             return ExitCodes.ERROR_CONSTRUCTING_MODEL_CODE;
         } catch (final TerminalStateException tse) {
-            final String message = tse.getMessage();
+            final var message = tse.getMessage();
             if (null != message) {
-                final Logger logger = environment.logger();
+                final var logger = environment.logger();
                 logger.log(Level.WARNING, message);
-                final Throwable cause = tse.getCause();
+                final var cause = tse.getCause();
                 if (null != cause) {
                     if (logger.isLoggable(Level.INFO)) {
                         logger.log(Level.INFO, "Cause: " + cause);
@@ -190,11 +185,11 @@ public final class Main {
             }
             return tse.getExitCode();
         } catch (final DepgenException e) {
-            final String message = e.getMessage();
+            final var message = e.getMessage();
             if (null != message) {
-                final Logger logger = environment.logger();
+                final var logger = environment.logger();
                 logger.log(Level.WARNING, message);
-                final Throwable cause = e.getCause();
+                final var cause = e.getCause();
                 if (null != cause) {
                     if (logger.isLoggable(Level.INFO)) {
                         logger.log(Level.INFO, "Cause: " + cause);
@@ -222,10 +217,10 @@ public final class Main {
 
     @NonNull
     static ApplicationRecord loadRecord(@NonNull final Environment environment) throws DependencyResolutionException {
-        final ApplicationModel model = loadModel(environment);
-        final Resolver resolver =
+        final var model = loadModel(environment);
+        final var resolver =
                 ResolverUtil.createResolver(environment, environment.getCacheDir(), model, loadSettings(environment));
-        final ApplicationRecord record = ApplicationRecord.build(
+        final var record = ApplicationRecord.build(
                 model,
                 resolveModel(environment, resolver, model),
                 resolver.getAuthenticationContexts(),
@@ -240,17 +235,16 @@ public final class Main {
             final Path repositoryCache = environment.getRepositoryCacheDir();
             // We only attempt to copy into repositoryCache if there is one ... which there
             // always is if there is a local WORKSPACE
-            for (final ArtifactRecord artifact : record.getArtifacts()) {
-                final Artifact a = artifact.getArtifact();
-                final File file = Objects.requireNonNull(a.getFile());
-                final String sha256 = Objects.requireNonNull(artifact.getSha256());
+            for (final var artifact : record.getArtifacts()) {
+                final var a = artifact.getArtifact();
+                final var file = Objects.requireNonNull(a.getFile());
+                final var sha256 = Objects.requireNonNull(artifact.getSha256());
                 cacheRepositoryFile(environment.logger(), repositoryCache, a.toString(), file, sha256);
-                final String sourceSha256 = artifact.getSourceSha256();
+                final var sourceSha256 = artifact.getSourceSha256();
                 if (null != sourceSha256) {
                     final var sourcesArtifact = new SubArtifact(a, "sources", "jar");
-                    final String localFilename = ArtifactUtil.artifactToLocalFilename(sourcesArtifact);
-                    final File sourcesFile = Objects.requireNonNull(
-                                    file.toPath().getParent())
+                    final var localFilename = ArtifactUtil.artifactToLocalFilename(sourcesArtifact);
+                    final var sourcesFile = Objects.requireNonNull(file.toPath().getParent())
                             .resolve(localFilename)
                             .toFile();
 
@@ -271,7 +265,7 @@ public final class Main {
             @NonNull final String label,
             @NonNull final File file,
             @NonNull final String sha256) {
-        final Path targetPath = repositoryCache
+        final var targetPath = repositoryCache
                 .resolve("content_addressable")
                 .resolve("sha256")
                 .resolve(sha256)
@@ -294,25 +288,25 @@ public final class Main {
             @NonNull final Resolver resolver,
             @NonNull final ApplicationModel model)
             throws DependencyResolutionException {
-        final Logger logger = environment.logger();
-        final DependencyResult result = resolver.resolveDependencies(model, (artifactModel, exceptions) -> {
+        final var logger = environment.logger();
+        final var result = resolver.resolveDependencies(model, (artifactModel, exceptions) -> {
             // If we get here then the listener has already emitted a warning message, so just need to exit
             // We can only get here if either failOnMissingPom or failOnInvalidPom is true and an error occurred
             throw new TerminalStateException(ExitCodes.ERROR_INVALID_POM_CODE);
         });
 
-        final List<DependencyCycle> cycles = result.getCycles();
+        final var cycles = result.getCycles();
         if (!cycles.isEmpty()) {
             logger.warning(cycles.size() + " dependency cycles detected when collecting dependencies:");
-            for (final DependencyCycle cycle : cycles) {
+            for (final var cycle : cycles) {
                 logger.warning(cycle.toString());
             }
             throw new TerminalStateException(ExitCodes.ERROR_CYCLES_PRESENT_CODE);
         }
-        final List<Exception> exceptions = result.getCollectExceptions();
+        final var exceptions = result.getCollectExceptions();
         if (!exceptions.isEmpty()) {
             logger.warning(exceptions.size() + " errors collecting dependencies:");
-            for (final Exception exception : exceptions) {
+            for (final var exception : exceptions) {
                 logger.log(Level.WARNING, null, exception);
             }
             throw new TerminalStateException(ExitCodes.ERROR_COLLECTING_DEPENDENCIES_CODE);
@@ -323,7 +317,7 @@ public final class Main {
 
     @NonNull
     private static Settings loadSettings(@NonNull final Environment environment) {
-        final Path settingsFile = environment.getSettingsFile();
+        final var settingsFile = environment.getSettingsFile();
         try {
             return SettingsUtil.loadSettings(settingsFile, environment.logger());
         } catch (final SettingsBuildingException e) {
@@ -334,7 +328,7 @@ public final class Main {
 
     @NonNull
     static ApplicationConfig loadConfigFile(@NonNull final Environment environment) {
-        final Path configFile = environment.getConfigFile();
+        final var configFile = environment.getConfigFile();
         try {
             return ApplicationConfig.load(configFile);
         } catch (final Throwable t) {
@@ -347,7 +341,7 @@ public final class Main {
         final var handler = new ConsoleHandler();
         handler.setFormatter(new RawFormatter());
         handler.setLevel(Level.ALL);
-        final Logger logger = environment.logger();
+        final var logger = environment.logger();
         logger.setUseParentHandlers(false);
         logger.addHandler(handler);
         logger.setLevel(Level.INFO);
@@ -365,16 +359,16 @@ public final class Main {
         final var parser = new CLArgsParser(args, OPTIONS, lastOptionCode -> CLOption.TEXT_ARGUMENT == lastOptionCode);
 
         // Make sure that there was no errors parsing arguments
-        final Logger logger = environment.logger();
+        final var logger = environment.logger();
         if (null != parser.getErrorString()) {
             logger.log(Level.SEVERE, "Error: " + parser.getErrorString());
             return false;
         }
         // Retrieve run directory first as some other options are interpreted relative to current directory
-        for (final CLOption option : parser.getArguments()) {
+        for (final var option : parser.getArguments()) {
             if (RUN_DIR_OPT == option.getId()) {
-                final String argument = option.getArgument();
-                final Path directory = environment
+                final var argument = option.getArgument();
+                final var directory = environment
                         .currentDirectory()
                         .resolve(argument)
                         .toAbsolutePath()
@@ -396,7 +390,7 @@ public final class Main {
         for (final CLOption option : parser.getArguments()) {
             switch (option.getId()) {
                 case CLOption.TEXT_ARGUMENT: {
-                    final String command = option.getArgument();
+                    final var command = option.getArgument();
                     if (!COMMAND_MAP.containsKey(command)) {
                         logger.log(Level.SEVERE, "Error: Unknown command: " + command);
                         return false;
@@ -411,17 +405,16 @@ public final class Main {
                     break;
                 }
                 case CONFIG_FILE_OPT: {
-                    final String argument = option.getArgument();
                     environment.setConfigFile(environment
                             .currentDirectory()
-                            .resolve(argument)
+                            .resolve(option.getArgument())
                             .toAbsolutePath()
                             .normalize());
                     break;
                 }
                 case SETTINGS_FILE_OPT: {
-                    final String argument = option.getArgument();
-                    final Path settingsFile = environment
+                    final var argument = option.getArgument();
+                    final var settingsFile = environment
                             .currentDirectory()
                             .resolve(argument)
                             .toAbsolutePath()
@@ -437,13 +430,13 @@ public final class Main {
                 }
 
                 case CACHE_DIR_OPT: {
-                    final String argument = option.getArgument();
-                    final Path cacheDir = environment
+                    final var argument = option.getArgument();
+                    final var cacheDir = environment
                             .currentDirectory()
                             .resolve(argument)
                             .toAbsolutePath()
                             .normalize();
-                    final File dir = cacheDir.toFile();
+                    final var dir = cacheDir.toFile();
                     if (dir.exists() && !dir.isDirectory()) {
                         logger.log(
                                 Level.SEVERE,
@@ -497,7 +490,7 @@ public final class Main {
         }
 
         if (!environment.hasConfigFile()) {
-            final Path configFile = environment
+            final var configFile = environment
                     .currentDirectory()
                     .resolve(ApplicationConfig.DEFAULT_MODULE)
                     .resolve(ApplicationConfig.FILENAME)
@@ -515,19 +508,19 @@ public final class Main {
         }
 
         if (!environment.hasSettingsFile()) {
-            final Path settingsFile = Paths.get(System.getProperty("user.home"), ".m2", "settings.xml")
+            final var settingsFile = Paths.get(System.getProperty("user.home"), ".m2", "settings.xml")
                     .toAbsolutePath()
                     .normalize();
             environment.setSettingsFile(settingsFile);
         }
 
-        final boolean needsCacheDir =
+        final var needsCacheDir =
                 !environment.hasCacheDir() && environment.getCommand().mayUseArtifactCache();
-        final boolean needsRepositoryCacheDir =
+        final var needsRepositoryCacheDir =
                 !environment.hasRepositoryCacheDir() && environment.getCommand().mayUseRepositoryCache();
 
         if (needsCacheDir && needsRepositoryCacheDir) {
-            final BazelInfo bazelInfo =
+            final var bazelInfo =
                     bazelInfoProvider.getInfo(environment.currentDirectory().toFile());
             if (null == bazelInfo) {
                 logger.log(
@@ -537,7 +530,7 @@ public final class Main {
                                 + "cache directory as an option.");
                 return false;
             }
-            final File outputBase = bazelInfo.getOutputBase();
+            final var outputBase = bazelInfo.getOutputBase();
             if (null == outputBase) {
                 logger.log(
                         Level.SEVERE,
@@ -547,17 +540,17 @@ public final class Main {
                 return false;
             }
             environment.setCacheDir(outputBase.toPath().resolve(".depgen-cache"));
-            final Path repositoryCache = bazelInfo.getRepositoryCache();
+            final var repositoryCache = bazelInfo.getRepositoryCache();
             if (null != repositoryCache) {
                 environment.setRepositoryCacheDir(repositoryCache);
             } else {
-                final Path defaultRepositoryCache = bazelInfoProvider.getDefaultRepositoryCache();
+                final var defaultRepositoryCache = bazelInfoProvider.getDefaultRepositoryCache();
                 if (null != defaultRepositoryCache) {
                     environment.setRepositoryCacheDir(defaultRepositoryCache);
                 }
             }
         } else if (needsCacheDir) {
-            final File outputBase = bazelInfoProvider.getOutputBase(
+            final var outputBase = bazelInfoProvider.getOutputBase(
                     environment.currentDirectory().toFile());
             if (null == outputBase) {
                 logger.log(
@@ -570,7 +563,7 @@ public final class Main {
                 environment.setCacheDir(outputBase.toPath().resolve(".depgen-cache"));
             }
         } else if (needsRepositoryCacheDir) {
-            final Path repositoryCache = bazelInfoProvider.getRepositoryCache(
+            final var repositoryCache = bazelInfoProvider.getRepositoryCache(
                     environment.currentDirectory().toFile());
             if (null != repositoryCache) {
                 environment.setRepositoryCacheDir(repositoryCache);
@@ -598,7 +591,7 @@ public final class Main {
      * Print out a usage statement
      */
     static void printUsage(@NonNull final Environment environment) {
-        final Logger logger = environment.logger();
+        final var logger = environment.logger();
         logger.severe("java " + Main.class.getName() + " [options] [command]");
         logger.severe("\tPossible Commands:");
         for (final Map.Entry<String, Supplier<Command>> entry : COMMAND_MAP.entrySet()) {
@@ -606,8 +599,8 @@ public final class Main {
                     "\t\t" + entry.getKey() + ": " + entry.getValue().get().getHelp());
         }
         logger.severe("\tOptions:");
-        final String[] options = CLUtil.describeOptions(OPTIONS).toString().split(System.lineSeparator());
-        for (final String line : options) {
+        final var options = CLUtil.describeOptions(OPTIONS).toString().split(System.lineSeparator());
+        for (final var line : options) {
             logger.severe(line);
         }
     }

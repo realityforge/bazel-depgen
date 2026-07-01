@@ -1,21 +1,16 @@
 package org.realityforge.bazel.depgen;
 
-import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.DependencyVisitor;
-import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
-import org.realityforge.bazel.depgen.model.ArtifactModel;
 
 abstract class PeerArtifactDownloaderVisitor implements DependencyVisitor {
     @NonNull
@@ -64,24 +59,24 @@ abstract class PeerArtifactDownloaderVisitor implements DependencyVisitor {
     }
 
     private org.eclipse.aether.artifact.Artifact downloadPeerArtifact(@NonNull final DependencyNode node) {
-        final org.eclipse.aether.artifact.Artifact artifact = node.getArtifact();
+        final var artifact = node.getArtifact();
         assert null != artifact;
-        final File file = artifact.getFile();
+        final var file = artifact.getFile();
         if (null == file) {
             // If we get here then the resolver has determined that the
             // artifact is a conflict and has not downloaded it
             return artifact;
         }
-        final DepgenMetadata metadata =
+        final var metadata =
                 DepgenMetadata.fromDirectory(_model, file.getParentFile().toPath());
-        final SubArtifact peerArtifact = toPeerArtifact(artifact);
-        final ArtifactModel artifactModel = _model.findArtifact(artifact.getGroupId(), artifact.getArtifactId());
-        final List<RemoteRepository> repositories =
+        final var peerArtifact = toPeerArtifact(artifact);
+        final var artifactModel = _model.findArtifact(artifact.getGroupId(), artifact.getArtifactId());
+        final var repositories =
                 null != artifactModel && !artifactModel.getRepositories().isEmpty()
                         ? _resolver.getRepositories(artifactModel)
                         : node.getRepositories();
         try {
-            final ArtifactResult sourceArtifactResult = _resolver
+            final var sourceArtifactResult = _resolver
                     .getSystem()
                     .resolveArtifact(_resolver.getSession(), new ArtifactRequest(peerArtifact, repositories, null));
             final var properties = new HashMap<>(artifact.getProperties());

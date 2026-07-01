@@ -40,6 +40,12 @@ public class OrderedPropertiesTest extends AbstractTest {
 
         final List<String> lines = Files.readAllLines(file);
         // Note: we are skipping over comment line
-        assertEquals(String.join("\n", lines.subList(1, lines.size())), "1=1\n" + "2=1\n" + "3=1\n" + "4=1\n" + "5=1");
+        assertEquals(String.join("\n", lines.subList(1, lines.size())), """
+            1=1
+            2=1
+            3=1
+            4=1
+            5=1\
+            """);
     }
 }

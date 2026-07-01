@@ -38,18 +38,19 @@ public class StarlarkOutputTest extends AbstractTest {
             output.write("J");
         });
 
-        assertFileContent(
-                file,
-                "A\n" + "B\n"
-                        + "\n"
-                        + "    C\n"
-                        + "        D\n"
-                        + "        E\n"
-                        + "            F\n"
-                        + "        G\n"
-                        + "            H\n"
-                        + "        I\n"
-                        + "J\n");
+        assertFileContent(file, """
+            A
+            B
+
+                C
+                    D
+                    E
+                        F
+                    G
+                        H
+                    I
+            J
+            """);
     }
 
     @Test
@@ -80,7 +81,11 @@ public class StarlarkOutputTest extends AbstractTest {
             output.decIndent();
         });
 
-        assertFileContent(file, "    myFunction(\n" + "        name = 'Foo',\n" + "    )\n");
+        assertFileContent(file, """
+                myFunction(
+                    name = 'Foo',
+                )
+            """);
     }
 
     @Test
@@ -93,14 +98,15 @@ public class StarlarkOutputTest extends AbstractTest {
             output.decIndent();
         });
 
-        assertFileContent(
-                file,
-                "    myFunction(\n" + "        name = [\n"
-                        + "            1,\n"
-                        + "            2,\n"
-                        + "            3,\n"
-                        + "        ],\n"
-                        + "    )\n");
+        assertFileContent(file, """
+                myFunction(
+                    name = [
+                        1,
+                        2,
+                        3,
+                    ],
+                )
+            """);
     }
 
     @Test
@@ -113,14 +119,15 @@ public class StarlarkOutputTest extends AbstractTest {
             output.decIndent();
         });
 
-        assertFileContent(
-                file,
-                "    myFunction(\n" + "        name = [\n"
-                        + "            1,\n"
-                        + "            2,\n"
-                        + "            3,\n"
-                        + "        ],\n"
-                        + "    )\n");
+        assertFileContent(file, """
+                myFunction(
+                    name = [
+                        1,
+                        2,
+                        3,
+                    ],
+                )
+            """);
     }
 
     @Test
@@ -137,20 +144,25 @@ public class StarlarkOutputTest extends AbstractTest {
             output.decIndent();
         });
 
-        assertFileContent(
-                file,
-                "    myFunction(\n" + "        name = 'com_biz__myartifact',\n"
-                        + "        actual = ':com_biz__myartifact_42',\n"
-                        + "        visibility = ['//visibility:public'],\n"
-                        + "        make_peace = True,\n"
-                        + "        make_war = False,\n"
-                        + "    )\n");
+        assertFileContent(file, """
+                myFunction(
+                    name = 'com_biz__myartifact',
+                    actual = ':com_biz__myartifact_42',
+                    visibility = ['//visibility:public'],
+                    make_peace = True,
+                    make_war = False,
+                )
+            """);
     }
 
     @Test
     public void writeMultilineComment() throws Exception {
         final Path file = writeFileContent(output -> output.writeMultilineComment(o -> o.write("Some comment")));
-        assertFileContent(file, "\"\"\"\n" + "    Some comment\n" + "\"\"\"\n");
+        assertFileContent(file, """
+            ""\"
+                Some comment
+            ""\"
+            """);
     }
 
     @Test
@@ -180,7 +192,11 @@ public class StarlarkOutputTest extends AbstractTest {
                     o.write("baz()");
                 }));
 
-        assertFileContent(file, "def myMacro(foo):\n" + "    bar()\n" + "    baz()\n");
+        assertFileContent(file, """
+            def myMacro(foo):
+                bar()
+                baz()
+            """);
     }
 
     @Test
@@ -202,11 +218,12 @@ public class StarlarkOutputTest extends AbstractTest {
             output.decIndent();
         });
 
-        assertFileContent(
-                file,
-                "    def myMacro(\n" + "            foo,\n"
-                        + "            bar = True,\n"
-                        + "            baz = \"yes\"):\n");
+        assertFileContent(file, """
+                def myMacro(
+                        foo,
+                        bar = True,
+                        baz = "yes"):
+            """);
     }
 
     @FunctionalInterface

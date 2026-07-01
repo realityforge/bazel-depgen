@@ -18,13 +18,16 @@ import org.testng.annotations.Test;
 public class ApplicationModelTest extends AbstractTest {
     @Test
     public void load() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                + "excludes:\n"
-                + "  - coord: com.example:blib\n"
-                + "replacements:\n"
-                + "  - coord: com.example:alib\n"
-                + "    targets:\n"
-                + "      - target: \"@com_example//:alib\"\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            excludes:
+              - coord: com.example:blib
+            replacements:
+              - coord: com.example:alib
+                targets:
+                  - target: "@com_example//:alib"
+            """);
         final Path configFile = getDefaultConfigFile();
         final ApplicationConfig source = ApplicationConfig.load(configFile);
 
@@ -111,7 +114,10 @@ public class ApplicationModelTest extends AbstractTest {
 
     @Test
     public void verifyConfigSha_false() throws Exception {
-        writeConfigFile("options:\n" + "  verifyConfigSha256: false\n");
+        writeConfigFile("""
+            options:
+              verifyConfigSha256: false
+            """);
         final Path configFile = getDefaultConfigFile();
         final ApplicationConfig source = ApplicationConfig.load(configFile);
         final ApplicationModel model = ApplicationModel.load(source, false);
@@ -121,7 +127,11 @@ public class ApplicationModelTest extends AbstractTest {
 
     @Test
     public void supportDependencyOmitRequiresExtensionFileStrategies() throws Exception {
-        writeConfigFile("options:\n" + "  supportDependencyOmit: true\n" + "  targetGenerationStrategy: build\n");
+        writeConfigFile("""
+            options:
+              supportDependencyOmit: true
+              targetGenerationStrategy: build
+            """);
         final Path configFile = getDefaultConfigFile();
         final ApplicationConfig source = ApplicationConfig.load(configFile);
         final DepgenValidationException exception =
@@ -134,9 +144,12 @@ public class ApplicationModelTest extends AbstractTest {
 
     @Test
     public void isExcluded() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                + "excludes:\n"
-                + "  - coord: com.example:blib\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            excludes:
+              - coord: com.example:blib
+            """);
         final ApplicationModel model = loadApplicationModel();
 
         assertFalse(model.isExcluded("com.example", "alib"));
@@ -145,7 +158,10 @@ public class ApplicationModelTest extends AbstractTest {
 
     @Test
     public void findArtifact() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final ApplicationModel model = loadApplicationModel();
         final ArtifactModel artifactModel = model.getArtifacts().get(0);
@@ -163,7 +179,10 @@ public class ApplicationModelTest extends AbstractTest {
 
     @Test
     public void findApplicationArtifact() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final ApplicationModel model = loadApplicationModel();
         final ArtifactModel artifactModel = model.getArtifacts().get(0);
@@ -178,7 +197,10 @@ public class ApplicationModelTest extends AbstractTest {
 
     @Test
     public void isSystemArtifact() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final ApplicationModel model = loadApplicationModel();
 
@@ -194,11 +216,14 @@ public class ApplicationModelTest extends AbstractTest {
 
     @Test
     public void findReplacement() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                + "replacements:\n"
-                + "  - coord: com.example:mylib\n"
-                + "    targets:\n"
-                + "      - target: \"@com_example//:mylib\"\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            replacements:
+              - coord: com.example:mylib
+                targets:
+                  - target: "@com_example//:mylib"
+            """);
 
         final ApplicationModel model = loadApplicationModel();
         assertEquals(model.getReplacements().size(), 1);
@@ -212,11 +237,14 @@ public class ApplicationModelTest extends AbstractTest {
 
     @Test
     public void getReplacement() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                + "replacements:\n"
-                + "  - coord: com.example:mylib\n"
-                + "    targets:\n"
-                + "      - target: \"@com_example//:mylib\"\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            replacements:
+              - coord: com.example:mylib
+                targets:
+                  - target: "@com_example//:mylib"
+            """);
 
         final ApplicationModel model = loadApplicationModel();
         assertEquals(model.getReplacements().size(), 1);
@@ -230,7 +258,10 @@ public class ApplicationModelTest extends AbstractTest {
 
     @Test
     public void findRepository() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final ApplicationModel model = loadApplicationModel();
         final List<RepositoryModel> repositories = model.getRepositories();
@@ -242,7 +273,10 @@ public class ApplicationModelTest extends AbstractTest {
 
     @Test
     public void getRepository() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final ApplicationModel model = loadApplicationModel();
         final List<RepositoryModel> repositories = model.getRepositories();
@@ -276,8 +310,11 @@ public class ApplicationModelTest extends AbstractTest {
     public void ensureArtifactRepositoriesAlign() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(
-                dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    repositories: [local, NoExist]\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                repositories: [local, NoExist]
+            """);
 
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 

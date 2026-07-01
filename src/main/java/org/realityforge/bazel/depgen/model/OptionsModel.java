@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen.model;
 
 import java.nio.file.Path;
 import java.util.Objects;
-import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.config.GlobalJavaConfig;
 import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.Nature;
@@ -12,13 +11,10 @@ import org.realityforge.bazel.depgen.config.TargetGenerationStrategy;
 import org.realityforge.bazel.depgen.util.BazelUtil;
 
 public final class OptionsModel {
-    @NonNull
     private final OptionsConfig _source;
 
-    @NonNull
     private final Path _workspaceDirectory;
 
-    @NonNull
     private final Path _extensionFile;
 
     /**
@@ -28,8 +24,7 @@ public final class OptionsModel {
      * @param configDirectory the directory that paths are relative to.
      * @param source          the original configuration source.
      */
-    @NonNull
-    static OptionsModel parse(@NonNull final Path configDirectory, @NonNull final OptionsConfig source) {
+    static OptionsModel parse(final Path configDirectory, final OptionsConfig source) {
         validateNamePrefix(source);
         validateRepositoryRuleGenerationStrategy(source);
         validateTargetGenerationStrategy(source);
@@ -38,7 +33,7 @@ public final class OptionsModel {
         return new OptionsModel(source, workspaceDirectory, extensionFile);
     }
 
-    private static void validateRepositoryRuleGenerationStrategy(@NonNull final OptionsConfig source) {
+    private static void validateRepositoryRuleGenerationStrategy(final OptionsConfig source) {
         final String value = source.getRepositoryRuleGenerationStrategy();
         if (null != value && null == RepositoryRuleGenerationStrategy.findById(value)) {
             throw new InvalidModelException(
@@ -47,7 +42,7 @@ public final class OptionsModel {
         }
     }
 
-    private static void validateTargetGenerationStrategy(@NonNull final OptionsConfig source) {
+    private static void validateTargetGenerationStrategy(final OptionsConfig source) {
         final String value = source.getTargetGenerationStrategy();
         if (null != value && null == TargetGenerationStrategy.findById(value)) {
             throw new InvalidModelException(
@@ -55,7 +50,7 @@ public final class OptionsModel {
         }
     }
 
-    private static void validateNamePrefix(@NonNull final OptionsConfig source) {
+    private static void validateNamePrefix(final OptionsConfig source) {
         final String namePrefix = source.getNamePrefix();
         if (null != namePrefix && namePrefix.contains(BazelUtil.COMPONENT_SEPARATOR)) {
             throw new InvalidModelException(
@@ -64,51 +59,40 @@ public final class OptionsModel {
         }
     }
 
-    @NonNull
-    private static Path deriveWorkspaceDirectory(
-            @NonNull final Path configDirectory, @NonNull final OptionsConfig source) {
+    private static Path deriveWorkspaceDirectory(final Path configDirectory, final OptionsConfig source) {
         final String value = source.getWorkspaceDirectory();
         final String filename = null == value ? OptionsConfig.DEFAULT_WORKSPACE_DIR : value;
         return configDirectory.resolve(filename).toAbsolutePath().normalize();
     }
 
-    @NonNull
-    private static Path deriveExtensionFile(@NonNull final Path configDirectory, @NonNull final OptionsConfig source) {
+    private static Path deriveExtensionFile(final Path configDirectory, final OptionsConfig source) {
         final String value = source.getExtensionFile();
         final String filename = null == value ? OptionsConfig.DEFAULT_EXTENSION_FILE : value;
         return configDirectory.resolve(filename).toAbsolutePath().normalize();
     }
 
-    private OptionsModel(
-            @NonNull final OptionsConfig source,
-            @NonNull final Path workspaceDirectory,
-            @NonNull final Path extensionFile) {
+    private OptionsModel(final OptionsConfig source, final Path workspaceDirectory, final Path extensionFile) {
         _source = Objects.requireNonNull(source);
         _workspaceDirectory = Objects.requireNonNull(workspaceDirectory);
         _extensionFile = Objects.requireNonNull(extensionFile);
     }
 
-    @NonNull
     public OptionsConfig getSource() {
         return _source;
     }
 
-    @NonNull
     public Path getWorkspaceDirectory() {
         return _workspaceDirectory;
     }
 
-    @NonNull
     public Path getExtensionFile() {
         return _extensionFile;
     }
 
-    @NonNull
     public Path getModuleFile() {
         return getWorkspaceDirectory().resolve("MODULE.bazel");
     }
 
-    @NonNull
     public String getWorkspaceMacroName() {
         final String workspaceMacroName = _source.getWorkspaceMacroName();
         return null == workspaceMacroName
@@ -116,13 +100,11 @@ public final class OptionsModel {
                 : workspaceMacroName;
     }
 
-    @NonNull
     public String getTargetMacroName() {
         final String targetMacroName = _source.getTargetMacroName();
         return null == targetMacroName ? getNamePrefix() + OptionsConfig.DEFAULT_TARGET_MACRO_NAME : targetMacroName;
     }
 
-    @NonNull
     public RepositoryRuleGenerationStrategy getRepositoryRuleGenerationStrategy() {
         final String value = _source.getRepositoryRuleGenerationStrategy();
         return null == value
@@ -130,7 +112,6 @@ public final class OptionsModel {
                 : Objects.requireNonNull(RepositoryRuleGenerationStrategy.findById(value));
     }
 
-    @NonNull
     public TargetGenerationStrategy getTargetGenerationStrategy() {
         final String value = _source.getTargetGenerationStrategy();
         return null == value
@@ -150,31 +131,26 @@ public final class OptionsModel {
         return isRepositoryRuleGenerationInExtensionFile() || isTargetGenerationInExtensionFile();
     }
 
-    @NonNull
     public String getRepositoryRuleStartToken() {
         final String value = _source.getRepositoryRuleStartToken();
         return null == value ? OptionsConfig.DEFAULT_REPOSITORY_RULE_START_TOKEN : value;
     }
 
-    @NonNull
     public String getRepositoryRuleEndToken() {
         final String value = _source.getRepositoryRuleEndToken();
         return null == value ? OptionsConfig.DEFAULT_REPOSITORY_RULE_END_TOKEN : value;
     }
 
-    @NonNull
     public String getTargetStartToken() {
         final String value = _source.getTargetStartToken();
         return null == value ? OptionsConfig.DEFAULT_TARGET_START_TOKEN : value;
     }
 
-    @NonNull
     public String getTargetEndToken() {
         final String value = _source.getTargetEndToken();
         return null == value ? OptionsConfig.DEFAULT_TARGET_END_TOKEN : value;
     }
 
-    @NonNull
     public String getNamePrefix() {
         // Name prefix if non-null and non-empty should be suffixed with '_'
         final String namePrefix = _source.getNamePrefix();
@@ -183,19 +159,16 @@ public final class OptionsModel {
                 : (namePrefix.isEmpty() ? "" : (namePrefix.endsWith("_") ? namePrefix : namePrefix + "_"));
     }
 
-    @NonNull
     public NameStrategy getNameStrategy() {
         final NameStrategy strategy = _source.getNameStrategy();
         return null == strategy ? OptionsConfig.DEFAULT_NAME_STRATEGY : strategy;
     }
 
-    @NonNull
     public NameStrategy getRepositoryNameStrategy() {
         final NameStrategy strategy = _source.getRepositoryNameStrategy();
         return null == strategy ? OptionsConfig.DEFAULT_REPOSITORY_NAME_STRATEGY : strategy;
     }
 
-    @NonNull
     public Nature getDefaultNature() {
         final Nature nature = _source.getDefaultNature();
         return null == nature ? OptionsConfig.DEFAULT_NATURE : nature;

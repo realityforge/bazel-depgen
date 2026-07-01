@@ -20,13 +20,13 @@ public final class GeneratedSectionWriter {
             throw new DepgenException("Expected generated output destination file to exist. File: " + path);
         }
 
-        final String data = Files.readString(path, StandardCharsets.UTF_8);
-        final int startIndex = data.indexOf(startToken);
+        final var data = Files.readString(path, StandardCharsets.UTF_8);
+        final var startIndex = data.indexOf(startToken);
         if (-1 == startIndex) {
             throw new DepgenException("Expected generated output destination file to contain start token '" + startToken
                     + "'. File: " + path);
         }
-        final int endIndex = data.indexOf(endToken, startIndex + startToken.length());
+        final var endIndex = data.indexOf(endToken, startIndex + startToken.length());
         if (-1 == endIndex) {
             throw new DepgenException("Expected generated output destination file to contain end token '" + endToken
                     + "' after the start token. File: " + path);
@@ -50,9 +50,9 @@ public final class GeneratedSectionWriter {
             throw new DepgenException("Expected generated output destination file to exist. File: " + path);
         }
 
-        final String data = Files.readString(path, StandardCharsets.UTF_8);
-        final boolean hasStartToken = data.contains(startToken);
-        final boolean hasEndToken = data.contains(endToken);
+        final var data = Files.readString(path, StandardCharsets.UTF_8);
+        final var hasStartToken = data.contains(startToken);
+        final var hasEndToken = data.contains(endToken);
         if (hasStartToken && hasEndToken) {
             return false;
         } else if (hasStartToken || hasEndToken) {

@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -138,7 +137,7 @@ final class InitCommand extends ConfigurableCommand {
         try {
             final byte[] data;
             final int count;
-            try (InputStream inputStream = getClass().getResourceAsStream("templates/dependencies.yml")) {
+            try (var inputStream = getClass().getResourceAsStream("templates/dependencies.yml")) {
                 assert null != inputStream;
                 data = new byte[inputStream.available()];
                 count = inputStream.read(data);
@@ -147,19 +146,19 @@ final class InitCommand extends ConfigurableCommand {
                 throw new IOException("Failed to ready file fully");
             }
 
-            final Path configDirectory = Objects.requireNonNull(configFile.getParent());
+            final var configDirectory = Objects.requireNonNull(configFile.getParent());
             final var outputData = new String(data, StandardCharsets.UTF_8)
                     .replace(
                             "workspaceDirectory: ..",
                             "workspaceDirectory: " + configDirectory.relativize(workspaceDir));
-            final String finalOutputData = moduleMode
+            final var finalOutputData = moduleMode
                     ? outputData
                             .replace(
                                     "  #repositoryRuleGenerationStrategy: extensionFile",
                                     "  repositoryRuleGenerationStrategy: module")
                             .replace("  #targetGenerationStrategy: extensionFile", "  targetGenerationStrategy: build")
                     : outputData;
-            Files.write(configFile, finalOutputData.getBytes(StandardCharsets.UTF_8));
+            Files.writeString(configFile, finalOutputData);
         } catch (final IOException e) {
             if (logger.isLoggable(Level.WARNING)) {
                 logger.log(Level.WARNING, "Error: Failed to create configuration file. File: " + configFile);
@@ -176,17 +175,16 @@ final class InitCommand extends ConfigurableCommand {
     private boolean prepareModuleModeFiles(
             @NonNull final Logger logger, @NonNull final Path workspaceDir, @NonNull final Path configFile) {
         try {
-            final Path moduleFile = workspaceDir.resolve("MODULE.bazel");
-            final Path buildFile =
-                    Objects.requireNonNull(configFile.getParent()).resolve("BUILD.bazel");
-            final boolean moduleUpdated = GeneratedSectionWriter.ensureSectionExists(
+            final var moduleFile = workspaceDir.resolve("MODULE.bazel");
+            final var buildFile = Objects.requireNonNull(configFile.getParent()).resolve("BUILD.bazel");
+            final var moduleUpdated = GeneratedSectionWriter.ensureSectionExists(
                     moduleFile,
                     OptionsConfig.DEFAULT_REPOSITORY_RULE_START_TOKEN,
                     OptionsConfig.DEFAULT_REPOSITORY_RULE_END_TOKEN);
             if (moduleUpdated && logger.isLoggable(Level.FINE)) {
                 logger.log(Level.FINE, "Updated generated section markers in " + moduleFile);
             }
-            final boolean buildUpdated = GeneratedSectionWriter.ensureSectionExists(
+            final var buildUpdated = GeneratedSectionWriter.ensureSectionExists(
                     buildFile, OptionsConfig.DEFAULT_TARGET_START_TOKEN, OptionsConfig.DEFAULT_TARGET_END_TOKEN);
             if (buildUpdated && logger.isLoggable(Level.FINE)) {
                 logger.log(Level.FINE, "Updated generated section markers in " + buildFile);
@@ -204,8 +202,8 @@ final class InitCommand extends ConfigurableCommand {
     private boolean createWorkspaceFile(
             @NonNull final Logger logger, @NonNull final Path workspaceFile, @NonNull final Path configFile) {
         try {
-            final Path workspaceDirectory = Objects.requireNonNull(workspaceFile.getParent());
-            final Path relativeConfigDirectory = Objects.requireNonNull(
+            final var workspaceDirectory = Objects.requireNonNull(workspaceFile.getParent());
+            final var relativeConfigDirectory = Objects.requireNonNull(
                     workspaceDirectory.relativize(configFile).getParent());
             final var output = new StarlarkOutput(workspaceFile);
             output.write("workspace(name = \"" + workspaceDirectory.getFileName() + "\")");

@@ -9,26 +9,23 @@ import org.eclipse.aether.graph.DependencyVisitor;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
-import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.Constants;
 import org.realityforge.bazel.depgen.metadata.DepgenMetadata;
 import org.realityforge.bazel.depgen.metadata.RecordBuildCallback;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
 
 final class DependencyCollector implements DependencyVisitor {
-    @NonNull
     private final ApplicationRecord _record;
 
-    @NonNull
     private final RecordBuildCallback _callback;
 
-    DependencyCollector(@NonNull final ApplicationRecord record, @NonNull final RecordBuildCallback callback) {
+    DependencyCollector(final ApplicationRecord record, final RecordBuildCallback callback) {
         _record = Objects.requireNonNull(record);
         _callback = Objects.requireNonNull(callback);
     }
 
     @Override
-    public boolean visitEnter(@NonNull final DependencyNode node) {
+    public boolean visitEnter(final DependencyNode node) {
         final org.eclipse.aether.artifact.Artifact artifact = node.getArtifact();
         if (null == artifact) {
             // This is the root node. Skip it and process children.
@@ -43,7 +40,7 @@ final class DependencyCollector implements DependencyVisitor {
         }
     }
 
-    private void processArtifact(@NonNull final DependencyNode node) {
+    private void processArtifact(final DependencyNode node) {
         final org.eclipse.aether.artifact.Artifact artifact = node.getArtifact();
         assert null != artifact;
         final File file = artifact.getFile();
@@ -113,7 +110,7 @@ final class DependencyCollector implements DependencyVisitor {
     }
 
     @Override
-    public boolean visitLeave(@NonNull final DependencyNode node) {
+    public boolean visitLeave(final DependencyNode node) {
         return true;
     }
 }

@@ -9,13 +9,13 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
-import java.util.stream.Collectors;
-import org.jspecify.annotations.Nullable;
 
 public final class AllJarIntegrationTest {
     private AllJarIntegrationTest() {}
@@ -61,7 +61,7 @@ public final class AllJarIntegrationTest {
         if (Files.exists(direct)) {
             return direct.toAbsolutePath().normalize();
         }
-        @Nullable final String runfiles = System.getenv("RUNFILES_DIR");
+        final String runfiles = System.getenv("RUNFILES_DIR");
         if (runfiles != null) {
             final var inRunfiles = Path.of(runfiles).resolve(path);
             if (Files.exists(inRunfiles)) {
@@ -81,17 +81,16 @@ public final class AllJarIntegrationTest {
                 directory.resolve("demo-1.0-sources.jar"),
                 "com/example/Demo.java",
                 "package com.example; public class Demo {}\n");
-        Files.writeString(
-                directory.resolve("demo-1.0.pom"),
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                        + "<project xmlns=\"http://maven.apache.org/POM/4.0.0\">\n"
-                        + "  <modelVersion>4.0.0</modelVersion>\n"
-                        + "  <groupId>com.example</groupId>\n"
-                        + "  <artifactId>demo</artifactId>\n"
-                        + "  <version>1.0</version>\n"
-                        + "  <packaging>jar</packaging>\n"
-                        + "</project>\n",
-                StandardCharsets.UTF_8);
+        Files.writeString(directory.resolve("demo-1.0.pom"), """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project xmlns="http://maven.apache.org/POM/4.0.0">
+              <modelVersion>4.0.0</modelVersion>
+              <groupId>com.example</groupId>
+              <artifactId>demo</artifactId>
+              <version>1.0</version>
+              <packaging>jar</packaging>
+            </project>
+            """, StandardCharsets.UTF_8);
 
         writeChecksums(directory.resolve("demo-1.0.jar"));
         writeChecksums(directory.resolve("demo-1.0-sources.jar"));
@@ -136,7 +135,7 @@ public final class AllJarIntegrationTest {
 
     private static String readDepgenVersion(final Path allJar) throws IOException {
         try (JarFile jar = new JarFile(allJar.toFile())) {
-            @Nullable final JarEntry entry = jar.getJarEntry("org/realityforge/bazel/depgen/config.properties");
+            final JarEntry entry = jar.getJarEntry("org/realityforge/bazel/depgen/config.properties");
             if (entry == null) {
                 throw new IOException("Unable to find config.properties in " + allJar);
             }
@@ -144,7 +143,7 @@ public final class AllJarIntegrationTest {
             try (InputStream input = jar.getInputStream(entry)) {
                 properties.load(input);
             }
-            @Nullable final String version = properties.getProperty("version");
+            final String version = properties.getProperty("version");
             if (version == null) {
                 throw new IOException("Unable to find version in config.properties in " + allJar);
             }
@@ -206,9 +205,7 @@ public final class AllJarIntegrationTest {
         args.add(work.toString());
         args.add("--cache-directory");
         args.add(cache.toString());
-        for (final String arg : command) {
-            args.add(arg);
-        }
+        args.addAll(Arrays.asList(command));
 
         final var process = new ProcessBuilder(args).redirectErrorStream(true).start();
         final var output = new ByteArrayOutputStream();
@@ -223,7 +220,7 @@ public final class AllJarIntegrationTest {
     }
 
     private static Path javaTool(final String name) throws IOException {
-        @Nullable final String javaHome = System.getProperty("java.home");
+        final var javaHome = System.getProperty("java.home");
         if (javaHome == null) {
             throw new IOException("java.home system property is not set");
         }
@@ -242,7 +239,7 @@ public final class AllJarIntegrationTest {
         }
         final List<Path> paths;
         try (var stream = Files.walk(root)) {
-            paths = stream.sorted((a, b) -> b.compareTo(a)).collect(Collectors.toList());
+            paths = stream.sorted(Comparator.reverseOrder()).toList();
         }
         for (final Path path : paths) {
             Files.deleteIfExists(path);

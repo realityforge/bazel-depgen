@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.DepgenValidationException;
@@ -24,34 +23,25 @@ import org.realityforge.bazel.depgen.util.HashUtil;
 import org.realityforge.bazel.depgen.util.YamlUtil;
 
 public final class ApplicationModel {
-    @NonNull
     private final ApplicationConfig _source;
 
     private final boolean _resetCachedMetadata;
 
-    @NonNull
     private final String _configSha256;
 
-    @NonNull
     private final OptionsModel _options;
 
-    @NonNull
     private final List<ArtifactModel> _artifacts;
 
-    @NonNull
     private final List<ArtifactModel> _systemArtifacts;
 
-    @NonNull
     private final List<ReplacementModel> _replacements;
 
-    @NonNull
     private final List<GlobalExcludeModel> _excludes;
 
-    @NonNull
     private final List<RepositoryModel> _repositories;
 
-    @NonNull
-    public static ApplicationModel load(@NonNull final ApplicationConfig source, final boolean resetCachedMetadata) {
+    public static ApplicationModel load(final ApplicationConfig source, final boolean resetCachedMetadata) {
         final String configSha256 = calculateConfigSha256(source);
         final Path baseDirectory = Objects.requireNonNull(
                 source.getConfigLocation().toAbsolutePath().normalize().getParent());
@@ -103,23 +93,22 @@ public final class ApplicationModel {
                 repositories);
     }
 
-    @NonNull
-    static String calculateConfigSha256(@NonNull final ApplicationConfig config) {
+    static String calculateConfigSha256(final ApplicationConfig config) {
         return HashUtil.sha256(
                 DepGenConfig.getVersion().getBytes(StandardCharsets.UTF_8),
                 YamlUtil.asYamlString(config).getBytes());
     }
 
     private ApplicationModel(
-            @NonNull final ApplicationConfig source,
+            final ApplicationConfig source,
             final boolean resetCachedMetadata,
-            @NonNull final String configSha256,
-            @NonNull final OptionsModel options,
-            @NonNull final List<ArtifactModel> artifacts,
-            @NonNull final List<ArtifactModel> systemArtifacts,
-            @NonNull final List<ReplacementModel> replacements,
-            @NonNull final List<GlobalExcludeModel> excludes,
-            @NonNull final List<RepositoryModel> repositories) {
+            final String configSha256,
+            final OptionsModel options,
+            final List<ArtifactModel> artifacts,
+            final List<ArtifactModel> systemArtifacts,
+            final List<ReplacementModel> replacements,
+            final List<GlobalExcludeModel> excludes,
+            final List<RepositoryModel> repositories) {
         _source = Objects.requireNonNull(source);
         _resetCachedMetadata = resetCachedMetadata;
         _configSha256 = Objects.requireNonNull(configSha256);
@@ -163,7 +152,6 @@ public final class ApplicationModel {
         }
     }
 
-    @NonNull
     public ApplicationConfig getSource() {
         return _source;
     }
@@ -172,115 +160,104 @@ public final class ApplicationModel {
         return _resetCachedMetadata;
     }
 
-    @NonNull
     public String getConfigSha256() {
         return _configSha256;
     }
 
-    @NonNull
     public Path getConfigLocation() {
         return getSource().getConfigLocation();
     }
 
-    @NonNull
     public OptionsModel getOptions() {
         return _options;
     }
 
-    @NonNull
     public List<RepositoryModel> getRepositories() {
         return _repositories;
     }
 
     @Nullable
-    public RepositoryModel findRepository(@NonNull final String name) {
+    public RepositoryModel findRepository(final String name) {
         return _repositories.stream()
                 .filter(r -> r.getName().equals(name))
                 .findAny()
                 .orElse(null);
     }
 
-    @NonNull
-    public RepositoryModel getRepository(@NonNull final String name) {
+    public RepositoryModel getRepository(final String name) {
         return Objects.requireNonNull(findRepository(name));
     }
 
-    @NonNull
     public List<ArtifactModel> getArtifacts() {
         return _artifacts;
     }
 
-    @NonNull
     public List<ArtifactModel> getSystemArtifacts() {
         return _systemArtifacts;
     }
 
     @Nullable
-    public ArtifactModel findArtifact(@NonNull final String groupId, @NonNull final String artifactId) {
+    public ArtifactModel findArtifact(final String groupId, final String artifactId) {
         return findArtifact(m -> m.getGroup().equals(groupId) && m.getId().equals(artifactId));
     }
 
     @Nullable
-    public ArtifactModel findApplicationArtifact(@NonNull final String groupId, @NonNull final String artifactId) {
+    public ArtifactModel findApplicationArtifact(final String groupId, final String artifactId) {
         return findApplicationArtifact(
                 m -> m.getGroup().equals(groupId) && m.getId().equals(artifactId));
     }
 
     @Nullable
-    private ArtifactModel findApplicationArtifact(@NonNull final Predicate<ArtifactModel> predicate) {
+    private ArtifactModel findApplicationArtifact(final Predicate<ArtifactModel> predicate) {
         return getArtifacts().stream().filter(predicate).findAny().orElse(null);
     }
 
     @Nullable
-    private ArtifactModel findArtifact(@NonNull final Predicate<ArtifactModel> predicate) {
+    private ArtifactModel findArtifact(final Predicate<ArtifactModel> predicate) {
         final ArtifactModel artifact = findApplicationArtifact(predicate);
         return null != artifact ? artifact : findSystemArtifact(predicate);
     }
 
-    public boolean isSystemArtifact(@NonNull final String groupId, @NonNull final String artifactId) {
+    public boolean isSystemArtifact(final String groupId, final String artifactId) {
         return null
                 != findSystemArtifact(
                         m -> m.getGroup().equals(groupId) && m.getId().equals(artifactId));
     }
 
     @Nullable
-    private ArtifactModel findSystemArtifact(@NonNull final Predicate<ArtifactModel> predicate) {
+    private ArtifactModel findSystemArtifact(final Predicate<ArtifactModel> predicate) {
         return getSystemArtifacts().stream().filter(predicate).findAny().orElse(null);
     }
 
-    @NonNull
     public List<ReplacementModel> getReplacements() {
         return _replacements;
     }
 
-    @NonNull
     public List<GlobalExcludeModel> getExcludes() {
         return _excludes;
     }
 
-    public boolean isExcluded(@NonNull final String groupId, @NonNull final String artifactId) {
+    public boolean isExcluded(final String groupId, final String artifactId) {
         return _excludes.stream()
                 .anyMatch(exclude ->
                         exclude.getGroup().equals(groupId) && exclude.getId().equals(artifactId));
     }
 
     @Nullable
-    public ReplacementModel findReplacement(@NonNull final String groupId, @NonNull final String artifactId) {
+    public ReplacementModel findReplacement(final String groupId, final String artifactId) {
         return findReplacement(m -> m.getGroup().equals(groupId) && m.getId().equals(artifactId));
     }
 
-    @NonNull
-    public ReplacementModel getReplacement(@NonNull final String groupId, @NonNull final String artifactId) {
+    public ReplacementModel getReplacement(final String groupId, final String artifactId) {
         return Objects.requireNonNull(findReplacement(groupId, artifactId));
     }
 
-    @NonNull
     public String verifyTargetName() {
         return getOptions().getNamePrefix() + "verify_config_sha256";
     }
 
     @Nullable
-    private ReplacementModel findReplacement(@NonNull final Predicate<ReplacementModel> predicate) {
+    private ReplacementModel findReplacement(final Predicate<ReplacementModel> predicate) {
         return getReplacements().stream().filter(predicate).findAny().orElse(null);
     }
 }

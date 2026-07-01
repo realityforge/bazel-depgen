@@ -10,9 +10,12 @@ import org.testng.annotations.Test;
 public class RemoveCommandTest extends AbstractTest {
     @Test
     public void remove_existingArtifact() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:old:1.0\n"
-                + "  - coord: com.example:myapp:1.0\n"
-                + "  - coord: com.example:other:jar:sources:2.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:old:1.0
+              - coord: com.example:myapp:1.0
+              - coord: com.example:other:jar:sources:2.0
+            """);
 
         final var handler = new TestHandler();
         final var command = new RemoveCommand();
@@ -21,9 +24,11 @@ public class RemoveCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(
-                loadAsString(environment.getConfigFile()),
-                "artifacts:\n" + "  - coord: com.example:old:1.0\n" + "  - coord: com.example:other:jar:sources:2.0\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            artifacts:
+              - coord: com.example:old:1.0
+              - coord: com.example:other:jar:sources:2.0
+            """);
         assertOutputContains(
                 handler.toString(),
                 "Removed dependency 'com.example:myapp:jar:1.0' from configuration file "
@@ -33,7 +38,10 @@ public class RemoveCommandTest extends AbstractTest {
 
     @Test
     public void remove_lastArtifactLeavesEmptySequence() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final var command = new RemoveCommand();
         final Environment environment = newEnvironment();
@@ -64,13 +72,16 @@ public class RemoveCommandTest extends AbstractTest {
 
     @Test
     public void remove_preservesUnrelatedComments() throws Exception {
-        writeConfigFile("# Dependencies\n" + "artifacts:\n"
-                + "  # Legacy dependency\n"
-                + "  - coord: com.example:old:1.0\n"
-                + "  # Remove me\n"
-                + "  - coord: com.example:myapp:1.0\n"
-                + "  # Keep me\n"
-                + "  - coord: com.example:other:1.0\n");
+        writeConfigFile("""
+            # Dependencies
+            artifacts:
+              # Legacy dependency
+              - coord: com.example:old:1.0
+              # Remove me
+              - coord: com.example:myapp:1.0
+              # Keep me
+              - coord: com.example:other:1.0
+            """);
 
         final var command = new RemoveCommand();
         final Environment environment = newEnvironment();
@@ -90,7 +101,10 @@ public class RemoveCommandTest extends AbstractTest {
 
     @Test
     public void remove_noMatch() throws Exception {
-        final String original = "artifacts:\n" + "  - coord: com.example:old:1.0\n";
+        final String original = """
+            artifacts:
+              - coord: com.example:old:1.0
+            """;
         writeConfigFile(original);
 
         final var command = new RemoveCommand();
@@ -106,8 +120,11 @@ public class RemoveCommandTest extends AbstractTest {
 
     @Test
     public void remove_ambiguousMatch() throws Exception {
-        final String original = "artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                + "  - coord: com.example:myapp:jar:sources:1.0\n";
+        final String original = """
+            artifacts:
+              - coord: com.example:myapp:1.0
+              - coord: com.example:myapp:jar:sources:1.0
+            """;
         writeConfigFile(original);
 
         final var command = new RemoveCommand();
@@ -123,7 +140,11 @@ public class RemoveCommandTest extends AbstractTest {
 
     @Test
     public void remove_requiresCurrentConfigToLoad() throws Exception {
-        final String original = "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "  - natures: [Java]\n";
+        final String original = """
+            artifacts:
+              - coord: com.example:myapp:1.0
+              - natures: [Java]
+            """;
         writeConfigFile(original);
 
         final var command = new RemoveCommand();

@@ -15,9 +15,7 @@ import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
-import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
-import org.yaml.snakeyaml.nodes.SequenceNode;
 
 final class UpdateCommand extends ConfigurableCommand {
     @NonNull
@@ -37,9 +35,9 @@ final class UpdateCommand extends ConfigurableCommand {
 
     @Override
     boolean processArguments(@NonNull final Environment environment, @NonNull final List<CLOption> arguments) {
-        for (final CLOption option : arguments) {
+        for (final var option : arguments) {
             if (CLOption.TEXT_ARGUMENT == option.getId()) {
-                final String argument = option.getArgument();
+                final var argument = option.getArgument();
                 if (null == _coord) {
                     _coord = argument;
                 } else if (null == _version) {
@@ -63,14 +61,14 @@ final class UpdateCommand extends ConfigurableCommand {
 
     @Override
     int run(@NonNull final Context context) throws Exception {
-        final Environment environment = context.environment();
-        final Path configFile = environment.getConfigFile();
-        final ApplicationModel model = context.loadModel();
-        final ArtifactModel requestedArtifact = parseDependencyKey(Objects.requireNonNull(_coord));
-        final String version = validateVersion(Objects.requireNonNull(_version));
-        final ArtifactModel matchedArtifact = findMatchedArtifact(model, requestedArtifact);
+        final var environment = context.environment();
+        final var configFile = environment.getConfigFile();
+        final var model = context.loadModel();
+        final var requestedArtifact = parseDependencyKey(Objects.requireNonNull(_coord));
+        final var version = validateVersion(Objects.requireNonNull(_version));
+        final var matchedArtifact = findMatchedArtifact(model, requestedArtifact);
 
-        final UpdateResult update = updateArtifact(configFile, matchedArtifact, version);
+        final var update = updateArtifact(configFile, matchedArtifact, version);
         DependencyConfigEditor.writeValidatedConfig(configFile, update.getContent());
 
         if (environment.logger().isLoggable(Level.INFO)) {
@@ -88,13 +86,13 @@ final class UpdateCommand extends ConfigurableCommand {
     private ArtifactModel findMatchedArtifact(
             @NonNull final ApplicationModel model, @NonNull final ArtifactModel requestedArtifact) {
         final var matches = new ArrayList<ArtifactModel>();
-        for (final ArtifactModel artifact : model.getArtifacts()) {
+        for (final var artifact : model.getArtifacts()) {
             if (hasSameArtifactKey(requestedArtifact, artifact)) {
                 matches.add(artifact);
             }
         }
 
-        final String key = requestedArtifact.getGroup() + ":" + requestedArtifact.getId();
+        final var key = requestedArtifact.getGroup() + ":" + requestedArtifact.getId();
         if (matches.isEmpty()) {
             throw new DepgenValidationException("Dependency '" + key + "' does not exist in configuration.");
         } else if (matches.size() > 1) {
@@ -109,17 +107,17 @@ final class UpdateCommand extends ConfigurableCommand {
     private UpdateResult updateArtifact(
             @NonNull final Path configFile, @NonNull final ArtifactModel artifact, @NonNull final String version)
             throws IOException {
-        final MappingNode root = DependencyConfigEditor.loadRootMapping(configFile);
-        final SequenceNode artifacts =
+        final var root = DependencyConfigEditor.loadRootMapping(configFile);
+        final var artifacts =
                 Objects.requireNonNull(DependencyConfigEditor.getTopLevelSequence(root, "artifacts", COMMAND));
-        final String oldCoord = Objects.requireNonNull(artifact.getSource().getCoord());
+        final var oldCoord = Objects.requireNonNull(artifact.getSource().getCoord());
 
-        final List<Node> nodes = artifacts.getValue();
-        for (final Node node : nodes) {
+        final var nodes = artifacts.getValue();
+        for (final var node : nodes) {
             if (node instanceof MappingNode mappingNode) {
-                final String coord = DependencyConfigEditor.scalarMappingValue(mappingNode, "coord");
+                final var coord = DependencyConfigEditor.scalarMappingValue(mappingNode, "coord");
                 if (oldCoord.equals(coord)) {
-                    final String newCoord = replaceVersion(oldCoord, version);
+                    final var newCoord = replaceVersion(oldCoord, version);
                     replaceCoord(mappingNode, oldCoord, newCoord);
                     return new UpdateResult(
                             DependencyConfigEditor.serialize(root),
@@ -135,9 +133,9 @@ final class UpdateCommand extends ConfigurableCommand {
 
     private void replaceCoord(
             @NonNull final MappingNode artifact, @NonNull final String oldCoord, @NonNull final String newCoord) {
-        final List<NodeTuple> entries = artifact.getValue();
+        final var entries = artifact.getValue();
         for (int i = 0; i < entries.size(); i++) {
-            final NodeTuple entry = entries.get(i);
+            final var entry = entries.get(i);
             if ("coord".equals(DependencyConfigEditor.scalarValue(entry.getKeyNode()))
                     && oldCoord.equals(DependencyConfigEditor.scalarValue(entry.getValueNode()))) {
                 entries.set(
@@ -160,7 +158,7 @@ final class UpdateCommand extends ConfigurableCommand {
 
     @NonNull
     private String replaceVersion(@NonNull final String coord, @NonNull final String version) {
-        final String[] components = coord.split(":", -1);
+        final var components = coord.split(":", -1);
         if (2 == components.length || 3 == components.length) {
             return components[0] + ":" + components[1] + ":" + version;
         } else if (4 == components.length) {

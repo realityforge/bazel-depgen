@@ -16,7 +16,6 @@ import java.util.function.Supplier;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.DepgenException;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
@@ -32,31 +31,27 @@ import org.realityforge.bazel.depgen.util.OrderedProperties;
  * registered in <code>dependency.yaml</code> are checked etc.</p>
  */
 public final class DepgenMetadata {
-    @NonNull
     public static final String FILENAME = "_depgen.properties";
 
     static final String SENTINEL = "-";
 
-    @NonNull
     private final ApplicationModel _model;
 
-    @NonNull
     private final Path _file;
 
     @Nullable
     private OrderedProperties _properties;
 
-    @NonNull
-    public static DepgenMetadata fromDirectory(@NonNull final ApplicationModel model, @NonNull final Path dir) {
+    public static DepgenMetadata fromDirectory(final ApplicationModel model, final Path dir) {
         return new DepgenMetadata(model, dir.resolve(FILENAME));
     }
 
-    private DepgenMetadata(@NonNull final ApplicationModel model, @NonNull final Path file) {
+    private DepgenMetadata(final ApplicationModel model, final Path file) {
         _model = Objects.requireNonNull(model);
         _file = Objects.requireNonNull(file);
     }
 
-    public void updateProperty(@NonNull final String key, @NonNull final String value) {
+    public void updateProperty(final String key, final String value) {
         getCachedProperties().setProperty(key, value);
         saveCachedProperties();
     }
@@ -68,8 +63,7 @@ public final class DepgenMetadata {
      * @param file       the artifact file.
      * @return the sha256 of the specified artifact.
      */
-    @NonNull
-    public String getSha256(@NonNull final String classifier, @NonNull final File file) {
+    public String getSha256(final String classifier, final File file) {
         return getOrCompute(classifierAsKey(classifier) + ".sha256", () -> RecordUtil.sha256(file));
     }
 
@@ -82,12 +76,11 @@ public final class DepgenMetadata {
      * @param callback               the callback that used to notify invoker or errors/warnings.
      * @return the urls where the artifact is present.
      */
-    @NonNull
     public List<String> getUrls(
-            @NonNull final Artifact artifact,
-            @NonNull final List<RemoteRepository> repositories,
-            @NonNull final Map<String, AuthenticationContext> authenticationContexts,
-            @NonNull final RecordBuildCallback callback) {
+            final Artifact artifact,
+            final List<RemoteRepository> repositories,
+            final Map<String, AuthenticationContext> authenticationContexts,
+            final RecordBuildCallback callback) {
         final var urls = new ArrayList<String>();
         for (final RemoteRepository remoteRepository : repositories) {
             final String name = remoteRepository.getId();
@@ -127,22 +120,21 @@ public final class DepgenMetadata {
     }
 
     @Nullable
-    public List<String> getProcessors(@NonNull final File file) {
+    public List<String> getProcessors(final File file) {
         final String processors = getOrCompute("processors", () -> RecordUtil.readAnnotationProcessors(file));
         return SENTINEL.equals(processors) ? null : Collections.unmodifiableList(Arrays.asList(processors.split(",")));
     }
 
     @Nullable
-    public List<String> getJsAssets(@NonNull final File file) {
+    public List<String> getJsAssets(final File file) {
         final String assets = getOrCompute("js_assets", () -> RecordUtil.readJsAssets(file));
         return SENTINEL.equals(assets) ? null : Collections.unmodifiableList(Arrays.asList(assets.split(",")));
     }
 
-    @NonNull
     private String lookupArtifact(
-            @NonNull final Artifact artifact,
-            @NonNull final RemoteRepository remoteRepository,
-            @NonNull final Map<String, AuthenticationContext> authenticationContexts) {
+            final Artifact artifact,
+            final RemoteRepository remoteRepository,
+            final Map<String, AuthenticationContext> authenticationContexts) {
         final String url = RecordUtil.lookupArtifactInRepository(artifact, remoteRepository, authenticationContexts);
         return null == url ? SENTINEL : url;
     }
@@ -154,8 +146,7 @@ public final class DepgenMetadata {
      * @param action the action to calculate value.
      * @return the value.
      */
-    @NonNull
-    private String getOrCompute(@NonNull final String key, @NonNull final Supplier<String> action) {
+    private String getOrCompute(final String key, final Supplier<String> action) {
         String existingValue = getCachedProperties().getProperty(key);
         if (null != existingValue && shouldResetCachedProperties()) {
             getCachedProperties().remove(key);
@@ -171,8 +162,7 @@ public final class DepgenMetadata {
         }
     }
 
-    @NonNull
-    private String classifierAsKey(@NonNull final String classifier) {
+    private String classifierAsKey(final String classifier) {
         return classifier.isEmpty() ? "<default>" : classifier;
     }
 
@@ -187,7 +177,6 @@ public final class DepgenMetadata {
         }
     }
 
-    @NonNull
     private Properties getCachedProperties() {
         if (null == _properties) {
             final var properties = new OrderedProperties();

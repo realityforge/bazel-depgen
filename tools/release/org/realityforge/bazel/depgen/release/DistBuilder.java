@@ -12,7 +12,6 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.jspecify.annotations.Nullable;
@@ -53,10 +52,10 @@ public final class DistBuilder {
     }
 
     private static Options parse(final String[] args) {
-        @Nullable Path versionFile = null;
+        Path versionFile = null;
         String gpgExecutable = "gpg";
-        @Nullable String gpgKeyId = env("GPG_USER");
-        @Nullable final String gpgPass = env("GPG_PASS");
+        String gpgKeyId = env("GPG_USER");
+        final String gpgPass = env("GPG_PASS");
         final var artifacts = new LinkedHashMap<String, Path>();
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
@@ -94,7 +93,7 @@ public final class DistBuilder {
 
     @Nullable
     private static String env(final String name) {
-        @Nullable final String value = System.getenv(name);
+        final String value = System.getenv(name);
         return value == null || value.isBlank() ? null : value;
     }
 
@@ -106,7 +105,7 @@ public final class DistBuilder {
     }
 
     private static Path workspace() {
-        @Nullable final String workspace = System.getenv("BUILD_WORKSPACE_DIRECTORY");
+        final String workspace = System.getenv("BUILD_WORKSPACE_DIRECTORY");
         return Path.of(workspace == null ? "." : workspace).toAbsolutePath().normalize();
     }
 
@@ -125,7 +124,7 @@ public final class DistBuilder {
     }
 
     private static Path artifact(final Map<String, Path> artifacts, final String kind) {
-        @Nullable final Path path = artifacts.get(kind);
+        final Path path = artifacts.get(kind);
         if (path == null) {
             throw new IllegalArgumentException("Missing --artifact " + kind + "=<path>");
         }
@@ -218,7 +217,7 @@ public final class DistBuilder {
     private static void writeZip(final Path root, final Path zip) throws IOException {
         final List<Path> files;
         try (var stream = Files.walk(root)) {
-            files = stream.filter(Files::isRegularFile).sorted().collect(Collectors.toList());
+            files = stream.filter(Files::isRegularFile).sorted().toList();
         }
         try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zip))) {
             for (final Path file : files) {
@@ -237,7 +236,7 @@ public final class DistBuilder {
         }
         final List<Path> paths;
         try (var stream = Files.walk(root)) {
-            paths = stream.sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+            paths = stream.sorted(Comparator.reverseOrder()).toList();
         }
         for (final Path path : paths) {
             Files.deleteIfExists(path);

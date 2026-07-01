@@ -1,21 +1,16 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.util.Objects;
-import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.config.ExcludeConfig;
 
 public final class GlobalExcludeModel {
-    @NonNull
     private final ExcludeConfig _source;
 
-    @NonNull
     private final String _group;
 
-    @NonNull
     private final String _id;
 
-    @NonNull
-    public static GlobalExcludeModel parse(@NonNull final ExcludeConfig source) {
+    public static GlobalExcludeModel parse(final ExcludeConfig source) {
         final String coord = source.getCoord();
         if (null == coord) {
             throw new InvalidModelException("The global exclude must specify the 'coord' property.", source);
@@ -33,24 +28,20 @@ public final class GlobalExcludeModel {
         }
     }
 
-    private GlobalExcludeModel(
-            @NonNull final ExcludeConfig source, @NonNull final String group, @NonNull final String id) {
+    private GlobalExcludeModel(final ExcludeConfig source, final String group, final String id) {
         _source = Objects.requireNonNull(source);
         _group = Objects.requireNonNull(group);
         _id = Objects.requireNonNull(id);
     }
 
-    @NonNull
     public ExcludeConfig getSource() {
         return _source;
     }
 
-    @NonNull
     public String getGroup() {
         return _group;
     }
 
-    @NonNull
     public String getId() {
         return _id;
     }

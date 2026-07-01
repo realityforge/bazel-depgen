@@ -2,7 +2,6 @@ package org.realityforge.bazel.depgen.config;
 
 import java.util.List;
 import java.util.Objects;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public final class J2clConfig {
@@ -20,7 +19,7 @@ public final class J2clConfig {
         return suppress;
     }
 
-    public void setSuppress(@NonNull final List<String> suppress) {
+    public void setSuppress(final List<String> suppress) {
         this.suppress = Objects.requireNonNull(suppress);
     }
 
@@ -29,7 +28,7 @@ public final class J2clConfig {
         return mode;
     }
 
-    public void setMode(@NonNull final J2clMode mode) {
+    public void setMode(final J2clMode mode) {
         this.mode = Objects.requireNonNull(mode);
     }
 

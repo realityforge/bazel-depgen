@@ -36,40 +36,41 @@ public class MainTest extends AbstractTest {
         // occurs even if the --quiet argument is passed.
         environment.logger().setLevel(Level.WARNING);
         Main.printUsage(environment);
-        assertEquals(
-                handler.toString(),
-                "java org.realityforge.bazel.depgen.Main [options] [command]\n" + "\tPossible Commands:\n"
-                        + "\t\tgenerate: Generate the Bazel outputs from the dependency configuration.\n"
-                        + "\t\tprint-graph: Compute and print the dependency graph for the dependency configuration.\n"
-                        + "\t\thash: Generate a hash of the content of the dependency configuration.\n"
-                        + "\t\tinit: Initialize an empty dependency configuration and Bazel scaffolding.\n"
-                        + "\t\tadd: Add a dependency to the dependency configuration.\n"
-                        + "\t\tupdate: Update a dependency version in the dependency configuration.\n"
-                        + "\t\tremove: Remove a dependency from the dependency configuration.\n"
-                        + "\t\tinfo: Print runtime info about the tool.\n"
-                        + "\tOptions:\n"
-                        + "\t--version\n"
-                        + "\t\tprint the version and exit\n"
-                        + "\t-h, --help\n"
-                        + "\t\tprint this message and exit\n"
-                        + "\t-q, --quiet\n"
-                        + "\t\tDo not output unless an error occurs.\n"
-                        + "\t-v, --verbose\n"
-                        + "\t\tVerbose output of differences.\n"
-                        + "\t-d, --directory <argument>\n"
-                        + "\t\tThe directory to run the tool from.\n"
-                        + "\t-c, --config-file <argument>\n"
-                        + "\t\tThe path to the yaml file containing the dependency configur\n"
-                        + "\t\tation. Defaults to 'thirdparty/dependencies.yml'.\n"
-                        + "\t-s, --settings-file <argument>\n"
-                        + "\t\tThe path to the settings.xml used by Maven to extract reposi\n"
-                        + "\t\ttory credentials. Defaults to '~/.m2/settings.xml'.\n"
-                        + "\t-r, --cache-directory <argument>\n"
-                        + "\t\tThe path to the directory in which to cache downloads from r\n"
-                        + "\t\temote repositories. Defaults to \"$(bazel info output_base)/.\n"
-                        + "\t\tdepgen-cache\".\n"
-                        + "\t--reset-cached-metadata\n"
-                        + "\t\tRecalculate metadata about an artifact.");
+        assertEquals(handler.toString(), """
+            java org.realityforge.bazel.depgen.Main [options] [command]
+            \tPossible Commands:
+            \t\tgenerate: Generate the Bazel outputs from the dependency configuration.
+            \t\tprint-graph: Compute and print the dependency graph for the dependency configuration.
+            \t\thash: Generate a hash of the content of the dependency configuration.
+            \t\tinit: Initialize an empty dependency configuration and Bazel scaffolding.
+            \t\tadd: Add a dependency to the dependency configuration.
+            \t\tupdate: Update a dependency version in the dependency configuration.
+            \t\tremove: Remove a dependency from the dependency configuration.
+            \t\tinfo: Print runtime info about the tool.
+            \tOptions:
+            \t--version
+            \t\tprint the version and exit
+            \t-h, --help
+            \t\tprint this message and exit
+            \t-q, --quiet
+            \t\tDo not output unless an error occurs.
+            \t-v, --verbose
+            \t\tVerbose output of differences.
+            \t-d, --directory <argument>
+            \t\tThe directory to run the tool from.
+            \t-c, --config-file <argument>
+            \t\tThe path to the yaml file containing the dependency configur
+            \t\tation. Defaults to 'thirdparty/dependencies.yml'.
+            \t-s, --settings-file <argument>
+            \t\tThe path to the settings.xml used by Maven to extract reposi
+            \t\ttory credentials. Defaults to '~/.m2/settings.xml'.
+            \t-r, --cache-directory <argument>
+            \t\tThe path to the directory in which to cache downloads from r
+            \t\temote repositories. Defaults to "$(bazel info output_base)/.
+            \t\tdepgen-cache".
+            \t--reset-cached-metadata
+            \t\tRecalculate metadata about an artifact.\
+            """);
     }
 
     @Test
@@ -183,7 +184,10 @@ public class MainTest extends AbstractTest {
         // Need to declare repositories otherwise we never even try to load settings
         writeWorkspace();
         // Need to declare repositories otherwise we never even try to load settings
-        writeConfigFile("repositories:\n" + "  - name: central" + "    url: http://repo1.maven.org/maven2\n");
+        writeConfigFile("""
+            repositories:
+              - name: central    url: http://repo1.maven.org/maven2
+            """);
 
         final String output = failToProcessOptions("--settings-file", "some_settings.xml", "generate");
         assertOutputContains(
@@ -409,18 +413,22 @@ public class MainTest extends AbstractTest {
         // Need to declare repositories otherwise we never even try to load settings
         writeWorkspace();
         // Need to declare repositories otherwise we never even try to load settings
-        writeConfigFile("repositories:\n" + "  - name: central" + "    url: http://repo1.maven.org/maven2\n");
+        writeConfigFile("""
+            repositories:
+              - name: central    url: http://repo1.maven.org/maven2
+            """);
 
-        FileUtil.write(
-                "settings.xml",
-                "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" + "  <servers>\n"
-                        + "    <server>\n"
-                        + "      <id>my-repo</id>\n"
-                        + "      <username>root</username>\n"
-                        + "      <password>secret</password>\n"
-                        + "    </server>\n"
-                        + "  </servers>\n"
-                        + "</settings>\n");
+        FileUtil.write("settings.xml", """
+            <settings xmlns="http://maven.apache.org/POM/4.0.0">
+              <servers>
+                <server>
+                  <id>my-repo</id>
+                  <username>root</username>
+                  <password>secret</password>
+                </server>
+              </servers>
+            </settings>
+            """);
         final Path path = FileUtil.getCurrentDirectory().resolve("settings.xml");
 
         final var handler = new TestHandler();
@@ -469,7 +477,10 @@ public class MainTest extends AbstractTest {
     @Test
     public void loadConfigFile() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:zeapp:2.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:zeapp:2.0
+            """);
 
         final Environment environment = newEnvironment();
         final Path file = getDefaultConfigFile();
@@ -496,7 +507,10 @@ public class MainTest extends AbstractTest {
     @Test
     public void loadModel() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:zeapp:2.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:zeapp:2.0
+            """);
 
         final Environment environment = newEnvironment();
 
@@ -514,7 +528,10 @@ public class MainTest extends AbstractTest {
     @Test
     public void loadModel_resetCachedMetadata() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:zeapp:2.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:zeapp:2.0
+            """);
 
         final Environment environment = newEnvironment();
         environment.markResetCachedMetadata();
@@ -543,7 +560,10 @@ public class MainTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
 
         writeWorkspace();
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ApplicationRecord record = Main.loadRecord(newEnvironment());
@@ -575,23 +595,27 @@ public class MainTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
 
         writeWorkspace();
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final Environment environment = newEnvironment();
 
         final Path settingsFile = FileUtil.getCurrentDirectory().resolve("settings.xml");
         environment.setSettingsFile(settingsFile);
-        FileUtil.write(
-                settingsFile.toString(),
-                "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" + "  <servers>\n"
-                        + "    <server>\n"
-                        + "      <id>local</id>\n"
-                        + "      <username>root</username>\n"
-                        + "      <password>secret</password>\n"
-                        + "    </server>\n"
-                        + "  </servers>\n"
-                        + "</settings>\n");
+        FileUtil.write(settingsFile.toString(), """
+            <settings xmlns="http://maven.apache.org/POM/4.0.0">
+              <servers>
+                <server>
+                  <id>local</id>
+                  <username>root</username>
+                  <password>secret</password>
+                </server>
+              </servers>
+            </settings>
+            """);
 
         final ApplicationRecord record = Main.loadRecord(environment);
         assertEquals(record.getAuthenticationContexts().size(), 1);
@@ -602,7 +626,10 @@ public class MainTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
 
         writeWorkspace();
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final var handler = new TestHandler();
@@ -627,7 +654,10 @@ public class MainTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
 
         writeWorkspace();
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "com.example:mylib:1.0");
         deployArtifactToLocalRepository(dir, "com.example:mylib:1.0", "com.example:myapp:1.0");
 
@@ -648,7 +678,10 @@ public class MainTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
 
         writeWorkspace();
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "com.example:mylib:1.0");
 
         final var handler = new TestHandler();
@@ -788,7 +821,10 @@ public class MainTest extends AbstractTest {
         FileUtil.write("WORKSPACE", "");
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         final Path jarFile1 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
         final Path jarFile2 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0", jarFile1);
@@ -830,7 +866,11 @@ public class MainTest extends AbstractTest {
         FileUtil.write("WORKSPACE", "");
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    includeSource: false\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                includeSource: false
+            """);
         final Path jarFile2 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0", jarFile2);
 
@@ -864,7 +904,10 @@ public class MainTest extends AbstractTest {
         FileUtil.write("WORKSPACE", "");
         final Path dir = FileUtil.createLocalTempDir();
 
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
         final Path jarFile1 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
         final Path jarFile2 = createJarFile(ValueUtil.randomString() + ".jar", ValueUtil.randomString());
         deployTempArtifactToLocalRepository(dir, "com.example:mylib:jar:sources:1.0");
@@ -892,11 +935,11 @@ public class MainTest extends AbstractTest {
         final Environment environment = newEnvironment(handler);
         environment.setRepositoryCacheDir(repositoryCacheDir);
         Main.cacheArtifactsInRepositoryCache(environment, record);
-        assertEquals(
-                handler.toString(),
-                "Installed artifact 'com.example:myapp:jar:1.0' into repository cache.\n"
-                        + "Installed artifact 'com.example:myapp:jar:sources:1.0' into repository cache.\n"
-                        + "Installed artifact 'com.example:mylib:jar:1.0' into repository cache.");
+        assertEquals(handler.toString(), """
+            Installed artifact 'com.example:myapp:jar:1.0' into repository cache.
+            Installed artifact 'com.example:myapp:jar:sources:1.0' into repository cache.
+            Installed artifact 'com.example:mylib:jar:1.0' into repository cache.\
+            """);
 
         assertTrue(Files.exists(targetFile1));
         assertTrue(Files.exists(targetFile2));
@@ -909,10 +952,11 @@ public class MainTest extends AbstractTest {
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         writeWorkspace();
-        writeConfigFile(
-                dir,
-                "artifacts:\n" + "  - coord: com.example:myapp:jar:1.0\n"
-                        + "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:jar:1.0
+                excludes: ['org.realityforge.javax.annotation:javax.annotation']
+            """);
         final String output = runCommand("generate");
         assertEquals(output, "");
     }
@@ -920,8 +964,11 @@ public class MainTest extends AbstractTest {
     @Test
     public void run_hash() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                + "    excludes: ['org.realityforge.javax.annotation:javax.annotation']\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+                excludes: ['org.realityforge.javax.annotation:javax.annotation']
+            """);
         final String output = runCommand("hash");
         assertEquals(output, "Content SHA256: 2DDCEE0CE8D16EE57C89A175877115495555796D3C1598EB32DC7652CA37204A");
     }
@@ -929,23 +976,29 @@ public class MainTest extends AbstractTest {
     @Test
     public void run_invalidDependencySpec() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts:\n" + "  - coord: org.realityforge.gir\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.gir
+            """);
 
         final String output = runCommand(ExitCodes.ERROR_CONSTRUCTING_MODEL_CODE, "generate");
-        assertOutputContains(
-                output,
-                "The 'coord' property on the dependency must specify 2-5 components separated by the ':' character."
-                        + " The 'coords' must be in one of the forms; 'group:id', 'group:id:version',"
-                        + " 'group:id:type:version' or 'group:id:type:classifier:version'.\n"
-                        + "--- Invalid Config ---\n"
-                        + "coord: org.realityforge.gir\n"
-                        + "--- End Config ---");
+        assertOutputContains(output, """
+            The 'coord' property on the dependency must specify 2-5 components separated by the ':' character.\
+             The 'coords' must be in one of the forms; 'group:id', 'group:id:version',\
+             'group:id:type:version' or 'group:id:type:classifier:version'.
+            --- Invalid Config ---
+            coord: org.realityforge.gir
+            --- End Config ---\
+            """);
     }
 
     @Test
     public void run_invalidYaml() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts: 's\n" + "  - group: org.realityforge.gir\n");
+        writeConfigFile("""
+            artifacts: 's
+              - group: org.realityforge.gir
+            """);
 
         final String output = runCommand(ExitCodes.ERROR_LOADING_CONFIG_CODE, "generate");
         assertOutputContains(output, "Error: Failed to load config file ");
@@ -956,7 +1009,10 @@ public class MainTest extends AbstractTest {
     @Test
     public void run_invalidYamlInVerboseMode() throws Exception {
         writeWorkspace();
-        writeConfigFile("artifacts: 's\n" + "  - group: org.realityforge.gir\n");
+        writeConfigFile("""
+            artifacts: 's
+              - group: org.realityforge.gir
+            """);
 
         final String output = runCommand(ExitCodes.ERROR_LOADING_CONFIG_CODE, "--verbose", "generate");
         assertOutputContains(output, "Error: Failed to load config file ");
@@ -971,11 +1027,12 @@ public class MainTest extends AbstractTest {
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         writeWorkspace();
-        writeConfigFile(
-                dir,
-                "artifacts:\n" + "  - coord: com.example:myapp:jar:1.0\n"
-                        + "    repositories:\n"
-                        + "      - NotExist\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:jar:1.0
+                repositories:
+                  - NotExist
+            """);
 
         final String output = runCommand(ExitCodes.ERROR_CONFIG_VALIDATION_CODE, "--verbose", "generate");
         assertEquals(
@@ -1015,7 +1072,10 @@ public class MainTest extends AbstractTest {
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         writeWorkspace();
-        writeConfigFile(dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final String output = runCommand("print-graph");
         assertEquals(output, "Dependency Graph:\n" + "\\- com.example:myapp:jar:1.0 [compile]");
@@ -1035,16 +1095,17 @@ public class MainTest extends AbstractTest {
         writeConfigFile(FileUtil.createLocalTempDir(), "");
 
         assertTrue(FileUtil.getCurrentDirectory().resolve(".m2").toFile().mkdir());
-        FileUtil.write(
-                ".m2/settings.xml",
-                "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" + "  <servers>\n"
-                        + "    <server>\n"
-                        + "      <id>my-repo</id>\n"
-                        + "      <username>root</username>\n"
-                        + "      <password>secret</password>\n"
-                        + "    </server>\n"
-                        + "  </servers>\n"
-                        + "</settings>\n");
+        FileUtil.write(".m2/settings.xml", """
+            <settings xmlns="http://maven.apache.org/POM/4.0.0">
+              <servers>
+                <server>
+                  <id>my-repo</id>
+                  <username>root</username>
+                  <password>secret</password>
+                </server>
+              </servers>
+            </settings>
+            """);
 
         final String output = runCommand("generate");
         assertOutputContains(output, "");
@@ -1055,16 +1116,17 @@ public class MainTest extends AbstractTest {
         writeWorkspace();
         writeConfigFile(FileUtil.createLocalTempDir(), "");
 
-        FileUtil.write(
-                "some_settings.xml",
-                "<settings xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" + "  <servers>\n"
-                        + "    <server>\n"
-                        + "      <id>my-repo</id>\n"
-                        + "      <username>root</username>\n"
-                        + "      <password>secret</password>\n"
-                        + "    </server>\n"
-                        + "  </servers>\n"
-                        + "</settings>\n");
+        FileUtil.write("some_settings.xml", """
+            <settings xmlns="http://maven.apache.org/POM/4.0.0">
+              <servers>
+                <server>
+                  <id>my-repo</id>
+                  <username>root</username>
+                  <password>secret</password>
+                </server>
+              </servers>
+            </settings>
+            """);
 
         final String output = runCommand("--settings-file", "some_settings.xml", "generate");
         assertOutputContains(output, "");

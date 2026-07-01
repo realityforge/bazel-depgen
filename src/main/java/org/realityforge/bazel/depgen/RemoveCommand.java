@@ -14,8 +14,6 @@ import org.realityforge.bazel.depgen.model.ArtifactModel;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 import org.yaml.snakeyaml.nodes.MappingNode;
-import org.yaml.snakeyaml.nodes.Node;
-import org.yaml.snakeyaml.nodes.SequenceNode;
 
 final class RemoveCommand extends ConfigurableCommand {
     @NonNull
@@ -32,9 +30,9 @@ final class RemoveCommand extends ConfigurableCommand {
 
     @Override
     boolean processArguments(@NonNull final Environment environment, @NonNull final List<CLOption> arguments) {
-        for (final CLOption option : arguments) {
+        for (final var option : arguments) {
             if (CLOption.TEXT_ARGUMENT == option.getId()) {
-                final String argument = option.getArgument();
+                final var argument = option.getArgument();
                 if (null == _coord) {
                     _coord = argument;
                 } else {
@@ -53,13 +51,13 @@ final class RemoveCommand extends ConfigurableCommand {
 
     @Override
     int run(@NonNull final Context context) throws Exception {
-        final Environment environment = context.environment();
-        final Path configFile = environment.getConfigFile();
-        final ApplicationModel model = context.loadModel();
-        final ArtifactModel requestedArtifact = parseArtifact(Objects.requireNonNull(_coord));
-        final ArtifactModel matchedArtifact = findMatchedArtifact(model, requestedArtifact);
+        final var environment = context.environment();
+        final var configFile = environment.getConfigFile();
+        final var model = context.loadModel();
+        final var requestedArtifact = parseArtifact(Objects.requireNonNull(_coord));
+        final var matchedArtifact = findMatchedArtifact(model, requestedArtifact);
 
-        final String candidateContent = removeArtifact(configFile, matchedArtifact);
+        final var candidateContent = removeArtifact(configFile, matchedArtifact);
         DependencyConfigEditor.writeValidatedConfig(configFile, candidateContent);
 
         if (environment.logger().isLoggable(Level.INFO)) {
@@ -77,13 +75,13 @@ final class RemoveCommand extends ConfigurableCommand {
     private ArtifactModel findMatchedArtifact(
             @NonNull final ApplicationModel model, @NonNull final ArtifactModel requestedArtifact) {
         final var matches = new ArrayList<ArtifactModel>();
-        for (final ArtifactModel artifact : model.getArtifacts()) {
+        for (final var artifact : model.getArtifacts()) {
             if (hasSameArtifactKey(requestedArtifact, artifact)) {
                 matches.add(artifact);
             }
         }
 
-        final String key = requestedArtifact.getGroup() + ":" + requestedArtifact.getId();
+        final var key = requestedArtifact.getGroup() + ":" + requestedArtifact.getId();
         if (matches.isEmpty()) {
             throw new DepgenValidationException("Dependency '" + key + "' does not exist in configuration.");
         } else if (matches.size() > 1) {
@@ -97,19 +95,19 @@ final class RemoveCommand extends ConfigurableCommand {
     @NonNull
     private String removeArtifact(@NonNull final Path configFile, @NonNull final ArtifactModel artifact)
             throws IOException {
-        final MappingNode root = DependencyConfigEditor.loadRootMapping(configFile);
-        final SequenceNode artifacts = DependencyConfigEditor.getTopLevelSequence(root, "artifacts", COMMAND);
+        final var root = DependencyConfigEditor.loadRootMapping(configFile);
+        final var artifacts = DependencyConfigEditor.getTopLevelSequence(root, "artifacts", COMMAND);
         if (null == artifacts) {
             throw new DepgenValidationException("Dependency '" + artifact.getGroup() + ":" + artifact.getId()
                     + "' does not exist in configuration.");
         }
 
-        int matchIndex = -1;
-        final List<Node> nodes = artifacts.getValue();
-        for (int i = 0; i < nodes.size(); i++) {
-            final Node node = nodes.get(i);
+        var matchIndex = -1;
+        final var nodes = artifacts.getValue();
+        for (var i = 0; i < nodes.size(); i++) {
+            final var node = nodes.get(i);
             if (node instanceof MappingNode mappingNode) {
-                final String coord = DependencyConfigEditor.scalarMappingValue(mappingNode, "coord");
+                final var coord = DependencyConfigEditor.scalarMappingValue(mappingNode, "coord");
                 if (null != coord && hasSameArtifactKey(artifact, parseArtifact(coord))) {
                     if (-1 != matchIndex) {
                         throw new DepgenValidationException("Dependency '" + artifact.getGroup() + ":"

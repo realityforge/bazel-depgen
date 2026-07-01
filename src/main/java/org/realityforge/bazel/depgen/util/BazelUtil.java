@@ -66,7 +66,6 @@ public final class BazelUtil {
         }
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Nullable
     public static Path getDefaultRepositoryCache() {
         return getDefaultRepositoryCache(DEFAULT_RUNNER);

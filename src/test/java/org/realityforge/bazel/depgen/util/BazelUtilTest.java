@@ -79,10 +79,11 @@ public class BazelUtilTest extends AbstractTest {
 
     @Test
     public void getInfo() {
-        final BazelUtil.BazelInfo info = requireNonNull(BazelUtil.getInfo(
-                FileUtil.getCurrentDirectory().toFile(),
-                (cwd, command) ->
-                        "output_base: /tmp/bazel-output-base\n" + "repository_cache: /tmp/repository-cache\n"));
+        final BazelUtil.BazelInfo info =
+                requireNonNull(BazelUtil.getInfo(FileUtil.getCurrentDirectory().toFile(), (cwd, command) -> """
+                    output_base: /tmp/bazel-output-base
+                    repository_cache: /tmp/repository-cache
+                    """));
         assertEquals(info.getOutputBase(), new File("/tmp/bazel-output-base"));
         assertEquals(info.getRepositoryCache(), Paths.get("/tmp/repository-cache"));
     }
@@ -106,9 +107,11 @@ public class BazelUtilTest extends AbstractTest {
 
     @Test
     public void parseInfo_ignoresNonKeyLines() {
-        final BazelUtil.BazelInfo info = BazelUtil.parseInfo("Starting local Bazel server and connecting to it...\n"
-                + "output_base: /tmp/bazel-output-base\n"
-                + "repository_cache: /tmp/repository-cache\n");
+        final BazelUtil.BazelInfo info = BazelUtil.parseInfo("""
+            Starting local Bazel server and connecting to it...
+            output_base: /tmp/bazel-output-base
+            repository_cache: /tmp/repository-cache
+            """);
         assertEquals(info.getOutputBase(), new File("/tmp/bazel-output-base"));
         assertEquals(info.getRepositoryCache(), Paths.get("/tmp/repository-cache"));
     }

@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -14,7 +15,7 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.jspecify.annotations.Nullable;
+import java.util.zip.ZipEntry;
 
 public final class JavadocJarBuilder {
     private static final long STABLE_TIME = 0L;
@@ -22,7 +23,7 @@ public final class JavadocJarBuilder {
     private JavadocJarBuilder() {}
 
     public static void main(final String[] args) throws Exception {
-        @Nullable Path output = null;
+        Path output = null;
         final var sourceJars = new ArrayList<Path>();
         final var classpath = new ArrayList<Path>();
         for (int i = 0; i < args.length; i++) {
@@ -68,7 +69,7 @@ public final class JavadocJarBuilder {
     private static void extractSources(final Path sourceJar, final Path output) throws IOException {
         try (JarFile jar = new JarFile(sourceJar.toFile())) {
             final var entries = Collections.list(jar.entries());
-            entries.sort((a, b) -> a.getName().compareTo(b.getName()));
+            entries.sort(Comparator.comparing(ZipEntry::getName));
             for (final JarEntry entry : entries) {
                 if (!entry.isDirectory() && entry.getName().endsWith(".java")) {
                     final var target = output.resolve(entry.getName());
@@ -114,8 +115,7 @@ public final class JavadocJarBuilder {
         argLines.add("UTF-8");
         if (!classpath.isEmpty()) {
             argLines.add("-classpath");
-            argLines.add(String.join(
-                    File.pathSeparator, classpath.stream().map(Path::toString).collect(Collectors.toList())));
+            argLines.add(classpath.stream().map(Path::toString).collect(Collectors.joining(File.pathSeparator)));
         }
         sourceFiles.stream().map(Path::toString).forEach(argLines::add);
         Files.write(argsFile, argLines, StandardCharsets.UTF_8);
@@ -137,7 +137,7 @@ public final class JavadocJarBuilder {
         try (JarOutputStream out = new JarOutputStream(Files.newOutputStream(output), new Manifest())) {
             final List<Path> files;
             try (Stream<Path> stream = Files.walk(docs)) {
-                files = stream.filter(Files::isRegularFile).sorted().collect(Collectors.toList());
+                files = stream.filter(Files::isRegularFile).sorted().toList();
             }
             for (final Path file : files) {
                 final var name = docs.relativize(file).toString().replace('\\', '/');
@@ -151,7 +151,7 @@ public final class JavadocJarBuilder {
     }
 
     private static Path javaTool(final String name) throws IOException {
-        @Nullable final String javaHome = System.getProperty("java.home");
+        final String javaHome = System.getProperty("java.home");
         if (javaHome == null) {
             throw new IOException("java.home system property is not set");
         }
@@ -164,7 +164,7 @@ public final class JavadocJarBuilder {
         }
         final List<Path> paths;
         try (Stream<Path> stream = Files.walk(root)) {
-            paths = stream.sorted((a, b) -> b.compareTo(a)).collect(Collectors.toList());
+            paths = stream.sorted(Comparator.reverseOrder()).toList();
         }
         for (final Path path : paths) {
             Files.deleteIfExists(path);

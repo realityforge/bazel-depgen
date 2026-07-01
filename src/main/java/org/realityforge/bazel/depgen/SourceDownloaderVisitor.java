@@ -4,7 +4,6 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
-import org.realityforge.bazel.depgen.model.ArtifactModel;
 
 final class SourceDownloaderVisitor extends PeerArtifactDownloaderVisitor {
     private static final String SOURCES_PRESENT_PROPERTY = "sources.present";
@@ -15,9 +14,9 @@ final class SourceDownloaderVisitor extends PeerArtifactDownloaderVisitor {
 
     @Override
     boolean shouldDownloadPeerArtifact(@NonNull final Artifact artifact) {
-        final ApplicationModel model = getModel();
-        final ArtifactModel artifactModel = model.findArtifact(artifact.getGroupId(), artifact.getArtifactId());
-        final boolean includeSource = model.getOptions().includeSource();
+        final var model = getModel();
+        final var artifactModel = model.findArtifact(artifact.getGroupId(), artifact.getArtifactId());
+        final var includeSource = model.getOptions().includeSource();
         return null == artifactModel ? includeSource : artifactModel.includeSource(includeSource);
     }
 

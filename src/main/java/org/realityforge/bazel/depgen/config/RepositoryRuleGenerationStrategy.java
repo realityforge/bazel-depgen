@@ -1,20 +1,17 @@
 package org.realityforge.bazel.depgen.config;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public enum RepositoryRuleGenerationStrategy {
     ExtensionFile("extensionFile"),
     Module("module");
 
-    @NonNull
     private final String _id;
 
-    RepositoryRuleGenerationStrategy(@NonNull final String id) {
+    RepositoryRuleGenerationStrategy(final String id) {
         _id = id;
     }
 
-    @NonNull
     public String getId() {
         return _id;
     }

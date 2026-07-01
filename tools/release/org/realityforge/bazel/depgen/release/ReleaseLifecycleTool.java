@@ -77,7 +77,7 @@ public final class ReleaseLifecycleTool {
         final String minor = matcher.group(2);
         final int nextMinor = Integer.parseInt(minor) + 1;
         final String nextMinorText = padLeft(Integer.toString(nextMinor), minor.length());
-        @Nullable final String patch = matcher.group(3);
+        final String patch = matcher.group(3);
         return patch == null ? major + "." + nextMinorText : major + "." + nextMinorText + "." + patch;
     }
 
@@ -90,7 +90,7 @@ public final class ReleaseLifecycleTool {
 
     private static void prepare(final PrepareOptions options, final Clock clock) throws IOException {
         validateReleaseVersion(options.version());
-        @Nullable final String requestedReleaseDate = options.releaseDate();
+        final String requestedReleaseDate = options.releaseDate();
         final String releaseDate = requestedReleaseDate == null
                 ? LocalDate.now(clock).toString()
                 : parseReleaseDate(requestedReleaseDate).toString();
@@ -151,7 +151,7 @@ public final class ReleaseLifecycleTool {
             throw new IllegalArgumentException("### Unreleased section is empty");
         }
 
-        @Nullable final String patch = previousRelease.group(3);
+        final String patch = previousRelease.group(3);
         final String previousVersion =
                 previousRelease.group(1) + "." + previousRelease.group(2) + (patch == null ? "" : "." + patch);
         final String heading = "### [v" + version + "](" + REPOSITORY_URL + "/tree/v" + version + ") (" + releaseDate
@@ -213,7 +213,7 @@ public final class ReleaseLifecycleTool {
     }
 
     private static Path parsePathOption(final String[] args, final String name) {
-        @Nullable Path result = null;
+        Path result = null;
         for (int i = 1; i < args.length; i++) {
             switch (args[i]) {
                 case "--changelog":
@@ -233,10 +233,10 @@ public final class ReleaseLifecycleTool {
     }
 
     private static PrepareOptions parsePrepareOptions(final String[] args) {
-        @Nullable Path changelog = null;
-        @Nullable Path readme = null;
-        @Nullable String version = null;
-        @Nullable String releaseDate = null;
+        Path changelog = null;
+        Path readme = null;
+        String version = null;
+        String releaseDate = null;
         for (int i = 1; i < args.length; i++) {
             switch (args[i]) {
                 case "--changelog":
@@ -268,8 +268,8 @@ public final class ReleaseLifecycleTool {
     }
 
     private static ChangelogVersionOptions parseChangelogVersionOptions(final String[] args) {
-        @Nullable Path changelog = null;
-        @Nullable String version = null;
+        Path changelog = null;
+        String version = null;
         for (int i = 1; i < args.length; i++) {
             switch (args[i]) {
                 case "--changelog":
@@ -292,9 +292,9 @@ public final class ReleaseLifecycleTool {
     }
 
     private static ReleaseNotesOptions parseReleaseNotesOptions(final String[] args) {
-        @Nullable Path changelog = null;
-        @Nullable String version = null;
-        @Nullable Path output = null;
+        Path changelog = null;
+        String version = null;
+        Path output = null;
         for (int i = 1; i < args.length; i++) {
             switch (args[i]) {
                 case "--changelog":

@@ -86,7 +86,7 @@ public final class DependencyGraphEmitter implements DependencyVisitor {
         if (null != a) {
             buffer.append(a);
         }
-        if (null != d && d.getScope().length() > 0) {
+        if (null != d && !d.getScope().isEmpty()) {
             buffer.append(" [").append(d.getScope());
             if (d.isOptional()) {
                 buffer.append(", optional");

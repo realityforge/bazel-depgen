@@ -1,13 +1,11 @@
 package org.realityforge.bazel.depgen;
 
 import java.util.Objects;
-import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.collection.DependencyCollectionContext;
 import org.eclipse.aether.collection.DependencySelector;
 import org.eclipse.aether.graph.Dependency;
 import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
-import org.realityforge.bazel.depgen.model.ArtifactModel;
 
 /**
  * This selector is used to exclude optional dependencies unless includeOptional is configured for artifact.
@@ -31,10 +29,10 @@ final class OptionalDependencySelector implements DependencySelector {
         if (null == dependency) {
             return this;
         } else {
-            final Artifact artifact = dependency.getArtifact();
-            final String groupId = artifact.getGroupId();
-            final String artifactId = artifact.getArtifactId();
-            final ArtifactModel model = _model.findArtifact(groupId, artifactId);
+            final var artifact = dependency.getArtifact();
+            final var groupId = artifact.getGroupId();
+            final var artifactId = artifact.getArtifactId();
+            final var model = _model.findArtifact(groupId, artifactId);
             if (!dependency.isOptional() || (null != model && model.includeOptional())) {
                 return this;
             } else {

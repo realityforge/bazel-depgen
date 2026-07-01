@@ -50,11 +50,11 @@ public final class ReleaseLifecycleToolTest {
         final Path directory = Files.createDirectories(root.resolve("prepare"));
         final Path changelog =
                 write(directory.resolve("CHANGELOG.md"), unreleasedChangelog("- Added lifecycle helper.\n"));
-        final Path readme = write(
-                directory.resolve("README.md"),
-                "<version>0.25</version>\n"
-                        + "https://repo.maven.apache.org/maven2/org/realityforge/bazel-depgen/0.25/bazel-depgen.pom\n"
-                        + "bazel-depgen-0.25-all.jar\n");
+        final Path readme = write(directory.resolve("README.md"), """
+            <version>0.25</version>
+            https://repo.maven.apache.org/maven2/org/realityforge/bazel-depgen/0.25/bazel-depgen.pom
+            bazel-depgen-0.25-all.jar
+            """);
 
         final Result result = run(
                 "prepare",
@@ -68,40 +68,53 @@ public final class ReleaseLifecycleToolTest {
                 "2026-06-30");
         assertEquals(0, result.exitCode(), result.err());
 
-        assertEquals(
-                "# Changelog\n\n"
-                        + "### [v0.26](https://github.com/realityforge/bazel-depgen/tree/v0.26) (2026-06-30)"
-                        + " · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.25...v0.26)\n\n"
-                        + "Changes in this release:\n\n"
-                        + "- Added lifecycle helper.\n\n"
-                        + "### [v0.25](https://github.com/realityforge/bazel-depgen/tree/v0.25) (2026-05-01)\n\n"
-                        + "Changes in this release:\n\n"
-                        + "- Previous release.\n",
-                Files.readString(changelog, StandardCharsets.UTF_8),
-                "prepared changelog");
-        assertEquals(
-                "<version>0.26</version>\n"
-                        + "https://repo.maven.apache.org/maven2/org/realityforge/bazel-depgen/0.26/bazel-depgen.pom\n"
-                        + "bazel-depgen-0.26-all.jar\n",
-                Files.readString(readme, StandardCharsets.UTF_8),
-                "updated README");
+        assertEquals("""
+            # Changelog
+
+            ### [v0.26](https://github.com/realityforge/bazel-depgen/tree/v0.26) (2026-06-30)\
+             · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.25...v0.26)
+
+            Changes in this release:
+
+            - Added lifecycle helper.
+
+            ### [v0.25](https://github.com/realityforge/bazel-depgen/tree/v0.25) (2026-05-01)
+
+            Changes in this release:
+
+            - Previous release.
+            """, Files.readString(changelog, StandardCharsets.UTF_8), "prepared changelog");
+        assertEquals("""
+            <version>0.26</version>
+            https://repo.maven.apache.org/maven2/org/realityforge/bazel-depgen/0.26/bazel-depgen.pom
+            bazel-depgen-0.26-all.jar
+            """, Files.readString(readme, StandardCharsets.UTF_8), "updated README");
     }
 
     private static void testFinalizeIsIdempotent(final Path root) throws IOException {
-        final Path changelog = write(
-                root.resolve("finalize.md"),
-                "# Changelog\n\n"
-                        + "### [v0.26](https://github.com/realityforge/bazel-depgen/tree/v0.26) (2026-06-30)\n\n"
-                        + "Changes in this release:\n\n"
-                        + "- Added lifecycle helper.\n");
+        final Path changelog = write(root.resolve("finalize.md"), """
+            # Changelog
+
+            ### [v0.26](https://github.com/realityforge/bazel-depgen/tree/v0.26) (2026-06-30)
+
+            Changes in this release:
+
+            - Added lifecycle helper.
+            """);
 
         final Result first = run("finalize", "--changelog", changelog.toString(), "--version", "0.26");
         assertEquals(0, first.exitCode(), first.err());
-        final String expected = "# Changelog\n\n"
-                + "### Unreleased\n\n"
-                + "### [v0.26](https://github.com/realityforge/bazel-depgen/tree/v0.26) (2026-06-30)\n\n"
-                + "Changes in this release:\n\n"
-                + "- Added lifecycle helper.\n";
+        final String expected = """
+            # Changelog
+
+            ### Unreleased
+
+            ### [v0.26](https://github.com/realityforge/bazel-depgen/tree/v0.26) (2026-06-30)
+
+            Changes in this release:
+
+            - Added lifecycle helper.
+            """;
         assertEquals(expected, Files.readString(changelog, StandardCharsets.UTF_8), "finalized changelog");
 
         final Result second = run("finalize", "--changelog", changelog.toString(), "--version", "0.26");
@@ -110,15 +123,21 @@ public final class ReleaseLifecycleToolTest {
     }
 
     private static void testReleaseNotes(final Path root) throws IOException {
-        final Path changelog = write(
-                root.resolve("release-notes.md"),
-                "# Changelog\n\n"
-                        + "### Unreleased\n\n"
-                        + "### [v0.26](https://github.com/realityforge/bazel-depgen/tree/v0.26) (2026-06-30)\n\n"
-                        + "Changes in this release:\n\n"
-                        + "- Added lifecycle helper.\n\n"
-                        + "### [v0.25](https://github.com/realityforge/bazel-depgen/tree/v0.25) (2026-05-01)\n\n"
-                        + "- Previous release.\n");
+        final Path changelog = write(root.resolve("release-notes.md"), """
+            # Changelog
+
+            ### Unreleased
+
+            ### [v0.26](https://github.com/realityforge/bazel-depgen/tree/v0.26) (2026-06-30)
+
+            Changes in this release:
+
+            - Added lifecycle helper.
+
+            ### [v0.25](https://github.com/realityforge/bazel-depgen/tree/v0.25) (2026-05-01)
+
+            - Previous release.
+            """);
         final Path output = root.resolve("notes.md");
 
         final Result result = run(

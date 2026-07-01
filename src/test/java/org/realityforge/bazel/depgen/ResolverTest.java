@@ -685,8 +685,11 @@ public class ResolverTest extends AbstractTest {
         final Resolver resolver =
                 ResolverUtil.createResolver(newEnvironment(), dir, Collections.emptyList(), true, true);
 
-        writeConfigFile(
-                dir, "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "    excludes: ['com.example:mylib']\n");
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                excludes: ['com.example:mylib']
+            """);
         final ApplicationModel model = loadApplicationModel();
 
         final var hasFailed = new AtomicBoolean(false);

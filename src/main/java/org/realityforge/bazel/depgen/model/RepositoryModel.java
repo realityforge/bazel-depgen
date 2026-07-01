@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.util.Objects;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.config.ChecksumPolicy;
 import org.realityforge.bazel.depgen.config.RepositoryConfig;
@@ -10,14 +9,11 @@ public final class RepositoryModel {
     @Nullable
     private final RepositoryConfig _source;
 
-    @NonNull
     private final String _name;
 
-    @NonNull
     private final String _url;
 
-    @NonNull
-    public static RepositoryModel parse(@NonNull final RepositoryConfig source) {
+    public static RepositoryModel parse(final RepositoryConfig source) {
         final String url = source.getUrl();
         if (null == url) {
             throw new InvalidModelException("The repository must specify the 'url' property.", source);
@@ -29,13 +25,11 @@ public final class RepositoryModel {
         return new RepositoryModel(source, actualName, url);
     }
 
-    @NonNull
-    public static RepositoryModel create(@NonNull final String name, @NonNull final String url) {
+    public static RepositoryModel create(final String name, final String url) {
         return new RepositoryModel(null, name, url);
     }
 
-    private RepositoryModel(
-            @Nullable final RepositoryConfig source, @NonNull final String name, @NonNull final String url) {
+    private RepositoryModel(@Nullable final RepositoryConfig source, final String name, final String url) {
         _source = source;
         _name = Objects.requireNonNull(name);
         _url = Objects.requireNonNull(url);
@@ -46,12 +40,10 @@ public final class RepositoryModel {
         return _source;
     }
 
-    @NonNull
     public String getName() {
         return _name;
     }
 
-    @NonNull
     public String getUrl() {
         return _url;
     }
@@ -66,7 +58,6 @@ public final class RepositoryModel {
         return searchByDefault == null ? true : searchByDefault;
     }
 
-    @NonNull
     public ChecksumPolicy checksumPolicy() {
         final ChecksumPolicy policy = null != _source ? _source.getChecksumPolicy() : null;
         return policy == null ? ChecksumPolicy.fail : policy;

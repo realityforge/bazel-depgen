@@ -14,12 +14,26 @@ public class GeneratedSectionWriterTest extends AbstractTest {
     @Test
     public void replaceSection() throws Exception {
         final Path file = FileUtil.getCurrentDirectory().resolve("MODULE.bazel");
-        FileUtil.write(file, "alpha\n" + "# start\n" + "old\n" + "# end\n" + "omega\n");
+        FileUtil.write(file, """
+            alpha
+            # start
+            old
+            # end
+            omega
+            """);
 
         GeneratedSectionWriter.replaceSection(file, "# start", "# end", "new\ncontent\n");
 
-        assertEquals(
-                readFile(file), "alpha\n" + "# start\n" + "\n" + "new\n" + "content\n" + "\n" + "# end\n" + "omega\n");
+        assertEquals(readFile(file), """
+            alpha
+            # start
+
+            new
+            content
+
+            # end
+            omega
+            """);
     }
 
     @Test
@@ -61,9 +75,13 @@ public class GeneratedSectionWriterTest extends AbstractTest {
         FileUtil.write(file, "package(default_visibility = [\"//visibility:public\"])\n");
 
         assertTrue(GeneratedSectionWriter.ensureSectionExists(file, "# start", "# end"));
-        assertEquals(
-                readFile(file),
-                "package(default_visibility = [\"//visibility:public\"])\n" + "\n" + "# start\n" + "\n" + "# end\n");
+        assertEquals(readFile(file), """
+            package(default_visibility = ["//visibility:public"])
+
+            # start
+
+            # end
+            """);
     }
 
     @Test

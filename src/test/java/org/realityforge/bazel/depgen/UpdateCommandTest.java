@@ -10,9 +10,12 @@ import org.testng.annotations.Test;
 public class UpdateCommandTest extends AbstractTest {
     @Test
     public void update_existingArtifact() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: org.example:old:1.0\n"
-                + "  - coord: com.example:myapp:1.0\n"
-                + "  - coord: com.example:other:jar:sources:2.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.example:old:1.0
+              - coord: com.example:myapp:1.0
+              - coord: com.example:other:jar:sources:2.0
+            """);
 
         final var handler = new TestHandler();
         final var command = new UpdateCommand();
@@ -21,11 +24,12 @@ public class UpdateCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(
-                loadAsString(environment.getConfigFile()),
-                "artifacts:\n" + "  - coord: org.example:old:1.0\n"
-                        + "  - coord: com.example:myapp:2.0\n"
-                        + "  - coord: com.example:other:jar:sources:2.0\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            artifacts:
+              - coord: org.example:old:1.0
+              - coord: com.example:myapp:2.0
+              - coord: com.example:other:jar:sources:2.0
+            """);
         assertOutputContains(
                 handler.toString(),
                 "Updated dependency 'com.example:myapp:jar:1.0' to 'com.example:myapp:jar:2.0' "
@@ -35,7 +39,10 @@ public class UpdateCommandTest extends AbstractTest {
 
     @Test
     public void update_existingArtifactWhenInfoNotLoggable() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
 
         final var handler = new TestHandler();
         final var command = new UpdateCommand();
@@ -45,13 +52,19 @@ public class UpdateCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(loadAsString(environment.getConfigFile()), "artifacts:\n" + "  - coord: com.example:myapp:2.0\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            artifacts:
+              - coord: com.example:myapp:2.0
+            """);
         assertEquals(handler.toString(), "");
     }
 
     @Test
     public void update_unversionedArtifact() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp
+            """);
 
         final var command = new UpdateCommand();
         final Environment environment = newEnvironment();
@@ -59,13 +72,19 @@ public class UpdateCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(loadAsString(environment.getConfigFile()), "artifacts:\n" + "  - coord: com.example:myapp:2.0\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            artifacts:
+              - coord: com.example:myapp:2.0
+            """);
         assertEquals(loadApplicationModel().getArtifacts().get(0).getVersion(), "2.0");
     }
 
     @Test
     public void update_preservesType() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:test-jar:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:test-jar:1.0
+            """);
 
         final var command = new UpdateCommand();
         final Environment environment = newEnvironment();
@@ -73,14 +92,18 @@ public class UpdateCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(
-                loadAsString(environment.getConfigFile()),
-                "artifacts:\n" + "  - coord: com.example:myapp:test-jar:2.0\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            artifacts:
+              - coord: com.example:myapp:test-jar:2.0
+            """);
     }
 
     @Test
     public void update_preservesTypeAndClassifier() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: com.example:myapp:test-jar:sources:1.0\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: com.example:myapp:test-jar:sources:1.0
+            """);
 
         final var command = new UpdateCommand();
         final Environment environment = newEnvironment();
@@ -88,14 +111,19 @@ public class UpdateCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(
-                loadAsString(environment.getConfigFile()),
-                "artifacts:\n" + "  - coord: com.example:myapp:test-jar:sources:2.0\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            artifacts:
+              - coord: com.example:myapp:test-jar:sources:2.0
+            """);
     }
 
     @Test
     public void update_preservesQuotedCoordStyle() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - nameStrategy: ArtifactId\n" + "    coord: \"com.example:myapp:1.0\"\n");
+        writeConfigFile("""
+            artifacts:
+              - nameStrategy: ArtifactId
+                coord: "com.example:myapp:1.0"
+            """);
 
         final var command = new UpdateCommand();
         final Environment environment = newEnvironment();
@@ -103,9 +131,11 @@ public class UpdateCommandTest extends AbstractTest {
 
         final int exitCode = command.run(new CommandContextImpl(environment));
         assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
-        assertEquals(
-                loadAsString(environment.getConfigFile()),
-                "artifacts:\n" + "  - nameStrategy: ArtifactId\n" + "    coord: \"com.example:myapp:2.0\"\n");
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            artifacts:
+              - nameStrategy: ArtifactId
+                coord: "com.example:myapp:2.0"
+            """);
     }
 
     @Test
@@ -127,11 +157,14 @@ public class UpdateCommandTest extends AbstractTest {
 
     @Test
     public void update_preservesUnrelatedComments() throws Exception {
-        writeConfigFile("# Dependencies\n" + "artifacts:\n"
-                + "  # Existing dependency\n"
-                + "  - coord: com.example:myapp:1.0\n"
-                + "  # Keep me\n"
-                + "  - coord: com.example:other:1.0\n");
+        writeConfigFile("""
+            # Dependencies
+            artifacts:
+              # Existing dependency
+              - coord: com.example:myapp:1.0
+              # Keep me
+              - coord: com.example:other:1.0
+            """);
 
         final var command = new UpdateCommand();
         final Environment environment = newEnvironment();
@@ -150,7 +183,10 @@ public class UpdateCommandTest extends AbstractTest {
 
     @Test
     public void update_noMatch() throws Exception {
-        final String original = "artifacts:\n" + "  - coord: com.example:old:1.0\n";
+        final String original = """
+            artifacts:
+              - coord: com.example:old:1.0
+            """;
         writeConfigFile(original);
 
         final var command = new UpdateCommand();
@@ -166,8 +202,11 @@ public class UpdateCommandTest extends AbstractTest {
 
     @Test
     public void update_ambiguousMatch() throws Exception {
-        final String original = "artifacts:\n" + "  - coord: com.example:myapp:1.0\n"
-                + "  - coord: com.example:myapp:jar:sources:1.0\n";
+        final String original = """
+            artifacts:
+              - coord: com.example:myapp:1.0
+              - coord: com.example:myapp:jar:sources:1.0
+            """;
         writeConfigFile(original);
 
         final var command = new UpdateCommand();
@@ -183,7 +222,11 @@ public class UpdateCommandTest extends AbstractTest {
 
     @Test
     public void update_requiresCurrentConfigToLoad() throws Exception {
-        final String original = "artifacts:\n" + "  - coord: com.example:myapp:1.0\n" + "  - natures: [Java]\n";
+        final String original = """
+            artifacts:
+              - coord: com.example:myapp:1.0
+              - natures: [Java]
+            """;
         writeConfigFile(original);
 
         final var command = new UpdateCommand();
@@ -196,7 +239,10 @@ public class UpdateCommandTest extends AbstractTest {
 
     @Test
     public void update_requiresTwoPartCoord() throws Exception {
-        final String original = "artifacts:\n" + "  - coord: com.example:myapp:1.0\n";
+        final String original = """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """;
         writeConfigFile(original);
 
         final var command = new UpdateCommand();
@@ -212,7 +258,10 @@ public class UpdateCommandTest extends AbstractTest {
 
     @Test
     public void update_rejectsColonInVersion() throws Exception {
-        final String original = "artifacts:\n" + "  - coord: com.example:myapp:1.0\n";
+        final String original = """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """;
         writeConfigFile(original);
 
         final var command = new UpdateCommand();

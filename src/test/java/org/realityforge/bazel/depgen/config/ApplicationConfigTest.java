@@ -5,7 +5,6 @@ import static org.testng.Assert.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.testng.annotations.Test;
 
@@ -20,12 +19,15 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseRepositories() throws Exception {
-        writeConfigFile("repositories:\n" + "  - name: central\n"
-                + "    url: http://repo1.maven.org/maven2\n"
-                + "  - url: https://example.com/repo\n"
-                + "    cacheLookups: false\n"
-                + "    searchByDefault: false\n"
-                + "    checksumPolicy: warn\n");
+        writeConfigFile("""
+            repositories:
+              - name: central
+                url: http://repo1.maven.org/maven2
+              - url: https://example.com/repo
+                cacheLookups: false
+                searchByDefault: false
+                checksumPolicy: warn
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         assertEquals(config.getConfigLocation(), getDefaultConfigFile());
@@ -48,11 +50,13 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseConfigWithComments() throws Exception {
-        writeConfigFile("# Configuration comment\n"
-                + "repositories:\n"
-                + "  # Repository comment\n"
-                + "  - name: central\n"
-                + "    url: http://repo1.maven.org/maven2\n");
+        writeConfigFile("""
+            # Configuration comment
+            repositories:
+              # Repository comment
+              - name: central
+                url: http://repo1.maven.org/maven2
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         final List<RepositoryConfig> repositories = requireNonNull(config.getRepositories());
 
@@ -64,7 +68,10 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseDependencyWithCoords() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.gir:gir-core:jar:sources:0.08
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -73,10 +80,12 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseDependencyWithExcludes() throws Exception {
-        writeConfigFile("artifacts:\n"
-                + "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n"
-                + "    excludes: ['org.realityforge.javax.annotation:javax.annotation',"
-                + " 'org.realityforge.braincheck']\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.gir:gir-core:jar:sources:0.08
+                excludes: ['org.realityforge.javax.annotation:javax.annotation',\
+             'org.realityforge.braincheck']
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -90,13 +99,16 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseDependencyWithRepositories() throws Exception {
-        writeConfigFile("repositories:\n" + "  - name: central\n"
-                + "    url: https://repo1.maven.org/maven2\n"
-                + "  - name: example\n"
-                + "    url: https://repo1.example.com/maven2\n"
-                + "artifacts:\n"
-                + "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n"
-                + "    repositories: ['example']\n");
+        writeConfigFile("""
+            repositories:
+              - name: central
+                url: https://repo1.maven.org/maven2
+              - name: example
+                url: https://repo1.example.com/maven2
+            artifacts:
+              - coord: org.realityforge.gir:gir-core:jar:sources:0.08
+                repositories: ['example']
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -106,8 +118,11 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseDependencyWithVisibility() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n"
-                + "    visibility: ['//some/package:__pkg__', '//other/package:__subpackages__']\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.gir:gir-core:jar:sources:0.08
+                visibility: ['//some/package:__pkg__', '//other/package:__subpackages__']
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -121,8 +136,11 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseDependencyWithNatures() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n"
-                + "    natures: [J2cl]\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.gir:gir-core:jar:sources:0.08
+                natures: [J2cl]
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -134,11 +152,14 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseWithJ2clConfig() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: org.realityforge.arez:arez-core:0.138\n"
-                + "    natures: [J2cl]\n"
-                + "    j2cl:\n"
-                + "      suppress: ['checkDebuggerStatement','other']\n"
-                + "      mode: Library\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.arez:arez-core:0.138
+                natures: [J2cl]
+                j2cl:
+                  suppress: ['checkDebuggerStatement','other']
+                  mode: Library
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -153,8 +174,11 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseWithoutJ2clConfig() throws Exception {
-        writeConfigFile(
-                "artifacts:\n" + "  - coord: org.realityforge.arez:arez-core:0.138\n" + "    natures: [J2cl]\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.arez:arez-core:0.138
+                natures: [J2cl]
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -167,8 +191,11 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void artifactWithNameStrategy() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: org.realityforge.arez:arez-core:0.138\n"
-                + "    nameStrategy: ArtifactId\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.arez:arez-core:0.138
+                nameStrategy: ArtifactId
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -178,7 +205,10 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void artifactWithoutNameStrategy() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: org.realityforge.arez:arez-core:0.138\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.arez:arez-core:0.138
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -188,9 +218,12 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void artifactWithRepositoryNamingConfig() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: org.realityforge.arez:arez-core:0.138\n"
-                + "    repositoryNameStrategy: ArtifactId\n"
-                + "    repositoryName: arez_core\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.arez:arez-core:0.138
+                repositoryNameStrategy: ArtifactId
+                repositoryName: arez_core
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -201,8 +234,11 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseDependencyWithIncludeOptional() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n"
-                + "    includeOptional: true\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.gir:gir-core:jar:sources:0.08
+                includeOptional: true
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -212,9 +248,12 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseDependencyWithExportDeps() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n"
-                + "    java:\n"
-                + "      exportDeps: true\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.gir:gir-core:jar:sources:0.08
+                java:
+                  exportDeps: true
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -225,9 +264,12 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void generatesApi() throws Exception {
-        writeConfigFile("artifacts:\n" + "  - coord: org.realityforge.gir:gir-core:jar:sources:0.08\n"
-                + "    plugin:\n"
-                + "      generatesApi: false\n");
+        writeConfigFile("""
+            artifacts:
+              - coord: org.realityforge.gir:gir-core:jar:sources:0.08
+                plugin:
+                  generatesApi: false
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
         final ArtifactConfig artifact = ensureSingleArtifact(config);
@@ -239,29 +281,32 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseOptions() throws Exception {
-        writeConfigFile("options:\n" + "  workspaceDirectory: workspaceDir\n"
-                + "  failOnMissingPom: false\n"
-                + "  failOnInvalidPom: false\n"
-                + "  includeSource: false\n"
-                + "  includeExternalAnnotations: true\n"
-                + "  verifyConfigSha256: false\n"
-                + "  supportDependencyOmit: true\n"
-                + "  emitDependencyGraph: false\n"
-                + "  workspaceMacroName: workspace_rules\n"
-                + "  targetMacroName: gen_targets\n"
-                + "  repositoryRuleGenerationStrategy: module\n"
-                + "  targetGenerationStrategy: build\n"
-                + "  repositoryRuleStartToken: '# rs'\n"
-                + "  repositoryRuleEndToken: '# re'\n"
-                + "  targetStartToken: '# ts'\n"
-                + "  targetEndToken: '# te'\n"
-                + "  namePrefix: magic_\n"
-                + "  nameStrategy: ArtifactId\n"
-                + "  repositoryNameStrategy: ArtifactId\n"
-                + "  defaultNature: J2cl\n"
-                + "  extensionFile: workspaceDir/vendor/workspace.bzl\n"
-                + "  java:\n"
-                + "    exportDeps: true\n");
+        writeConfigFile("""
+            options:
+              workspaceDirectory: workspaceDir
+              failOnMissingPom: false
+              failOnInvalidPom: false
+              includeSource: false
+              includeExternalAnnotations: true
+              verifyConfigSha256: false
+              supportDependencyOmit: true
+              emitDependencyGraph: false
+              workspaceMacroName: workspace_rules
+              targetMacroName: gen_targets
+              repositoryRuleGenerationStrategy: module
+              targetGenerationStrategy: build
+              repositoryRuleStartToken: '# rs'
+              repositoryRuleEndToken: '# re'
+              targetStartToken: '# ts'
+              targetEndToken: '# te'
+              namePrefix: magic_
+              nameStrategy: ArtifactId
+              repositoryNameStrategy: ArtifactId
+              defaultNature: J2cl
+              extensionFile: workspaceDir/vendor/workspace.bzl
+              java:
+                exportDeps: true
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
 
@@ -326,10 +371,13 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseReplacementsDefined() throws Exception {
-        writeConfigFile("replacements:\n" + "  - coord: com.example:myapp\n"
-                + "    targets:\n"
-                + "      - target: \"@com_example//:myapp\"\n"
-                + "        nature: Java\n");
+        writeConfigFile("""
+            replacements:
+              - coord: com.example:myapp
+                targets:
+                  - target: "@com_example//:myapp"
+                    nature: Java
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
 
@@ -359,7 +407,10 @@ public class ApplicationConfigTest extends AbstractTest {
 
     @Test
     public void parseExcludesDefinedUsingCoord() throws Exception {
-        writeConfigFile("excludes:\n" + "  - coord: com.example:myapp\n");
+        writeConfigFile("""
+            excludes:
+              - coord: com.example:myapp
+            """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
 
@@ -370,8 +421,7 @@ public class ApplicationConfigTest extends AbstractTest {
         assertEquals(exclude.getCoord(), "com.example:myapp");
     }
 
-    @NonNull
-    private ArtifactConfig ensureSingleArtifact(@NonNull final ApplicationConfig config) {
+    private ArtifactConfig ensureSingleArtifact(final ApplicationConfig config) {
         final List<ArtifactConfig> artifacts = requireNonNull(config.getArtifacts());
 
         assertEquals(artifacts.size(), 1);

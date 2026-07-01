@@ -1,7 +1,6 @@
 package org.realityforge.bazel.depgen.config;
 
 import java.util.Objects;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public final class PluginConfig {
@@ -16,7 +15,7 @@ public final class PluginConfig {
         return generatesApi;
     }
 
-    public void setGeneratesApi(@NonNull final Boolean generatesApi) {
+    public void setGeneratesApi(final Boolean generatesApi) {
         this.generatesApi = Objects.requireNonNull(generatesApi);
     }
 

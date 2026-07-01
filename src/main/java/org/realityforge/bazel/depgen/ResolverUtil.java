@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
-import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
@@ -27,9 +25,6 @@ import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
 import org.jspecify.annotations.NonNull;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
 import org.realityforge.bazel.depgen.model.ArtifactModel;
-import org.realityforge.bazel.depgen.model.ExcludeModel;
-import org.realityforge.bazel.depgen.model.GlobalExcludeModel;
-import org.realityforge.bazel.depgen.model.OptionsModel;
 import org.realityforge.bazel.depgen.model.RepositoryModel;
 
 final class ResolverUtil {
@@ -41,10 +36,9 @@ final class ResolverUtil {
             @NonNull final Path cacheDir,
             @NonNull final ApplicationModel model,
             @NonNull final Settings settings) {
-        final OptionsModel options = model.getOptions();
-        final List<RemoteRepository> repositories =
-                ResolverUtil.getRemoteRepositories(model.getRepositories(), settings);
-        final List<RemoteRepository> defaultRepositories = ResolverUtil.getRemoteRepositories(
+        final var options = model.getOptions();
+        final var repositories = ResolverUtil.getRemoteRepositories(model.getRepositories(), settings);
+        final var defaultRepositories = ResolverUtil.getRemoteRepositories(
                 model.getRepositories().stream()
                         .filter(RepositoryModel::searchByDefault)
                         .toList(),
@@ -66,8 +60,8 @@ final class ResolverUtil {
             @NonNull final List<RemoteRepository> defaultRepositories,
             final boolean failOnMissingPom,
             final boolean failOnInvalidPom) {
-        final RepositorySystem system = newRepositorySystem(environment);
-        final RepositorySystemSession session =
+        final var system = newRepositorySystem(environment);
+        final var session =
                 newRepositorySystemSession(system, cacheDir, environment, failOnMissingPom, failOnInvalidPom);
         return new Resolver(environment, system, session, repositories, defaultRepositories);
     }
@@ -85,7 +79,7 @@ final class ResolverUtil {
     @NonNull
     private static RepositorySystem newRepositorySystem(@NonNull final Environment environment) {
         // Use the pre-populated DefaultServiceLocator rather than explicitly registering components
-        final DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
+        final var locator = MavenRepositorySystemUtils.newServiceLocator();
         locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
         locator.addService(TransporterFactory.class, FileTransporterFactory.class);
         locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
@@ -104,7 +98,7 @@ final class ResolverUtil {
             }
         });
 
-        final RepositorySystem service = locator.getService(RepositorySystem.class);
+        final var service = locator.getService(RepositorySystem.class);
         if (null == service) {
             throw new DepgenConfigurationException("Unable create RepositorySystem");
         }
@@ -118,7 +112,7 @@ final class ResolverUtil {
             @NonNull final Environment environment,
             final boolean failOnMissingPom,
             final boolean failOnInvalidPom) {
-        final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+        final var session = MavenRepositorySystemUtils.newSession();
 
         final var localRepository = new LocalRepository(cacheDir.toString());
 
@@ -142,10 +136,10 @@ final class ResolverUtil {
             @NonNull final List<RepositoryModel> repositories, @NonNull final Settings settings) {
         final var remoteRepositories = new ArrayList<RemoteRepository>();
 
-        for (final RepositoryModel repository : repositories) {
-            final String name = repository.getName();
+        for (final var repository : repositories) {
+            final var name = repository.getName();
             final var builder = new RemoteRepository.Builder(name, "default", repository.getUrl());
-            final Server server = settings.getServer(name);
+            final var server = settings.getServer(name);
             if (null != server) {
                 final var authentication = new AuthenticationBuilder()
                         .addUsername(server.getUsername())
@@ -163,7 +157,7 @@ final class ResolverUtil {
     @NonNull
     static ArrayList<Exclusion> deriveGlobalExclusions(@NonNull final ApplicationModel model) {
         final var exclusions = new ArrayList<Exclusion>();
-        for (final GlobalExcludeModel exclude : model.getExcludes()) {
+        for (final var exclude : model.getExcludes()) {
             exclusions.add(new Exclusion(exclude.getGroup(), exclude.getId(), "*", "*"));
         }
         return exclusions;
@@ -172,8 +166,8 @@ final class ResolverUtil {
     @NonNull
     static ArrayList<Exclusion> deriveExclusions(@NonNull final ArtifactModel artifactModel) {
         final var exclusions = new ArrayList<Exclusion>();
-        for (final ExcludeModel exclude : artifactModel.getExcludes()) {
-            final String id = exclude.getId();
+        for (final var exclude : artifactModel.getExcludes()) {
+            final var id = exclude.getId();
             exclusions.add(new Exclusion(exclude.getGroup(), null == id ? "*" : id, "*", "*"));
         }
         return exclusions;
