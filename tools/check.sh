@@ -5,9 +5,26 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 cd "${ROOT}"
 COVERAGE_FILTER="^//src/main/java/org/realityforge/bazel/depgen[/:]"
-COVERAGE_REPORT="$(bazel info execution_root)/bazel-out/_coverage/_coverage_report.dat"
+BAZEL_INFO="$(bazel info execution_root output_base)"
+EXECUTION_ROOT=""
+OUTPUT_BASE=""
+while IFS= read -r line; do
+  case "${line}" in
+    "execution_root: "*)
+      EXECUTION_ROOT="${line#execution_root: }"
+      ;;
+    "output_base: "*)
+      OUTPUT_BASE="${line#output_base: }"
+      ;;
+  esac
+done <<< "${BAZEL_INFO}"
+if [[ -z "${EXECUTION_ROOT}" || -z "${OUTPUT_BASE}" ]]; then
+  echo "Unable to determine Bazel execution_root and output_base" >&2
+  exit 1
+fi
+COVERAGE_REPORT="${EXECUTION_ROOT}/bazel-out/_coverage/_coverage_report.dat"
 
-tools/update_java_deps.sh
+BAZEL_OUTPUT_BASE="${OUTPUT_BASE}" tools/update_java_deps.sh
 bazel run //:buildifier_check
 tools/java_format.sh check
 bazel build //...

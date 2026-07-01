@@ -259,7 +259,7 @@ public final class RecordUtilTest extends AbstractTest {
             assertTrue(url.startsWith(repositoryUrl));
             assertTrue(url.endsWith("com/example/myapp/1.0/myapp-1.0.jar"));
         } finally {
-            server.stop(1);
+            server.stop(0);
         }
     }
 
@@ -299,7 +299,7 @@ public final class RecordUtilTest extends AbstractTest {
             assertTrue(url.startsWith(repositoryUrlSansAuth));
             assertTrue(url.endsWith("com/example/myapp/1.0/myapp-1.0.jar"));
         } finally {
-            server.stop(1);
+            server.stop(0);
         }
     }
 
@@ -328,7 +328,7 @@ public final class RecordUtilTest extends AbstractTest {
                     record.getAuthenticationContexts());
             assertNull(url);
         } finally {
-            server.stop(1);
+            server.stop(0);
         }
     }
 

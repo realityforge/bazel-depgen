@@ -11,6 +11,7 @@
 * Move from Buildr to Bazel build system.
 * Move `BazelUtil` command parsing tests out of the real Bazel integration target to keep the default Java test suite fast while preserving real Bazel coverage.
 * Avoid running the main Java test suite twice in `tools/check.sh`; coverage now owns that suite while the normal test pass covers the remaining Bazel targets.
+* Reuse one `bazel info` result across `tools/check.sh` and dependency sync to avoid an extra Bazel startup during validation.
 * Split the slow CLI, record, and metadata TestNG targets into smaller class-level targets for better Bazel parallelism.
 * Upgrade SnakeYAML to `2.6` and omit Java module descriptors from the executable all-jar merge.
 * Remove the legacy Travis CI configuration now that repository verification is driven by Bazel scripts.

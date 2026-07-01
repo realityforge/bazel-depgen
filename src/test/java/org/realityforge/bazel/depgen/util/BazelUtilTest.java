@@ -66,9 +66,15 @@ public class BazelUtilTest extends AbstractTest {
 
     @Test
     public void getDefaultRepositoryCache() {
-        final Path repositoryCache = requireNonNull(
-                BazelUtil.getDefaultRepositoryCache((cwd, command) -> "/tmp/default-repository-cache\n"));
+        final var invocations = new AtomicInteger();
+        final Path repositoryCache = requireNonNull(BazelUtil.getDefaultRepositoryCache((cwd, command) -> {
+            assertTrue(new File(cwd, "WORKSPACE").isFile());
+            assertEquals(command, List.of("bazel", "info", "repository_cache"));
+            invocations.incrementAndGet();
+            return "/tmp/default-repository-cache\n";
+        }));
         assertEquals(repositoryCache, Paths.get("/tmp/default-repository-cache"));
+        assertEquals(invocations.get(), 1);
     }
 
     @Test

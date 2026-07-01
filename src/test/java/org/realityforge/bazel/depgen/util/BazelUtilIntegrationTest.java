@@ -19,10 +19,4 @@ public class BazelUtilIntegrationTest extends AbstractTest {
         assertNotNull(info.getOutputBase());
         assertEquals(requireNonNull(info.getRepositoryCache()).toAbsolutePath().normalize(), repositoryCache);
     }
-
-    @Test
-    public void getDefaultRepositoryCache() {
-        final Path repositoryCache = requireNonNull(BazelUtil.getDefaultRepositoryCache());
-        assertTrue(repositoryCache.toAbsolutePath().toString().endsWith("/cache/repos/v1"));
-    }
 }

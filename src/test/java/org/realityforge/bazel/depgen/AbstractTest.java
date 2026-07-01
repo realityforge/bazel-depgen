@@ -10,16 +10,20 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
+import java.util.HexFormat;
 import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.DependencyResolutionException;
@@ -50,7 +54,6 @@ public abstract class AbstractTest implements IHookable {
         System.setProperty(DepGenConfig.PROPERTY_KEY, "1");
         try {
             Gir.go(() -> FileUtil.inTempDir(() -> {
-                writeBazelrc();
                 callBack.runTestMethod(testResult);
             }));
         } catch (final Exception e) {
@@ -142,10 +145,6 @@ public abstract class AbstractTest implements IHookable {
     @NonNull
     protected final ApplicationConfig loadApplicationConfig() throws Exception {
         return ApplicationConfig.load(getDefaultConfigFile());
-    }
-
-    private void writeBazelrc() throws IOException {
-        writeBazelrc(FileUtil.createLocalTempDir());
     }
 
     protected final void writeBazelrc(@NonNull final Path repositoryCache) throws IOException {
@@ -318,17 +317,40 @@ public abstract class AbstractTest implements IHookable {
             @NonNull final Path file,
             @NonNull final Path pomFile)
             throws Exception {
-        final var pomArtifact = new SubArtifact(new DefaultArtifact(coords), "", "pom");
+        final var artifact = new DefaultArtifact(coords);
+        copyArtifactToLocalRepository(localRepository, artifact, file);
+        copyArtifactToLocalRepository(localRepository, new SubArtifact(artifact, "", "pom"), pomFile);
+    }
 
-        final Resolver resolver = createResolver(localRepository);
+    private void copyArtifactToLocalRepository(
+            @NonNull final Path localRepository, @NonNull final Artifact artifact, @NonNull final Path file)
+            throws IOException {
+        final Path artifactFile = localRepository.resolve(ArtifactUtil.artifactToPath(artifact));
+        Files.createDirectories(artifactFile.getParent());
+        Files.copy(file, artifactFile, StandardCopyOption.REPLACE_EXISTING);
+        writeChecksums(artifactFile);
+    }
 
-        final var request = new DeployRequest()
-                .addArtifact(new DefaultArtifact(coords).setFile(file.toFile()))
-                .addArtifact(pomArtifact.setFile(pomFile.toFile()))
-                .setRepository(new RemoteRepository.Builder(
-                                "local", "default", localRepository.toUri().toString())
-                        .build());
-        resolver.getSystem().deploy(resolver.getSession(), request);
+    private void writeChecksums(@NonNull final Path file) throws IOException {
+        final byte[] contents = Files.readAllBytes(file);
+        writeChecksum(file, contents, "MD5", ".md5");
+        writeChecksum(file, contents, "SHA-1", ".sha1");
+    }
+
+    private void writeChecksum(
+            @NonNull final Path file,
+            final byte[] contents,
+            @NonNull final String algorithm,
+            @NonNull final String suffix)
+            throws IOException {
+        try {
+            final byte[] digest = MessageDigest.getInstance(algorithm).digest(contents);
+            Files.write(
+                    file.resolveSibling(file.getFileName() + suffix),
+                    HexFormat.of().formatHex(digest).getBytes(StandardCharsets.UTF_8));
+        } catch (final NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Missing digest algorithm " + algorithm, e);
+        }
     }
 
     @NonNull
