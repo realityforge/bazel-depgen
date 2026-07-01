@@ -1,0 +1,171 @@
+meta:
+  project: bazel-depgen
+  initiative: missing-source-dependency-trace
+  plan_status: accepted
+  last_updated: 2026-07-01
+  required_full_gates:
+    - tools/check.sh
+  statuses:
+    - pending
+    - in_progress
+    - completed
+    - cancelled
+
+current_focus: null
+
+tasks:
+  - id: PLAN-APPROVAL
+    title: Review and accept missing-source dependency trace plan
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - User has reviewed the latest requirements, implementation plan, and task board.
+      - User feedback has been incorporated into planning artifacts.
+      - No Open Questions Register entries remain open.
+      - plan_status is changed to accepted only after review is complete.
+    files_touched:
+      - plans/missing-source-dependency-trace/00-requirements.md
+      - plans/missing-source-dependency-trace/10-implementation-plan.md
+      - plans/missing-source-dependency-trace/20-task-board.yaml
+    evidence:
+      - command: user approval
+        result: User approved the reviewed plan by requesting implementation in a subagent.
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: T01
+    title: Preserve and expose dependency graph node formatting
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-APPROVAL
+    acceptance_criteria:
+      - Dependency graph node formatting is reusable by validation diagnostics.
+      - Existing `DependencyGraphEmitter` output remains unchanged.
+      - A diagnostic or formatter test proves model-aware decorations are preserved.
+      - No new Bazel `glob()` usage is introduced.
+    files_touched:
+      - src/main/java/org/realityforge/bazel/depgen/DependencyGraphEmitter.java
+      - src/test/java/org/realityforge/bazel/depgen/DependencyGraphEmitterTest.java
+      - src/test/java/org/realityforge/bazel/depgen/PrintGraphCommandTest.java
+    evidence:
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen:core_tests
+        result: PASSED in 1.2s; existing dependency graph formatter tests remained stable after exposing shared node formatting.
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen:command_output_tests
+        result: PASSED in 1.3s; print-graph output remained stable.
+    commit:
+      hash: pending
+      message: Add missing-source dependency paths
+
+  - id: T02
+    title: Compute shortest dependency path for artifact records
+    status: completed
+    priority: high
+    depends_on:
+      - T01
+    acceptance_criteria:
+      - "`ApplicationRecord` can derive a root-to-artifact path for a failing `ArtifactRecord`."
+      - Path matching uses the artifact record's resolved `DependencyNode`.
+      - Multiple roots choose the shortest path.
+      - Path roots exclude automatic system artifacts.
+    files_touched:
+      - src/main/java/org/realityforge/bazel/depgen/record/ApplicationRecord.java
+      - src/test/java/org/realityforge/bazel/depgen/record/ApplicationRecordTest.java
+    evidence:
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen/record:application_record_tests
+        result: PASSED in 4.5s; direct, non-system-root, shortest transitive, and replacement-decorated path diagnostics passed.
+      - command: tools/check.sh
+        result: PASSED; coverage run included //src/test/java/org/realityforge/bazel/depgen/record:application_record_tests.
+    commit:
+      hash: pending
+      message: Add missing-source dependency paths
+
+  - id: T03
+    title: Append dependency path to missing-source validation errors
+    status: completed
+    priority: high
+    depends_on:
+      - T02
+    acceptance_criteria:
+      - Direct missing-source errors include the existing message plus a one-node path block.
+      - Transitive missing-source errors include the existing message plus a root-to-failing-artifact path block.
+      - J2CL required-source errors include the existing message plus a path block.
+      - Full expected error text is asserted in tests.
+    files_touched:
+      - src/main/java/org/realityforge/bazel/depgen/record/ArtifactRecord.java
+      - src/test/java/org/realityforge/bazel/depgen/record/ApplicationRecordTest.java
+    evidence:
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen/record:application_record_tests
+        result: PASSED in 4.5s; generic direct, generic transitive, J2CL required-source, and repository searchByDefault missing-source messages asserted full text.
+      - command: tools/check.sh
+        result: PASSED; coverage run included the updated missing-source validation tests.
+    commit:
+      hash: pending
+      message: Add missing-source dependency paths
+
+  - id: T04
+    title: Update release notes, TODOs, and run gates
+    status: completed
+    priority: medium
+    depends_on:
+      - T03
+    acceptance_criteria:
+      - "`CHANGELOG.md` has an `Unreleased` entry for the diagnostic improvement."
+      - The resolved missing-source trace item is removed or revised in `TODO.md`.
+      - Targeted Bazel tests pass.
+      - "`bazel test //src/test/java/org/realityforge/bazel/depgen:command_output_tests` passes."
+      - "`tools/check.sh` passes."
+    files_touched:
+      - CHANGELOG.md
+      - TODO.md
+      - plans/missing-source-dependency-trace/20-task-board.yaml
+    evidence:
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen:core_tests
+        result: PASSED in 1.2s.
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen:command_output_tests
+        result: PASSED in 1.3s.
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen/record:application_record_tests
+        result: PASSED in 4.5s.
+      - command: tools/java_format.sh write
+        result: Applied repository formatting after the first full gate stopped at Java format check.
+      - command: tools/check.sh
+        result: PASSED; build, tests, coverage, buildifier, and Java format gates completed successfully.
+    commit:
+      hash: pending
+      message: Add missing-source dependency paths
+
+history:
+  - timestamp: 2026-07-01
+    task: PLAN-APPROVAL
+    commit: not_required
+    note: Draft planning artifacts created; awaiting user review before acceptance or implementation.
+  - timestamp: 2026-07-01
+    task: PLAN-APPROVAL
+    commit: not_required
+    note: Iterative plan review round 1 findings accepted; plan updated for system roots, J2CL source failures, formatter-contract tests, and command output gates.
+  - timestamp: 2026-07-01
+    task: PLAN-APPROVAL
+    commit: not_required
+    note: Iterative plan review round 2 reported no actionable findings; plan remains draft pending user approval.
+  - timestamp: 2026-07-01
+    task: PLAN-APPROVAL
+    commit: not_required
+    note: User requested implementation in a subagent; plan marked accepted and current focus moved to T01.
+  - timestamp: 2026-07-01
+    task: T01
+    commit: pending
+    note: Exposed DependencyGraphEmitter node formatting through a shared static method while preserving print-graph and generated graph output.
+  - timestamp: 2026-07-01
+    task: T02
+    commit: pending
+    note: Added identity-based breadth-first dependency path discovery from non-system resolved roots.
+  - timestamp: 2026-07-01
+    task: T03
+    commit: pending
+    note: Appended compact dependency path blocks to generic includeSource and J2CL required-source validation errors with full-message tests.
+  - timestamp: 2026-07-01
+    task: T04
+    commit: pending
+    note: Updated CHANGELOG.md and TODO.md, applied Java formatting after an initial format gate failure, and reran tools/check.sh successfully.

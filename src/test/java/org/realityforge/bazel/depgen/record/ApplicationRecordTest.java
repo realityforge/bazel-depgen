@@ -334,6 +334,58 @@ public class ApplicationRecordTest extends AbstractTest {
     }
 
     @Test
+    public void build_missingDirectSourceReportsDependencyPathFromNonSystemRoot() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final DepgenValidationException exception =
+                expectThrows(DepgenValidationException.class, this::loadApplicationRecord);
+
+        assertEquals(exception.getMessage(), """
+            Unable to locate source for artifact 'com.example:myapp:jar:1.0'. Specify the 'includeSource' configuration property as 'false' in the artifacts configuration.
+
+            Dependency path:
+              com.example:myapp:jar:1.0 [compile]\
+            """);
+    }
+
+    @Test
+    public void build_missingTransitiveSourceReportsShortestDependencyPath() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+              - coord: com.example:altapp:1.0
+            replacements:
+              - coord: com.example:base
+                targets:
+                  - target: "@vendor//:base"
+                    nature: J2cl
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "com.example:mylib:1.0");
+        deployArtifactToLocalRepository(dir, "com.example:mylib:1.0", "com.example:base:1.0");
+        deployArtifactToLocalRepository(dir, "com.example:altapp:1.0", "com.example:base:1.0");
+        deployTempArtifactToLocalRepository(dir, "com.example:base:1.0");
+
+        final DepgenValidationException exception =
+                expectThrows(DepgenValidationException.class, this::loadApplicationRecord);
+
+        assertEquals(exception.getMessage(), """
+            Unable to locate source for artifact 'com.example:base:jar:1.0'. Specify the 'includeSource' configuration property as 'false' in the artifacts configuration.
+
+            Dependency path:
+              com.example:altapp:jar:1.0 [compile]
+              -> com.example:base:jar:1.0 [compile] TARGET OVERRIDES @vendor//:base (J2cl)\
+            """);
+    }
+
+    @Test
     public void build_namePrefixPresent() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
@@ -1918,7 +1970,9 @@ public class ApplicationRecordTest extends AbstractTest {
         assertEquals(
                 exception.getMessage(),
                 "Unable to locate the sources classifier artifact for the artifact 'com.example.app1:core:jar:42.0'"
-                        + " but the artifact has the J2cl nature which requires that sources be present.");
+                        + " but the artifact has the J2cl nature which requires that sources be present.\n\n"
+                        + "Dependency path:\n"
+                        + "  com.example.app1:core:jar:42.0 [compile]");
     }
 
     @Test
@@ -4850,7 +4904,9 @@ public class ApplicationRecordTest extends AbstractTest {
         assertEquals(
                 exception.getMessage(),
                 "Unable to locate source for artifact 'com.example:myapp:jar:1.0'. Specify the "
-                        + "'includeSource' configuration property as 'false' in the artifacts configuration.");
+                        + "'includeSource' configuration property as 'false' in the artifacts configuration.\n\n"
+                        + "Dependency path:\n"
+                        + "  com.example:myapp:jar:1.0 [compile]");
     }
 
     @Test

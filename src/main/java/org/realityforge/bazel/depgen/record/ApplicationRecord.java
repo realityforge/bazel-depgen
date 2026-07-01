@@ -2,11 +2,14 @@ package org.realityforge.bazel.depgen.record;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +19,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.AuthenticationContext;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
@@ -213,6 +217,60 @@ public final class ApplicationRecord {
         return _artifacts.values().stream()
                 .sorted(Comparator.comparing(ArtifactRecord::getKey))
                 .collect(Collectors.toList());
+    }
+
+    @NonNull
+    String formatDependencyPathTo(@NonNull final ArtifactRecord artifact) {
+        final List<DependencyNode> path = getDependencyPathTo(artifact);
+        final var buffer = new StringBuilder(128);
+        buffer.append("Dependency path:");
+        for (int i = 0; i < path.size(); i++) {
+            buffer.append("\n  ");
+            if (0 != i) {
+                buffer.append("-> ");
+            }
+            buffer.append(DependencyGraphEmitter.formatNode(_source, path.get(i)));
+        }
+        return buffer.toString();
+    }
+
+    @NonNull
+    List<DependencyNode> getDependencyPathTo(@NonNull final ArtifactRecord artifact) {
+        Objects.requireNonNull(artifact);
+        final DependencyNode target = artifact.getNode();
+        final var visited = Collections.newSetFromMap(new IdentityHashMap<DependencyNode, Boolean>());
+        final var queue = new ArrayDeque<List<DependencyNode>>();
+        for (final DependencyNode child : getNode().getChildren()) {
+            if (!isSystemArtifact(child) && visited.add(child)) {
+                queue.add(Collections.singletonList(child));
+            }
+        }
+        while (!queue.isEmpty()) {
+            final List<DependencyNode> path = queue.remove();
+            final DependencyNode node = path.get(path.size() - 1);
+            if (node == target) {
+                return path;
+            }
+            for (final DependencyNode child : node.getChildren()) {
+                if (visited.add(child)) {
+                    final var childPath = new ArrayList<>(path);
+                    childPath.add(child);
+                    queue.add(childPath);
+                }
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    private boolean isSystemArtifact(@NonNull final DependencyNode node) {
+        final var dependency = node.getDependency();
+        if (null != dependency) {
+            final var artifact = dependency.getArtifact();
+            return _source.isSystemArtifact(artifact.getGroupId(), artifact.getArtifactId());
+        } else {
+            final var artifact = node.getArtifact();
+            return null != artifact && _source.isSystemArtifact(artifact.getGroupId(), artifact.getArtifactId());
+        }
     }
 
     /**

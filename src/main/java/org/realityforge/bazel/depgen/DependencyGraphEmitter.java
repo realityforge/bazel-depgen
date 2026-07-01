@@ -44,7 +44,7 @@ public final class DependencyGraphEmitter implements DependencyVisitor {
         if (isSystemArtifact(node)) {
             return false;
         } else {
-            final String line = formatIndentation() + formatNode(node);
+            final String line = formatIndentation() + formatNode(_model, node);
             if (!line.isEmpty()) {
                 _emitter.emitLine(line);
             }
@@ -79,7 +79,9 @@ public final class DependencyGraphEmitter implements DependencyVisitor {
     }
 
     @NonNull
-    private String formatNode(@NonNull final DependencyNode node) {
+    public static String formatNode(@NonNull final ApplicationModel model, @NonNull final DependencyNode node) {
+        Objects.requireNonNull(model);
+        Objects.requireNonNull(node);
         final var buffer = new StringBuilder(128);
         final Artifact a = node.getArtifact();
         final Dependency d = node.getDependency();
@@ -118,7 +120,7 @@ public final class DependencyGraphEmitter implements DependencyVisitor {
             buffer.append(")");
         }
         final ReplacementModel replacementModel = null != d
-                ? _model.findReplacement(
+                ? model.findReplacement(
                         d.getArtifact().getGroupId(), d.getArtifact().getArtifactId())
                 : null;
         if (null != replacementModel) {

@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Include a concise dependency path in missing-source diagnostics so transitive artifacts are easier to trace.
 * Remove the `guiceyloops` dependency from the Bazel test dependency graph.
 * Prune unused transitive Java dependencies from the generated Bazel dependency graph.
 * Add a GitHub Actions CI workflow that runs the full `tools/check.sh` verification gate.

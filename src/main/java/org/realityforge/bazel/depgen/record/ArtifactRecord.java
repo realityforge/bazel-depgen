@@ -176,14 +176,18 @@ public final class ArtifactRecord {
             if (null == _sourceSha256) {
                 final var message =
                         "Unable to locate the sources classifier artifact for the artifact '" + getArtifact()
-                                + "' but the artifact has the J2cl nature which requires that sources be present.";
+                                + "' but the artifact has the J2cl nature which requires that sources be present."
+                                + "\n\n"
+                                + _application.formatDependencyPathTo(this);
                 throw new DepgenValidationException(message);
             }
         }
         if (null == _sourceSha256 && shouldIncludeSource() && emitsTargets()) {
             final var message =
                     "Unable to locate source for artifact '" + getArtifact() + "'. Specify the 'includeSource' "
-                            + "configuration property as 'false' in the artifacts configuration.";
+                            + "configuration property as 'false' in the artifacts configuration."
+                            + "\n\n"
+                            + _application.formatDependencyPathTo(this);
             throw new DepgenValidationException(message);
         }
     }
