@@ -56,8 +56,8 @@ tasks:
       - command: bazel test //src/test/java/org/realityforge/bazel/depgen:command_output_tests
         result: PASSED in 1.3s; print-graph output remained stable.
     commit:
-      hash: pending
-      message: Add missing-source dependency paths
+      hash: 0c3ffdab0bb5682400a4b976c2195e78326599ad
+      message: "fix(record): add dependency paths to source errors"
 
   - id: T02
     title: Compute shortest dependency path for artifact records
@@ -79,8 +79,8 @@ tasks:
       - command: tools/check.sh
         result: PASSED; coverage run included //src/test/java/org/realityforge/bazel/depgen/record:application_record_tests.
     commit:
-      hash: pending
-      message: Add missing-source dependency paths
+      hash: 0c3ffdab0bb5682400a4b976c2195e78326599ad
+      message: "fix(record): add dependency paths to source errors"
 
   - id: T03
     title: Append dependency path to missing-source validation errors
@@ -102,8 +102,8 @@ tasks:
       - command: tools/check.sh
         result: PASSED; coverage run included the updated missing-source validation tests.
     commit:
-      hash: pending
-      message: Add missing-source dependency paths
+      hash: 0c3ffdab0bb5682400a4b976c2195e78326599ad
+      message: "fix(record): add dependency paths to source errors"
 
   - id: T04
     title: Update release notes, TODOs, and run gates
@@ -133,8 +133,8 @@ tasks:
       - command: tools/check.sh
         result: PASSED; build, tests, coverage, buildifier, and Java format gates completed successfully.
     commit:
-      hash: pending
-      message: Add missing-source dependency paths
+      hash: 0c3ffdab0bb5682400a4b976c2195e78326599ad
+      message: "fix(record): add dependency paths to source errors"
 
 history:
   - timestamp: 2026-07-01
@@ -148,24 +148,28 @@ history:
   - timestamp: 2026-07-01
     task: PLAN-APPROVAL
     commit: not_required
-    note: Iterative plan review round 2 reported no actionable findings; plan remains draft pending user approval.
+    note: Iterative plan review round 2 reported no actionable findings during draft review.
   - timestamp: 2026-07-01
     task: PLAN-APPROVAL
     commit: not_required
     note: User requested implementation in a subagent; plan marked accepted and current focus moved to T01.
   - timestamp: 2026-07-01
     task: T01
-    commit: pending
+    commit: 0c3ffdab0bb5682400a4b976c2195e78326599ad
     note: Exposed DependencyGraphEmitter node formatting through a shared static method while preserving print-graph and generated graph output.
   - timestamp: 2026-07-01
     task: T02
-    commit: pending
+    commit: 0c3ffdab0bb5682400a4b976c2195e78326599ad
     note: Added identity-based breadth-first dependency path discovery from non-system resolved roots.
   - timestamp: 2026-07-01
     task: T03
-    commit: pending
+    commit: 0c3ffdab0bb5682400a4b976c2195e78326599ad
     note: Appended compact dependency path blocks to generic includeSource and J2CL required-source validation errors with full-message tests.
   - timestamp: 2026-07-01
     task: T04
-    commit: pending
+    commit: 0c3ffdab0bb5682400a4b976c2195e78326599ad
     note: Updated CHANGELOG.md and TODO.md, applied Java formatting after an initial format gate failure, and reran tools/check.sh successfully.
+  - timestamp: 2026-07-01
+    task: T04
+    commit: not_required
+    note: Recorded implementation commit metadata after the subagent completed the implementation commit.
