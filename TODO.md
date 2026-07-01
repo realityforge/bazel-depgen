@@ -22,8 +22,6 @@ complete as there is too much un-said.
 
 * If the j2cl artifact already has -j2cl suffix ... then don't add another?
 
-* order omits based on omit key rather than underlying artifact key
-
 * Multiple artifact classifiers from a single coordinate
   - can I get the `test-sources` classifier when also getting the `jar` classifier?
 
