@@ -165,7 +165,7 @@ public class MainTest extends AbstractTest {
         environment.setConfigFile(null);
         environment.logger().setLevel(Level.INFO);
         final int exitCode = Main.run(environment, "--directory", dir.toString(), "info", "config-file");
-        assertEquals(ExitCodes.SUCCESS_EXIT_CODE, exitCode);
+        assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
         assertEquals(environment.currentDirectory(), dir);
         assertEquals(handler.toString(), "config-file=" + configFile);
     }
