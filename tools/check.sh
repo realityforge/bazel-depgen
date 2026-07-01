@@ -11,6 +11,10 @@ tools/update_java_deps.sh
 bazel run //:buildifier_check
 tools/java_format.sh check
 bazel build //...
+
+# The main Java suite is exercised by the coverage run below. Keep this normal
+# test pass limited to targets outside that aggregate so check.sh preserves full
+# test coverage without running the main suite twice.
 bazel test \
   //third_party/java:verify_config_sha256 \
   //tools/release/org/realityforge/bazel/depgen/release:all_jar_integration_test \
