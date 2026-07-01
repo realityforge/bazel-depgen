@@ -2,7 +2,6 @@
 
 ### Unreleased
 
-* Split the Bazel TestNG suite into smaller targets that can run in parallel and cache independently.
 * Enable strict Error Prone checks.
 * Migrate source nullness annotations from `javax.annotation` to JSpecify and enforce NullAway in Bazel builds.
 * Add a coverage threshold check to the standard Bazel verification script.
