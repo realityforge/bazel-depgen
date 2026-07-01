@@ -640,7 +640,7 @@ public class MainTest extends AbstractTest {
 
         final Path metadataCache = cacheDir.resolve("com/example/myapp/1.0").resolve(DepgenMetadata.FILENAME);
         Files.createDirectories(metadataCache.getParent());
-        Files.write(metadataCache, ("<default>.local.url=badUrl\n").getBytes(StandardCharsets.ISO_8859_1));
+        Files.writeString(metadataCache, "<default>.local.url=badUrl\n", StandardCharsets.ISO_8859_1);
 
         Main.loadRecord(environment);
         assertOutputContains(

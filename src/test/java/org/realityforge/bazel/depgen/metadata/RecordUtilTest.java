@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -367,7 +366,7 @@ public final class RecordUtilTest extends AbstractTest {
                 + "  </servers>\n"
                 + "</settings>\n";
         final Path settingsFile = FileUtil.getCurrentDirectory().resolve("settings.xml");
-        Files.write(settingsFile, settingsContent.getBytes(StandardCharsets.UTF_8));
+        Files.writeString(settingsFile, settingsContent);
     }
 
     private void serveFilePath(@NonNull final Path baseDirectory, @NonNull final HttpExchange httpExchange)

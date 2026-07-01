@@ -145,7 +145,7 @@ public class InitCommandTest extends AbstractTest {
         final Path configDirectory = requireNonNull(environment.getConfigFile().getParent());
         final Path workspaceFile = environment.currentDirectory().resolve("WORKSPACE");
 
-        Files.write(workspaceFile, "# This is a comment".getBytes(StandardCharsets.UTF_8));
+        Files.writeString(workspaceFile, "# This is a comment");
 
         deployDepGenArtifactToCacheDir(environment.getCacheDir());
 

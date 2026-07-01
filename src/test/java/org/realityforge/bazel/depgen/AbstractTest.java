@@ -345,9 +345,9 @@ public abstract class AbstractTest implements IHookable {
             throws IOException {
         try {
             final byte[] digest = MessageDigest.getInstance(algorithm).digest(contents);
-            Files.write(
+            Files.writeString(
                     file.resolveSibling(file.getFileName() + suffix),
-                    HexFormat.of().formatHex(digest).getBytes(StandardCharsets.UTF_8));
+                    HexFormat.of().formatHex(digest));
         } catch (final NoSuchAlgorithmException e) {
             throw new IllegalStateException("Missing digest algorithm " + algorithm, e);
         }
@@ -366,7 +366,7 @@ public abstract class AbstractTest implements IHookable {
 
     @NonNull
     final String loadAsString(@NonNull final Path file) throws IOException {
-        return new String(Files.readAllBytes(file), StandardCharsets.ISO_8859_1);
+        return Files.readString(file, StandardCharsets.ISO_8859_1);
     }
 
     @NonNull

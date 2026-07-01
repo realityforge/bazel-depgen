@@ -5,7 +5,6 @@ import static org.testng.Assert.*;
 import gir.io.FileUtil;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -392,7 +391,7 @@ public class ApplicationRecordTest extends AbstractTest {
               </servers>
             </settings>
             """;
-        Files.write(settingsFile, settingsContent.getBytes(StandardCharsets.UTF_8));
+        Files.writeString(settingsFile, settingsContent);
 
         final Path dir = FileUtil.createLocalTempDir();
 

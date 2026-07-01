@@ -241,7 +241,7 @@ public class StarlarkOutputTest extends AbstractTest {
     }
 
     private void assertFileContent(@NonNull final Path file, @NonNull final String expected) throws Exception {
-        final var content = new String(Files.readAllBytes(file), StandardCharsets.US_ASCII);
+        final var content = Files.readString(file, StandardCharsets.US_ASCII);
         assertEquals(content, expected);
     }
 }

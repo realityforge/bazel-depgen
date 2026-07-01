@@ -77,7 +77,7 @@ public final class DepgenMetadataTest extends AbstractTest {
         // Artifact does not exist so must be getting it from cache
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
-        Files.write(file, "<default>.sha256=ABCD\n".getBytes(StandardCharsets.ISO_8859_1));
+        Files.writeString(file, "<default>.sha256=ABCD\n", StandardCharsets.ISO_8859_1);
 
         final DepgenMetadata metadata = loadMetadata(dir);
 
@@ -101,7 +101,7 @@ public final class DepgenMetadataTest extends AbstractTest {
         // The cache has been updated with the correct value.
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
-        Files.write(file, "<default>.sha256=ABCD\n".getBytes(StandardCharsets.ISO_8859_1));
+        Files.writeString(file, "<default>.sha256=ABCD\n", StandardCharsets.ISO_8859_1);
 
         writeConfigFile(FileUtil.getCurrentDirectory(), "");
         final ApplicationModel model = ApplicationModel.load(loadApplicationConfig(), true);
@@ -133,7 +133,7 @@ public final class DepgenMetadataTest extends AbstractTest {
         // This is accessing property when neither cache nor artifact exists
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
-        Files.write(file, "<default>.sha256=ABCD\n".getBytes(StandardCharsets.ISO_8859_1));
+        Files.writeString(file, "<default>.sha256=ABCD\n", StandardCharsets.ISO_8859_1);
 
         final DepgenMetadata metadata = loadMetadata(dir);
 
@@ -268,11 +268,11 @@ public final class DepgenMetadataTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
 
-        Files.write(file, ("""
+        Files.writeString(file, """
             <default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar
             <default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar
             <default>.dir3.url=-
-            """).getBytes(StandardCharsets.ISO_8859_1));
+            """, StandardCharsets.ISO_8859_1);
 
         final DepgenMetadata metadata = loadMetadata(dir, """
             repositories:
@@ -303,11 +303,11 @@ public final class DepgenMetadataTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
 
-        Files.write(file, ("""
+        Files.writeString(file, """
             <default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar
             <default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar
             <default>.dir3.url=-
-            """).getBytes(StandardCharsets.ISO_8859_1));
+            """, StandardCharsets.ISO_8859_1);
 
         final DepgenMetadata metadata = loadMetadata(dir, """
             repositories:
@@ -358,12 +358,12 @@ public final class DepgenMetadataTest extends AbstractTest {
         final var repo3 = new RemoteRepository.Builder("dir3", "default", "http://c.com").build();
 
         final String fileUrl = repo1.getUrl() + "com/example/myapp/1.0/myapp-1.0.jar";
-        Files.write(
+        Files.writeString(
                 file,
-                ("<default>.dir1.url=" + fileUrl.replaceAll(":", "\\\\:") + "\n"
-                                + "<default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar\n"
-                                + "<default>.dir3.url=-\n")
-                        .getBytes(StandardCharsets.ISO_8859_1));
+                "<default>.dir1.url=" + fileUrl.replaceAll(":", "\\\\:") + "\n"
+                        + "<default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar\n"
+                        + "<default>.dir3.url=-\n",
+                StandardCharsets.ISO_8859_1);
 
         deployTempArtifactToLocalRepository(dir1, "com.example:myapp:1.0");
 
@@ -400,11 +400,11 @@ public final class DepgenMetadataTest extends AbstractTest {
 
         // dir1 has a http protocol in cache but our configuration uses file protocol so we should end up
         // searching remote repository and updating cache.
-        Files.write(file, ("""
+        Files.writeString(file, """
             <default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar
             <default>.dir2.url=http\\://b.com/com/example/myapp/1.0/myapp-1.0.jar
             <default>.dir3.url=-
-            """).getBytes(StandardCharsets.ISO_8859_1));
+            """, StandardCharsets.ISO_8859_1);
 
         deployTempArtifactToLocalRepository(dir1, "com.example:myapp:1.0");
 
@@ -459,10 +459,10 @@ public final class DepgenMetadataTest extends AbstractTest {
 
         // dir1 has a http protocol in cache but our configuration uses file protocol so we should end up
         // searching remote repository and updating cache.
-        Files.write(
+        Files.writeString(
                 file,
-                "<default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar\n"
-                        .getBytes(StandardCharsets.ISO_8859_1));
+                "<default>.dir1.url=http\\://a.com/com/example/myapp/1.0/myapp-1.0.jar\n",
+                StandardCharsets.ISO_8859_1);
 
         deployTempArtifactToLocalRepository(dir1, "com.example:myapp:1.0");
 
@@ -552,7 +552,7 @@ public final class DepgenMetadataTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
 
-        Files.write(file, "processors=-\n".getBytes(StandardCharsets.ISO_8859_1));
+        Files.writeString(file, "processors=-\n", StandardCharsets.ISO_8859_1);
 
         final DepgenMetadata metadata = loadMetadata(dir);
 
@@ -570,10 +570,10 @@ public final class DepgenMetadataTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
 
-        Files.write(
+        Files.writeString(
                 file,
-                "processors=react4j.processor.ReactProcessor,arez.processor.ArezProcessor\n"
-                        .getBytes(StandardCharsets.ISO_8859_1));
+                "processors=react4j.processor.ReactProcessor,arez.processor.ArezProcessor\n",
+                StandardCharsets.ISO_8859_1);
 
         final DepgenMetadata metadata = loadMetadata(dir);
 
@@ -599,10 +599,10 @@ public final class DepgenMetadataTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
 
-        Files.write(
+        Files.writeString(
                 file,
-                "processors=react4j.processor.ReactProcessor,arez.processor.ArezProcessor\n"
-                        .getBytes(StandardCharsets.ISO_8859_1));
+                "processors=react4j.processor.ReactProcessor,arez.processor.ArezProcessor\n",
+                StandardCharsets.ISO_8859_1);
 
         final var permissions = new HashSet<PosixFilePermission>();
         permissions.add(PosixFilePermission.OWNER_WRITE);
@@ -687,7 +687,7 @@ public final class DepgenMetadataTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
 
-        Files.write(file, "js_assets=-\n".getBytes(StandardCharsets.ISO_8859_1));
+        Files.writeString(file, "js_assets=-\n", StandardCharsets.ISO_8859_1);
 
         final DepgenMetadata metadata = loadMetadata(dir);
 
@@ -705,10 +705,10 @@ public final class DepgenMetadataTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
 
-        Files.write(
+        Files.writeString(
                 file,
-                "js_assets=com/biz/MyBlah.js,com/biz/MyFile1.js,com/biz/MyOtherFile.js\n"
-                        .getBytes(StandardCharsets.ISO_8859_1));
+                "js_assets=com/biz/MyBlah.js,com/biz/MyFile1.js,com/biz/MyOtherFile.js\n",
+                StandardCharsets.ISO_8859_1);
 
         final DepgenMetadata metadata = loadMetadata(dir);
 
@@ -730,10 +730,10 @@ public final class DepgenMetadataTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
 
-        Files.write(
+        Files.writeString(
                 file,
-                "js_assets=com/biz/MyBlah.js,com/biz/MyFile1.js,com/biz/MyOtherFile.js\n"
-                        .getBytes(StandardCharsets.ISO_8859_1));
+                "js_assets=com/biz/MyBlah.js,com/biz/MyFile1.js,com/biz/MyOtherFile.js\n",
+                StandardCharsets.ISO_8859_1);
 
         final var permissions = new HashSet<PosixFilePermission>();
         permissions.add(PosixFilePermission.OWNER_WRITE);
@@ -759,7 +759,7 @@ public final class DepgenMetadataTest extends AbstractTest {
         final Path dir = FileUtil.createLocalTempDir();
         final Path file = dir.resolve(DepgenMetadata.FILENAME);
 
-        Files.write(file, "".getBytes(StandardCharsets.ISO_8859_1));
+        Files.writeString(file, "", StandardCharsets.ISO_8859_1);
 
         final var permissions = new HashSet<PosixFilePermission>();
         permissions.add(PosixFilePermission.OWNER_READ);
