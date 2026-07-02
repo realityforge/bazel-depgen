@@ -4,6 +4,8 @@ This document is essentially a list of shorthand notes describing work yet to be
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
+* Use template `.bazelproject` to restrict it to targets that users will run in the IDE. Allow tests to run as well as any tools. 
+
 * Add `upgrade` command that updates depgen dependency. (If verifyConfigSha256 then depgen will be part of jar, otherwise this option will be ignored. The parameter to command will bump the version specified by that. If upgrade specified and it is not the current then we will re-run resolve at end)
 
 * Add a command to emit bash completion script for tool
