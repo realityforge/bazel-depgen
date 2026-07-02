@@ -11,6 +11,8 @@ options:
   targetGenerationStrategy: build
   includeSource: false
   verifyConfigSha256: false
+  repositoryRuleLoadSymbols:
+    http_file: false
 
 artifacts:
   - coord: com.palantir.javaformat:palantir-java-format:2.93.0

@@ -8,7 +8,7 @@ bazel_dep(name = "rules_java", version = "9.6.1")
 
 # --- depgen-generated repository rules start ---
 
-# DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.25
+# DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.26
 
 _http_file = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 
@@ -317,7 +317,7 @@ _http_file(
 
 # --- depgen-generated java-format repository rules start ---
 
-# DO NOT EDIT: Content is auto-generated from //tools/java-format:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.25
+# DO NOT EDIT: Content is auto-generated from //tools/java-format:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.26
 
 _http_file(
     name = "com_fasterxml_jackson_core__jackson_annotations__2_21",

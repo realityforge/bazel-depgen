@@ -9,10 +9,10 @@ _java_plugin(
 
 # --- depgen-generated targets start ---
 
-# DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.25
+# DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.26
 
 # SHA256 of the configuration content that generated this content
-_CONFIG_SHA256 = "812BB3F4EC1D3B13A70320DAA0FF7A4CDEDF2F1532AA7C2075524BF9ED1EF5BF"
+_CONFIG_SHA256 = "4DF06AC15F0C8C5074D42A5B6DEB2F6B2F18532F3486422A60E5EF221BD81221"
 
 exports_files(["dependencies.yml"])
 
