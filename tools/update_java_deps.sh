@@ -4,9 +4,19 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VERSION="0.25"
 URL="https://repo.maven.apache.org/maven2/org/realityforge/bazel/depgen/bazel-depgen/${VERSION}/bazel-depgen-${VERSION}-all.jar"
+
+cd "${ROOT}"
+
+# Remove the duplicate module binding emitted by the second generated section.
+strip_duplicate_java_format_repo_binding() {
+  perl -0pi -e 's/(# --- depgen-generated java-format repository rules start ---[\s\S]*?)\n_http_file = use_repo_rule\([^\n]+\)\n\n/$1\n/' MODULE.bazel
+}
+
+strip_duplicate_java_format_repo_binding
+
 OUTPUT_BASE="${BAZEL_OUTPUT_BASE:-}"
 if [[ -z "${OUTPUT_BASE}" ]]; then
-  OUTPUT_BASE="$(cd "${ROOT}" && bazel info output_base)"
+  OUTPUT_BASE="$(bazel info output_base)"
 fi
 TOOLS_DIR="${OUTPUT_BASE}/.depgen-tools"
 CACHE_DIR="${OUTPUT_BASE}/.depgen-cache"
@@ -20,10 +30,15 @@ if [[ ! -f "${JAR}" ]]; then
   mv "${tmp}" "${JAR}"
 fi
 
-cd "${ROOT}"
 java -jar "${JAR}" \
   --directory "${ROOT}" \
   --config-file third_party/java/dependencies.yml \
   --cache-directory "${CACHE_DIR}" \
   generate
-bazel run //:buildifier -- MODULE.bazel third_party/java/BUILD.bazel
+java -jar "${JAR}" \
+  --directory "${ROOT}" \
+  --config-file tools/java-format/dependencies.yml \
+  --cache-directory "${CACHE_DIR}" \
+  generate
+strip_duplicate_java_format_repo_binding
+bazel run //:buildifier -- MODULE.bazel third_party/java/BUILD.bazel tools/java-format/BUILD.bazel

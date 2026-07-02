@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Move the Palantir Java Format dependency graph out of the main third-party Java dependency graph.
 * Include a concise dependency path in missing-source diagnostics so transitive artifacts are easier to trace.
 * Remove the `guiceyloops` dependency from the Bazel test dependency graph.
 * Prune unused transitive Java dependencies from the generated Bazel dependency graph.

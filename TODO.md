@@ -8,8 +8,6 @@ complete as there is too much un-said.
 
 * Add a command to emit bash completion script for tool
 
-* Use bazel-depgen for java-format dependencies.
-
 * Stop using maven central as the release process and instead upload to github release instead.
 
 * Stop keeping CHANGELOG updated over the entire history. Instead just using it as a since last release list that is deleted on release and used to create the release notes.
