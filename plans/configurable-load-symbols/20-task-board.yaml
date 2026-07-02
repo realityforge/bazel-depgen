@@ -1,0 +1,162 @@
+plan:
+  id: configurable-load-symbols
+  status: completed
+  required_full_gate: tools/check.sh
+  active_task:
+
+tasks:
+  - id: PLAN-APPROVAL
+    title: Review and accept configurable load symbols plan
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - User has reviewed the latest requirements, implementation plan, and task board.
+      - User feedback has been incorporated or explicitly deferred.
+      - Plan status is updated only after approval.
+    files_touched:
+      - plans/configurable-load-symbols/00-requirements.md
+      - plans/configurable-load-symbols/10-implementation-plan.md
+      - plans/configurable-load-symbols/20-task-board.yaml
+    evidence:
+      - command: user review request
+        result: Plan review requested after draft artifacts were created.
+      - command: iterative-plan-review
+        result: Three review rounds completed; final review returned Findings none.
+      - command: user approval
+        result: User requested implementation in subagent after review.
+    commit:
+      hash: not_required
+      message: Plan approval bookkeeping only.
+
+  - id: IMPL-001
+    title: Add options config and validation model
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-APPROVAL
+    acceptance_criteria:
+      - "`OptionsConfig` parses `repositoryRuleLoadSymbols` and `targetRuleLoadSymbols`."
+      - "`OptionsModel` exposes defaulted symbol emission decisions."
+      - "Unknown repository and target symbols fail with `InvalidModelException`."
+      - "Null symbol map values fail with `InvalidModelException`."
+      - "Empty symbol maps are no-ops when active and unused-configuration errors when inactive."
+      - "Inactive-strategy maps fail with `DepgenValidationException`."
+    files_touched:
+      - src/main/java/org/realityforge/bazel/depgen/config/OptionsConfig.java
+      - src/main/java/org/realityforge/bazel/depgen/model/OptionsModel.java
+      - src/main/java/org/realityforge/bazel/depgen/model/ApplicationModel.java
+      - src/test/java/org/realityforge/bazel/depgen/config/ApplicationConfigTest.java
+      - src/test/java/org/realityforge/bazel/depgen/model/OptionsModelTest.java
+      - src/test/java/org/realityforge/bazel/depgen/model/ApplicationModelTest.java
+    evidence:
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen/config:all_tests //src/test/java/org/realityforge/bazel/depgen/model:all_tests //src/test/java/org/realityforge/bazel/depgen/record:application_record_tests //src/test/java/org/realityforge/bazel/depgen:command_output_tests
+        result: PASSED, 4 of 4 test targets passed.
+      - command: tools/check.sh
+        result: PASSED, including buildifier, Java format check, build, release tests, 15 of 15 coverage tests, line coverage 95.20%, branch coverage 85.63%.
+    commit:
+      hash: not_required
+      message: Commit not requested for this implementation task.
+
+  - id: IMPL-002
+    title: Filter direct output load and binding declarations
+    status: completed
+    priority: high
+    depends_on:
+      - IMPL-001
+    acceptance_criteria:
+      - "Direct `MODULE.bazel` sections suppress configured `use_repo_rule` declarations."
+      - "Direct `BUILD.bazel` sections suppress configured target rule load aliases."
+      - "Default extension `.bzl` output remains self-contained and unchanged when maps are absent."
+      - "Mixed strategies prove an active direct-output map does not alter the extension-generated side."
+      - Generated call sites keep existing underscored aliases.
+    files_touched:
+      - src/main/java/org/realityforge/bazel/depgen/record/ApplicationRecord.java
+      - src/test/java/org/realityforge/bazel/depgen/GenerateCommandTest.java
+      - src/test/java/org/realityforge/bazel/depgen/record/ApplicationRecordTest.java
+    evidence:
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen/config:all_tests //src/test/java/org/realityforge/bazel/depgen/model:all_tests //src/test/java/org/realityforge/bazel/depgen/record:application_record_tests //src/test/java/org/realityforge/bazel/depgen:command_output_tests
+        result: PASSED, 4 of 4 test targets passed.
+      - command: tools/check.sh
+        result: PASSED, including buildifier, Java format check, build, release tests, 15 of 15 coverage tests, line coverage 95.20%, branch coverage 85.63%.
+    commit:
+      hash: not_required
+      message: Commit not requested for this implementation task.
+
+  - id: IMPL-003
+    title: Document configuration and repo workaround lifecycle
+    status: completed
+    priority: medium
+    depends_on:
+      - IMPL-002
+    acceptance_criteria:
+      - Configuration template documents both symbol maps, supported keys, and suppression semantics.
+      - Documentation states that generated repository names, target names, and helper target names must still be made unique with existing naming options when multiple configurations share one output file.
+      - "`CHANGELOG.md` has an `Unreleased` entry."
+      - "`tools/update_java_deps.sh` notes that the duplicate-binding workaround should be removed after adopting the next released depgen version containing this feature."
+      - Repository dependency configs are not migrated yet.
+    files_touched:
+      - src/main/resources/org/realityforge/bazel/depgen/templates/dependencies.yml
+      - CHANGELOG.md
+      - tools/update_java_deps.sh
+    evidence:
+      - command: tools/check.sh
+        result: PASSED, including generated dependency output check and formatting checks.
+    commit:
+      hash: not_required
+      message: Commit not requested for this documentation task.
+
+  - id: IMPL-004
+    title: Run validation gates and close implementation
+    status: completed
+    priority: high
+    depends_on:
+      - IMPL-003
+    acceptance_criteria:
+      - Targeted tests for changed behavior pass.
+      - "`tools/check.sh` passes."
+      - Task evidence includes command results.
+      - "Completed tasks have real commit hashes or `not_required` as appropriate."
+    files_touched:
+      - plans/configurable-load-symbols/20-task-board.yaml
+    evidence:
+      - command: tools/java_format.sh write
+        result: PASSED.
+      - command: bazel test //src/test/java/org/realityforge/bazel/depgen/config:all_tests //src/test/java/org/realityforge/bazel/depgen/model:all_tests //src/test/java/org/realityforge/bazel/depgen/record:application_record_tests //src/test/java/org/realityforge/bazel/depgen:command_output_tests
+        result: PASSED, 4 of 4 test targets passed.
+      - command: tools/check.sh
+        result: PASSED, including buildifier, Java format check, build, release tests, 15 of 15 coverage tests, line coverage 95.20%, branch coverage 85.63%.
+      - command: git diff --check
+        result: PASSED, no whitespace errors.
+    commit:
+      hash: not_required
+      message: Commit not requested for this validation task.
+
+history:
+  - task: PLAN-APPROVAL
+    status: pending
+    note: Initial draft plan created after resolving Q-01 through Q-11.
+  - task: PLAN-APPROVAL
+    status: pending
+    note: "Round 1 plan review updates: added null/empty map semantics and clarified extension-output test scope."
+  - task: PLAN-APPROVAL
+    status: pending
+    note: "Round 2 plan review update: narrowed shared-file safety claim to load/binding collisions and documented remaining naming-collision responsibility."
+  - task: PLAN-APPROVAL
+    status: completed
+    note: "Plan accepted after iterative review; implementation started in subagent per user request."
+  - task: IMPL-001
+    status: in_progress
+    note: "Started configuration and validation implementation."
+  - task: IMPL-001
+    status: completed
+    note: "Implemented options config, model validation, semantic validation, and tests."
+  - task: IMPL-002
+    status: completed
+    note: "Implemented direct output filtering and target/repository generation tests."
+  - task: IMPL-003
+    status: completed
+    note: "Updated template docs, changelog, and released-version workaround note."
+  - task: IMPL-004
+    status: completed
+    note: "Ran targeted tests, full gate, and diff whitespace check successfully."

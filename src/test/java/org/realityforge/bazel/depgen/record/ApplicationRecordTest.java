@@ -4144,6 +4144,167 @@ public class ApplicationRecordTest extends AbstractTest {
     }
 
     @Test
+    public void writeBazelModuleSection_repositoryRuleLoadSymbolsSuppressesHttpFileBindingOnly() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              repositoryRuleGenerationStrategy: module
+              repositoryRuleLoadSymbols:
+                http_file: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ApplicationRecord record = loadApplicationRecord();
+
+        final var outputStream = new ByteArrayOutputStream();
+        record.writeBazelModuleSection(new StarlarkOutput(outputStream));
+        final String output = asCleanString(
+                outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
+        assertFalse(output.contains("_http_file = use_repo_rule"));
+        assertTrue(output.contains("_http_file("));
+    }
+
+    @Test
+    public void writeBazelModuleSection_repositoryRuleLoadSymbolsSuppressesHttpArchiveBindingOnly() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              repositoryRuleGenerationStrategy: module
+              repositoryRuleLoadSymbols:
+                http_archive: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
+
+        final Path jarFile = createJarFile("foo.js", "");
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0", jarFile);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ApplicationRecord record = loadApplicationRecord();
+
+        final var outputStream = new ByteArrayOutputStream();
+        record.writeBazelModuleSection(new StarlarkOutput(outputStream));
+        final String output = asCleanString(
+                outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
+        assertTrue(output.contains("_http_file = use_repo_rule"));
+        assertFalse(output.contains("_http_archive = use_repo_rule"));
+        assertTrue(output.contains("_http_archive("));
+    }
+
+    @Test
+    public void writeBazelBuildSection_targetRuleLoadSymbolsSuppressesJavaImportLoadOnly() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              targetGenerationStrategy: build
+              targetRuleLoadSymbols:
+                java_import: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ApplicationRecord record = loadApplicationRecord();
+
+        final var outputStream = new ByteArrayOutputStream();
+        record.writeBazelBuildSection(new StarlarkOutput(outputStream));
+        final String output = asCleanString(
+                outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
+        assertTrue(output.contains(
+                "load(\"@rules_java//java:defs.bzl\", _java_binary = \"java_binary\", _java_test = \"java_test\")"));
+        assertFalse(output.contains("_java_import = \"java_import\""));
+        assertTrue(output.contains("_java_import("));
+    }
+
+    @Test
+    public void writeBazelBuildSection_targetRuleLoadSymbolsSuppressesJ2clLibraryLoadOnly() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              targetGenerationStrategy: build
+              targetRuleLoadSymbols:
+                j2cl_library: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0");
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ApplicationRecord record = loadApplicationRecord();
+
+        final var outputStream = new ByteArrayOutputStream();
+        record.writeBazelBuildSection(new StarlarkOutput(outputStream));
+        final String output = asCleanString(
+                outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
+        assertFalse(output.contains("load(\"@j2cl//build_defs:rules.bzl\""));
+        assertTrue(output.contains("_j2cl_library("));
+    }
+
+    @Test
+    public void writeBazelExtension_mixedStrategyTargetRuleLoadSymbolsDoNotFilterRepositoryRuleLoads()
+            throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              targetGenerationStrategy: build
+              targetRuleLoadSymbols:
+                java_binary: false
+                java_import: false
+                java_test: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ApplicationRecord record = loadApplicationRecord();
+
+        final var outputStream = new ByteArrayOutputStream();
+        record.writeBazelExtension(new StarlarkOutput(outputStream));
+        final String output = asCleanString(
+                outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
+        assertTrue(
+                output.contains("load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")"));
+        assertTrue(output.contains("def generate_workspace_rules():"));
+        assertFalse(output.contains("def generate_targets():"));
+    }
+
+    @Test
+    public void writeBazelExtension_mixedStrategyRepositoryRuleLoadSymbolsDoNotFilterTargetRuleLoads()
+            throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              repositoryRuleGenerationStrategy: module
+              repositoryRuleLoadSymbols:
+                http_file: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ApplicationRecord record = loadApplicationRecord();
+
+        final var outputStream = new ByteArrayOutputStream();
+        record.writeBazelExtension(new StarlarkOutput(outputStream));
+        final String output = asCleanString(
+                outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
+        assertTrue(output.contains("load(\"@rules_java//java:defs.bzl\", _java_binary = \"java_binary\", "
+                + "_java_import = \"java_import\", _java_test = \"java_test\")"));
+        assertFalse(output.contains("def generate_workspace_rules():"));
+        assertTrue(output.contains("def generate_targets():"));
+    }
+
+    @Test
     public void writeBazelExtension_java_withDependenciesAndJsAssets() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
         final URI uri = dir.toUri();

@@ -130,6 +130,15 @@ public final class ApplicationModel {
                     "The options.supportDependencyOmit property is only supported when both "
                             + "repository rules and targets are generated into the extension file.");
         }
+        if (getOptions().isRepositoryRuleLoadSymbolsConfigured()
+                && getOptions().isRepositoryRuleGenerationInExtensionFile()) {
+            throw new DepgenValidationException("The options.repositoryRuleLoadSymbols property is only supported when "
+                    + "repositoryRuleGenerationStrategy is set to module.");
+        }
+        if (getOptions().isTargetRuleLoadSymbolsConfigured() && getOptions().isTargetGenerationInExtensionFile()) {
+            throw new DepgenValidationException("The options.targetRuleLoadSymbols property is only supported when "
+                    + "targetGenerationStrategy is set to build.");
+        }
     }
 
     private void ensureArtifactRepositoriesAlign() {

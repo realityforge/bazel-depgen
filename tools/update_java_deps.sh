@@ -8,6 +8,8 @@ URL="https://repo.maven.apache.org/maven2/org/realityforge/bazel/depgen/bazel-de
 cd "${ROOT}"
 
 # Remove the duplicate module binding emitted by the second generated section.
+# Remove this workaround after the repository adopts the next released depgen version that includes
+# configurable load symbols.
 strip_duplicate_java_format_repo_binding() {
   perl -0pi -e 's/(# --- depgen-generated java-format repository rules start ---[\s\S]*?)\n_http_file = use_repo_rule\([^\n]+\)\n\n/$1\n/' MODULE.bazel
 }

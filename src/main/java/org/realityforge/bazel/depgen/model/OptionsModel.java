@@ -1,7 +1,11 @@
 package org.realityforge.bazel.depgen.model;
 
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.config.GlobalJavaConfig;
 import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.Nature;
@@ -11,6 +15,12 @@ import org.realityforge.bazel.depgen.config.TargetGenerationStrategy;
 import org.realityforge.bazel.depgen.util.BazelUtil;
 
 public final class OptionsModel {
+    private static final List<String> SUPPORTED_REPOSITORY_RULE_LOAD_SYMBOLS =
+            Arrays.asList("http_file", "http_archive");
+
+    private static final List<String> SUPPORTED_TARGET_RULE_LOAD_SYMBOLS =
+            Arrays.asList("java_binary", "java_import", "java_library", "java_plugin", "java_test", "j2cl_library");
+
     private final OptionsConfig _source;
 
     private final Path _workspaceDirectory;
@@ -28,6 +38,8 @@ public final class OptionsModel {
         validateNamePrefix(source);
         validateRepositoryRuleGenerationStrategy(source);
         validateTargetGenerationStrategy(source);
+        validateRepositoryRuleLoadSymbols(source);
+        validateTargetRuleLoadSymbols(source);
         final Path workspaceDirectory = deriveWorkspaceDirectory(configDirectory, source);
         final Path extensionFile = deriveExtensionFile(configDirectory, source);
         return new OptionsModel(source, workspaceDirectory, extensionFile);
@@ -47,6 +59,46 @@ public final class OptionsModel {
         if (null != value && null == TargetGenerationStrategy.findById(value)) {
             throw new InvalidModelException(
                     "The options.targetGenerationStrategy property must be one of: extensionFile, build.", source);
+        }
+    }
+
+    private static void validateRepositoryRuleLoadSymbols(final OptionsConfig source) {
+        validateLoadSymbols(
+                source,
+                source.getRepositoryRuleLoadSymbols(),
+                SUPPORTED_REPOSITORY_RULE_LOAD_SYMBOLS,
+                "options.repositoryRuleLoadSymbols");
+    }
+
+    private static void validateTargetRuleLoadSymbols(final OptionsConfig source) {
+        validateLoadSymbols(
+                source,
+                source.getTargetRuleLoadSymbols(),
+                SUPPORTED_TARGET_RULE_LOAD_SYMBOLS,
+                "options.targetRuleLoadSymbols");
+    }
+
+    private static void validateLoadSymbols(
+            final OptionsConfig source,
+            @Nullable final Map<String, Boolean> loadSymbols,
+            final List<String> supportedSymbols,
+            final String propertyName) {
+        if (null != loadSymbols) {
+            for (final Map.Entry<String, Boolean> entry : loadSymbols.entrySet()) {
+                final String symbol = entry.getKey();
+                if (!supportedSymbols.contains(symbol)) {
+                    throw new InvalidModelException(
+                            "The " + propertyName + " property contains unsupported key '" + symbol
+                                    + "'. Supported keys are: " + String.join(", ", supportedSymbols) + ".",
+                            source);
+                }
+                if (null == entry.getValue()) {
+                    throw new InvalidModelException(
+                            "The " + propertyName + " property contains null value for key '" + symbol
+                                    + "'. Values must be true or false.",
+                            source);
+                }
+            }
         }
     }
 
@@ -125,6 +177,27 @@ public final class OptionsModel {
 
     public boolean isTargetGenerationInExtensionFile() {
         return TargetGenerationStrategy.ExtensionFile == getTargetGenerationStrategy();
+    }
+
+    public boolean isRepositoryRuleLoadSymbolsConfigured() {
+        return null != _source.getRepositoryRuleLoadSymbols();
+    }
+
+    public boolean isTargetRuleLoadSymbolsConfigured() {
+        return null != _source.getTargetRuleLoadSymbols();
+    }
+
+    public boolean shouldEmitRepositoryRuleLoadSymbol(final String symbol) {
+        return shouldEmitLoadSymbol(_source.getRepositoryRuleLoadSymbols(), symbol);
+    }
+
+    public boolean shouldEmitTargetRuleLoadSymbol(final String symbol) {
+        return shouldEmitLoadSymbol(_source.getTargetRuleLoadSymbols(), symbol);
+    }
+
+    private static boolean shouldEmitLoadSymbol(@Nullable final Map<String, Boolean> loadSymbols, final String symbol) {
+        final Boolean value = null == loadSymbols ? null : loadSymbols.get(symbol);
+        return null == value || value;
     }
 
     public boolean requiresExtensionFile() {

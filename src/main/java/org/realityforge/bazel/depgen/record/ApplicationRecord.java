@@ -300,7 +300,7 @@ public final class ApplicationRecord {
             writeDependencyGraphIfRequired(output);
         }
         writeRepositoryRuleLoadsIfRequired(output, includeWorkspaceMacro);
-        writeTargetLoadsIfRequired(output, includeTargetMacro);
+        writeTargetLoadsIfRequired(output, includeTargetMacro, false);
         if (includeTargetMacro && getSource().getOptions().verifyConfigSha256()) {
             output.write("# SHA256 of the configuration content that generated this file");
             output.write("_CONFIG_SHA256 = \"" + getSource().getConfigSha256() + "\"");
@@ -395,7 +395,7 @@ public final class ApplicationRecord {
     public void writeBazelBuildSection(final StarlarkOutput output) throws IOException {
         emitGeneratedSectionComment(output);
         output.newLine();
-        writeTargetLoadsIfRequired(output, true);
+        writeTargetLoadsIfRequired(output, true, true);
         if (getSource().getOptions().verifyConfigSha256()) {
             output.write("# SHA256 of the configuration content that generated this content");
             output.write("_CONFIG_SHA256 = \"" + getSource().getConfigSha256() + "\"");
@@ -692,20 +692,33 @@ public final class ApplicationRecord {
 
     private void writeRepositoryRuleUseRepoBindingsIfRequired(final StarlarkOutput output) throws IOException {
         if (getArtifacts().stream().anyMatch(ArtifactRecord::emitsRepositoryRules)) {
-            output.write("_http_file = use_repo_rule(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")");
-            if (requiresHttpArchive()) {
+            boolean emittedBinding = false;
+            final OptionsModel options = getSource().getOptions();
+            if (options.shouldEmitRepositoryRuleLoadSymbol("http_file")) {
+                emittedBinding = true;
+                output.write(
+                        "_http_file = use_repo_rule(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")");
+            }
+            if (requiresHttpArchive() && options.shouldEmitRepositoryRuleLoadSymbol("http_archive")) {
+                emittedBinding = true;
                 output.write("_http_archive = use_repo_rule(\"@bazel_tools//tools/build_defs/repo:http.bzl\","
                         + " \"http_archive\")");
             }
-            output.newLine();
+            if (emittedBinding) {
+                output.newLine();
+            }
         }
     }
 
-    private void writeTargetLoadsIfRequired(final StarlarkOutput output, final boolean includeLoads)
+    private void writeTargetLoadsIfRequired(
+            final StarlarkOutput output, final boolean includeLoads, final boolean filterConfiguredSymbols)
             throws IOException {
         if (includeLoads) {
             boolean emittedLoad = false;
-            final Set<String> javaRules = getJavaRules();
+            final OptionsModel options = getSource().getOptions();
+            final Set<String> javaRules = getJavaRules().stream()
+                    .filter(r -> !filterConfiguredSymbols || options.shouldEmitTargetRuleLoadSymbol(r))
+                    .collect(Collectors.toSet());
             if (!javaRules.isEmpty()) {
                 emittedLoad = true;
                 final String rules = javaRules.stream()
@@ -714,7 +727,8 @@ public final class ApplicationRecord {
                         .collect(Collectors.joining(", "));
                 output.write("load(\"@rules_java//java:defs.bzl\", " + rules + ")");
             }
-            if (getArtifacts().stream().anyMatch(a -> a.shouldEmitNatureTarget(Nature.J2cl))) {
+            if (getArtifacts().stream().anyMatch(a -> a.shouldEmitNatureTarget(Nature.J2cl))
+                    && (!filterConfiguredSymbols || options.shouldEmitTargetRuleLoadSymbol("j2cl_library"))) {
                 emittedLoad = true;
                 output.write("load(\"@j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")");
             }

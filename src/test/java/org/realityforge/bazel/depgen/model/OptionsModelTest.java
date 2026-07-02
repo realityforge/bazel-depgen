@@ -4,6 +4,9 @@ import static org.testng.Assert.*;
 
 import gir.io.FileUtil;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.GlobalJavaConfig;
 import org.realityforge.bazel.depgen.config.NameStrategy;
@@ -46,6 +49,12 @@ public class OptionsModelTest extends AbstractTest {
         assertFalse(model.exportDeps());
         assertFalse(model.supportDependencyOmit());
         assertTrue(model.verifyConfigSha256());
+        assertFalse(model.isRepositoryRuleLoadSymbolsConfigured());
+        assertFalse(model.isTargetRuleLoadSymbolsConfigured());
+        assertTrue(model.shouldEmitRepositoryRuleLoadSymbol("http_file"));
+        assertTrue(model.shouldEmitRepositoryRuleLoadSymbol("http_archive"));
+        assertTrue(model.shouldEmitTargetRuleLoadSymbol("java_import"));
+        assertTrue(model.shouldEmitTargetRuleLoadSymbol("j2cl_library"));
     }
 
     @Test
@@ -82,6 +91,9 @@ public class OptionsModelTest extends AbstractTest {
         source.setTargetMacroName("gen_myprj_targets");
         source.setRepositoryRuleGenerationStrategy("module");
         source.setTargetGenerationStrategy("build");
+        source.setRepositoryRuleLoadSymbols(Map.of("http_file", Boolean.FALSE, "http_archive", Boolean.TRUE));
+        source.setTargetRuleLoadSymbols(
+                Map.of("java_binary", Boolean.TRUE, "java_import", Boolean.FALSE, "j2cl_library", Boolean.FALSE));
         source.setRepositoryRuleStartToken("# rs");
         source.setRepositoryRuleEndToken("# re");
         source.setTargetStartToken("# ts");
@@ -109,6 +121,14 @@ public class OptionsModelTest extends AbstractTest {
         assertEquals(model.getTargetMacroName(), "gen_myprj_targets");
         assertEquals(model.getRepositoryRuleGenerationStrategy(), RepositoryRuleGenerationStrategy.Module);
         assertEquals(model.getTargetGenerationStrategy(), TargetGenerationStrategy.Build);
+        assertTrue(model.isRepositoryRuleLoadSymbolsConfigured());
+        assertTrue(model.isTargetRuleLoadSymbolsConfigured());
+        assertFalse(model.shouldEmitRepositoryRuleLoadSymbol("http_file"));
+        assertTrue(model.shouldEmitRepositoryRuleLoadSymbol("http_archive"));
+        assertTrue(model.shouldEmitTargetRuleLoadSymbol("java_binary"));
+        assertFalse(model.shouldEmitTargetRuleLoadSymbol("java_import"));
+        assertFalse(model.shouldEmitTargetRuleLoadSymbol("j2cl_library"));
+        assertTrue(model.shouldEmitTargetRuleLoadSymbol("java_test"));
         assertEquals(model.getRepositoryRuleStartToken(), "# rs");
         assertEquals(model.getRepositoryRuleEndToken(), "# re");
         assertEquals(model.getTargetStartToken(), "# ts");
@@ -149,6 +169,82 @@ public class OptionsModelTest extends AbstractTest {
         assertEquals(
                 exception.getMessage(),
                 "The options.targetGenerationStrategy property must be one of: extensionFile, build.");
+        assertEquals(exception.getModel(), source);
+    }
+
+    @Test
+    public void parseWithEmptyLoadSymbolMaps() {
+        final var source = new OptionsConfig();
+        source.setRepositoryRuleLoadSymbols(Collections.emptyMap());
+        source.setTargetRuleLoadSymbols(Collections.emptyMap());
+
+        final OptionsModel model = OptionsModel.parse(FileUtil.getCurrentDirectory(), source);
+        assertTrue(model.isRepositoryRuleLoadSymbolsConfigured());
+        assertTrue(model.isTargetRuleLoadSymbolsConfigured());
+        assertTrue(model.shouldEmitRepositoryRuleLoadSymbol("http_file"));
+        assertTrue(model.shouldEmitRepositoryRuleLoadSymbol("http_archive"));
+        assertTrue(model.shouldEmitTargetRuleLoadSymbol("java_import"));
+        assertTrue(model.shouldEmitTargetRuleLoadSymbol("j2cl_library"));
+    }
+
+    @Test
+    public void parseWithInvalidRepositoryRuleLoadSymbol() {
+        final var source = new OptionsConfig();
+        source.setRepositoryRuleLoadSymbols(Collections.singletonMap("bogus", Boolean.TRUE));
+
+        final InvalidModelException exception = expectThrows(
+                InvalidModelException.class, () -> OptionsModel.parse(FileUtil.getCurrentDirectory(), source));
+        assertEquals(
+                exception.getMessage(),
+                "The options.repositoryRuleLoadSymbols property contains unsupported key 'bogus'. "
+                        + "Supported keys are: http_file, http_archive.");
+        assertEquals(exception.getModel(), source);
+    }
+
+    @Test
+    public void parseWithInvalidTargetRuleLoadSymbol() {
+        final var source = new OptionsConfig();
+        source.setTargetRuleLoadSymbols(Collections.singletonMap("bogus", Boolean.TRUE));
+
+        final InvalidModelException exception = expectThrows(
+                InvalidModelException.class, () -> OptionsModel.parse(FileUtil.getCurrentDirectory(), source));
+        assertEquals(
+                exception.getMessage(),
+                "The options.targetRuleLoadSymbols property contains unsupported key 'bogus'. "
+                        + "Supported keys are: java_binary, java_import, java_library, java_plugin, java_test, "
+                        + "j2cl_library.");
+        assertEquals(exception.getModel(), source);
+    }
+
+    @Test
+    public void parseWithNullRepositoryRuleLoadSymbolValue() {
+        final var source = new OptionsConfig();
+        final var loadSymbols = new HashMap<String, Boolean>();
+        loadSymbols.put("http_file", null);
+        source.setRepositoryRuleLoadSymbols(loadSymbols);
+
+        final InvalidModelException exception = expectThrows(
+                InvalidModelException.class, () -> OptionsModel.parse(FileUtil.getCurrentDirectory(), source));
+        assertEquals(
+                exception.getMessage(),
+                "The options.repositoryRuleLoadSymbols property contains null value for key 'http_file'. "
+                        + "Values must be true or false.");
+        assertEquals(exception.getModel(), source);
+    }
+
+    @Test
+    public void parseWithNullTargetRuleLoadSymbolValue() {
+        final var source = new OptionsConfig();
+        final var loadSymbols = new HashMap<String, Boolean>();
+        loadSymbols.put("java_import", null);
+        source.setTargetRuleLoadSymbols(loadSymbols);
+
+        final InvalidModelException exception = expectThrows(
+                InvalidModelException.class, () -> OptionsModel.parse(FileUtil.getCurrentDirectory(), source));
+        assertEquals(
+                exception.getMessage(),
+                "The options.targetRuleLoadSymbols property contains null value for key 'java_import'. "
+                        + "Values must be true or false.");
         assertEquals(exception.getModel(), source);
     }
 }

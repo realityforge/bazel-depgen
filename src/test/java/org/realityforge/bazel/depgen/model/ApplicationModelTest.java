@@ -143,6 +143,54 @@ public class ApplicationModelTest extends AbstractTest {
     }
 
     @Test
+    public void repositoryRuleLoadSymbolsRequiresModuleStrategy() throws Exception {
+        writeConfigFile("""
+            options:
+              repositoryRuleLoadSymbols: {}
+            """);
+        final Path configFile = getDefaultConfigFile();
+        final ApplicationConfig source = ApplicationConfig.load(configFile);
+        final DepgenValidationException exception =
+                expectThrows(DepgenValidationException.class, () -> ApplicationModel.load(source, false));
+        assertEquals(
+                exception.getMessage(),
+                "The options.repositoryRuleLoadSymbols property is only supported when "
+                        + "repositoryRuleGenerationStrategy is set to module.");
+    }
+
+    @Test
+    public void targetRuleLoadSymbolsRequiresBuildStrategy() throws Exception {
+        writeConfigFile("""
+            options:
+              targetRuleLoadSymbols: {}
+            """);
+        final Path configFile = getDefaultConfigFile();
+        final ApplicationConfig source = ApplicationConfig.load(configFile);
+        final DepgenValidationException exception =
+                expectThrows(DepgenValidationException.class, () -> ApplicationModel.load(source, false));
+        assertEquals(
+                exception.getMessage(),
+                "The options.targetRuleLoadSymbols property is only supported when "
+                        + "targetGenerationStrategy is set to build.");
+    }
+
+    @Test
+    public void emptyLoadSymbolMapsAreValidWhenStrategiesAreActive() throws Exception {
+        writeConfigFile("""
+            options:
+              repositoryRuleGenerationStrategy: module
+              targetGenerationStrategy: build
+              repositoryRuleLoadSymbols: {}
+              targetRuleLoadSymbols: {}
+            """);
+        final Path configFile = getDefaultConfigFile();
+        final ApplicationConfig source = ApplicationConfig.load(configFile);
+        final ApplicationModel model = ApplicationModel.load(source, false);
+        assertTrue(model.getOptions().isRepositoryRuleLoadSymbolsConfigured());
+        assertTrue(model.getOptions().isTargetRuleLoadSymbolsConfigured());
+    }
+
+    @Test
     public void isExcluded() throws Exception {
         writeConfigFile("""
             artifacts:

@@ -27,6 +27,30 @@ options:
   # Valid values are 'extensionFile' and 'build'.
   #targetGenerationStrategy: extensionFile
 
+  # When repositoryRuleGenerationStrategy is 'module', this map can suppress selected
+  # use_repo_rule(...) bindings in the generated MODULE.bazel section. Omitted keys and true values
+  # emit the binding when needed. False omits only the binding; generated calls still use depgen's
+  # aliases such as _http_file(...) and require the symbol to be defined elsewhere in the shared file.
+  # Valid keys are 'http_file' and 'http_archive'.
+  #repositoryRuleLoadSymbols:
+    #http_file: false
+    #http_archive: true
+
+  # When targetGenerationStrategy is 'build', this map can suppress selected load(...) aliases in
+  # the generated BUILD.bazel section. Omitted keys and true values emit the alias when needed.
+  # False omits only the load alias; generated calls still use depgen's aliases such as
+  # _java_import(...) and _j2cl_library(...) and require the symbols to be defined elsewhere in the
+  # shared file. Valid keys are 'java_binary', 'java_import', 'java_library', 'java_plugin',
+  # 'java_test', and 'j2cl_library'.
+  #targetRuleLoadSymbols:
+    #java_import: false
+    #j2cl_library: false
+
+  # Load symbol suppression only avoids duplicate load(...) and use_repo_rule(...) declarations.
+  # When multiple configurations write into one MODULE.bazel or BUILD.bazel file, generated
+  # repository names, target names, and helper target names must still be made unique with naming
+  # options such as namePrefix, nameStrategy, repositoryNameStrategy, and per-artifact name overrides.
+
   # Token indicating the start of the generated repository-rule section when using
   # repositoryRuleGenerationStrategy: module.
   #repositoryRuleStartToken: "# --- depgen-generated repository rules start ---"

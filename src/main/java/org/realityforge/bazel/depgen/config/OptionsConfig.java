@@ -1,5 +1,6 @@
 package org.realityforge.bazel.depgen.config;
 
+import java.util.Map;
 import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
@@ -47,6 +48,12 @@ public final class OptionsConfig {
 
     @Nullable
     private String targetGenerationStrategy;
+
+    @Nullable
+    private Map<String, Boolean> repositoryRuleLoadSymbols;
+
+    @Nullable
+    private Map<String, Boolean> targetRuleLoadSymbols;
 
     @Nullable
     private String repositoryRuleStartToken;
@@ -148,6 +155,24 @@ public final class OptionsConfig {
 
     public void setTargetGenerationStrategy(final String targetGenerationStrategy) {
         this.targetGenerationStrategy = Objects.requireNonNull(targetGenerationStrategy);
+    }
+
+    @Nullable
+    public Map<String, Boolean> getRepositoryRuleLoadSymbols() {
+        return repositoryRuleLoadSymbols;
+    }
+
+    public void setRepositoryRuleLoadSymbols(final Map<String, Boolean> repositoryRuleLoadSymbols) {
+        this.repositoryRuleLoadSymbols = Objects.requireNonNull(repositoryRuleLoadSymbols);
+    }
+
+    @Nullable
+    public Map<String, Boolean> getTargetRuleLoadSymbols() {
+        return targetRuleLoadSymbols;
+    }
+
+    public void setTargetRuleLoadSymbols(final Map<String, Boolean> targetRuleLoadSymbols) {
+        this.targetRuleLoadSymbols = Objects.requireNonNull(targetRuleLoadSymbols);
     }
 
     @Nullable

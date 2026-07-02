@@ -5,6 +5,7 @@ import static org.testng.Assert.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.testng.annotations.Test;
 
@@ -295,6 +296,13 @@ public class ApplicationConfigTest extends AbstractTest {
               targetMacroName: gen_targets
               repositoryRuleGenerationStrategy: module
               targetGenerationStrategy: build
+              repositoryRuleLoadSymbols:
+                http_file: false
+                http_archive: true
+              targetRuleLoadSymbols:
+                java_binary: true
+                java_import: false
+                j2cl_library: false
               repositoryRuleStartToken: '# rs'
               repositoryRuleEndToken: '# re'
               targetStartToken: '# ts'
@@ -318,6 +326,12 @@ public class ApplicationConfigTest extends AbstractTest {
         assertEquals(options.getTargetMacroName(), "gen_targets");
         assertEquals(options.getRepositoryRuleGenerationStrategy(), "module");
         assertEquals(options.getTargetGenerationStrategy(), "build");
+        assertEquals(
+                options.getRepositoryRuleLoadSymbols(),
+                Map.of("http_file", Boolean.FALSE, "http_archive", Boolean.TRUE));
+        assertEquals(
+                options.getTargetRuleLoadSymbols(),
+                Map.of("java_binary", Boolean.TRUE, "java_import", Boolean.FALSE, "j2cl_library", Boolean.FALSE));
         assertEquals(options.getRepositoryRuleStartToken(), "# rs");
         assertEquals(options.getRepositoryRuleEndToken(), "# re");
         assertEquals(options.getTargetStartToken(), "# ts");
@@ -351,6 +365,8 @@ public class ApplicationConfigTest extends AbstractTest {
         assertNull(options.getTargetMacroName());
         assertNull(options.getRepositoryRuleGenerationStrategy());
         assertNull(options.getTargetGenerationStrategy());
+        assertNull(options.getRepositoryRuleLoadSymbols());
+        assertNull(options.getTargetRuleLoadSymbols());
         assertNull(options.getRepositoryRuleStartToken());
         assertNull(options.getRepositoryRuleEndToken());
         assertNull(options.getTargetStartToken());
