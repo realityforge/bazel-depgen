@@ -118,7 +118,7 @@ fi
 require_tag_ready "${VERSION}"
 
 BASE_URL="https://central.sonatype.com"
-AUTH_TOKEN="$(printf 'realityforge:%s' "${MAVEN_CENTRAL_PASSWORD}" | base64 | tr -d '\n')"
+AUTH_TOKEN="$(printf '%s:%s' "${MAVEN_CENTRAL_USERNAME}" "${MAVEN_CENTRAL_PASSWORD}" | base64 | tr -d '\n')"
 TMP_DIR="$(mktemp -d /private/tmp/bazel-depgen-release.XXXXXX)"
 trap 'rm -rf "${TMP_DIR}"' EXIT
 
