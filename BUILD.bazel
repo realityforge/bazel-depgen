@@ -13,7 +13,6 @@ buildifier(
     exclude_patterns = [
         "./.git/*",
         "./.bazelbsp/*",
-        "./bazel-*/*",
     ],
     lint_mode = "fix",
     lint_warnings = WARNINGS,
@@ -25,7 +24,6 @@ buildifier(
     exclude_patterns = [
         "./.git/*",
         "./.bazelbsp/*",
-        "./bazel-*/*",
     ],
     lint_mode = "warn",
     lint_warnings = WARNINGS,
