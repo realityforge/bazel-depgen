@@ -130,7 +130,7 @@ _java_test(
     args = [
         "--config-file",
         "$(rootpath //third_party/java:dependencies.yml)",
-        "--quiet",
+        "--verbose",
         "hash",
         "--verify-sha256",
         _CONFIG_SHA256,
@@ -147,7 +147,7 @@ _java_binary(
     args = [
         "--config-file",
         "$(rootpath //third_party/java:dependencies.yml)",
-        "--quiet",
+        "--verbose",
         "generate",
     ],
     data = ["//third_party/java:dependencies.yml"],
