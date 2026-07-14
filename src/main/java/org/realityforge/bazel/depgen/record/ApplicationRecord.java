@@ -468,7 +468,7 @@ public final class ApplicationRecord {
         arguments.put(
                 "args",
                 Arrays.asList(
-                        "\"--config-file\"", "\"$(rootpath " + configLabel + ")\"", "\"--verbose\"", "\"generate\""));
+                        "\"--config-file\"", "\"$(rootpath " + configLabel + ")\"", "\"--quiet\"", "\"generate\""));
         arguments.put("data", Collections.singletonList("\"" + configLabel + "\""));
         arguments.put("main_class", "\"org.realityforge.bazel.depgen.Main\"");
         arguments.put(
@@ -496,7 +496,7 @@ public final class ApplicationRecord {
                 Arrays.asList(
                         "\"--config-file\"",
                         "\"$(rootpath " + configLabel + ")\"",
-                        "\"--verbose\"",
+                        "\"--quiet\"",
                         "\"hash\"",
                         "\"--verify-sha256\"",
                         "_CONFIG_SHA256"));

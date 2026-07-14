@@ -571,12 +571,9 @@ public class ResolverTest extends AbstractTest {
 
         assertEquals(
                 handler.toString(),
-                "Transfer Failed: com/example/myapp/1.0/myapp-1.0.jar\n"
-                        + "Could not transfer artifact com.example:myapp:jar:1.0 from/to local ("
+                "Could not transfer artifact com.example:myapp:jar:1.0 from/to local ("
                         + url
-                        + "): Checksum validation failed, no checksums available\n"
-                        + "Transfer Failed: com/example/myapp/1.0/myapp-1.0.pom\n"
-                        + "Transfer Failed: com/example/myapp/1.0/myapp-1.0.jar");
+                        + "): Checksum validation failed, no checksums available");
     }
 
     @Test

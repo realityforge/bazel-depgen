@@ -117,7 +117,7 @@ public class GenerateCommandTest extends AbstractTest {
                         args = [
                             "--config-file",
                             "$(rootpath //thirdparty:dependencies.yml)",
-                            "--verbose",
+                            "--quiet",
                             "hash",
                             "--verify-sha256",
                             _CONFIG_SHA256,
@@ -131,7 +131,7 @@ public class GenerateCommandTest extends AbstractTest {
                         args = [
                             "--config-file",
                             "$(rootpath //thirdparty:dependencies.yml)",
-                            "--verbose",
+                            "--quiet",
                             "generate",
                         ],
                         data = ["//thirdparty:dependencies.yml"],
@@ -260,7 +260,7 @@ public class GenerateCommandTest extends AbstractTest {
                         args = [
                             "--config-file",
                             "$(rootpath //thirdparty:dependencies.yml)",
-                            "--verbose",
+                            "--quiet",
                             "hash",
                             "--verify-sha256",
                             _CONFIG_SHA256,
@@ -274,7 +274,7 @@ public class GenerateCommandTest extends AbstractTest {
                         args = [
                             "--config-file",
                             "$(rootpath //thirdparty:dependencies.yml)",
-                            "--verbose",
+                            "--quiet",
                             "generate",
                         ],
                         data = ["//thirdparty:dependencies.yml"],

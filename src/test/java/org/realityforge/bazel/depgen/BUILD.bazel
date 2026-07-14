@@ -147,12 +147,14 @@ java_testng_test(
         "ResolverTest.java",
         "ResolverUtilTest.java",
         "SettingsUtilTest.java",
+        "SimpleTransferListenerTest.java",
     ],
     test_classes = [
         "org.realityforge.bazel.depgen.OptionalDependencySelectorTest",
         "org.realityforge.bazel.depgen.ResolverTest",
         "org.realityforge.bazel.depgen.ResolverUtilTest",
         "org.realityforge.bazel.depgen.SettingsUtilTest",
+        "org.realityforge.bazel.depgen.SimpleTransferListenerTest",
     ],
     deps = TEST_DEPS + [
         ":test_support",
