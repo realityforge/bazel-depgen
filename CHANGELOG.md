@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.27](https://github.com/realityforge/bazel-depgen/tree/v0.27) (2026-07-14) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.26...v0.27)
+
+Changes in this release:
 
 * Silence generated update and verification targets on success, and replace normal transfer details with transient
   progress indicators while retaining detailed output in verbose mode.
