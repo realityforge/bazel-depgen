@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.28](https://github.com/realityforge/bazel-depgen/tree/v0.28) (2026-07-17) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.27...v0.28)
+
+Changes in this release:
 
 * Fix J2CL Import generation to declare its binary repository, pass the binary through a `JavaInfo`-providing target,
   and emit its `java_import` and `j2cl_import` load bindings, including `targetRuleLoadSymbols` suppression. Import
