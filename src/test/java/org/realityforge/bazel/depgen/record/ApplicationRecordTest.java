@@ -613,7 +613,6 @@ public class ApplicationRecordTest extends AbstractTest {
                     loadPropertiesContent(path),
                     "<default>.local.url=" + urlEncoded + "com/example/myapp/1.0/myapp-1.0.jar\n"
                             + "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n"
-                            + "js_assets=-\n"
                             + "processors=-\n"
                             + "sources.local.url="
                             + urlEncoded + "com/example/myapp/1.0/myapp-1.0-sources.jar\n" + "sources.present=true\n"
@@ -651,7 +650,6 @@ public class ApplicationRecordTest extends AbstractTest {
                     loadPropertiesContent(path),
                     "<default>.local.url=" + urlEncoded + "com/example/mylib/1.0/mylib-1.0.jar\n"
                             + "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n"
-                            + "js_assets=-\n"
                             + "processors=-\n"
                             + "sources.local.url="
                             + urlEncoded + "com/example/mylib/1.0/mylib-1.0-sources.jar\n" + "sources.present=true\n"
@@ -713,7 +711,6 @@ public class ApplicationRecordTest extends AbstractTest {
                     loadPropertiesContent(path),
                     "<default>.local.url=" + urlEncoded + "com/example/myapp/1.0/myapp-1.0.jar\n"
                             + "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n"
-                            + "js_assets=-\n"
                             + "processors=-\n"
                             + "sources.local.url="
                             + urlEncoded + "com/example/myapp/1.0/myapp-1.0-sources.jar\n" + "sources.present=true\n"
@@ -751,7 +748,6 @@ public class ApplicationRecordTest extends AbstractTest {
                     loadPropertiesContent(path),
                     "<default>.local.url=" + urlEncoded + "com/example/mylib/1.0/mylib-1.0.jar\n"
                             + "<default>.sha256=E424B659CF9C9C4ADF4C19A1CACDB13C0CBD78A79070817F433DBC2DADE3C6D4\n"
-                            + "js_assets=-\n"
                             + "processors=-\n"
                             + "sources.local.url="
                             + urlEncoded + "com/example/mylib/1.0/mylib-1.0-sources.jar\n" + "sources.present=true\n"
@@ -3203,13 +3199,8 @@ public class ApplicationRecordTest extends AbstractTest {
                     nature: J2cl
             """);
 
-        final Path jarFile = createJarFile(outputStream -> {
-            createJarEntry(outputStream, "com/example/MyLib.js", "");
-            createJarEntry(outputStream, "com/example/MyLib.native.js", "");
-        });
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "com.example:mylib:1.0");
-        deployTempArtifactToLocalRepository(dir, "com.example:mylib:jar:sources:1.0", jarFile);
-        deployTempArtifactToLocalRepository(dir, "com.example:mylib:1.0", "com.example:base:1.0");
+        deployArtifactToLocalRepository(dir, "com.example:mylib:1.0", "com.example:base:1.0");
         deployArtifactToLocalRepository(dir, "com.example:base:1.0");
 
         final ApplicationRecord record = loadApplicationRecord();
@@ -3220,7 +3211,6 @@ public class ApplicationRecordTest extends AbstractTest {
         assertOutputContains(output, "        name = \"com_example__mylib__1_0\",\n");
         assertOutputContains(output, "        name = \"com_example__mylib__1_0__sources\",\n");
         assertOutputContains(output, "        name = \"com_example__base__1_0\",\n");
-        assertOutputDoesNotContain(output, "        name = \"com_example__mylib__1_0__js_sources\",\n");
     }
 
     @Test
@@ -3938,7 +3928,7 @@ public class ApplicationRecordTest extends AbstractTest {
     }
 
     @Test
-    public void writeBazelExtension_j2cl_withDependenciesAndJsAssets() throws Exception {
+    public void writeBazelExtension_j2cl_withJavaScriptInSourceArchives() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
         final URI uri = dir.toUri();
 
@@ -3980,8 +3970,7 @@ public class ApplicationRecordTest extends AbstractTest {
             # \\- com.example:myapp:jar:1.0 [compile]
             #    \\- com.example:mylib:jar:1.0 [compile]
 
-            load("@bazel_tools//tools/build_defs/repo:http.bzl", _http_file = "http_file",\
-             _http_archive = "http_archive")
+            load("@bazel_tools//tools/build_defs/repo:http.bzl", _http_file = "http_file")
             load("@rules_java//java:defs.bzl", _java_binary = "java_binary", _java_import =\
              "java_import", _java_test = "java_test")
             load("@j2cl//build_defs:rules.bzl", _j2cl_library = "j2cl_library")
@@ -4003,41 +3992,11 @@ public class ApplicationRecordTest extends AbstractTest {
                     urls = ["MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar"],
                 )
 
-                _http_archive(
-                    name = "com_example__myapp__1_0__js_sources",
-                    sha256 = "94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d",
-                    urls = ["MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar"],
-                    build_file_content = ""\"
-            filegroup(
-                name = "srcs",
-                visibility = ["//visibility:public"],
-                srcs = ["foo.js"],
-            )
-            ""\",
-                )
-
                 _http_file(
                     name = "com_example__mylib__1_0__sources",
                     downloaded_file_path = "com/example/mylib/1.0/mylib-1.0-sources.jar",
                     sha256 = "e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f",
                     urls = ["MYURI/com/example/mylib/1.0/mylib-1.0-sources.jar"],
-                )
-
-                _http_archive(
-                    name = "com_example__mylib__1_0__js_sources",
-                    sha256 = "e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f",
-                    urls = ["MYURI/com/example/mylib/1.0/mylib-1.0-sources.jar"],
-                    build_file_content = ""\"
-            filegroup(
-                name = "srcs",
-                visibility = ["//visibility:public"],
-                srcs = [
-                    "com/biz/MyBlah.js",
-                    "com/biz/MyFile1.js",
-                    "com/biz/MyOtherFile.js",
-                ],
-            )
-            ""\",
                 )
 
                 _http_file(
@@ -4095,19 +4054,13 @@ public class ApplicationRecordTest extends AbstractTest {
 
                 _j2cl_library(
                     name = "com_example__myapp-j2cl",
-                    srcs = [
-                        "@com_example__myapp__1_0__sources//file",
-                        "@com_example__myapp__1_0__js_sources//:srcs",
-                    ],
+                    srcs = ["@com_example__myapp__1_0__sources//file"],
                     deps = [":com_example__mylib-j2cl"],
                 )
 
                 _j2cl_library(
                     name = "com_example__mylib-j2cl",
-                    srcs = [
-                        "@com_example__mylib__1_0__sources//file",
-                        "@com_example__mylib__1_0__js_sources//:srcs",
-                    ],
+                    srcs = ["@com_example__mylib__1_0__sources//file"],
                     visibility = ["//visibility:private"],
                 )
 
@@ -4120,7 +4073,7 @@ public class ApplicationRecordTest extends AbstractTest {
     }
 
     @Test
-    public void writeBazelModuleSection_j2cl_withDependenciesAndJsAssets() throws Exception {
+    public void writeBazelModuleSection_j2cl_withJavaScriptInSourceArchives() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
         final URI uri = dir.toUri();
 
@@ -4155,8 +4108,6 @@ public class ApplicationRecordTest extends AbstractTest {
              https://github.com/realityforge/bazel-depgen version 1
 
             _http_file = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
-            _http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl",\
-             "http_archive")
 
             _http_file(
                 name = "com_example__myapp__1_0__sources",
@@ -4165,41 +4116,11 @@ public class ApplicationRecordTest extends AbstractTest {
                 urls = ["MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar"],
             )
 
-            _http_archive(
-                name = "com_example__myapp__1_0__js_sources",
-                sha256 = "94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d",
-                urls = ["MYURI/com/example/myapp/1.0/myapp-1.0-sources.jar"],
-                build_file_content = ""\"
-            filegroup(
-                name = "srcs",
-                visibility = ["//visibility:public"],
-                srcs = ["foo.js"],
-            )
-            ""\",
-            )
-
             _http_file(
                 name = "com_example__mylib__1_0__sources",
                 downloaded_file_path = "com/example/mylib/1.0/mylib-1.0-sources.jar",
                 sha256 = "e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f",
                 urls = ["MYURI/com/example/mylib/1.0/mylib-1.0-sources.jar"],
-            )
-
-            _http_archive(
-                name = "com_example__mylib__1_0__js_sources",
-                sha256 = "e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f",
-                urls = ["MYURI/com/example/mylib/1.0/mylib-1.0-sources.jar"],
-                build_file_content = ""\"
-            filegroup(
-                name = "srcs",
-                visibility = ["//visibility:public"],
-                srcs = [
-                    "com/biz/MyBlah.js",
-                    "com/biz/MyFile1.js",
-                    "com/biz/MyOtherFile.js",
-                ],
-            )
-            ""\",
             )
 
             _http_file(
@@ -4234,35 +4155,6 @@ public class ApplicationRecordTest extends AbstractTest {
                 outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
         assertFalse(output.contains("_http_file = use_repo_rule"));
         assertTrue(output.contains("_http_file("));
-    }
-
-    @Test
-    public void writeBazelModuleSection_repositoryRuleLoadSymbolsSuppressesHttpArchiveBindingOnly() throws Exception {
-        final Path dir = FileUtil.createLocalTempDir();
-
-        writeConfigFile(dir, """
-            options:
-              repositoryRuleGenerationStrategy: module
-              repositoryRuleLoadSymbols:
-                http_archive: false
-            artifacts:
-              - coord: com.example:myapp:1.0
-                natures: [J2cl]
-            """);
-
-        final Path jarFile = createJarFile("foo.js", "");
-        deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0", jarFile);
-        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
-
-        final ApplicationRecord record = loadApplicationRecord();
-
-        final var outputStream = new ByteArrayOutputStream();
-        record.writeBazelModuleSection(new StarlarkOutput(outputStream));
-        final String output = asCleanString(
-                outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
-        assertTrue(output.contains("_http_file = use_repo_rule"));
-        assertFalse(output.contains("_http_archive = use_repo_rule"));
-        assertTrue(output.contains("_http_archive("));
     }
 
     @Test
@@ -4304,7 +4196,13 @@ public class ApplicationRecordTest extends AbstractTest {
               - coord: com.example:myapp:1.0
                 natures: [J2cl]
             """);
-        deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0");
+        final Path sourceJar = createJarFile(outputStream -> {
+            createJarEntry(outputStream, "com/example/MyApp.java", "");
+            createJarEntry(outputStream, "com/example/MyApp.js", "");
+            createJarEntry(outputStream, "com/example/MyApp.native.js", "");
+            createJarEntry(outputStream, "com/example/public/asset.js", "");
+        });
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:jar:sources:1.0", sourceJar);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
 
         final ApplicationRecord record = loadApplicationRecord();
@@ -4315,6 +4213,8 @@ public class ApplicationRecordTest extends AbstractTest {
                 outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
         assertFalse(output.contains("load(\"@j2cl//build_defs:rules.bzl\""));
         assertTrue(output.contains("_j2cl_library("));
+        assertTrue(output.contains("srcs = [\"@com_example__myapp__1_0__sources//file\"]"));
+        assertFalse(output.contains("__js_sources"));
     }
 
     @Test
@@ -4374,7 +4274,7 @@ public class ApplicationRecordTest extends AbstractTest {
     }
 
     @Test
-    public void writeBazelExtension_java_withDependenciesAndJsAssets() throws Exception {
+    public void writeBazelExtension_java_withJavaScriptInSourceArchives() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
         final URI uri = dir.toUri();
 

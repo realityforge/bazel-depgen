@@ -4,6 +4,9 @@
 
 * Add opt-in global and per-artifact J2CL JSpecify modes that can emit J2CL's experimental JSpecify support
   attribute after validating the canonical direct JSpecify dependency.
+* Pass J2CL source archives directly to generated `j2cl_library` targets and remove duplicate `__js_sources`
+  repositories. This requires J2CL commit `805391dbc84aa472af75ee1b0237606d0acd13bb` or later, leaves all embedded
+  JavaScript (including `.native.js`) for J2CL to handle, and removes `options.repositoryRuleLoadSymbols.http_archive`.
 
 ### [v0.27](https://github.com/realityforge/bazel-depgen/tree/v0.27) (2026-07-14) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.26...v0.27)
 

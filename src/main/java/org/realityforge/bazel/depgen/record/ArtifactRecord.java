@@ -1,8 +1,6 @@
 package org.realityforge.bazel.depgen.record;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -77,9 +75,6 @@ public final class ArtifactRecord {
     private final List<String> _processors;
 
     @Nullable
-    private final List<String> _jsAssets;
-
-    @Nullable
     private List<ArtifactRecord> _depsCache;
 
     @Nullable
@@ -101,7 +96,6 @@ public final class ArtifactRecord {
             @Nullable final String externalAnnotationSha256,
             @Nullable final List<String> externalAnnotationUrls,
             @Nullable final List<String> processors,
-            @Nullable final List<String> jsAssets,
             @Nullable final ArtifactModel artifactModel,
             @Nullable final ReplacementModel replacementModel) {
         assert (null == sha256 && null == urls) || (null != sha256 && null != urls && !urls.isEmpty());
@@ -125,7 +119,6 @@ public final class ArtifactRecord {
                 ? Collections.unmodifiableList(new ArrayList<>(externalAnnotationUrls))
                 : null;
         _processors = null != processors ? Collections.unmodifiableList(new ArrayList<>(processors)) : null;
-        _jsAssets = null != jsAssets ? Collections.unmodifiableList(new ArrayList<>(jsAssets)) : null;
         if (null != _natures && null != _processors && !_processors.isEmpty()) {
             addNature(Nature.Plugin);
         }
@@ -253,20 +246,12 @@ public final class ArtifactRecord {
         return getRepository() + "__sources";
     }
 
-    private String getJsSourceRepository() {
-        return getRepository() + "__js_sources";
-    }
-
     private String getExternalAnnotationsRepository() {
         return getRepository() + "__annotations";
     }
 
     private String getQualifiedSourcesLabel() {
         return "@" + getSourceRepository() + "//file";
-    }
-
-    private String getQualifiedJsSourceRepository() {
-        return "@" + getJsSourceRepository() + "//:srcs";
     }
 
     String getBaseName() {
@@ -419,9 +404,6 @@ public final class ArtifactRecord {
         if (null != getExternalAnnotationSha256() && emitsAnnotationsRepositoryRule()) {
             names.put(getExternalAnnotationsRepository(), artifactName + " annotations repository");
         }
-        if (emitsJsSourceRepositoryRule()) {
-            names.put(getJsSourceRepository(), artifactName + " js sources repository");
-        }
         return names;
     }
 
@@ -563,16 +545,6 @@ public final class ArtifactRecord {
         return _processors;
     }
 
-    /**
-     * The names of any js files included in the artifact that should be added to closure compile for J2Cl nature artifacts.
-     *
-     * @return the names of any js files included in the artifact that should be added to closure compile for J2Cl nature artifacts.
-     */
-    @Nullable
-    List<String> getJsAssets() {
-        return _jsAssets;
-    }
-
     List<ArtifactRecord> getDeps() {
         if (null == _depsCache) {
             _depsCache = collectArtifacts(_node.getChildren().stream()
@@ -660,10 +632,6 @@ public final class ArtifactRecord {
 
     boolean emitsAnnotationsRepositoryRule() {
         return emitsTargets();
-    }
-
-    boolean emitsJsSourceRepositoryRule() {
-        return shouldEmitNatureTarget(Nature.J2cl) && null != getJsAssets() && null != getSourceSha256();
     }
 
     private List<ArtifactRecord> collectArtifacts(final Stream<ArtifactRecord> stream) {
@@ -774,12 +742,7 @@ public final class ArtifactRecord {
         final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getName(Nature.J2cl)));
         if (J2clMode.Library == mode) {
-            final var srcs = new ArrayList<String>();
-            srcs.add(asString(getQualifiedSourcesLabel()));
-            if (null != getJsAssets()) {
-                srcs.add(asString(getQualifiedJsSourceRepository()));
-            }
-            arguments.put("srcs", srcs);
+            arguments.put("srcs", Collections.singletonList(asString(getQualifiedSourcesLabel())));
             if (shouldEnableJspecifySupport()) {
                 arguments.put(JSPECIFY_SUPPORT_ATTRIBUTE, Boolean.TRUE);
             }
@@ -951,33 +914,6 @@ public final class ArtifactRecord {
         assert !urls.isEmpty();
         arguments.put("urls", urls.stream().map(this::asString).collect(Collectors.toList()));
         output.writeCall("_http_file", arguments);
-    }
-
-    void writeArtifactJsSourcesHttpArchiveRule(final StarlarkOutput output) throws IOException {
-        final var sourceSha256 = Objects.requireNonNull(getSourceSha256());
-
-        final var arguments = new LinkedHashMap<String, Object>();
-        arguments.put("name", asString(getJsSourceRepository()));
-
-        arguments.put("sha256", asString(sourceSha256.toLowerCase()));
-        final var urls = Objects.requireNonNull(getSourceUrls());
-        assert !urls.isEmpty();
-        arguments.put("urls", urls.stream().map(this::asString).collect(Collectors.toList()));
-        final var jsAssets = Objects.requireNonNull(getJsAssets());
-
-        final var baos = new ByteArrayOutputStream();
-        final var buildContent = new StarlarkOutput(baos);
-        final var args = new LinkedHashMap<String, Object>();
-        args.put("name", asString("srcs"));
-        args.put("visibility", Collections.singletonList(asString("//visibility:public")));
-        args.put("srcs", jsAssets.stream().map(this::asString).collect(Collectors.toList()));
-        buildContent.writeCall("filegroup", args);
-        buildContent.close();
-        baos.close();
-        final var buildFileContent = baos.toString(StandardCharsets.UTF_8);
-
-        arguments.put("build_file_content", asString(buildFileContent));
-        output.writeCall("_http_archive", arguments);
     }
 
     private String deriveSuffix(final Nature nature) {

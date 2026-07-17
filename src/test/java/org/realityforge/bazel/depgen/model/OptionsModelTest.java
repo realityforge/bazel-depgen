@@ -55,7 +55,6 @@ public class OptionsModelTest extends AbstractTest {
         assertFalse(model.isRepositoryRuleLoadSymbolsConfigured());
         assertFalse(model.isTargetRuleLoadSymbolsConfigured());
         assertTrue(model.shouldEmitRepositoryRuleLoadSymbol("http_file"));
-        assertTrue(model.shouldEmitRepositoryRuleLoadSymbol("http_archive"));
         assertTrue(model.shouldEmitTargetRuleLoadSymbol("java_import"));
         assertTrue(model.shouldEmitTargetRuleLoadSymbol("j2cl_library"));
     }
@@ -94,7 +93,7 @@ public class OptionsModelTest extends AbstractTest {
         source.setTargetMacroName("gen_myprj_targets");
         source.setRepositoryRuleGenerationStrategy("module");
         source.setTargetGenerationStrategy("build");
-        source.setRepositoryRuleLoadSymbols(Map.of("http_file", Boolean.FALSE, "http_archive", Boolean.TRUE));
+        source.setRepositoryRuleLoadSymbols(Map.of("http_file", Boolean.FALSE));
         source.setTargetRuleLoadSymbols(
                 Map.of("java_binary", Boolean.TRUE, "java_import", Boolean.FALSE, "j2cl_library", Boolean.FALSE));
         source.setRepositoryRuleStartToken("# rs");
@@ -130,7 +129,6 @@ public class OptionsModelTest extends AbstractTest {
         assertTrue(model.isRepositoryRuleLoadSymbolsConfigured());
         assertTrue(model.isTargetRuleLoadSymbolsConfigured());
         assertFalse(model.shouldEmitRepositoryRuleLoadSymbol("http_file"));
-        assertTrue(model.shouldEmitRepositoryRuleLoadSymbol("http_archive"));
         assertTrue(model.shouldEmitTargetRuleLoadSymbol("java_binary"));
         assertFalse(model.shouldEmitTargetRuleLoadSymbol("java_import"));
         assertFalse(model.shouldEmitTargetRuleLoadSymbol("j2cl_library"));
@@ -189,7 +187,6 @@ public class OptionsModelTest extends AbstractTest {
         assertTrue(model.isRepositoryRuleLoadSymbolsConfigured());
         assertTrue(model.isTargetRuleLoadSymbolsConfigured());
         assertTrue(model.shouldEmitRepositoryRuleLoadSymbol("http_file"));
-        assertTrue(model.shouldEmitRepositoryRuleLoadSymbol("http_archive"));
         assertTrue(model.shouldEmitTargetRuleLoadSymbol("java_import"));
         assertTrue(model.shouldEmitTargetRuleLoadSymbol("j2cl_library"));
     }
@@ -204,7 +201,21 @@ public class OptionsModelTest extends AbstractTest {
         assertEquals(
                 exception.getMessage(),
                 "The options.repositoryRuleLoadSymbols property contains unsupported key 'bogus'. "
-                        + "Supported keys are: http_file, http_archive.");
+                        + "Supported keys are: http_file.");
+        assertEquals(exception.getModel(), source);
+    }
+
+    @Test
+    public void parseWithRemovedHttpArchiveRepositoryRuleLoadSymbol() {
+        final var source = new OptionsConfig();
+        source.setRepositoryRuleLoadSymbols(Collections.singletonMap("http_archive", Boolean.TRUE));
+
+        final InvalidModelException exception = expectThrows(
+                InvalidModelException.class, () -> OptionsModel.parse(FileUtil.getCurrentDirectory(), source));
+        assertEquals(
+                exception.getMessage(),
+                "The options.repositoryRuleLoadSymbols property contains unsupported key 'http_archive'. "
+                        + "Supported keys are: http_file.");
         assertEquals(exception.getModel(), source);
     }
 

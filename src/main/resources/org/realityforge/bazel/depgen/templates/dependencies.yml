@@ -31,10 +31,9 @@ options:
   # use_repo_rule(...) bindings in the generated MODULE.bazel section. Omitted keys and true values
   # emit the binding when needed. False omits only the binding; generated calls still use depgen's
   # aliases such as _http_file(...) and require the symbol to be defined elsewhere in the shared file.
-  # Valid keys are 'http_file' and 'http_archive'.
+  # The only valid key is 'http_file'.
   #repositoryRuleLoadSymbols:
     #http_file: false
-    #http_archive: true
 
   # When targetGenerationStrategy is 'build', this map can suppress selected load(...) aliases in
   # the generated BUILD.bazel section. Omitted keys and true values emit the alias when needed.
@@ -149,6 +148,9 @@ options:
     #exportDeps: false
 
   # The j2cl section is used to customize the defaults for J2cl nature artifacts.
+  # Generated j2cl_library targets require J2CL at or after commit
+  # 805391dbc84aa472af75ee1b0237606d0acd13bb. That J2CL pipeline consumes the original Maven source
+  # archive directly and handles all embedded JavaScript, including .native.js files, from that archive.
   #j2cl:
 
     # Controls whether generated j2cl_library targets enable J2CL's experimental JSpecify support. Selecting

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Map;
 import java.util.jar.JarFile;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.AuthenticationContext;
@@ -113,27 +112,6 @@ final class RecordUtil {
                             }
                         }
                     }
-                }
-            } catch (final IOException ignored) {
-                // Fall through
-            }
-        }
-
-        return DepgenMetadata.SENTINEL;
-    }
-
-    static String readJsAssets(final File file) {
-        if (isJarFile(file)) {
-            try {
-                try (final var jar = new JarFile(file)) {
-                    final String assetList = jar.stream()
-                            .filter(e -> !e.isDirectory())
-                            .map(ZipEntry::getName)
-                            .filter(name ->
-                                    name.endsWith(".js") && !name.contains("/public/") && !name.endsWith(".native.js"))
-                            .sorted()
-                            .collect(Collectors.joining(","));
-                    return assetList.isEmpty() ? DepgenMetadata.SENTINEL : assetList;
                 }
             } catch (final IOException ignored) {
                 // Fall through

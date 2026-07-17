@@ -17,8 +17,7 @@ import org.realityforge.bazel.depgen.config.TargetGenerationStrategy;
 import org.realityforge.bazel.depgen.util.BazelUtil;
 
 public final class OptionsModel {
-    private static final List<String> SUPPORTED_REPOSITORY_RULE_LOAD_SYMBOLS =
-            Arrays.asList("http_file", "http_archive");
+    private static final List<String> SUPPORTED_REPOSITORY_RULE_LOAD_SYMBOLS = List.of("http_file");
 
     private static final List<String> SUPPORTED_TARGET_RULE_LOAD_SYMBOLS =
             Arrays.asList("java_binary", "java_import", "java_library", "java_plugin", "java_test", "j2cl_library");

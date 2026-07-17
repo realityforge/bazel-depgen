@@ -300,7 +300,6 @@ public class ApplicationConfigTest extends AbstractTest {
               targetGenerationStrategy: build
               repositoryRuleLoadSymbols:
                 http_file: false
-                http_archive: true
               targetRuleLoadSymbols:
                 java_binary: true
                 java_import: false
@@ -330,9 +329,7 @@ public class ApplicationConfigTest extends AbstractTest {
         assertEquals(options.getTargetMacroName(), "gen_targets");
         assertEquals(options.getRepositoryRuleGenerationStrategy(), "module");
         assertEquals(options.getTargetGenerationStrategy(), "build");
-        assertEquals(
-                options.getRepositoryRuleLoadSymbols(),
-                Map.of("http_file", Boolean.FALSE, "http_archive", Boolean.TRUE));
+        assertEquals(options.getRepositoryRuleLoadSymbols(), Map.of("http_file", Boolean.FALSE));
         assertEquals(
                 options.getTargetRuleLoadSymbols(),
                 Map.of("java_binary", Boolean.TRUE, "java_import", Boolean.FALSE, "j2cl_library", Boolean.FALSE));

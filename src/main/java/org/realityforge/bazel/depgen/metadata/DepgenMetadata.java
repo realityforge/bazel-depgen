@@ -125,12 +125,6 @@ public final class DepgenMetadata {
         return SENTINEL.equals(processors) ? null : Collections.unmodifiableList(Arrays.asList(processors.split(",")));
     }
 
-    @Nullable
-    public List<String> getJsAssets(final File file) {
-        final String assets = getOrCompute("js_assets", () -> RecordUtil.readJsAssets(file));
-        return SENTINEL.equals(assets) ? null : Collections.unmodifiableList(Arrays.asList(assets.split(",")));
-    }
-
     private String lookupArtifact(
             final Artifact artifact,
             final RemoteRepository remoteRepository,

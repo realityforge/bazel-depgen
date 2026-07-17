@@ -453,7 +453,8 @@ public class GenerateCommandTest extends AbstractTest {
     }
 
     @Test
-    public void generate_repositoryRulesInModule_targetsInExtension_j2clWithDependenciesAndJsAssets() throws Exception {
+    public void generate_repositoryRulesInModule_targetsInExtension_j2clWithJavaScriptInSourceArchives()
+            throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
         writeModule();
@@ -500,8 +501,6 @@ public class GenerateCommandTest extends AbstractTest {
                     + " https://github.com/realityforge/bazel-depgen version 1\n"
                     + "\n"
                     + "_http_file = use_repo_rule(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")\n"
-                    + "_http_archive = use_repo_rule(\"@bazel_tools//tools/build_defs/repo:http.bzl\","
-                    + " \"http_archive\")\n"
                     + "\n"
                     + "_http_file(\n"
                     + "    name = \"com_example__myapp__1_0__sources\",\n"
@@ -510,44 +509,12 @@ public class GenerateCommandTest extends AbstractTest {
                     + "    urls = [\""
                         + dir.toUri() + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n" + ")\n"
                         + "\n"
-                        + "_http_archive(\n"
-                        + "    name = \"com_example__myapp__1_0__js_sources\",\n"
-                        + "    sha256 = \"94a269c384942133603eeb46ec01b5c7b0f9fdf387ce5d6d6014d57d3ba4f66d\",\n"
-                        + "    urls = [\""
-                        + dir.toUri() + "com/example/myapp/1.0/myapp-1.0-sources.jar\"],\n"
-                        + "    build_file_content = \"\"\"\n"
-                        + "filegroup(\n"
-                        + "    name = \"srcs\",\n"
-                        + "    visibility = [\"//visibility:public\"],\n"
-                        + "    srcs = [\"foo.js\"],\n"
-                        + ")\n"
-                        + "\"\"\",\n"
-                        + ")\n"
-                        + "\n"
                         + "_http_file(\n"
                         + "    name = \"com_example__mylib__1_0__sources\",\n"
                         + "    downloaded_file_path = \"com/example/mylib/1.0/mylib-1.0-sources.jar\",\n"
                         + "    sha256 = \"e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f\",\n"
                         + "    urls = [\""
                         + dir.toUri() + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n" + ")\n"
-                        + "\n"
-                        + "_http_archive(\n"
-                        + "    name = \"com_example__mylib__1_0__js_sources\",\n"
-                        + "    sha256 = \"e4730e06a8517a909250daa9cb33764d058cd806ffc36b067bfc5c1a36b8728f\",\n"
-                        + "    urls = [\""
-                        + dir.toUri() + "com/example/mylib/1.0/mylib-1.0-sources.jar\"],\n"
-                        + "    build_file_content = \"\"\"\n"
-                        + "filegroup(\n"
-                        + "    name = \"srcs\",\n"
-                        + "    visibility = [\"//visibility:public\"],\n"
-                        + "    srcs = [\n"
-                        + "        \"com/biz/MyBlah.js\",\n"
-                        + "        \"com/biz/MyFile1.js\",\n"
-                        + "        \"com/biz/MyOtherFile.js\",\n"
-                        + "    ],\n"
-                        + ")\n"
-                        + "\"\"\",\n"
-                        + ")\n"
                         + "\n"
                         + "_http_file(\n"
                         + "    name = \"org_realityforge_bazel_depgen__bazel_depgen__1\",\n"
@@ -563,8 +530,9 @@ public class GenerateCommandTest extends AbstractTest {
         final String extension = loadAsString(FileUtil.getCurrentDirectory().resolve("thirdparty/dependencies.bzl"));
         assertFalse(extension.contains("def generate_workspace_rules():"));
         assertTrue(extension.contains("def generate_targets():"));
-        assertTrue(extension.contains("@com_example__myapp__1_0__js_sources//:srcs"));
-        assertTrue(extension.contains("@com_example__mylib__1_0__js_sources//:srcs"));
+        assertTrue(extension.contains("srcs = [\"@com_example__myapp__1_0__sources//file\"]"));
+        assertTrue(extension.contains("srcs = [\"@com_example__mylib__1_0__sources//file\"]"));
+        assertFalse(extension.contains("__js_sources"));
     }
 
     @Test

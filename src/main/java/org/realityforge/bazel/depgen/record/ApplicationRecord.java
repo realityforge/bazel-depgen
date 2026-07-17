@@ -415,8 +415,7 @@ public final class ApplicationRecord {
             @Nullable final List<String> sourceUrls,
             @Nullable final String externalAnnotationSha256,
             @Nullable final List<String> externalAnnotationUrls,
-            @Nullable final List<String> processors,
-            @Nullable final List<String> jsAssets) {
+            @Nullable final List<String> processors) {
         final String groupId = node.getArtifact().getGroupId();
         final String artifactId = node.getArtifact().getArtifactId();
         final ArtifactModel model = _source.findArtifact(groupId, artifactId);
@@ -431,7 +430,6 @@ public final class ApplicationRecord {
                 externalAnnotationSha256,
                 externalAnnotationUrls,
                 processors,
-                jsAssets,
                 model,
                 replacementModel);
         final String key = record.getKey();
@@ -635,12 +633,6 @@ public final class ApplicationRecord {
             needsNewLine = true;
             artifact.writeArtifactAnnotationsHttpFileRule(output);
         }
-        if (artifact.emitsJsSourceRepositoryRule()) {
-            if (needsNewLine) {
-                output.newLine();
-            }
-            artifact.writeArtifactJsSourcesHttpArchiveRule(output);
-        }
     }
 
     void writeDependencyGraphIfRequired(final StarlarkOutput output) throws IOException {
@@ -684,9 +676,7 @@ public final class ApplicationRecord {
     private void writeRepositoryRuleLoadsIfRequired(final StarlarkOutput output, final boolean includeLoads)
             throws IOException {
         if (includeLoads && getArtifacts().stream().anyMatch(ArtifactRecord::emitsRepositoryRules)) {
-            output.write("load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", " + "_http_file = \"http_file\""
-                    + (requiresHttpArchive() ? ", _http_archive = \"http_archive\"" : "")
-                    + ")");
+            output.write("load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", _http_file = \"http_file\")");
         }
     }
 
@@ -698,11 +688,6 @@ public final class ApplicationRecord {
                 emittedBinding = true;
                 output.write(
                         "_http_file = use_repo_rule(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")");
-            }
-            if (requiresHttpArchive() && options.shouldEmitRepositoryRuleLoadSymbol("http_archive")) {
-                emittedBinding = true;
-                output.write("_http_archive = use_repo_rule(\"@bazel_tools//tools/build_defs/repo:http.bzl\","
-                        + " \"http_archive\")");
             }
             if (emittedBinding) {
                 output.newLine();
@@ -736,10 +721,6 @@ public final class ApplicationRecord {
                 output.newLine();
             }
         }
-    }
-
-    private boolean requiresHttpArchive() {
-        return getArtifacts().stream().anyMatch(a -> null != a.getJsAssets() && a.shouldEmitNatureTarget(Nature.J2cl));
     }
 
     private void emitGeneratedSectionComment(final StarlarkOutput output) throws IOException {
