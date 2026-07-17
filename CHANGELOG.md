@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Treat J2CL Import JSpecify autodetection as disabled and reject explicit or inherited `Enable` modes.
+
 ### [v0.28](https://github.com/realityforge/bazel-depgen/tree/v0.28) (2026-07-17) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.27...v0.28)
 
 Changes in this release:

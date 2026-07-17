@@ -158,8 +158,8 @@ options:
     # Autodetect or Enable acknowledges that affected libraries have undergone JSpecify static checking.
     # Autodetect emits the attribute when the library has a direct compile dependency on the canonical,
     # unclassified org.jspecify:jspecify JAR. Enable requires that dependency and reports an error when it is
-    # absent. Disable never emits the attribute. Valid values are Autodetect, Enable, and Disable. Defaults to
-    # Disable.
+    # absent. Disable never emits the attribute. For Import mode, Autodetect resolves to Disable and Enable is
+    # invalid unless overridden per artifact. Valid values are Autodetect, Enable, and Disable. Defaults to Disable.
     #jspecifyMode: Disable
 
 # The repositories section configures the repositories that the tool will use when resolving dependencies.
@@ -303,8 +303,8 @@ repositories:
       # Overrides the global J2CL JSpecify mode for this artifact. Autodetect emits J2CL's experimental JSpecify
       # support attribute when this library has a direct compile dependency on the canonical, unclassified
       # org.jspecify:jspecify JAR. Enable requires that dependency, while Disable never emits the attribute.
-      # Autodetect and Enable assert that the library has undergone JSpecify static checking and are only valid
-      # for Library mode. Valid values are Autodetect, Enable, and Disable.
+      # For Import mode, Autodetect resolves to Disable and Enable is invalid. Valid values are Autodetect, Enable,
+      # and Disable.
       #jspecifyMode: Enable
 
     # The plugins section is used to customize the artifact if it has the Plugin nature

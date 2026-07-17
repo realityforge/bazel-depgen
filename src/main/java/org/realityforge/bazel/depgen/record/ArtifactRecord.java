@@ -170,7 +170,7 @@ public final class ArtifactRecord {
         if (natures.contains(Nature.J2cl) && !isNatureReplaced(Nature.J2cl)) {
             final J2clMode j2clMode = getJ2clMode();
             final JspecifyMode jspecifyMode = getJspecifyMode();
-            if (J2clMode.Import == j2clMode && JspecifyMode.Disable != jspecifyMode) {
+            if (J2clMode.Import == j2clMode && JspecifyMode.Enable == jspecifyMode) {
                 final var message = "Artifact '" + getArtifact()
                         + "' resolves 'j2cl.jspecifyMode' to '" + jspecifyMode
                         + "' but specifies 'j2cl.mode = Import'. JSpecify support is only available for J2cl"
@@ -672,7 +672,8 @@ public final class ArtifactRecord {
 
     private JspecifyMode getJspecifyMode() {
         final JspecifyMode defaultMode = _application.getSource().getOptions().jspecifyMode();
-        return null != _artifactModel ? _artifactModel.jspecifyMode(defaultMode) : defaultMode;
+        final JspecifyMode mode = null != _artifactModel ? _artifactModel.jspecifyMode(defaultMode) : defaultMode;
+        return J2clMode.Import == getJ2clMode() && JspecifyMode.Autodetect == mode ? JspecifyMode.Disable : mode;
     }
 
     private boolean hasJspecifyDependency() {

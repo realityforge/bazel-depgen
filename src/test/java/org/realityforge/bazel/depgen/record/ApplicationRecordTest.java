@@ -1801,6 +1801,7 @@ public class ApplicationRecordTest extends AbstractTest {
                 natures: [J2cl]
                 j2cl:
                   mode: Import
+                  jspecifyMode: Enable
             replacements:
               - coord: com.example:myapp
                 targets:
@@ -1838,13 +1839,64 @@ public class ApplicationRecordTest extends AbstractTest {
     }
 
     @Test
-    public void j2clImportWithInheritedJspecifyMode() throws Exception {
+    public void j2clImportAutodetectsJspecifyAsDisabled() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
         writeConfigFile(dir, """
             options:
+              includeSource: false
               j2cl:
                 jspecifyMode: Autodetect
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+              - coord: org.jspecify:jspecify:1.0.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0", "org.jspecify:jspecify:1.0.0");
+        deployTempArtifactToLocalRepository(dir, "org.jspecify:jspecify:1.0.0");
+
+        final ArtifactRecord artifact = loadApplicationRecord().getArtifact("com.example", "myapp");
+        assertTrue(artifact.shouldEmitNatureTarget(Nature.J2cl));
+    }
+
+    @Test
+    public void j2clImportRejectsExplicitJspecifyEnable() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              includeSource: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+                  jspecifyMode: Enable
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final DepgenValidationException exception =
+                expectThrows(DepgenValidationException.class, this::loadApplicationRecord);
+        assertEquals(
+                exception.getMessage(),
+                "Artifact 'com.example:myapp:jar:1.0' resolves 'j2cl.jspecifyMode' to 'Enable' but specifies"
+                        + " 'j2cl.mode = Import'. JSpecify support is only available for J2cl libraries.");
+    }
+
+    @Test
+    public void j2clImportRejectsInheritedJspecifyEnable() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              includeSource: false
+              j2cl:
+                jspecifyMode: Enable
             artifacts:
               - coord: com.example:myapp:1.0
                 natures: [J2cl]
@@ -1857,8 +1909,30 @@ public class ApplicationRecordTest extends AbstractTest {
                 expectThrows(DepgenValidationException.class, this::loadApplicationRecord);
         assertEquals(
                 exception.getMessage(),
-                "Artifact 'com.example:myapp:jar:1.0' resolves 'j2cl.jspecifyMode' to 'Autodetect' but specifies"
+                "Artifact 'com.example:myapp:jar:1.0' resolves 'j2cl.jspecifyMode' to 'Enable' but specifies"
                         + " 'j2cl.mode = Import'. JSpecify support is only available for J2cl libraries.");
+    }
+
+    @Test
+    public void j2clImportJspecifyDisableOverridesGlobalEnable() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              includeSource: false
+              j2cl:
+                jspecifyMode: Enable
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+                  jspecifyMode: Disable
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ArtifactRecord artifact = loadApplicationRecord().getArtifact("com.example", "myapp");
+        assertTrue(artifact.shouldEmitNatureTarget(Nature.J2cl));
     }
 
     @Test
