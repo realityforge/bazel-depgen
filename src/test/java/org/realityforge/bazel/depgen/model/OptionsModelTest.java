@@ -8,7 +8,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.realityforge.bazel.depgen.AbstractTest;
+import org.realityforge.bazel.depgen.config.GlobalJ2clConfig;
 import org.realityforge.bazel.depgen.config.GlobalJavaConfig;
+import org.realityforge.bazel.depgen.config.JspecifyMode;
 import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
@@ -47,6 +49,7 @@ public class OptionsModelTest extends AbstractTest {
         assertTrue(model.includeSource());
         assertFalse(model.includeExternalAnnotations());
         assertFalse(model.exportDeps());
+        assertEquals(model.jspecifyMode(), JspecifyMode.Disable);
         assertFalse(model.supportDependencyOmit());
         assertTrue(model.verifyConfigSha256());
         assertFalse(model.isRepositoryRuleLoadSymbolsConfigured());
@@ -112,6 +115,9 @@ public class OptionsModelTest extends AbstractTest {
         final var java = new GlobalJavaConfig();
         java.setExportDeps(true);
         source.setJava(java);
+        final var j2cl = new GlobalJ2clConfig();
+        j2cl.setJspecifyMode(JspecifyMode.Autodetect);
+        source.setJ2cl(j2cl);
 
         final OptionsModel model = OptionsModel.parse(thirdpartyDir, source);
         assertEquals(model.getSource(), source);
@@ -142,6 +148,7 @@ public class OptionsModelTest extends AbstractTest {
         assertFalse(model.includeSource());
         assertTrue(model.includeExternalAnnotations());
         assertTrue(model.exportDeps());
+        assertEquals(model.jspecifyMode(), JspecifyMode.Autodetect);
         assertTrue(model.supportDependencyOmit());
         assertFalse(model.verifyConfigSha256());
     }

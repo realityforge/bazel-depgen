@@ -27,6 +27,7 @@ public final class OptionsConfig {
     public static final boolean DEFAULT_INCLUDE_SOURCE = true;
     public static final boolean DEFAULT_INCLUDE_EXTERNAL_ANNOTATIONS = false;
     public static final boolean DEFAULT_EXPORT_DEPS = false;
+    public static final JspecifyMode DEFAULT_JSPECIFY_MODE = JspecifyMode.Disable;
     public static final boolean DEFAULT_SUPPORT_DEPENDENCY_OMIT = false;
     public static final boolean DEFAULT_VERIFY_CONFIG_SHA256 = true;
     public static final Nature DEFAULT_NATURE = Nature.Java;
@@ -102,6 +103,9 @@ public final class OptionsConfig {
 
     @Nullable
     private GlobalJavaConfig java;
+
+    @Nullable
+    private GlobalJ2clConfig j2cl;
 
     @Nullable
     public String getWorkspaceDirectory() {
@@ -317,5 +321,14 @@ public final class OptionsConfig {
 
     public void setJava(final GlobalJavaConfig java) {
         this.java = Objects.requireNonNull(java);
+    }
+
+    @Nullable
+    public GlobalJ2clConfig getJ2cl() {
+        return j2cl;
+    }
+
+    public void setJ2cl(final GlobalJ2clConfig j2cl) {
+        this.j2cl = Objects.requireNonNull(j2cl);
     }
 }

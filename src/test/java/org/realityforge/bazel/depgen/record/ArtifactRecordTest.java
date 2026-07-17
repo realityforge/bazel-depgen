@@ -655,6 +655,252 @@ public class ArtifactRecordTest extends AbstractTest {
     }
 
     @Test
+    public void writeJ2clLibrary_jspecifyAutodetectWithDirectDependency() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              j2cl:
+                jspecifyMode: Autodetect
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "org.jspecify:jspecify:1.0.0");
+        deployArtifactToLocalRepository(dir, "org.jspecify:jspecify:1.0.0");
+
+        final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
+
+        final var outputStream = new ByteArrayOutputStream();
+        artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
+        assertEquals(asString(outputStream), """
+            _j2cl_library(
+                name = "com_example__myapp-j2cl",
+                srcs = ["@com_example__myapp__1_0__sources//file"],
+                experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+                deps = [":org_jspecify__jspecify-j2cl"],
+            )
+            """);
+    }
+
+    @Test
+    public void writeJ2clLibrary_jspecifyAutodetectWithReplacedDirectDependency() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              j2cl:
+                jspecifyMode: Autodetect
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            replacements:
+              - coord: org.jspecify:jspecify
+                targets:
+                  - target: "@jspecify//:jspecify-j2cl"
+                    nature: J2cl
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "org.jspecify:jspecify:1.0.0");
+        deployArtifactToLocalRepository(dir, "org.jspecify:jspecify:1.0.0");
+
+        final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
+
+        final var outputStream = new ByteArrayOutputStream();
+        artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
+        assertEquals(asString(outputStream), """
+            _j2cl_library(
+                name = "com_example__myapp-j2cl",
+                srcs = ["@com_example__myapp__1_0__sources//file"],
+                experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+                deps = ["@jspecify//:jspecify-j2cl"],
+            )
+            """);
+    }
+
+    @Test
+    public void writeJ2clLibrary_jspecifyAutodetectWithoutDirectDependency() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              j2cl:
+                jspecifyMode: Autodetect
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
+
+        final var outputStream = new ByteArrayOutputStream();
+        artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
+        assertEquals(asString(outputStream), """
+            _j2cl_library(
+                name = "com_example__myapp-j2cl",
+                srcs = ["@com_example__myapp__1_0__sources//file"],
+            )
+            """);
+    }
+
+    @Test
+    public void writeJ2clLibrary_jspecifyAutodetectIgnoresTransitiveDependency() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              j2cl:
+                jspecifyMode: Autodetect
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "com.example:mylib:1.0");
+        deployArtifactToLocalRepository(dir, "com.example:mylib:1.0", "org.jspecify:jspecify:1.0.0");
+        deployArtifactToLocalRepository(dir, "org.jspecify:jspecify:1.0.0");
+
+        final ArtifactRecord artifactRecord = loadApplicationRecord().getArtifact("com.example", "myapp");
+
+        final var outputStream = new ByteArrayOutputStream();
+        artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
+        assertOutputDoesNotContain(
+                asString(outputStream),
+                "experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage");
+    }
+
+    @Test
+    public void writeJ2clLibrary_jspecifyAutodetectIgnoresExcludedDependency() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              j2cl:
+                jspecifyMode: Autodetect
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            excludes:
+              - coord: org.jspecify:jspecify
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "org.jspecify:jspecify:1.0.0");
+        deployArtifactToLocalRepository(dir, "org.jspecify:jspecify:1.0.0");
+
+        final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
+
+        final var outputStream = new ByteArrayOutputStream();
+        artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
+        assertOutputDoesNotContain(
+                asString(outputStream),
+                "experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage");
+    }
+
+    @Test
+    public void writeJ2clLibrary_jspecifyAutodetectIgnoresClassifiedDependency() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              j2cl:
+                jspecifyMode: Autodetect
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "org.jspecify:jspecify:jar:annotations:1.0.0");
+        deployArtifactToLocalRepository(dir, "org.jspecify:jspecify:jar:annotations:1.0.0");
+
+        final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
+
+        final var outputStream = new ByteArrayOutputStream();
+        artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
+        assertOutputDoesNotContain(
+                asString(outputStream),
+                "experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage");
+    }
+
+    @Test
+    public void writeJ2clLibrary_jspecifyAutodetectIgnoresNonJarDependency() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              j2cl:
+                jspecifyMode: Autodetect
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "org.jspecify:jspecify:zip:1.0.0");
+        deployArtifactToLocalRepository(dir, "org.jspecify:jspecify:zip:1.0.0");
+
+        final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
+
+        final var outputStream = new ByteArrayOutputStream();
+        artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
+        assertOutputDoesNotContain(
+                asString(outputStream),
+                "experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage");
+    }
+
+    @Test
+    public void writeJ2clLibrary_jspecifyArtifactDisableOverridesGlobalAutodetect() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              j2cl:
+                jspecifyMode: Autodetect
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  jspecifyMode: Disable
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "org.jspecify:jspecify:1.0.0");
+        deployArtifactToLocalRepository(dir, "org.jspecify:jspecify:1.0.0");
+
+        final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
+
+        final var outputStream = new ByteArrayOutputStream();
+        artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
+        assertEquals(asString(outputStream), """
+            _j2cl_library(
+                name = "com_example__myapp-j2cl",
+                srcs = ["@com_example__myapp__1_0__sources//file"],
+                deps = [":org_jspecify__jspecify-j2cl"],
+            )
+            """);
+    }
+
+    @Test
+    public void writeJ2clLibrary_jspecifyEnableWithDirectDependency() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  jspecifyMode: Enable
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0", "org.jspecify:jspecify:1.0.0");
+        deployArtifactToLocalRepository(dir, "org.jspecify:jspecify:1.0.0");
+
+        final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
+
+        final var outputStream = new ByteArrayOutputStream();
+        artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
+        assertEquals(asString(outputStream), """
+            _j2cl_library(
+                name = "com_example__myapp-j2cl",
+                srcs = ["@com_example__myapp__1_0__sources//file"],
+                experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+                deps = [":org_jspecify__jspecify-j2cl"],
+            )
+            """);
+    }
+
+    @Test
     public void writeJ2clLibrary_modeImport() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 

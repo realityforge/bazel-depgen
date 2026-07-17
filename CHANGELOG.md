@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* Add opt-in global and per-artifact J2CL JSpecify modes that can emit J2CL's experimental JSpecify support
+  attribute after validating the canonical direct JSpecify dependency.
+
 ### [v0.27](https://github.com/realityforge/bazel-depgen/tree/v0.27) (2026-07-14) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.26...v0.27)
 
 Changes in this release:

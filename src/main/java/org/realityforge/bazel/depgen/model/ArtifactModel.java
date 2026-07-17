@@ -8,7 +8,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
+import org.realityforge.bazel.depgen.config.J2clConfig;
 import org.realityforge.bazel.depgen.config.JavaConfig;
+import org.realityforge.bazel.depgen.config.JspecifyMode;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.util.BazelUtil;
 
@@ -202,6 +204,12 @@ public final class ArtifactModel {
         final JavaConfig java = _source.getJava();
         final Boolean exportDeps = null != java ? java.getExportDeps() : null;
         return null == exportDeps ? defaultExportDeps : exportDeps;
+    }
+
+    public JspecifyMode jspecifyMode(final JspecifyMode defaultMode) {
+        final J2clConfig j2cl = _source.getJ2cl();
+        final JspecifyMode mode = null != j2cl ? j2cl.getJspecifyMode() : null;
+        return null == mode ? defaultMode : mode;
     }
 
     public List<String> getRepositories() {

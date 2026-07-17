@@ -9,6 +9,7 @@ import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.J2clConfig;
 import org.realityforge.bazel.depgen.config.JavaConfig;
+import org.realityforge.bazel.depgen.config.JspecifyMode;
 import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.PluginConfig;
@@ -31,9 +32,23 @@ public class ArtifactModelTest extends AbstractTest {
         assertFalse(model.includeOptional());
         assertTrue(model.includeSource(true));
         assertFalse(model.exportDeps(false));
+        assertEquals(model.jspecifyMode(JspecifyMode.Autodetect), JspecifyMode.Autodetect);
         assertTrue(model.getExcludes().isEmpty());
         assertTrue(model.getVisibility().isEmpty());
         assertEquals(model.toCoord(), "com.example:myapp");
+    }
+
+    @Test
+    public void jspecifyModeOverridesDefault() {
+        final var source = new ArtifactConfig();
+        source.setCoord("com.example:myapp");
+        final var j2cl = new J2clConfig();
+        j2cl.setJspecifyMode(JspecifyMode.Enable);
+        source.setJ2cl(j2cl);
+
+        final ArtifactModel model = ArtifactModel.parse(source);
+
+        assertEquals(model.jspecifyMode(JspecifyMode.Autodetect), JspecifyMode.Enable);
     }
 
     @Test

@@ -1704,6 +1704,75 @@ public class ApplicationRecordTest extends AbstractTest {
     }
 
     @Test
+    public void j2clImportWithInheritedJspecifyMode() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              j2cl:
+                jspecifyMode: Autodetect
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final DepgenValidationException exception =
+                expectThrows(DepgenValidationException.class, this::loadApplicationRecord);
+        assertEquals(
+                exception.getMessage(),
+                "Artifact 'com.example:myapp:jar:1.0' resolves 'j2cl.jspecifyMode' to 'Autodetect' but specifies"
+                        + " 'j2cl.mode = Import'. JSpecify support is only available for J2cl libraries.");
+    }
+
+    @Test
+    public void j2clLibraryWithJspecifyEnableAndMissingDependency() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  jspecifyMode: Enable
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final DepgenValidationException exception =
+                expectThrows(DepgenValidationException.class, this::loadApplicationRecord);
+        assertEquals(
+                exception.getMessage(),
+                "Artifact 'com.example:myapp:jar:1.0' resolves 'j2cl.jspecifyMode' to 'Enable' but does not have a"
+                        + " direct compile dependency on 'org.jspecify:jspecify:jar' with no classifier.");
+    }
+
+    @Test
+    public void replacedJ2clLibraryIgnoresJspecifyEnable() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  jspecifyMode: Enable
+            replacements:
+              - coord: com.example:myapp
+                targets:
+                  - target: "@com_example//:myapp-j2cl"
+                    nature: J2cl
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ApplicationRecord record = loadApplicationRecord();
+        final ArtifactRecord artifact = record.getArtifact("com.example", "myapp");
+        assertEquals(artifact.getLabel(Nature.J2cl), "@com_example//:myapp-j2cl");
+        assertFalse(artifact.shouldEmitNatureTarget(Nature.J2cl));
+    }
+
+    @Test
     public void j2clConfigWithoutJ2clNature() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 

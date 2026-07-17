@@ -160,6 +160,7 @@ public class ApplicationConfigTest extends AbstractTest {
                 j2cl:
                   suppress: ['checkDebuggerStatement','other']
                   mode: Library
+                  jspecifyMode: Autodetect
             """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
@@ -171,6 +172,7 @@ public class ApplicationConfigTest extends AbstractTest {
         final J2clConfig j2cl = requireNonNull(artifact.getJ2cl());
         assertEquals(j2cl.getSuppress(), Arrays.asList("checkDebuggerStatement", "other"));
         assertEquals(j2cl.getMode(), J2clMode.Library);
+        assertEquals(j2cl.getJspecifyMode(), JspecifyMode.Autodetect);
     }
 
     @Test
@@ -314,6 +316,8 @@ public class ApplicationConfigTest extends AbstractTest {
               extensionFile: workspaceDir/vendor/workspace.bzl
               java:
                 exportDeps: true
+              j2cl:
+                jspecifyMode: Enable
             """);
         final ApplicationConfig config = loadApplicationConfig();
         assertNotNull(config);
@@ -349,6 +353,8 @@ public class ApplicationConfigTest extends AbstractTest {
         assertEquals(options.getVerifyConfigSha256(), Boolean.FALSE);
         final GlobalJavaConfig java = requireNonNull(options.getJava());
         assertEquals(java.getExportDeps(), Boolean.TRUE);
+        final GlobalJ2clConfig j2cl = requireNonNull(options.getJ2cl());
+        assertEquals(j2cl.getJspecifyMode(), JspecifyMode.Enable);
     }
 
     @Test
@@ -383,6 +389,7 @@ public class ApplicationConfigTest extends AbstractTest {
         assertNull(options.getSupportDependencyOmit());
         assertNull(options.getVerifyConfigSha256());
         assertNull(options.getJava());
+        assertNull(options.getJ2cl());
     }
 
     @Test

@@ -15,6 +15,9 @@ public final class J2clConfig {
     private String name;
 
     @Nullable
+    private JspecifyMode jspecifyMode;
+
+    @Nullable
     public List<String> getSuppress() {
         return suppress;
     }
@@ -39,5 +42,14 @@ public final class J2clConfig {
 
     public void setName(@Nullable final String name) {
         this.name = name;
+    }
+
+    @Nullable
+    public JspecifyMode getJspecifyMode() {
+        return jspecifyMode;
+    }
+
+    public void setJspecifyMode(final JspecifyMode jspecifyMode) {
+        this.jspecifyMode = Objects.requireNonNull(jspecifyMode);
     }
 }

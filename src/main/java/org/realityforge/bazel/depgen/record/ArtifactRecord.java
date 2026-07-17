@@ -17,6 +17,7 @@ import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.DepgenValidationException;
 import org.realityforge.bazel.depgen.config.ArtifactConfig;
 import org.realityforge.bazel.depgen.config.J2clMode;
+import org.realityforge.bazel.depgen.config.JspecifyMode;
 import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.PluginConfig;
@@ -28,6 +29,10 @@ import org.realityforge.bazel.depgen.util.BazelUtil;
 import org.realityforge.bazel.depgen.util.StarlarkOutput;
 
 public final class ArtifactRecord {
+    private static final String JSPECIFY_GROUP_ID = "org.jspecify";
+    private static final String JSPECIFY_ARTIFACT_ID = "jspecify";
+    private static final String JSPECIFY_SUPPORT_ATTRIBUTE =
+            "experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage";
     /**
      * The suffix applied to the name of target that imports artifact for use when defining plugins.
      */
@@ -166,6 +171,22 @@ public final class ArtifactRecord {
             }
         }
         if (natures.contains(Nature.J2cl) && !isNatureReplaced(Nature.J2cl)) {
+            final J2clMode j2clMode = getJ2clMode();
+            final JspecifyMode jspecifyMode = getJspecifyMode();
+            if (J2clMode.Import == j2clMode && JspecifyMode.Disable != jspecifyMode) {
+                final var message = "Artifact '" + getArtifact()
+                        + "' resolves 'j2cl.jspecifyMode' to '" + jspecifyMode
+                        + "' but specifies 'j2cl.mode = Import'. JSpecify support is only available for J2cl"
+                        + " libraries.";
+                throw new DepgenValidationException(message);
+            } else if (J2clMode.Library == j2clMode
+                    && JspecifyMode.Enable == jspecifyMode
+                    && !hasJspecifyDependency()) {
+                final var message = "Artifact '" + getArtifact()
+                        + "' resolves 'j2cl.jspecifyMode' to 'Enable' but does not have a direct compile dependency on "
+                        + "'org.jspecify:jspecify:jar' with no classifier.";
+                throw new DepgenValidationException(message);
+            }
             if (null != _artifactModel
                     && !_artifactModel.includeSource(
                             _application.getSource().getOptions().includeSource())) {
@@ -657,6 +678,36 @@ public final class ArtifactRecord {
                 && scope.equals(c.getDependency().getScope());
     }
 
+    private J2clMode getJ2clMode() {
+        final var j2clConfig =
+                null != _artifactModel ? _artifactModel.getSource().getJ2cl() : null;
+        return null != j2clConfig && null != j2clConfig.getMode() ? j2clConfig.getMode() : J2clMode.Library;
+    }
+
+    private JspecifyMode getJspecifyMode() {
+        final JspecifyMode defaultMode = _application.getSource().getOptions().jspecifyMode();
+        return null != _artifactModel ? _artifactModel.jspecifyMode(defaultMode) : defaultMode;
+    }
+
+    private boolean hasJspecifyDependency() {
+        return _node.getChildren().stream()
+                .filter(c -> shouldIncludeDependency(Artifact.SCOPE_COMPILE, c))
+                .filter(c -> !_application
+                        .getSource()
+                        .isExcluded(
+                                c.getDependency().getArtifact().getGroupId(),
+                                c.getDependency().getArtifact().getArtifactId()))
+                .map(c -> c.getDependency().getArtifact())
+                .anyMatch(a -> JSPECIFY_GROUP_ID.equals(a.getGroupId())
+                        && JSPECIFY_ARTIFACT_ID.equals(a.getArtifactId())
+                        && "jar".equals(a.getExtension())
+                        && a.getClassifier().isEmpty());
+    }
+
+    private boolean shouldEnableJspecifySupport() {
+        return JspecifyMode.Disable != getJspecifyMode() && hasJspecifyDependency();
+    }
+
     boolean shouldMatch(final String groupId, final String artifactId) {
         final DependencyNode node = getNode();
         final var artifact = node.getDependency().getArtifact();
@@ -719,8 +770,7 @@ public final class ArtifactRecord {
     void writeJ2clLibrary(final StarlarkOutput output) throws IOException {
         final var j2clConfig =
                 null != _artifactModel ? _artifactModel.getSource().getJ2cl() : null;
-        final J2clMode mode =
-                null != j2clConfig && null != j2clConfig.getMode() ? j2clConfig.getMode() : J2clMode.Library;
+        final J2clMode mode = getJ2clMode();
         final var arguments = new LinkedHashMap<String, Object>();
         arguments.put("name", asString(getName(Nature.J2cl)));
         if (J2clMode.Library == mode) {
@@ -730,6 +780,9 @@ public final class ArtifactRecord {
                 srcs.add(asString(getQualifiedJsSourceRepository()));
             }
             arguments.put("srcs", srcs);
+            if (shouldEnableJspecifySupport()) {
+                arguments.put(JSPECIFY_SUPPORT_ATTRIBUTE, Boolean.TRUE);
+            }
             if (null != j2clConfig) {
                 final var suppress = j2clConfig.getSuppress();
                 if (null != suppress) {

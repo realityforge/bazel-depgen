@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.jspecify.annotations.Nullable;
+import org.realityforge.bazel.depgen.config.GlobalJ2clConfig;
 import org.realityforge.bazel.depgen.config.GlobalJavaConfig;
+import org.realityforge.bazel.depgen.config.JspecifyMode;
 import org.realityforge.bazel.depgen.config.NameStrategy;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.config.OptionsConfig;
@@ -276,6 +278,12 @@ public final class OptionsModel {
         final GlobalJavaConfig java = _source.getJava();
         final Boolean flag = null != java ? java.getExportDeps() : null;
         return null == flag ? OptionsConfig.DEFAULT_EXPORT_DEPS : flag;
+    }
+
+    public JspecifyMode jspecifyMode() {
+        final GlobalJ2clConfig j2cl = _source.getJ2cl();
+        final JspecifyMode mode = null != j2cl ? j2cl.getJspecifyMode() : null;
+        return null == mode ? OptionsConfig.DEFAULT_JSPECIFY_MODE : mode;
     }
 
     public boolean supportDependencyOmit() {
