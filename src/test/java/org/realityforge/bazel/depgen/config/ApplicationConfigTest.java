@@ -303,6 +303,7 @@ public class ApplicationConfigTest extends AbstractTest {
               targetRuleLoadSymbols:
                 java_binary: true
                 java_import: false
+                j2cl_import: false
                 j2cl_library: false
               repositoryRuleStartToken: '# rs'
               repositoryRuleEndToken: '# re'
@@ -332,7 +333,15 @@ public class ApplicationConfigTest extends AbstractTest {
         assertEquals(options.getRepositoryRuleLoadSymbols(), Map.of("http_file", Boolean.FALSE));
         assertEquals(
                 options.getTargetRuleLoadSymbols(),
-                Map.of("java_binary", Boolean.TRUE, "java_import", Boolean.FALSE, "j2cl_library", Boolean.FALSE));
+                Map.of(
+                        "java_binary",
+                        Boolean.TRUE,
+                        "java_import",
+                        Boolean.FALSE,
+                        "j2cl_import",
+                        Boolean.FALSE,
+                        "j2cl_library",
+                        Boolean.FALSE));
         assertEquals(options.getRepositoryRuleStartToken(), "# rs");
         assertEquals(options.getRepositoryRuleEndToken(), "# re");
         assertEquals(options.getTargetStartToken(), "# ts");

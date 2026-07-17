@@ -1678,6 +1678,138 @@ public class ApplicationRecordTest extends AbstractTest {
     }
 
     @Test
+    public void j2clImportWithoutSources() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              includeSource: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ArtifactRecord artifact = loadApplicationRecord().getArtifact("com.example", "myapp");
+        assertNull(artifact.getSourceSha256());
+        assertTrue(artifact.emitsBinaryRepositoryRule());
+        assertEquals(artifact.getEmittedRepositoryNames().size(), 1);
+    }
+
+    @Test
+    public void j2clImportWithSources() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ArtifactRecord artifact = loadApplicationRecord().getArtifact("com.example", "myapp");
+        assertNotNull(artifact.getSourceSha256());
+        assertTrue(artifact.emitsBinaryRepositoryRule());
+        assertEquals(artifact.getEmittedRepositoryNames().size(), 2);
+    }
+
+    @Test
+    public void j2clImportWithRequestedSourcesMissing() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final DepgenValidationException exception =
+                expectThrows(DepgenValidationException.class, this::loadApplicationRecord);
+        assertEquals(exception.getMessage(), """
+            Unable to locate source for artifact 'com.example:myapp:jar:1.0'. Specify the 'includeSource' configuration property as 'false' in the artifacts configuration.
+
+            Dependency path:
+              com.example:myapp:jar:1.0 [compile]\
+            """);
+    }
+
+    @Test
+    public void javaAndJ2clImportWithoutSources() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              includeSource: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [Java, J2cl]
+                j2cl:
+                  mode: Import
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ArtifactRecord artifact = loadApplicationRecord().getArtifact("com.example", "myapp");
+        assertEquals(artifact.getNatures(), Arrays.asList(Nature.Java, Nature.J2cl));
+        assertNull(artifact.getSourceSha256());
+        assertTrue(artifact.shouldEmitNatureTarget(Nature.Java));
+        assertTrue(artifact.shouldEmitNatureTarget(Nature.J2cl));
+        assertEquals(artifact.getEmittedRepositoryNames().size(), 1);
+    }
+
+    @Test
+    public void j2clLibraryRejectsIncludeSourceFalse() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              includeSource: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final DepgenValidationException exception =
+                expectThrows(DepgenValidationException.class, this::loadApplicationRecord);
+        assertEquals(
+                exception.getMessage(),
+                "Artifact 'com.example:myapp:jar:1.0' has specified J2cl nature but the 'includeSource' configuration"
+                        + " resolves to false.");
+    }
+
+    @Test
+    public void replacedJ2clImportDoesNotEmitRepositories() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              includeSource: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+            replacements:
+              - coord: com.example:myapp
+                targets:
+                  - target: "@vendor//:myapp"
+                    nature: J2cl
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ArtifactRecord artifact = loadApplicationRecord().getArtifact("com.example", "myapp");
+        assertFalse(artifact.shouldEmitNatureTarget(Nature.J2cl));
+        assertFalse(artifact.emitsRepositoryRules());
+    }
+
+    @Test
     public void j2clImportWithSuppress() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
@@ -3664,6 +3796,73 @@ public class ApplicationRecordTest extends AbstractTest {
     }
 
     @Test
+    public void writeBazelExtension_j2clImportWithoutSources() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              includeSource: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ApplicationRecord record = loadApplicationRecord();
+        final var outputStream = new ByteArrayOutputStream();
+        record.writeBazelExtension(new StarlarkOutput(outputStream));
+        final String output = asCleanString(
+                outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
+
+        assertTrue(output.contains("load(\"@j2cl//build_defs:rules.bzl\", _j2cl_import = \"j2cl_import\")"));
+        assertTrue(output.contains("name = \"com_example__myapp__1_0\""));
+        assertFalse(output.contains("com_example__myapp__1_0__sources"));
+        assertTrue(output.contains("_j2cl_import("));
+        assertTrue(output.contains("jar = \"@com_example__myapp__1_0//file\""));
+        assertFalse(output.contains("_j2cl_library("));
+    }
+
+    @Test
+    public void writeDirectSections_j2clImportWithoutSources() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              includeSource: false
+              repositoryRuleGenerationStrategy: module
+              targetGenerationStrategy: build
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ApplicationRecord record = loadApplicationRecord();
+        final var moduleOutputStream = new ByteArrayOutputStream();
+        record.writeBazelModuleSection(new StarlarkOutput(moduleOutputStream));
+        final String moduleOutput = asCleanString(
+                moduleOutputStream,
+                record.getSource().getConfigSha256(),
+                dir.toUri().toString());
+        assertTrue(moduleOutput.contains("name = \"com_example__myapp__1_0\""));
+        assertFalse(moduleOutput.contains("com_example__myapp__1_0__sources"));
+
+        final var buildOutputStream = new ByteArrayOutputStream();
+        record.writeBazelBuildSection(new StarlarkOutput(buildOutputStream));
+        final String buildOutput = asCleanString(
+                buildOutputStream,
+                record.getSource().getConfigSha256(),
+                dir.toUri().toString());
+        assertTrue(buildOutput.contains("load(\"@j2cl//build_defs:rules.bzl\", _j2cl_import = \"j2cl_import\")"));
+        assertTrue(buildOutput.contains("_j2cl_import("));
+        assertTrue(buildOutput.contains("jar = \"@com_example__myapp__1_0//file\""));
+    }
+
+    @Test
     public void writeBazelExtension_j2clArtifactPresent() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
         final URI uri = dir.toUri();
@@ -4215,6 +4414,34 @@ public class ApplicationRecordTest extends AbstractTest {
         assertTrue(output.contains("_j2cl_library("));
         assertTrue(output.contains("srcs = [\"@com_example__myapp__1_0__sources//file\"]"));
         assertFalse(output.contains("__js_sources"));
+    }
+
+    @Test
+    public void writeBazelBuildSection_targetRuleLoadSymbolsSuppressesJ2clImportLoadOnly() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              includeSource: false
+              targetGenerationStrategy: build
+              targetRuleLoadSymbols:
+                j2cl_import: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ApplicationRecord record = loadApplicationRecord();
+
+        final var outputStream = new ByteArrayOutputStream();
+        record.writeBazelBuildSection(new StarlarkOutput(outputStream));
+        final String output = asCleanString(
+                outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
+        assertFalse(output.contains("load(\"@j2cl//build_defs:rules.bzl\""));
+        assertTrue(output.contains("_j2cl_import("));
     }
 
     @Test

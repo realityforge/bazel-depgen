@@ -24,6 +24,7 @@ import org.jspecify.annotations.Nullable;
 import org.realityforge.bazel.depgen.DepGenConfig;
 import org.realityforge.bazel.depgen.DependencyGraphEmitter;
 import org.realityforge.bazel.depgen.DepgenValidationException;
+import org.realityforge.bazel.depgen.config.J2clMode;
 import org.realityforge.bazel.depgen.config.Nature;
 import org.realityforge.bazel.depgen.metadata.RecordBuildCallback;
 import org.realityforge.bazel.depgen.model.ApplicationModel;
@@ -334,6 +335,13 @@ public final class ApplicationRecord {
             }
         }
         return javaRules;
+    }
+
+    private Set<String> getJ2clRules() {
+        return getArtifacts().stream()
+                .filter(a -> a.shouldEmitNatureTarget(Nature.J2cl))
+                .map(a -> J2clMode.Import == a.getJ2clMode() ? "j2cl_import" : "j2cl_library")
+                .collect(Collectors.toSet());
     }
 
     public void writeDefaultExtensionBuild(final StarlarkOutput output) throws IOException {
@@ -712,10 +720,14 @@ public final class ApplicationRecord {
                         .collect(Collectors.joining(", "));
                 output.write("load(\"@rules_java//java:defs.bzl\", " + rules + ")");
             }
-            if (getArtifacts().stream().anyMatch(a -> a.shouldEmitNatureTarget(Nature.J2cl))
-                    && (!filterConfiguredSymbols || options.shouldEmitTargetRuleLoadSymbol("j2cl_library"))) {
+            final String j2clRules = getJ2clRules().stream()
+                    .filter(r -> !filterConfiguredSymbols || options.shouldEmitTargetRuleLoadSymbol(r))
+                    .sorted()
+                    .map(r -> "_" + r + " = \"" + r + "\"")
+                    .collect(Collectors.joining(", "));
+            if (!j2clRules.isEmpty()) {
                 emittedLoad = true;
-                output.write("load(\"@j2cl//build_defs:rules.bzl\", _j2cl_library = \"j2cl_library\")");
+                output.write("load(\"@j2cl//build_defs:rules.bzl\", " + j2clRules + ")");
             }
             if (emittedLoad) {
                 output.newLine();

@@ -180,20 +180,22 @@ public final class ArtifactRecord {
                         + "'org.jspecify:jspecify:jar' with no classifier.";
                 throw new DepgenValidationException(message);
             }
-            if (null != _artifactModel
-                    && !_artifactModel.includeSource(
-                            _application.getSource().getOptions().includeSource())) {
-                final var message = "Artifact '" + getArtifact()
-                        + "' has specified J2cl nature but the 'includeSource' configuration " + "resolves to false.";
-                throw new DepgenValidationException(message);
-            }
-            if (null == _sourceSha256) {
-                final var message =
-                        "Unable to locate the sources classifier artifact for the artifact '" + getArtifact()
-                                + "' but the artifact has the J2cl nature which requires that sources be present."
-                                + "\n\n"
-                                + _application.formatDependencyPathTo(this);
-                throw new DepgenValidationException(message);
+            if (J2clMode.Library == j2clMode) {
+                if (null != _artifactModel
+                        && !_artifactModel.includeSource(
+                                _application.getSource().getOptions().includeSource())) {
+                    final var message = "Artifact '" + getArtifact()
+                            + "' has specified J2cl nature but the 'includeSource' configuration resolves to false.";
+                    throw new DepgenValidationException(message);
+                }
+                if (null == _sourceSha256) {
+                    final var message =
+                            "Unable to locate the sources classifier artifact for the artifact '" + getArtifact()
+                                    + "' but the artifact has the J2cl nature which requires that sources be present."
+                                    + "\n\n"
+                                    + _application.formatDependencyPathTo(this);
+                    throw new DepgenValidationException(message);
+                }
             }
         }
         if (null == _sourceSha256 && shouldIncludeSource() && emitsTargets()) {
@@ -619,7 +621,9 @@ public final class ArtifactRecord {
     }
 
     private boolean emitsBinaryRepository() {
-        return shouldEmitNatureTarget(Nature.Java) || shouldEmitNatureTarget(Nature.Plugin);
+        return shouldEmitNatureTarget(Nature.Java)
+                || shouldEmitNatureTarget(Nature.Plugin)
+                || (shouldEmitNatureTarget(Nature.J2cl) && J2clMode.Import == getJ2clMode());
     }
 
     boolean emitsBinaryRepositoryRule() {
@@ -646,7 +650,7 @@ public final class ArtifactRecord {
                 && scope.equals(c.getDependency().getScope());
     }
 
-    private J2clMode getJ2clMode() {
+    J2clMode getJ2clMode() {
         final var j2clConfig =
                 null != _artifactModel ? _artifactModel.getSource().getJ2cl() : null;
         return null != j2clConfig && null != j2clConfig.getMode() ? j2clConfig.getMode() : J2clMode.Library;

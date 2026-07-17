@@ -488,17 +488,9 @@ final class AddCommand extends ConfigurableCommand {
             throw new DepgenValidationException(
                     "The Plugin-specific options require the dependency to have the Plugin nature.");
         }
-        if (natures.contains(Nature.J2cl) && !includeSource(model)) {
-            throw new DepgenValidationException(
-                    "Dependencies with the J2cl nature require includeSource to resolve to true.");
-        }
         if (!_j2clSuppress.isEmpty() && J2clMode.Import == _j2clMode) {
             throw new DepgenValidationException("The --j2cl-suppress option is incompatible with --j2cl-mode Import.");
         }
-    }
-
-    private boolean includeSource(@NonNull final ApplicationModel model) {
-        return null == _includeSource ? model.getOptions().includeSource() : _includeSource;
     }
 
     private void validateNotDuplicate(@NonNull final ApplicationModel model, @NonNull final ArtifactModel artifact) {

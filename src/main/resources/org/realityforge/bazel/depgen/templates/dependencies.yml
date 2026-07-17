@@ -38,11 +38,12 @@ options:
   # When targetGenerationStrategy is 'build', this map can suppress selected load(...) aliases in
   # the generated BUILD.bazel section. Omitted keys and true values emit the alias when needed.
   # False omits only the load alias; generated calls still use depgen's aliases such as
-  # _java_import(...) and _j2cl_library(...) and require the symbols to be defined elsewhere in the
-  # shared file. Valid keys are 'java_binary', 'java_import', 'java_library', 'java_plugin',
-  # 'java_test', and 'j2cl_library'.
+  # _java_import(...), _j2cl_import(...), and _j2cl_library(...) and require the symbols to be defined elsewhere
+  # in the shared file. Valid keys are 'java_binary', 'java_import', 'java_library', 'java_plugin',
+  # 'java_test', 'j2cl_import', and 'j2cl_library'.
   #targetRuleLoadSymbols:
     #java_import: false
+    #j2cl_import: false
     #j2cl_library: false
 
   # Load symbol suppression only avoids duplicate load(...) and use_repo_rule(...) declarations.
@@ -99,7 +100,7 @@ options:
   # Natures include:
   #  - Java: artifacts are exposed using 'java_import' rule.
   #  - Plugin: artifact is exposed as a 'java_library' that exports 'java_plugin' rules.
-  #  - J2cl: artifact is exposed as a 'j2cl_library' rule.
+  #  - J2cl: artifact is exposed as a 'j2cl_library' or 'j2cl_import' rule, depending on its J2CL mode.
   #defaultNature: Java
 
   # Should the tool fail if it encounters an invalid POM file? Defaults to 'true'.
@@ -293,10 +294,10 @@ repositories:
       # values.
       #suppress: [checkDebuggerStatement]
 
-      # j2cl support two distinct library dependencies. Dependencies that contain only annotation
-      # byte code imported via 'java_import' macro but libraries that need to be transpiled to
-      # javascript need to be defined using the 'java_language'. The valid modes include 'Import'
-      # and 'Library' and defaults to `Library`.
+      # J2CL supports two distinct dependency modes. Import exposes a binary JAR through 'j2cl_import'; sources
+      # are optional and follow includeSource so IDEs can use them when requested. Library transpiles source code
+      # through 'j2cl_library' and requires includeSource to resolve to true. The valid modes are 'Import' and
+      # 'Library'; the default is 'Library'.
       #mode: Library
 
       # Overrides the global J2CL JSpecify mode for this artifact. Autodetect emits J2CL's experimental JSpecify

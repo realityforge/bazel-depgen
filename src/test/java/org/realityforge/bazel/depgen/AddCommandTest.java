@@ -251,22 +251,28 @@ public class AddCommandTest extends AbstractTest {
     }
 
     @Test
-    public void add_j2clNatureRequiresIncludeSource() throws Exception {
-        final String original = """
+    public void add_j2clImportWithoutSources() throws Exception {
+        writeConfigFile("""
             options:
               includeSource: false
-            """;
-        writeConfigFile(original);
+            """);
 
         final var command = new AddCommand();
         final Environment environment = newEnvironment();
-        assertTrue(command.processOptions(environment, "com.example:myapp:1.0", "--nature", "J2cl"));
+        assertTrue(command.processOptions(
+                environment, "com.example:myapp:1.0", "--nature", "J2cl", "--j2cl-mode", "Import"));
 
-        final DepgenValidationException exception =
-                expectThrows(DepgenValidationException.class, () -> command.run(new CommandContextImpl(environment)));
-        assertEquals(
-                exception.getMessage(), "Dependencies with the J2cl nature require includeSource to resolve to true.");
-        assertEquals(loadAsString(environment.getConfigFile()), original);
+        final int exitCode = command.run(new CommandContextImpl(environment));
+        assertEquals(exitCode, ExitCodes.SUCCESS_EXIT_CODE);
+        assertEquals(loadAsString(environment.getConfigFile()), """
+            options:
+              includeSource: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+            """);
     }
 
     @Test

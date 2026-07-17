@@ -56,6 +56,7 @@ public class OptionsModelTest extends AbstractTest {
         assertFalse(model.isTargetRuleLoadSymbolsConfigured());
         assertTrue(model.shouldEmitRepositoryRuleLoadSymbol("http_file"));
         assertTrue(model.shouldEmitTargetRuleLoadSymbol("java_import"));
+        assertTrue(model.shouldEmitTargetRuleLoadSymbol("j2cl_import"));
         assertTrue(model.shouldEmitTargetRuleLoadSymbol("j2cl_library"));
     }
 
@@ -94,8 +95,15 @@ public class OptionsModelTest extends AbstractTest {
         source.setRepositoryRuleGenerationStrategy("module");
         source.setTargetGenerationStrategy("build");
         source.setRepositoryRuleLoadSymbols(Map.of("http_file", Boolean.FALSE));
-        source.setTargetRuleLoadSymbols(
-                Map.of("java_binary", Boolean.TRUE, "java_import", Boolean.FALSE, "j2cl_library", Boolean.FALSE));
+        source.setTargetRuleLoadSymbols(Map.of(
+                "java_binary",
+                Boolean.TRUE,
+                "java_import",
+                Boolean.FALSE,
+                "j2cl_import",
+                Boolean.FALSE,
+                "j2cl_library",
+                Boolean.FALSE));
         source.setRepositoryRuleStartToken("# rs");
         source.setRepositoryRuleEndToken("# re");
         source.setTargetStartToken("# ts");
@@ -131,6 +139,7 @@ public class OptionsModelTest extends AbstractTest {
         assertFalse(model.shouldEmitRepositoryRuleLoadSymbol("http_file"));
         assertTrue(model.shouldEmitTargetRuleLoadSymbol("java_binary"));
         assertFalse(model.shouldEmitTargetRuleLoadSymbol("java_import"));
+        assertFalse(model.shouldEmitTargetRuleLoadSymbol("j2cl_import"));
         assertFalse(model.shouldEmitTargetRuleLoadSymbol("j2cl_library"));
         assertTrue(model.shouldEmitTargetRuleLoadSymbol("java_test"));
         assertEquals(model.getRepositoryRuleStartToken(), "# rs");
@@ -188,6 +197,7 @@ public class OptionsModelTest extends AbstractTest {
         assertTrue(model.isTargetRuleLoadSymbolsConfigured());
         assertTrue(model.shouldEmitRepositoryRuleLoadSymbol("http_file"));
         assertTrue(model.shouldEmitTargetRuleLoadSymbol("java_import"));
+        assertTrue(model.shouldEmitTargetRuleLoadSymbol("j2cl_import"));
         assertTrue(model.shouldEmitTargetRuleLoadSymbol("j2cl_library"));
     }
 
@@ -230,7 +240,7 @@ public class OptionsModelTest extends AbstractTest {
                 exception.getMessage(),
                 "The options.targetRuleLoadSymbols property contains unsupported key 'bogus'. "
                         + "Supported keys are: java_binary, java_import, java_library, java_plugin, java_test, "
-                        + "j2cl_library.");
+                        + "j2cl_import, j2cl_library.");
         assertEquals(exception.getModel(), source);
     }
 
