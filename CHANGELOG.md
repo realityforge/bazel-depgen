@@ -2,9 +2,10 @@
 
 ### Unreleased
 
-* Fix J2CL Import generation to declare its binary repository and `j2cl_import` load binding, including
-  `targetRuleLoadSymbols.j2cl_import` suppression. Import artifacts no longer require sources when `includeSource`
-  is false, while requested sources remain available for IDE use.
+* Fix J2CL Import generation to declare its binary repository, pass the binary through a `JavaInfo`-providing target,
+  and emit its `java_import` and `j2cl_import` load bindings, including `targetRuleLoadSymbols` suppression. Import
+  artifacts no longer require sources when `includeSource` is false, while requested sources remain available for
+  IDE use.
 * Add opt-in global and per-artifact J2CL JSpecify modes that can emit J2CL's experimental JSpecify support
   attribute after validating the canonical direct JSpecify dependency.
 * Pass J2CL source archives directly to generated `j2cl_library` targets and remove duplicate `__js_sources`

@@ -32,6 +32,10 @@ public final class ArtifactRecord {
     private static final String JSPECIFY_SUPPORT_ATTRIBUTE =
             "experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage";
     /**
+     * The suffix applied to the private Java target that backs a J2CL Import target.
+     */
+    private static final String J2CL_IMPORT_JAVA_TARGET_SUFFIX = "__java_import";
+    /**
      * The suffix applied to the name of target that imports artifact for use when defining plugins.
      */
     private static final String PLUGIN_LIBRARY_SUFFIX = "__plugin_library";
@@ -422,6 +426,10 @@ public final class ArtifactRecord {
 
     LinkedHashMap<String, String> getEmittedPrivateTargetNames() {
         final var names = new LinkedHashMap<String, String>();
+        if (emitsJ2clImportJavaTarget()) {
+            final var artifactName = "artifact '" + getArtifact() + "'";
+            names.put(getJ2clImportJavaTargetName(), artifactName + " private J2cl Import Java target");
+        }
         if (shouldEmitNatureTarget(Nature.Plugin)) {
             final var artifactName = "artifact '" + getArtifact() + "'";
             names.put(getName(Nature.Java) + PLUGIN_LIBRARY_SUFFIX, artifactName + " private plugin library target");
@@ -620,6 +628,12 @@ public final class ArtifactRecord {
         return getNatures().contains(nature) && !isNatureReplaced(nature);
     }
 
+    boolean emitsJ2clImportJavaTarget() {
+        return shouldEmitNatureTarget(Nature.J2cl)
+                && J2clMode.Import == getJ2clMode()
+                && !shouldEmitNatureTarget(Nature.Java);
+    }
+
     private boolean emitsBinaryRepository() {
         return shouldEmitNatureTarget(Nature.Java)
                 || shouldEmitNatureTarget(Nature.Plugin)
@@ -739,6 +753,19 @@ public final class ArtifactRecord {
         output.writeCall("_java_import", arguments);
     }
 
+    private void emitJ2clImportJavaTarget(final StarlarkOutput output) throws IOException {
+        assert emitsJ2clImportJavaTarget();
+        final var arguments = new LinkedHashMap<String, Object>();
+        arguments.put("name", asString(getJ2clImportJavaTargetName()));
+        arguments.put("jars", Collections.singletonList(asString(getQualifiedBinaryLabel())));
+        arguments.put("visibility", Collections.singletonList("\"//visibility:private\""));
+        output.writeCall("_java_import", arguments);
+    }
+
+    private String getJ2clImportJavaTargetName() {
+        return getName(Nature.J2cl) + J2CL_IMPORT_JAVA_TARGET_SUFFIX;
+    }
+
     void writeJ2clLibrary(final StarlarkOutput output) throws IOException {
         final var j2clConfig =
                 null != _artifactModel ? _artifactModel.getSource().getJ2cl() : null;
@@ -780,7 +807,10 @@ public final class ArtifactRecord {
             output.writeCall("_j2cl_library", arguments);
         } else {
             assert J2clMode.Import == mode;
-            arguments.put("jar", asString(getQualifiedBinaryLabel()));
+            arguments.put(
+                    "jar",
+                    asString(":"
+                            + (emitsJ2clImportJavaTarget() ? getJ2clImportJavaTargetName() : getName(Nature.Java))));
             final var artifactModel = Objects.requireNonNull(getArtifactModel());
             final var visibility = artifactModel.getVisibility();
             if (!visibility.isEmpty()) {
@@ -864,6 +894,10 @@ public final class ArtifactRecord {
             if (Nature.Java == nature) {
                 emitJavaImport(output, "");
             } else if (Nature.J2cl == nature) {
+                if (emitsJ2clImportJavaTarget()) {
+                    emitJ2clImportJavaTarget(output);
+                    output.newLine();
+                }
                 writeJ2clLibrary(output);
             } else // if ( Nature.Plugin == nature )
             {

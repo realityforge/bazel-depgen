@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.realityforge.bazel.depgen.AbstractTest;
 import org.realityforge.bazel.depgen.DepGenConfig;
@@ -1688,6 +1689,7 @@ public class ApplicationRecordTest extends AbstractTest {
               - coord: com.example:myapp:1.0
                 natures: [J2cl]
                 j2cl:
+                  name: custom-j2cl
                   mode: Import
             """);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
@@ -1696,6 +1698,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertNull(artifact.getSourceSha256());
         assertTrue(artifact.emitsBinaryRepositoryRule());
         assertEquals(artifact.getEmittedRepositoryNames().size(), 1);
+        assertEquals(artifact.getEmittedPrivateTargetNames().keySet(), Set.of("custom-j2cl__java_import"));
     }
 
     @Test
@@ -1715,6 +1718,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertNotNull(artifact.getSourceSha256());
         assertTrue(artifact.emitsBinaryRepositoryRule());
         assertEquals(artifact.getEmittedRepositoryNames().size(), 2);
+        assertEquals(artifact.getEmittedPrivateTargetNames().keySet(), Set.of("com_example__myapp-j2cl__java_import"));
     }
 
     @Test
@@ -1761,6 +1765,7 @@ public class ApplicationRecordTest extends AbstractTest {
         assertTrue(artifact.shouldEmitNatureTarget(Nature.Java));
         assertTrue(artifact.shouldEmitNatureTarget(Nature.J2cl));
         assertEquals(artifact.getEmittedRepositoryNames().size(), 1);
+        assertTrue(artifact.getEmittedPrivateTargetNames().isEmpty());
     }
 
     @Test
@@ -1807,6 +1812,7 @@ public class ApplicationRecordTest extends AbstractTest {
         final ArtifactRecord artifact = loadApplicationRecord().getArtifact("com.example", "myapp");
         assertFalse(artifact.shouldEmitNatureTarget(Nature.J2cl));
         assertFalse(artifact.emitsRepositoryRules());
+        assertTrue(artifact.getEmittedPrivateTargetNames().isEmpty());
     }
 
     @Test
@@ -2033,6 +2039,35 @@ public class ApplicationRecordTest extends AbstractTest {
         final ArtifactRecord artifactRecord2 = artifacts.get(1);
         assertEquals(artifactRecord2.getKey(), "com.example.app2:core");
         assertEquals(artifactRecord2.getName(Nature.Java), "core");
+    }
+
+    @Test
+    public void loadWhereJ2clImportJavaTargetNameCollides() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              includeSource: false
+            artifacts:
+              - coord: com.example.app1:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  name: shared
+                  mode: Import
+              - coord: shared:java-import:1.0
+                natures: [Java]
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example.app1:myapp:1.0");
+        deployTempArtifactToLocalRepository(dir, "shared:java-import:1.0");
+
+        final DepgenValidationException exception =
+                expectThrows(DepgenValidationException.class, this::loadApplicationRecord);
+        assertEquals(
+                exception.getMessage(),
+                "Multiple emitted targets have the same name 'shared__java_import' which is not supported. Adjust"
+                        + " naming configuration or explicit names for artifact"
+                        + " 'com.example.app1:myapp:jar:1.0' private J2cl Import Java target and artifact"
+                        + " 'shared:java-import:jar:1.0' public Java target.");
     }
 
     @Test
@@ -3806,6 +3841,7 @@ public class ApplicationRecordTest extends AbstractTest {
               - coord: com.example:myapp:1.0
                 natures: [J2cl]
                 j2cl:
+                  name: custom-j2cl
                   mode: Import
             """);
         deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
@@ -3816,11 +3852,15 @@ public class ApplicationRecordTest extends AbstractTest {
         final String output = asCleanString(
                 outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
 
+        assertTrue(output.contains("_java_import = \"java_import\""));
         assertTrue(output.contains("load(\"@j2cl//build_defs:rules.bzl\", _j2cl_import = \"j2cl_import\")"));
         assertTrue(output.contains("name = \"com_example__myapp__1_0\""));
         assertFalse(output.contains("com_example__myapp__1_0__sources"));
+        assertTrue(output.contains("name = \"custom-j2cl__java_import\""));
+        assertTrue(output.contains("jars = [\"@com_example__myapp__1_0//file\"]"));
         assertTrue(output.contains("_j2cl_import("));
-        assertTrue(output.contains("jar = \"@com_example__myapp__1_0//file\""));
+        assertTrue(output.contains("name = \"custom-j2cl\""));
+        assertTrue(output.contains("jar = \":custom-j2cl__java_import\""));
         assertFalse(output.contains("_j2cl_library("));
     }
 
@@ -3857,9 +3897,12 @@ public class ApplicationRecordTest extends AbstractTest {
                 buildOutputStream,
                 record.getSource().getConfigSha256(),
                 dir.toUri().toString());
+        assertTrue(buildOutput.contains("_java_import = \"java_import\""));
         assertTrue(buildOutput.contains("load(\"@j2cl//build_defs:rules.bzl\", _j2cl_import = \"j2cl_import\")"));
+        assertTrue(buildOutput.contains("_java_import("));
+        assertTrue(buildOutput.contains("name = \"com_example__myapp-j2cl__java_import\""));
         assertTrue(buildOutput.contains("_j2cl_import("));
-        assertTrue(buildOutput.contains("jar = \"@com_example__myapp__1_0//file\""));
+        assertTrue(buildOutput.contains("jar = \":com_example__myapp-j2cl__java_import\""));
     }
 
     @Test
@@ -4441,6 +4484,37 @@ public class ApplicationRecordTest extends AbstractTest {
         final String output = asCleanString(
                 outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
         assertFalse(output.contains("load(\"@j2cl//build_defs:rules.bzl\""));
+        assertTrue(output.contains("_java_import = \"java_import\""));
+        assertTrue(output.contains("_j2cl_import("));
+    }
+
+    @Test
+    public void writeBazelBuildSection_targetRuleLoadSymbolsSuppressesJ2clImportJavaTargetLoadOnly() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            options:
+              includeSource: false
+              targetGenerationStrategy: build
+              targetRuleLoadSymbols:
+                java_import: false
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [J2cl]
+                j2cl:
+                  mode: Import
+            """);
+        deployTempArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ApplicationRecord record = loadApplicationRecord();
+
+        final var outputStream = new ByteArrayOutputStream();
+        record.writeBazelBuildSection(new StarlarkOutput(outputStream));
+        final String output = asCleanString(
+                outputStream, record.getSource().getConfigSha256(), dir.toUri().toString());
+        assertFalse(output.contains("_java_import = \"java_import\""));
+        assertTrue(output.contains("load(\"@j2cl//build_defs:rules.bzl\", _j2cl_import = \"j2cl_import\")"));
+        assertTrue(output.contains("_java_import("));
         assertTrue(output.contains("_j2cl_import("));
     }
 

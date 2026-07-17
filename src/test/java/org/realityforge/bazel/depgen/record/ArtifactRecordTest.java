@@ -901,7 +901,7 @@ public class ArtifactRecordTest extends AbstractTest {
     }
 
     @Test
-    public void writeJ2clLibrary_modeImport() throws Exception {
+    public void writeArtifactTargets_j2clImportWithoutJavaNature() throws Exception {
         final Path dir = FileUtil.createLocalTempDir();
 
         writeConfigFile(dir, """
@@ -909,6 +909,7 @@ public class ArtifactRecordTest extends AbstractTest {
               - coord: com.example:myapp:1.0
                 natures: [J2cl]
                 j2cl:
+                  name: custom-j2cl
                   mode: Import
             """);
         deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
@@ -916,11 +917,89 @@ public class ArtifactRecordTest extends AbstractTest {
         final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
 
         final var outputStream = new ByteArrayOutputStream();
-        artifactRecord.writeJ2clLibrary(new StarlarkOutput(outputStream));
+        artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
         assertEquals(asString(outputStream), """
+            _java_import(
+                name = "custom-j2cl__java_import",
+                jars = ["@com_example__myapp__1_0//file"],
+                visibility = ["//visibility:private"],
+            )
+
             _j2cl_import(
-                name = "com_example__myapp-j2cl",
-                jar = "@com_example__myapp__1_0//file",
+                name = "custom-j2cl",
+                jar = ":custom-j2cl__java_import",
+            )
+            """);
+    }
+
+    @Test
+    public void writeArtifactTargets_j2clImportWithJavaNature() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [Java, J2cl]
+                java:
+                  name: custom-java
+                j2cl:
+                  name: custom-j2cl
+                  mode: Import
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
+
+        final var outputStream = new ByteArrayOutputStream();
+        artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "custom-java",
+                jars = ["@com_example__myapp__1_0//file"],
+                srcjar = "@com_example__myapp__1_0__sources//file",
+                tags = ["maven_coordinates=com.example:myapp:1.0"],
+            )
+
+            _j2cl_import(
+                name = "custom-j2cl",
+                jar = ":custom-java",
+            )
+            """);
+    }
+
+    @Test
+    public void writeArtifactTargets_j2clImportWithReplacedJavaNature() throws Exception {
+        final Path dir = FileUtil.createLocalTempDir();
+
+        writeConfigFile(dir, """
+            artifacts:
+              - coord: com.example:myapp:1.0
+                natures: [Java, J2cl]
+                j2cl:
+                  name: custom-j2cl
+                  mode: Import
+            replacements:
+              - coord: com.example:myapp
+                targets:
+                  - target: "@vendor//:myapp"
+                    nature: Java
+            """);
+        deployArtifactToLocalRepository(dir, "com.example:myapp:1.0");
+
+        final ArtifactRecord artifactRecord = getArtifactAt(loadApplicationRecord(), 0);
+
+        final var outputStream = new ByteArrayOutputStream();
+        artifactRecord.writeArtifactTargets(new StarlarkOutput(outputStream));
+        assertEquals(asString(outputStream), """
+            _java_import(
+                name = "custom-j2cl__java_import",
+                jars = ["@com_example__myapp__1_0//file"],
+                visibility = ["//visibility:private"],
+            )
+
+            _j2cl_import(
+                name = "custom-j2cl",
+                jar = ":custom-j2cl__java_import",
             )
             """);
     }

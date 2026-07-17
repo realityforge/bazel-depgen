@@ -325,7 +325,7 @@ public final class ApplicationRecord {
             javaRules.add("java_test");
         }
         for (final ArtifactRecord artifact : getArtifacts()) {
-            if (artifact.shouldEmitNatureTarget(Nature.Java)) {
+            if (artifact.shouldEmitNatureTarget(Nature.Java) || artifact.emitsJ2clImportJavaTarget()) {
                 javaRules.add("java_import");
             }
             if (artifact.shouldEmitNatureTarget(Nature.Plugin)) {
