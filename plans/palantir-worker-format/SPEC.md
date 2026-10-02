@@ -58,6 +58,12 @@ No glob() or cross-directory source ownership. Run tools/check.sh. Update Unrele
 | D2 | Pin v0.1.1 release override and formatter 2.93.0 | BCR lacks module; existing formatter already 2.93.0 | Shared module owns dependencies; transitive rules_java resolves from 9.6.1 to required 9.9.0 | Inspect module and generated lock diff |
 | D3 | Preserve wrappers and source roots; add public-tool watch wrapper | Existing convention and requested reference | Developer commands remain simple; checks are read-only | Run write/check/watch wrappers |
 | D4 | Keep existing CI invocation | Existing workflow already enforces tools/check.sh | No new workflow needed | Inspect CI logs |
+| D5 | Set target Java language version 17 | Write executable uses records; default 11 fails; repository already targets --release 17 | Public write/watch compile on established Java 17 baseline; runtime settings preserved | Run write/watch and full gate |
+
+The first write probe confirmed the shared public executable fails under Bazel's default target
+source level 11 (records require >=16). Existing local Java rules already use --release 17,
+and CI explicitly supplies JDK 17. Set build --java_language_version=17 to align the target
+toolchain with that established baseline; leave runtime selection and tool JDK 25 unchanged.
 
 ## Testing decisions
 

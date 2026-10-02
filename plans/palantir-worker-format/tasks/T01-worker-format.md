@@ -1,6 +1,6 @@
 # T01 — Migrate worker formatting
 
-- Status: pending
+- Status: in_progress
 - Blocked by: None
 - Spec coverage: R1–R4, AC1–AC4
 
@@ -24,5 +24,7 @@ with preserved write command and public watch wrapper, dependency cleanup and re
 - Same planning reviewer; fresh implementation reviewer; git history and GitHub PR API state.
 
 ## Evidence
+
+Initial write probe failed with records unsupported in source 11. Replan adds explicit target Java language 17, matching existing --release 17 and CI JDK 17; public write/watch and full gate must verify it.
 
 pending. AC4 lifecycle evidence is completed during review/closeout/publication, after task implementation checks.
