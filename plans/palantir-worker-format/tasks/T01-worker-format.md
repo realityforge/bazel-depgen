@@ -28,3 +28,6 @@ with preserved write command and public watch wrapper, dependency cleanup and re
 Initial write probe failed with records unsupported in source 11. Replan adds explicit target Java language 17, matching existing --release 17 and CI JDK 17; public write/watch and full gate must verify it.
 
 Implementation and full gate passed. See [EVIDENCE.md](../EVIDENCE.md). AC4 lifecycle evidence is completed during review/closeout/publication after these implementation checks.
+
+Planning and implementation review gates passed (2 and 1 rounds respectively). Closeout removal,
+PR assignment and automatic merge follow this committed review record.

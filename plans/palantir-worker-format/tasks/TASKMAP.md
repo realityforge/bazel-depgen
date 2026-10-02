@@ -1,11 +1,11 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementation-review
-- Current frontier: implementation review
+- Status: implementation-reviewed
+- Current frontier: closeout and publication
 - Planning reviewer: /root/plan_review (2/3 rounds), Findings: none
 - Plan checkpoint: automatic; user explicit evidence-based entry exception and passing planning review
-- Implementation reviewer: pending (0/5 rounds)
+- Implementation reviewer: /root/implementation_review (1/5 rounds), Findings: none
 
 ## Full-scope validation
 
