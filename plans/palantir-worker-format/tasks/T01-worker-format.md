@@ -1,6 +1,6 @@
 # T01 — Migrate worker formatting
 
-- Status: in_progress
+- Status: complete (implementation and validation; delivery lifecycle follows)
 - Blocked by: None
 - Spec coverage: R1–R4, AC1–AC4
 
@@ -11,9 +11,9 @@ with preserved write command and public watch wrapper, dependency cleanup and re
 
 ## Acceptance criteria
 
-- [ ] Root graph check, worker execution and complete intended input coverage (AC1).
-- [ ] Read-only negative checks; writer repairs; watcher handles modification (AC2).
-- [ ] Remove obsolete plumbing; regenerated lock; Buildifier, syntax, tools/check.sh and diff pass (AC3).
+- [x] Root graph check, worker execution and complete intended input coverage (AC1).
+- [x] Read-only negative checks; writer repairs; watcher handles modification (AC2).
+- [x] Remove obsolete plumbing; regenerated lock; Buildifier, syntax, tools/check.sh and diff pass (AC3).
 - [ ] Required reviews and plan history complete; tree removed; assigned auto-merge PR verified (AC4).
 
 ## Validation
@@ -27,4 +27,4 @@ with preserved write command and public watch wrapper, dependency cleanup and re
 
 Initial write probe failed with records unsupported in source 11. Replan adds explicit target Java language 17, matching existing --release 17 and CI JDK 17; public write/watch and full gate must verify it.
 
-pending. AC4 lifecycle evidence is completed during review/closeout/publication, after task implementation checks.
+Implementation and full gate passed. See [EVIDENCE.md](../EVIDENCE.md). AC4 lifecycle evidence is completed during review/closeout/publication after these implementation checks.

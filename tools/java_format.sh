@@ -15,26 +15,8 @@ esac
 
 cd "${ROOT}"
 
-args_file="$(mktemp)"
-trap 'rm -f "${args_file}"' EXIT
-
-while IFS= read -r source_file; do
-  printf '%s/%s\n' "${ROOT}" "${source_file}" >> "${args_file}"
-done < <(rg --files -g '*.java' src tools | sort)
-
-if [[ ! -s "${args_file}" ]]; then
-  exit 0
-fi
-
 if [[ "${MODE}" == "check" ]]; then
-  bazel run //tools/java-format:palantir_java_format -- \
-    --palantir \
-    --dry-run \
-    --set-exit-if-changed \
-    "@${args_file}"
-else
-  bazel run //tools/java-format:palantir_java_format -- \
-    --palantir \
-    --replace \
-    "@${args_file}"
+  exec bazel build //:java_format_check
 fi
+
+exec bazel run @rules_palantir_java_format//:java_format -- --root=src --root=tools
