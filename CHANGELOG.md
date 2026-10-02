@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* Use shared Palantir Java Format rules and persistent Bazel workers to check graph-reachable Java sources,
+  and add `tools/java_format_watch.sh` for continuous formatting.
+
 ### [v0.29](https://github.com/realityforge/bazel-depgen/tree/v0.29) (2026-07-18) · [Full Changelog](https://github.com/realityforge/bazel-depgen/compare/v0.28...v0.29)
 
 Changes in this release:
