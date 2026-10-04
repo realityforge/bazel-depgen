@@ -147,12 +147,8 @@ public abstract class AbstractTest implements IHookable {
         return ApplicationConfig.load(getDefaultConfigFile());
     }
 
-    protected final void writeBazelrc(@NonNull final Path repositoryCache) throws IOException {
-        FileUtil.write(
-                ".bazelrc",
-                "startup --output_user_root " + Files.createTempDirectory("bazel-depgen") + "\n"
-                        + "build --repository_cache "
-                        + repositoryCache + "\n" + "build --repo_contents_cache=\n");
+    protected final void writeBazelrc() throws IOException {
+        FileUtil.write(".bazelrc", "startup --output_user_root " + Files.createTempDirectory("bazel-depgen") + "\n");
     }
 
     final void writeWorkspace() throws IOException {

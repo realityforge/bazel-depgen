@@ -11,12 +11,12 @@ public class BazelUtilIntegrationTest extends AbstractTest {
     @Test
     public void getInfo() throws Exception {
         final Path cwd = FileUtil.getCurrentDirectory();
-        final Path repositoryCache = FileUtil.createLocalTempDir();
         FileUtil.write("WORKSPACE", "");
-        writeBazelrc(repositoryCache);
+        writeBazelrc();
 
         final BazelUtil.BazelInfo info = requireNonNull(BazelUtil.getInfo(cwd.toFile()));
         assertNotNull(info.getOutputBase());
-        assertEquals(requireNonNull(info.getRepositoryCache()).toAbsolutePath().normalize(), repositoryCache);
+        assertEquals(
+                requireNonNull(info.getRepositoryCache()), requireNonNull(BazelUtil.getRepositoryCache(cwd.toFile())));
     }
 }
