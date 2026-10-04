@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Clean Bazel output and shut down its server when a Codex environment is cleaned up.
+
 * Use shared Palantir Java Format rules and persistent Bazel workers to check graph-reachable Java sources,
   and add `tools/java_format_watch.sh` for continuous formatting.
 
