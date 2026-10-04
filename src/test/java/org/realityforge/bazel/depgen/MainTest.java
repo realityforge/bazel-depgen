@@ -153,7 +153,6 @@ public class MainTest extends AbstractTest {
     public void processOptions_specifyDirectory() throws Exception {
         final var dir = FileUtil.createLocalTempDir();
 
-        FileUtil.write(dir.resolve(".bazelrc"), "build --repository_cache " + FileUtil.createLocalTempDir() + "\n");
         FileUtil.write(dir.resolve("WORKSPACE"), "");
         final var configFile = dir.resolve("thirdparty").resolve(ApplicationConfig.FILENAME);
         FileUtil.write(configFile, "");
@@ -815,7 +814,7 @@ public class MainTest extends AbstractTest {
     @Test
     public void cacheArtifactsInRepositoryCache() throws Exception {
         final var repositoryCacheDir = FileUtil.createLocalTempDir();
-        writeBazelrc(repositoryCacheDir);
+        writeBazelrc();
         FileUtil.write("WORKSPACE", "");
         final var dir = FileUtil.createLocalTempDir();
 
@@ -860,7 +859,7 @@ public class MainTest extends AbstractTest {
     @Test
     public void cacheArtifactsInRepositoryCache_minusSourcesClassifier() throws Exception {
         final var repositoryCacheDir = FileUtil.createLocalTempDir();
-        writeBazelrc(repositoryCacheDir);
+        writeBazelrc();
         FileUtil.write("WORKSPACE", "");
         final var dir = FileUtil.createLocalTempDir();
 
@@ -898,7 +897,7 @@ public class MainTest extends AbstractTest {
     @Test
     public void cacheArtifactsInRepositoryCache_multipleArtifacts() throws Exception {
         final var repositoryCacheDir = FileUtil.createLocalTempDir();
-        writeBazelrc(repositoryCacheDir);
+        writeBazelrc();
         FileUtil.write("WORKSPACE", "");
         final var dir = FileUtil.createLocalTempDir();
 

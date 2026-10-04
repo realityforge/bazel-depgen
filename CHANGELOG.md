@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Use Bazel's default workspace symlinks and repository caches in development, CI, and test workspaces.
+
 * Clean Bazel output and shut down its server when a Codex environment is cleaned up.
 
 * Use shared Palantir Java Format rules and persistent Bazel workers to check graph-reachable Java sources,
