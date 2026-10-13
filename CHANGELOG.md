@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Upgrade NullAway to 0.14.2 and enforce JSpecify mode and recognized nullness annotation locations in Java builds.
+
 * Upgrade the development and CI Bazel version to 9.3.0.
 
 * Use Bazel's default workspace symlinks and repository caches in development, CI, and test workspaces.
