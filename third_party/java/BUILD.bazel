@@ -12,7 +12,7 @@ _java_plugin(
 # DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.27
 
 # SHA256 of the configuration content that generated this content
-_CONFIG_SHA256 = "26C833744F7B949573E94A8A906682A4CBABF06B50DC698AB72EB994CB07BF82"
+_CONFIG_SHA256 = "22008C23CFFBBFB1039D83EBBB787816C937213795A11B88829E87BB35018029"
 
 exports_files(["dependencies.yml"])
 
@@ -116,10 +116,10 @@ exports_files(["dependencies.yml"])
 # |  \- org.webjars:jquery:jar:3.5.1 [compile]
 # +- com.beust:jcommander:jar:1.78 [compile]
 # +- org.webjars:jquery:jar:3.5.1 [compile]
-# +- com.uber.nullaway:nullaway:jar:0.13.7 [compile]
-# |  +- org.jspecify:jspecify:jar:1.0.0 [compile]
-# |  +- org.checkerframework:dataflow-nullaway:jar:4.0.0 [runtime]
-# |  |  \- org.checkerframework:checker-qual:jar:4.0.0 [runtime]
+# +- com.uber.nullaway:nullaway:jar:0.14.2 [compile]
+# |  +- org.jspecify:jspecify:jar:1.0.1 [compile] (conflicts with 1.0.0)
+# |  +- org.checkerframework:dataflow-nullaway:jar:4.2.3 [runtime]
+# |  |  \- org.checkerframework:checker-qual:jar:4.2.3 [runtime]
 # |  \- com.google.guava:guava:jar:31.1-jre [runtime] (conflicts with 20.0)
 # \- org.jspecify:jspecify:jar:1.0.0 [compile]
 
@@ -184,7 +184,7 @@ _java_import(
 _java_import(
     name = "nullaway",
     jars = ["@nullaway//file"],
-    tags = ["maven_coordinates=com.uber.nullaway:nullaway:0.13.7"],
+    tags = ["maven_coordinates=com.uber.nullaway:nullaway:0.14.2"],
     runtime_deps = [
         ":dataflow_nullaway",
         ":guava",
@@ -400,14 +400,14 @@ _java_import(
 _java_import(
     name = "checker_qual",
     jars = ["@checker_qual//file"],
-    tags = ["maven_coordinates=org.checkerframework:checker-qual:4.0.0"],
+    tags = ["maven_coordinates=org.checkerframework:checker-qual:4.2.3"],
     visibility = ["//visibility:private"],
 )
 
 _java_import(
     name = "dataflow_nullaway",
     jars = ["@dataflow_nullaway//file"],
-    tags = ["maven_coordinates=org.checkerframework:dataflow-nullaway:4.0.0"],
+    tags = ["maven_coordinates=org.checkerframework:dataflow-nullaway:4.2.3"],
     visibility = ["//visibility:private"],
     runtime_deps = [":checker_qual"],
 )
